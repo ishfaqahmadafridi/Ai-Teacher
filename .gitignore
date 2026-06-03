@@ -1,1 +1,5 @@
 fine_tuned_physics_model.zip
+backend/venv/
+backend/db.sqlite3
+*.pyc
+__pycache__/
