@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-2cha278l)51x=a@nw4l&814)glsarwi7wh+_7)61h0vv%o7dcv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Third-party apps
     'rest_framework',
     'corsheaders',
+
+    # Local apps
+    'teacher.apps.TeacherConfig',
+    'physics_teacher.apps.PhysicsTeacherConfig',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +140,40 @@ REST_FRAMEWORK = {
     ],
 }
 
+
+# ── Physics Model ──────────────────────────────────────────────────────────
+MODEL_PATH = BASE_DIR / 'model'
+
+# ── Logging ─────────────────────────────────────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} — {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'teacher': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'physics_teacher': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

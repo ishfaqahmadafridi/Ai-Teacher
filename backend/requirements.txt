@@ -4,3 +4,10 @@ django-cors-headers==4.9.0
 djangorestframework==3.17.1
 sqlparse==0.5.5
 tzdata==2026.2
+transformers>=4.40.0
+torch>=2.0.0
+safetensors>=0.4.0
+langchain>=0.1.0
+langgraph>=0.0.1
+langchain-google-genai>=1.0.0
+python-dotenv>=1.0.0
