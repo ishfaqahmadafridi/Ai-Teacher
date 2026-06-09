@@ -1,4 +1,3 @@
-import React from 'react';
 import Logo from './header/Logo';
 import Title from './header/Title';
 import Status from './header/Status';
