@@ -1,15 +1,24 @@
 import { useState, useRef, useCallback } from 'react';
-import type { TeachingResponse } from '../../types/classroom/classroom.types';
-import { type DiagramType } from '../../components/DiagramStage';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
+import {
+  setLoading,
+  setLoadingStatus,
+  setError,
+  setTopic,
+  setDiagramType,
+} from '../../redux/classroomSlice';
+import type { TeachingResponse, DiagramType } from '../../types/classroom/classroom.types';
 
 export function useClassroomApi() {
-  const [loading, setLoading] = useState(false);
-  const [loadingStatus, setLoadingStatus] = useState('Thinking…');
-  const [error, setError] = useState<string | null>(null);
-  const [topic, setTopic] = useState('');
-  const [diagramType, setDiagramType] = useState<DiagramType>('default');
-  const [history, setHistory] = useState<{ role: 'user' | 'prof'; text: string }[]>([]);
+  const dispatch = useAppDispatch();
 
+  const loading = useAppSelector(state => state.classroom.loading);
+  const loadingStatus = useAppSelector(state => state.classroom.loadingStatus);
+  const error = useAppSelector(state => state.classroom.error);
+  const topic = useAppSelector(state => state.classroom.topic);
+  const diagramType = useAppSelector(state => state.classroom.diagramType);
+
+  const [history, setHistory] = useState<{ role: 'user' | 'prof'; text: string }[]>([]);
   const sseAbortRef = useRef<AbortController | null>(null);
 
   const fetchTeachingData = useCallback(async (
@@ -22,9 +31,9 @@ export function useClassroomApi() {
 
     if (sseAbortRef.current) sseAbortRef.current.abort();
 
-    setError(null);
-    setLoading(true);
-    setLoadingStatus('Connecting to Prof. Gemini…');
+    dispatch(setError(null));
+    dispatch(setLoading(true));
+    dispatch(setLoadingStatus('Connecting to Prof. Gemini…'));
     onStart();
 
     setHistory(prev => [...prev, { role: 'user', text: q }]);
@@ -43,7 +52,7 @@ export function useClassroomApi() {
       if (!response.ok) throw new Error(`Server error ${response.status}: ${response.statusText}`);
       if (!response.body) throw new Error('No response body received from server');
 
-      setLoadingStatus('Prof. Gemini is thinking…');
+      dispatch(setLoadingStatus('Prof. Gemini is thinking…'));
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -68,7 +77,7 @@ export function useClassroomApi() {
           try {
             const parsed = JSON.parse(rawData);
             if (parsed.status === 'thinking') {
-              setLoadingStatus('Prof. Gemini is preparing your lesson…');
+              dispatch(setLoadingStatus('Prof. Gemini is preparing your lesson…'));
             } else if (parsed.error) {
               throw new Error(parsed.error);
             } else if (parsed.result) {
@@ -82,9 +91,9 @@ export function useClassroomApi() {
 
       if (!teachingData) throw new Error('No teaching data received from Prof. Gemini');
 
-      setTopic(teachingData.topic ?? '');
-      setDiagramType((teachingData.diagram_type ?? 'default') as DiagramType);
-      
+      dispatch(setTopic(teachingData.topic ?? ''));
+      dispatch(setDiagramType((teachingData.diagram_type ?? 'default') as DiagramType));
+
       const summary = teachingData.phases.map(p => p.speak).filter(Boolean).join(' ');
       setHistory(prev => [...prev, { role: 'prof', text: summary }]);
 
@@ -92,31 +101,31 @@ export function useClassroomApi() {
 
     } catch (err: any) {
       if (err?.name === 'AbortError') return;
-      setError(err?.message ?? 'Request failed. Please try again.');
+      dispatch(setError(err?.message ?? 'Request failed. Please try again.'));
     } finally {
-      setLoading(false);
-      setLoadingStatus('Thinking…');
+      dispatch(setLoading(false));
+      dispatch(setLoadingStatus('Thinking…'));
       sseAbortRef.current = null;
     }
-  }, [loading]);
+  }, [loading, dispatch]);
 
   const resetApiState = useCallback(() => {
     if (sseAbortRef.current) sseAbortRef.current.abort();
     setHistory([]);
-    setError(null);
-    setTopic('');
-    setDiagramType('default');
-  }, []);
+    dispatch(setError(null));
+    dispatch(setTopic(''));
+    dispatch(setDiagramType('default'));
+  }, [dispatch]);
 
   return {
     loading,
     loadingStatus,
     error,
-    setError,
+    setError: (err: string | null) => dispatch(setError(err)),
     topic,
-    setTopic,
+    setTopic: (t: string) => dispatch(setTopic(t)),
     diagramType,
-    setDiagramType,
+    setDiagramType: (dt: DiagramType) => dispatch(setDiagramType(dt)),
     history,
     setHistory,
     fetchTeachingData,

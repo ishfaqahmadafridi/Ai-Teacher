@@ -1,7 +1,9 @@
+import type { SerializedVoice } from '../../../types/classroom/classroom.types';
+
 interface NormalControlsProps {
   lectureMode: boolean;
   isPlaying: boolean;
-  voices: SpeechSynthesisVoice[];
+  voices: SerializedVoice[];
   selectedVoice: string;
   setSelectedVoice: (voice: string) => void;
   handleNewSession: () => void;

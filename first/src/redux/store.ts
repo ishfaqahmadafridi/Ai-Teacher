@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 
 import authReducer from './authSlice';
+import classroomReducer from './classroomSlice';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    classroom: classroomReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

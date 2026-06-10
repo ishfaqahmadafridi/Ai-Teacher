@@ -1,4 +1,4 @@
-import DiagramStage from '../../DiagramStage';
+import DiagramStage from './diagram/DiagramStage';
 import ChalkText from '../../ChalkText';
 import TeacherFigure from '../../TeacherFigure';
 import WelcomeOverlay from './WelcomeOverlay';

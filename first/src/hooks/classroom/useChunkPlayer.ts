@@ -5,37 +5,14 @@
  * can animate to its position) → speaks the text → moves to the next chunk.
  */
 
-import { useState, useRef, useCallback } from 'react';
-
-// ── Types ─────────────────────────────────────────────────────────────────────
-export interface DiagramCommand {
-  action:
-    | 'none'
-    | 'highlight'
-    | 'rotate'
-    | 'zoom'
-    | 'zoom_in'
-    | 'zoom_out'
-    | 'show_formula'
-    | 'show_formula_stepwise'
-    | 'show_initial'
-    | 'add_arrow'
-    | 'add_label'
-    | 'pause_and_highlight'
-    | 'pause_and_explain';
-  target?: string;
-  speed?: 'slow' | 'fast';
-  formula?: string;
-  animate?: { object: string; move: string; speed: string };
-  annotation?: string;
-  annotation_position?: string;
-}
-
-export interface Chunk {
-  speak: string;
-  diagram?: DiagramCommand;   // optional — phase 0 (background) has no diagram
-  key_point?: string | null;  // forwarded so Classroom can write it live
-}
+import { useRef, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
+import {
+  setIsPlaying,
+  setCurrentChunkIndex,
+  setSpokenText,
+} from '../../redux/classroomSlice';
+import type { Chunk, DiagramCommand } from '../../types/classroom/classroom.types';
 
 interface ChunkPlayerState {
   isPlaying: boolean;
@@ -92,9 +69,10 @@ const wait = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms
 const DIAGRAM_PAUSE_MS = 700;
 
 export function useChunkPlayer(): ChunkPlayerState {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentChunkIndex, setCurrentChunkIndex] = useState(-1);
-  const [spokenText, setSpokenText] = useState('');
+  const dispatch = useAppDispatch();
+  const isPlaying = useAppSelector(state => state.classroom.isPlaying);
+  const currentChunkIndex = useAppSelector(state => state.classroom.currentChunkIndex);
+  const spokenText = useAppSelector(state => state.classroom.spokenText);
 
   // Used to cancel mid-play
   const cancelledRef = useRef(false);
@@ -102,15 +80,17 @@ export function useChunkPlayer(): ChunkPlayerState {
 
   const stop = useCallback(() => {
     cancelledRef.current = true;
-    window.speechSynthesis.cancel();
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
     if (fallbackTimerRef.current) {
       clearInterval(fallbackTimerRef.current);
       fallbackTimerRef.current = null;
     }
-    setIsPlaying(false);
-    setCurrentChunkIndex(-1);
-    setSpokenText('');
-  }, []);
+    dispatch(setIsPlaying(false));
+    dispatch(setCurrentChunkIndex(-1));
+    dispatch(setSpokenText(''));
+  }, [dispatch]);
 
   const play = useCallback(
     (
@@ -123,7 +103,9 @@ export function useChunkPlayer(): ChunkPlayerState {
 
       // Stop any existing playback first
       cancelledRef.current = true;
-      window.speechSynthesis.cancel();
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
       if (fallbackTimerRef.current) {
         clearInterval(fallbackTimerRef.current);
         fallbackTimerRef.current = null;
@@ -132,9 +114,9 @@ export function useChunkPlayer(): ChunkPlayerState {
       // Small delay so cancel settles before we restart
       setTimeout(() => {
         cancelledRef.current = false;
-        setIsPlaying(true);
-        setCurrentChunkIndex(0);
-        setSpokenText('');
+        dispatch(setIsPlaying(true));
+        dispatch(setCurrentChunkIndex(0));
+        dispatch(setSpokenText(''));
 
         /**
          * speakChunk — async function that plays one chunk at a time.
@@ -146,18 +128,18 @@ export function useChunkPlayer(): ChunkPlayerState {
             clearInterval(fallbackTimerRef.current);
             fallbackTimerRef.current = null;
           }
-          setSpokenText('');
+          dispatch(setSpokenText(''));
 
           // Stop condition
           if (cancelledRef.current || index >= chunks.length) {
-            setIsPlaying(false);
-            setCurrentChunkIndex(-1);
-            setSpokenText('');
+            dispatch(setIsPlaying(false));
+            dispatch(setCurrentChunkIndex(-1));
+            dispatch(setSpokenText(''));
             return;
           }
 
           const chunk = chunks[index];
-          setCurrentChunkIndex(index);
+          dispatch(setCurrentChunkIndex(index));
 
           // 1. Fire diagram command FIRST (diagram starts animating)
           const hasDiagram = chunk.diagram && chunk.diagram.action !== 'none';
@@ -191,7 +173,7 @@ export function useChunkPlayer(): ChunkPlayerState {
           utterance.volume = 1.0;
 
           // Assign chosen voice if provided
-          if (voiceName) {
+          if (voiceName && typeof window !== 'undefined' && window.speechSynthesis) {
             const allVoices = window.speechSynthesis.getVoices();
             const match = allVoices.find(
               (v) => v.voiceURI === voiceName || v.name === voiceName
@@ -210,7 +192,7 @@ export function useChunkPlayer(): ChunkPlayerState {
               if (currentWordIndex < words.length) {
                 currentWordIndex++;
                 const textSoFar = words.slice(0, currentWordIndex).join(' ');
-                setSpokenText(textSoFar);
+                dispatch(setSpokenText(textSoFar));
               } else {
                 if (fallbackTimerRef.current) {
                   clearInterval(fallbackTimerRef.current);
@@ -233,7 +215,7 @@ export function useChunkPlayer(): ChunkPlayerState {
               const spaceIdx = remaining.indexOf(' ');
               const endIdx = spaceIdx === -1 ? cleanText.length : charIndex + spaceIdx;
               const textSoFar = cleanText.slice(0, endIdx);
-              setSpokenText(textSoFar);
+              dispatch(setSpokenText(textSoFar));
             }
           };
 
@@ -267,14 +249,16 @@ export function useChunkPlayer(): ChunkPlayerState {
             }
           };
 
-          window.speechSynthesis.speak(utterance);
+          if (typeof window !== 'undefined' && window.speechSynthesis) {
+            window.speechSynthesis.speak(utterance);
+          }
         };
 
         // Start playing from chunk 0
         speakChunk(0);
       }, 100);
     },
-    []
+    [dispatch]
   );
 
   return { isPlaying, currentChunkIndex, spokenText, play, stop };

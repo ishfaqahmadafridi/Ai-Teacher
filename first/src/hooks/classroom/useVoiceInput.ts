@@ -4,38 +4,27 @@
  * Returns the transcript, listening state, and start/stop controls.
  */
 
-import { useState, useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '../../redux/store';
+import {
+  setIsListening,
+  setVoiceError,
+  setInputText,
+} from '../../redux/classroomSlice';
 
-interface VoiceInputState {
-  transcript: string;        // final recognized text
-  isListening: boolean;      // true while microphone is active
-  error: string | null;      // error message if something goes wrong
-  startListening: () => void;
-  stopListening: () => void;
-  resetTranscript: () => void;
-}
+export function useVoiceInput() {
+  const dispatch = useAppDispatch();
 
-/**
- * useVoiceInput
- *
- * Uses the browser's SpeechRecognition API to capture the student's voice.
- * Works in Chrome, Edge, and Safari (with webkit prefix).
- * Language detection is automatic — the browser uses the system language,
- * and Gemini then responds in the detected language.
- *
- * Returns the transcript string once the student stops speaking.
- */
-export function useVoiceInput(): VoiceInputState {
-  const [transcript, setTranscript] = useState('');
-  const [isListening, setIsListening] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const isListening = useAppSelector(state => state.classroom.isListening);
+  const voiceError = useAppSelector(state => state.classroom.voiceError);
+  const transcript = useAppSelector(state => state.classroom.inputText);
 
   // Keep a stable reference to the recognition instance
   const recognitionRef = useRef<any>(null);
 
   const startListening = useCallback(() => {
-    setError(null);
-    setTranscript('');
+    dispatch(setVoiceError(null));
+    dispatch(setInputText(''));
 
     // Check browser support
     const SpeechRecognition =
@@ -43,7 +32,7 @@ export function useVoiceInput(): VoiceInputState {
       (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setError('Voice input is not supported in this browser. Please use Chrome or Edge.');
+      dispatch(setVoiceError('Voice input is not supported in this browser. Please use Chrome or Edge.'));
       return;
     }
 
@@ -60,7 +49,7 @@ export function useVoiceInput(): VoiceInputState {
     recognition.continuous = false;
 
     recognition.onstart = () => {
-      setIsListening(true);
+      dispatch(setIsListening(true));
     };
 
     recognition.onresult = (event: any) => {
@@ -78,39 +67,46 @@ export function useVoiceInput(): VoiceInputState {
       }
 
       // Show interim results in real time; commit final when ready
-      setTranscript(finalText || interimText);
+      dispatch(setInputText(finalText || interimText));
     };
 
     recognition.onerror = (event: any) => {
-      setIsListening(false);
+      dispatch(setIsListening(false));
       if (event.error === 'no-speech') {
-        setError('No speech detected. Please try again.');
+        dispatch(setVoiceError('No speech detected. Please try again.'));
       } else if (event.error === 'not-allowed') {
-        setError('Microphone access denied. Please allow microphone in browser settings.');
+        dispatch(setVoiceError('Microphone access denied. Please allow microphone in browser settings.'));
       } else {
-        setError(`Voice error: ${event.error}`);
+        dispatch(setVoiceError(`Voice error: ${event.error}`));
       }
     };
 
     recognition.onend = () => {
-      setIsListening(false);
+      dispatch(setIsListening(false));
     };
 
     recognition.start();
-  }, []);
+  }, [dispatch]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
       recognitionRef.current = null;
     }
-    setIsListening(false);
-  }, []);
+    dispatch(setIsListening(false));
+  }, [dispatch]);
 
   const resetTranscript = useCallback(() => {
-    setTranscript('');
-    setError(null);
-  }, []);
+    dispatch(setInputText(''));
+    dispatch(setVoiceError(null));
+  }, [dispatch]);
 
-  return { transcript, isListening, error, startListening, stopListening, resetTranscript };
+  return {
+    transcript,
+    isListening,
+    error: voiceError,
+    startListening,
+    stopListening,
+    resetTranscript,
+  };
 }
