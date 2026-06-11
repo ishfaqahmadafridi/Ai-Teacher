@@ -236,6 +236,43 @@ export interface FormulaOverlayProps {
   formula: string | null;
 }
 
+export type TeacherPos = 'left' | 'right' | 'center';
+
+export interface TeacherFigureProps {
+  position: TeacherPos;
+  isPlaying: boolean;
+  isWriting: boolean;
+}
+
+export interface ChalkboardBackgroundProps {
+  lectureMode: boolean;
+}
+
+export interface ChalkTextProps {
+  points: string[];
+  isPlaying: boolean;
+}
+
+
+export interface ProfessorCardProps {
+  loading: boolean;
+  loadingStatus: string;
+  isPlaying: boolean;
+}
+
+export interface VoiceSelectorProps {
+  voices: SerializedVoice[];
+  selectedVoice: string;
+  setSelectedVoice: (voice: string) => void;
+}
+
+export interface SuggestionsListProps {
+  askQuestion: (question: string) => void;
+  loading: boolean;
+  isPlaying: boolean;
+}
+
+
 export interface MobileSuggestionsProps {
   askQuestion: (question: string) => void;
 }
@@ -254,6 +291,170 @@ export interface AnimatedImageCardProps {
 export interface ImageAnnotationsProps {
   annotations: string[];
 }
+
+export type AskRole = 'user' | 'assistant';
+
+export interface AskMessage {
+  id: string;
+  role: AskRole;
+  content: string;
+}
+
+export interface AskVoice {
+  name: string;
+  lang: string;
+  uri?: string;
+}
+
+export interface AskSidebarProps {
+  sendMessage: (text: string) => Promise<void>;
+  handleNewChat: () => Promise<void>;
+}
+
+export interface AskChatHeaderProps {
+  voices: AskVoice[];
+  selectedVoice: string | null;
+  setSelectedVoice: (voice: string) => void;
+  autoSpeak: boolean;
+  setAutoSpeak: (checked: boolean) => void;
+  handleNewChat: () => Promise<void>;
+}
+
+export interface AskWelcomeScreenProps {
+  sendMessage: (text: string) => Promise<void>;
+}
+
+export interface AskMessageListProps {
+  messages: AskMessage[];
+  loading: boolean;
+  error: string | null;
+  speakingId: string | null;
+  toggleSpeak: (id: string, content: string) => void;
+  sendMessage: (text: string) => Promise<void>;
+  bottomRef: React.RefObject<HTMLDivElement | null>;
+}
+
+export interface AskInputBarProps {
+  input: string;
+  setInput: (text: string) => void;
+  loading: boolean;
+  sendMessage: (text: string) => Promise<void>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  resizeTextarea: () => void;
+}
+
+export interface AskChatPanelProps {
+  voices: AskVoice[];
+  selectedVoice: string | null;
+  setSelectedVoice: (voice: string) => void;
+  autoSpeak: boolean;
+  setAutoSpeak: (checked: boolean) => void;
+  handleNewChat: () => Promise<void>;
+  messages: AskMessage[];
+  loading: boolean;
+  error: string | null;
+  speakingId: string | null;
+  toggleSpeak: (id: string, content: string) => void;
+  sendMessage: (text: string) => Promise<void>;
+  bottomRef: React.RefObject<HTMLDivElement | null>;
+  input: string;
+  setInput: (text: string) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  resizeTextarea: () => void;
+}
+
+export interface AskChatSettingsProps {
+  voices: AskVoice[];
+  selectedVoice: string | null;
+  setSelectedVoice: (voice: string) => void;
+  autoSpeak: boolean;
+  setAutoSpeak: (checked: boolean) => void;
+  handleNewChat: () => Promise<void>;
+}
+
+export interface AskTextareaProps {
+  input: string;
+  setInput: (text: string) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  resizeTextarea: () => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+}
+
+export interface AskSubmitButtonProps {
+  loading: boolean;
+  disabled: boolean;
+}
+
+export interface AskMessageItemProps {
+  msg: AskMessage;
+  speakingId: string | null;
+  toggleSpeak: (id: string, content: string) => void;
+  sendMessage: (text: string) => Promise<void>;
+}
+
+export interface AskTypingIndicatorProps {
+  loading: boolean;
+}
+
+export interface AskErrorMessageProps {
+  error: string | null;
+}
+
+export interface AskMessageAvatarProps {
+  role: AskRole;
+}
+
+export interface AskMessageBubbleProps {
+  role: AskRole;
+  content: string;
+}
+
+export interface AskMessageActionsProps {
+  msgId: string;
+  msgContent: string;
+  speakingId: string | null;
+  toggleSpeak: (id: string, content: string) => void;
+  sendMessage: (text: string) => Promise<void>;
+}
+
+export interface AskListenButtonProps {
+  msgId: string;
+  msgContent: string;
+  speakingId: string | null;
+  toggleSpeak: (id: string, content: string) => void;
+}
+
+export interface AskDifferentAnalogyButtonProps {
+  sendMessage: (text: string) => Promise<void>;
+}
+
+export interface AskGotItButtonProps {
+  sendMessage: (text: string) => Promise<void>;
+}
+
+export interface SubtitleBarProps {
+  text: string;
+  isPlaying: boolean;
+  chunkIndex: number;
+}
+
+export interface TeacherSvgProps {
+  bodyBob: number;
+  armAngle: number;
+  isWriting: boolean;
+  isWalking: boolean;
+  flip: number;
+}
+
+export interface TeacherLeftArmProps {
+  armAngle: number;
+  isWriting: boolean;
+}
+
+export interface TeacherLegsProps {
+  isWalking: boolean;
+}
+
 
 
 

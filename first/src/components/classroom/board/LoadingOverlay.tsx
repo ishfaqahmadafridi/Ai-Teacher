@@ -21,7 +21,7 @@ export default function LoadingOverlay({ loading, loadingStatus }: LoadingOverla
           </div>
         </div>
         <p className="text-white font-semibold text-sm">{loadingStatus}</p>
-        <p className="text-slate-400 text-xs">Retrieving from College Physics 2e…</p>
+        <p className="text-slate-400 text-xs">Retrieving course materials…</p>
       </div>
     </div>
   );

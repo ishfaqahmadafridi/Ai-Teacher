@@ -1,5 +1,5 @@
 import './App.css';
-import Classroom from './components/Classroom';
+import Classroom from './components/classroom/Classroom';
 import Header from './components/Header';
 
 function App() {

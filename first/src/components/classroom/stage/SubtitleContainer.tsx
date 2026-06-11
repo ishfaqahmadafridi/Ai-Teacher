@@ -1,5 +1,5 @@
 import type { SubtitleContainerProps } from '../../../types/classroom/classroom.types';
-import SubtitleBar from '../../SubtitleBar';
+import SubtitleBar from './SubtitleBar';
 
 export default function SubtitleContainer({
   isPlaying,

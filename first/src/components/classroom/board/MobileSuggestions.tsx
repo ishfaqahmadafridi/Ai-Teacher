@@ -1,4 +1,4 @@
-import { SUGGESTIONS } from '../sidebar/Sidebar';
+import { SUGGESTIONS } from '../../../utils/classroomConfig';
 import type { MobileSuggestionsProps } from '../../../types/classroom/classroom.types';
 
 export default function MobileSuggestions({ askQuestion }: MobileSuggestionsProps) {

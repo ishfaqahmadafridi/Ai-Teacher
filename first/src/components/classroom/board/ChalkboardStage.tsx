@@ -1,8 +1,9 @@
 import DiagramStage from './diagram/DiagramStage';
-import ChalkText from '../../ChalkText';
-import TeacherFigure from '../../TeacherFigure';
+import ChalkText from './ChalkText';
+import TeacherFigure from '../teacher/TeacherFigure';
 import WelcomeOverlay from './WelcomeOverlay';
 import LoadingOverlay from './LoadingOverlay';
+import ChalkboardBackground from './ChalkboardBackground';
 import type { ChalkboardStageProps } from '../../../types/classroom/classroom.types';
 
 export default function ChalkboardStage({
@@ -27,17 +28,7 @@ export default function ChalkboardStage({
       }}
     >
       {/* Subtle chalkboard texture overlay in lecture mode */}
-      {lectureMode && (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            backgroundImage: `
-              radial-gradient(ellipse at 20% 20%, rgba(59,130,246,0.04) 0%, transparent 60%),
-              radial-gradient(ellipse at 80% 80%, rgba(99,102,241,0.03) 0%, transparent 60%)
-            `,
-          }}
-        />
-      )}
+      <ChalkboardBackground lectureMode={lectureMode} />
 
       {/* Welcome overlay */}
       <WelcomeOverlay chunks={chunks} loading={loading} askQuestion={askQuestion} />
