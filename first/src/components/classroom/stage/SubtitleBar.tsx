@@ -7,24 +7,22 @@ import SubtitleBubble from './SubtitleBubble';
 export default function SubtitleBar({ text, isPlaying, chunkIndex }: SubtitleBarProps) {
   const [prevChunkIndex, setPrevChunkIndex] = useState(chunkIndex);
   const [visible, setVisible] = useState(false);
-  const [displayText, setDisplayText] = useState(text);
 
-  // Reset state during render if chunk changes
+  // Reset visibility if chunk changes
   if (chunkIndex !== prevChunkIndex) {
     setPrevChunkIndex(chunkIndex);
     setVisible(false);
-    setDisplayText(text);
   }
 
   // Trigger fade-in transition
   useEffect(() => {
-    if (isPlaying && !visible && displayText) {
+    if (isPlaying && !visible && text) {
       const timer = setTimeout(() => setVisible(true), 60);
       return () => clearTimeout(timer);
     }
-  }, [isPlaying, visible, displayText]);
+  }, [isPlaying, visible, text]);
 
-  if (!isPlaying || !displayText) return null;
+  if (!isPlaying || !text) return null;
 
   return (
     <div
@@ -41,7 +39,7 @@ export default function SubtitleBar({ text, isPlaying, chunkIndex }: SubtitleBar
             <SubtitleAvatar />
 
             {/* Text */}
-            <p className="text-white text-sm leading-relaxed font-medium flex-1">{displayText}</p>
+            <p className="text-white text-sm leading-relaxed font-medium flex-1">{text}</p>
 
             {/* Speaking wave indicator */}
             <SubtitleWave />

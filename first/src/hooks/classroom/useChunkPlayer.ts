@@ -76,7 +76,7 @@ export function useChunkPlayer(): ChunkPlayerState {
 
   // Used to cancel mid-play
   const cancelledRef = useRef(false);
-  const fallbackTimerRef = useRef<any>(null);
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stop = useCallback(() => {
     cancelledRef.current = true;
@@ -84,7 +84,7 @@ export function useChunkPlayer(): ChunkPlayerState {
       window.speechSynthesis.cancel();
     }
     if (fallbackTimerRef.current) {
-      clearInterval(fallbackTimerRef.current);
+      clearTimeout(fallbackTimerRef.current);
       fallbackTimerRef.current = null;
     }
     dispatch(setIsPlaying(false));
@@ -107,7 +107,7 @@ export function useChunkPlayer(): ChunkPlayerState {
         window.speechSynthesis.cancel();
       }
       if (fallbackTimerRef.current) {
-        clearInterval(fallbackTimerRef.current);
+        clearTimeout(fallbackTimerRef.current);
         fallbackTimerRef.current = null;
       }
 
@@ -125,7 +125,7 @@ export function useChunkPlayer(): ChunkPlayerState {
         const speakChunk = async (index: number) => {
           // Clear any active timer from the previous chunk
           if (fallbackTimerRef.current) {
-            clearInterval(fallbackTimerRef.current);
+            clearTimeout(fallbackTimerRef.current);
             fallbackTimerRef.current = null;
           }
           dispatch(setSpokenText(''));
@@ -182,58 +182,45 @@ export function useChunkPlayer(): ChunkPlayerState {
           }
 
           // Word-by-word reveal variables
-          let hasBoundaryFired = false;
           const words = cleanText.split(' ');
           let currentWordIndex = 0;
+          let segmentStartIndex = 0;
+          const WORDS_PER_SEGMENT = 12;
 
-          const startFallbackTypewriter = () => {
-            if (fallbackTimerRef.current) return;
-            fallbackTimerRef.current = setInterval(() => {
-              if (currentWordIndex < words.length) {
-                currentWordIndex++;
-                const textSoFar = words.slice(0, currentWordIndex).join(' ');
-                dispatch(setSpokenText(textSoFar));
-              } else {
-                if (fallbackTimerRef.current) {
-                  clearInterval(fallbackTimerRef.current);
-                  fallbackTimerRef.current = null;
-                }
+          const showNextWord = () => {
+            if (currentWordIndex < words.length) {
+              // Reset segment if we exceed the segment threshold (10-15 words)
+              if (currentWordIndex - segmentStartIndex >= WORDS_PER_SEGMENT) {
+                segmentStartIndex = currentWordIndex;
               }
-            }, 320); // 320ms per word average speaking speed
-          };
 
-          // 5. Watch speech synthesis boundaries
-          utterance.onboundary = (event) => {
-            if (event.name === 'word') {
-              hasBoundaryFired = true;
-              if (fallbackTimerRef.current) {
-                clearInterval(fallbackTimerRef.current);
-                fallbackTimerRef.current = null;
-              }
-              const charIndex = event.charIndex;
-              const remaining = cleanText.slice(charIndex);
-              const spaceIdx = remaining.indexOf(' ');
-              const endIdx = spaceIdx === -1 ? cleanText.length : charIndex + spaceIdx;
-              const textSoFar = cleanText.slice(0, endIdx);
-              dispatch(setSpokenText(textSoFar));
+              // Accumulate words within the current segment window
+              const segmentWords = words.slice(segmentStartIndex, currentWordIndex + 1);
+              const accumulatedText = segmentWords.join(' ');
+              dispatch(setSpokenText(accumulatedText));
+
+              const currentWord = words[currentWordIndex];
+              // Dynamic delay based on word length: 180ms base + 45ms per character
+              const wordDelay = 180 + currentWord.length * 45;
+
+              currentWordIndex++;
+              fallbackTimerRef.current = setTimeout(showNextWord, wordDelay);
+            } else {
+              dispatch(setSpokenText(''));
             }
           };
 
           utterance.onstart = () => {
-            // If native boundary events don't fire within 800ms of starting, use typewriter fallback
-            setTimeout(() => {
-              if (!hasBoundaryFired && !cancelledRef.current) {
-                startFallbackTypewriter();
-              }
-            }, 800);
+            showNextWord();
           };
 
           // 6. When this chunk finishes speaking, move to next chunk
           utterance.onend = () => {
             if (fallbackTimerRef.current) {
-              clearInterval(fallbackTimerRef.current);
+              clearTimeout(fallbackTimerRef.current);
               fallbackTimerRef.current = null;
             }
+            dispatch(setSpokenText(''));
             if (!cancelledRef.current) {
               speakChunk(index + 1);
             }
@@ -241,9 +228,10 @@ export function useChunkPlayer(): ChunkPlayerState {
 
           utterance.onerror = () => {
             if (fallbackTimerRef.current) {
-              clearInterval(fallbackTimerRef.current);
+              clearTimeout(fallbackTimerRef.current);
               fallbackTimerRef.current = null;
             }
+            dispatch(setSpokenText(''));
             if (!cancelledRef.current) {
               speakChunk(index + 1); // skip broken chunks, keep going
             }

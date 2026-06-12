@@ -19,8 +19,9 @@ export default function AnimatedImageCard({ url, command }: AnimatedImageCardPro
   useFrame((state) => {
     if (!meshRef.current) return;
 
-    // Floating animation
+    // Floating animation on the right side of the chalkboard
     meshRef.current.position.y = getFloatOffset(state.clock.elapsedTime);
+    meshRef.current.position.x = 1.5;
 
     // Apply continuous rotation if action is rotate
     if (rotationSpeed.current > 0) {

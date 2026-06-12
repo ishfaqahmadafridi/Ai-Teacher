@@ -288,8 +288,13 @@ export interface AnimatedImageCardProps {
   command: DiagramCommand | null;
 }
 
+export interface SavedAnnotation {
+  text: string;
+  position: 'top_left' | 'top_right' | 'bottom_left' | 'bottom_right' | 'center';
+}
+
 export interface ImageAnnotationsProps {
-  annotations: string[];
+  annotations: SavedAnnotation[];
 }
 
 export type AskRole = 'user' | 'assistant';

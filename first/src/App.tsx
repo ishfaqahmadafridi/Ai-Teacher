@@ -1,6 +1,6 @@
 import './App.css';
 import Classroom from './components/classroom/Classroom';
-import Header from './components/Header';
+import Header from './components/header/Header';
 
 function App() {
   return (
