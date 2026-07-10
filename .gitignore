@@ -11,4 +11,6 @@ backend/chroma_db/
 
 # Local environment variables and secrets
 backend/.env
-first/.env
+frontend/.env
+frontend/.env.local
+frontend/.next/
