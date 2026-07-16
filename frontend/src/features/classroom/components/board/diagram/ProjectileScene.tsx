@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, Line, Text } from '@react-three/drei';
-import type { DiagramCommand } from '@/types';
+import type { DiagramCommand } from '@/features/classroom/types/classroom.types';
 import * as THREE from 'three';
 
 interface ProjectileSceneProps {

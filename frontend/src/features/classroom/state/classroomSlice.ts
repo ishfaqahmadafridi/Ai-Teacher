@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import type { ClassroomState, ExtendedChunk, DiagramCommand, DiagramType, SerializedVoice } from '@/types';
+import type { ClassroomState, ExtendedChunk, DiagramCommand, DiagramType, SerializedVoice } from '../types/classroom.types';
 
 const initialState: ClassroomState = {
   inputText: '',

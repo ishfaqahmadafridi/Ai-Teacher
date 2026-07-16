@@ -4,7 +4,7 @@ import classroomReducer, {
   setTopic,
   setDiagramType,
   resetClassroomState,
-} from '@/features/classroom/state/classroomSlice';
+} from '../state/classroomSlice';
 
 describe('Redux Slice — classroomSlice', () => {
   const getInitialState = () => classroomReducer(undefined, { type: '@@INIT' });

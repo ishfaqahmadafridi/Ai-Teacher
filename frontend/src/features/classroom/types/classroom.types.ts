@@ -1,5 +1,3 @@
-// ─── Diagram & Teaching Types ─────────────────────────────────────────────────
-
 export interface DiagramCommand {
   action:
     | 'none'
@@ -69,42 +67,12 @@ export interface ExtendedChunk extends Chunk {
 
 export type BallMove = 'to_launch' | 'rise' | 'pause_apex' | 'fall' | 'land' | 'loop' | 'none';
 
-// ─── Voice & Audio Types ───────────────────────────────────────────────────────
-
 export interface SerializedVoice {
   name: string;
   voiceURI: string;
   lang: string;
   localService: boolean;
 }
-
-// ─── Ask / Chat Types ──────────────────────────────────────────────────────────
-
-export type AskRole = 'user' | 'assistant';
-
-export interface AskMessage {
-  id: string;
-  role: AskRole;
-  content: string;
-}
-
-// ─── Auth Types ────────────────────────────────────────────────────────────────
-
-export interface User {
-  id: number;
-  username: string;
-  email: string;
-}
-
-export interface AuthState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  loading: boolean;
-  error: string | null;
-}
-
-// ─── Classroom State ───────────────────────────────────────────────────────────
 
 export interface ClassroomState {
   inputText: string;
@@ -127,12 +95,4 @@ export interface ClassroomState {
   spokenText: string;
   isListening: boolean;
   voiceError: string | null;
-}
-
-// ─── API Types ─────────────────────────────────────────────────────────────────
-
-export interface ApiResponse<T = unknown> {
-  data: T;
-  message?: string;
-  error?: string;
 }

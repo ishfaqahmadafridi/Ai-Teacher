@@ -1,7 +1,6 @@
-import { ClassroomService } from '@/services/classroomService';
-import { AskService } from '@/services/askService';
+import { ClassroomService } from '../services/classroomService';
 
-describe('Integration Services — Classroom & Ask', () => {
+describe('Integration Services — Classroom', () => {
   it('should validate explanation response formats properly', () => {
     const mockResponse = {
       topic: 'Kinematics',
@@ -35,16 +34,5 @@ describe('Integration Services — Classroom & Ask', () => {
     const validated = ClassroomService.validateExplanation(invalidResponse);
     // Should fallback to parsing properties gracefully
     expect(validated.topic).toBe('Kinematics');
-  });
-
-  it('should validate ask request payloads successfully', () => {
-    // Standard mock question request
-    const mockRequest = {
-      question: 'What is angular acceleration?',
-      session_id: 'a9b8c7d6-e5f4-3a2b-1c0d-e9f8a7b6c5d4',
-    };
-    // Make a dummy service check to satisfy unused var check
-    expect(AskService).toBeDefined();
-    expect(mockRequest.question).toBe('What is angular acceleration?');
   });
 });

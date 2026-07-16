@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api';
-import { askRequestSchema, askResponseSchema } from '@/validators/ask.schema';
-import type { ValidatedAskResponse } from '@/validators/ask.schema';
+import { askRequestSchema, askResponseSchema } from '../validators/ask.schema';
+import type { ValidatedAskResponse } from '../validators/ask.schema';
 
 export class AskService {
   /**

@@ -1,6 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
-import type { DiagramCommand, DiagramType } from '@/types';
+import type { DiagramCommand, DiagramType } from '@/features/classroom/types/classroom.types';
 import { FormulaOverlay } from './FormulaOverlay';
 
 // Lazy-load the heavy Canvas — never bundle it in the initial JS

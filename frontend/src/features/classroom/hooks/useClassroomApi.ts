@@ -12,7 +12,7 @@ import {
   setChalkboardPoints,
   resetClassroomState,
 } from '@/features/classroom/state/classroomSlice';
-import type { TeachingResponse, ExtendedChunk, DiagramType } from '@/types';
+import type { TeachingResponse, ExtendedChunk, DiagramType } from '@/features/classroom/types/classroom.types';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000';
 const SESSION_KEY = 'ai_teacher_session_id';

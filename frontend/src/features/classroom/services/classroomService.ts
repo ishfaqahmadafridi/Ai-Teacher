@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api';
-import { teachingResponseSchema } from '@/validators/classroom.schema';
-import type { ValidatedTeachingResponse } from '@/validators/classroom.schema';
+import { teachingResponseSchema } from '../validators/classroom.schema';
+import type { ValidatedTeachingResponse } from '../validators/classroom.schema';
 
 export class ClassroomService {
   /**
