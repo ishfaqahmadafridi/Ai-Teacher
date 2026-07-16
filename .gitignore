@@ -14,3 +14,33 @@ backend/.env
 frontend/.env
 frontend/.env.local
 frontend/.next/
+
+# Stitch / design exports (local only)
+stitch_premium_ai_learning_saas/
+stitch_premium_ai_learning_saas.zip
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
