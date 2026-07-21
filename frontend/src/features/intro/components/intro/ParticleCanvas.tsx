@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { useParticleCanvas } from '../hooks/useParticleCanvas';
+import { useParticleCanvas } from '../../hooks/useParticleCanvas';
 
 export function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);

@@ -1,7 +1,7 @@
 'use client';
 
 import { CategoryPill } from './CategoryPill';
-import type { CategoryItem } from '../types/intro.types';
+import type { CategoryItem } from '../../types/intro.types';
 
 interface CategoryTrackProps {
   items: CategoryItem[];

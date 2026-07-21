@@ -1,6 +1,6 @@
 'use client';
 
-import type { SymbolData } from '../types/intro.types';
+import type { SymbolData } from '../../types/intro.types';
 
 const SYMBOLS: SymbolData[] = [
   { text: 'E = mc²', x: 8, y: 15, size: 13, delay: 0 },
