@@ -10,21 +10,27 @@ export function VoiceSelector() {
   if (!voices.length) return null;
 
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-xs text-slate-400 font-medium uppercase tracking-wider">
-        🔊 Voice
-      </label>
+    <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-slate-300 focus-within:border-blue-500/50 transition-colors w-full">
+      <span className="text-slate-400 flex-shrink-0">🔊</span>
       <select
         value={selectedVoice}
         onChange={(e) => dispatch(setSelectedVoice(e.target.value))}
-        className="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-violet-500 w-full"
+        className="bg-transparent border-none text-slate-200 text-xs focus:outline-none cursor-pointer w-full p-0 pr-6"
+        style={{
+          border: 'none',
+          appearance: 'none',
+          backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E")`,
+          backgroundPosition: 'right center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '1.25rem',
+        }}
       >
-        <option value="">Default voice</option>
+        <option value="" className="bg-[#121824] text-slate-200">Default Voice</option>
         {voices
           .filter((v) => v.lang.startsWith('en'))
           .map((v) => (
-            <option key={v.voiceURI} value={v.voiceURI}>
-              {v.name}
+            <option key={v.voiceURI} value={v.voiceURI} className="bg-[#121824] text-slate-200">
+              {v.name.replace('Google', '').replace('Microsoft', '').trim()}
             </option>
           ))}
       </select>

@@ -87,3 +87,30 @@ export interface AuthConsentProps {
   onTermsChange: (checked: boolean) => void;
   onPrivacyChange: (checked: boolean) => void;
 }
+
+// Verification OTP Types
+export type VerificationMethod = 'email' | 'sms';
+
+export interface VerifyOtpFormData {
+  method: VerificationMethod;
+  code: string;
+}
+
+export interface MethodSelectorProps {
+  method: VerificationMethod;
+  onSelectMethod: (method: VerificationMethod) => void;
+}
+
+export interface OtpInputGroupProps {
+  otp: string[];
+  onChangeOtp: (index: number, value: string) => void;
+  onKeyDownOtp: (index: number, e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onPasteOtp: (e: React.ClipboardEvent<HTMLInputElement>) => void;
+}
+
+export interface ResendTimerProps {
+  timer: number;
+  onResend: () => void;
+  canResend: boolean;
+}
+

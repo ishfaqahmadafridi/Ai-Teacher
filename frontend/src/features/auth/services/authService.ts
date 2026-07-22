@@ -48,6 +48,28 @@ export class AuthService {
     const response = await apiClient.get<AuthUser>('/api/auth/me/');
     return response.data;
   }
+
+  /**
+   * Verifies account OTP code.
+   */
+  static async verifyOtp(method: string, code: string): Promise<{ success: boolean; message: string }> {
+    const response = await apiClient.post<{ success: boolean; message: string }>('/api/auth/verify-otp/', {
+      method,
+      code,
+    });
+    return response.data;
+  }
+
+  /**
+   * Resends OTP code.
+   */
+  static async resendOtp(method: string): Promise<{ success: boolean; message: string }> {
+    const response = await apiClient.post<{ success: boolean; message: string }>('/api/auth/resend-otp/', {
+      method,
+    });
+    return response.data;
+  }
 }
 
 export default AuthService;
+

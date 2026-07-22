@@ -14,10 +14,10 @@ export const registerSchema = z
       .regex(/[0-9]/, 'Must contain at least one number'),
     confirmPassword: z.string(),
     agreeToTerms: z.literal(true, {
-      errorMap: () => ({ message: 'You must agree to the Terms & Conditions' }),
+      message: 'You must agree to the Terms & Conditions',
     }),
     agreeToPrivacy: z.literal(true, {
-      errorMap: () => ({ message: 'You must agree to the Privacy Policy' }),
+      message: 'You must agree to the Privacy Policy',
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -31,5 +31,12 @@ export const loginSchema = z.object({
   rememberMe: z.boolean().optional().default(false),
 });
 
+export const verifyOtpSchema = z.object({
+  method: z.enum(['email', 'sms']),
+  code: z.string().length(6, 'Verification code must be 6 digits'),
+});
+
 export type RegisterSchemaType = z.infer<typeof registerSchema>;
 export type LoginSchemaType = z.infer<typeof loginSchema>;
+export type VerifyOtpSchemaType = z.infer<typeof verifyOtpSchema>;
+

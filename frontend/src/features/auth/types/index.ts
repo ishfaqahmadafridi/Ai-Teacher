@@ -18,4 +18,9 @@ export type {
   AuthFieldProps,
   AuthErrorProps,
   AuthConsentProps,
+  VerificationMethod,
+  VerifyOtpFormData,
+  MethodSelectorProps,
+  OtpInputGroupProps,
+  ResendTimerProps,
 } from './auth.types';

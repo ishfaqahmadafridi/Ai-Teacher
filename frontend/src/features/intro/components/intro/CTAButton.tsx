@@ -10,7 +10,7 @@ export function CTAButton() {
   return (
     <div className="mt-12">
       <button
-        onClick={() => router.push('/classroom')}
+        onClick={() => router.push('/home')}
         onMouseEnter={() => setCtaHovered(true)}
         onMouseLeave={() => setCtaHovered(false)}
         className="intro-cta-btn inline-flex items-center gap-3 px-11 py-[18px] rounded-full border border-blue-300/25 bg-white/[0.06] backdrop-blur-xl cursor-pointer outline-none text-[#e0f0ff] font-semibold text-[16px] tracking-wide"
