@@ -1,7 +1,2 @@
-export type {
-  EducationLevel,
-  AcademicYear,
-  StudentProfileData,
-  OnboardingState,
-  OnboardingProgressBarProps,
-} from './onboarding.types';
+export * from './onboarding.types';
+export * from './educationLevelsData';
