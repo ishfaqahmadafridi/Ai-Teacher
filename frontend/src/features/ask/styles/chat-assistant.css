@@ -1,0 +1,35 @@
+/* ─── Chat Assistant Styles ────────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-glow {
+  box-shadow: 0 0 20px rgba(0, 67, 235, 0.15);
+  border: 1px solid rgba(184, 195, 255, 0.2);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #b8c3ff 0%, #ddb7ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.input-glow:focus-within {
+  box-shadow: 0 0 15px rgba(0, 67, 235, 0.2);
+  border-color: rgba(184, 195, 255, 0.4);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(194, 198, 218, 0.2);
+  border-radius: 10px;
+}

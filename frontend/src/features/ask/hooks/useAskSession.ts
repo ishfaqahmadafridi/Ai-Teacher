@@ -2,6 +2,7 @@
 import { useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useAskStore } from '@/features/ask/state/askStore';
+import { AskService } from '@/features/ask/services/askService';
 import { useAppSelector } from '@/hooks/useAppStore';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000';
@@ -43,20 +44,7 @@ export function useAskSession() {
       setError(null);
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/physics-teacher/ask/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question: text,
-            session_id: getSessionId(),
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to get response from server.');
-        }
-
-        const data = (await response.json()) as { answer: string };
+        const data = await AskService.askQuestion(text, getSessionId());
         const assistantMsgId = uuidv4();
         addMessage({ id: assistantMsgId, role: 'assistant', content: data.answer });
       } catch (err: unknown) {
