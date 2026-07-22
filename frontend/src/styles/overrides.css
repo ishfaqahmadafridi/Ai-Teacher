@@ -1,0 +1,12 @@
+/* ─── KaTeX & Typography Overrides ──────────────────────────────────────── */
+.katex {
+  color: #e2e8f0;
+}
+
+.katex-display {
+  margin: 0.5em 0;
+}
+
+.prose.prose-invert p {
+  margin: 0;
+}
