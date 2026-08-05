@@ -20,7 +20,9 @@ export function LoginSubmitButton({ isLoading = false, disabled = false }: Login
       ) : (
         <>
           SIGN IN
-          <span className="material-symbols-outlined text-lg">arrow_forward</span>
+          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </>
       )}
     </button>
