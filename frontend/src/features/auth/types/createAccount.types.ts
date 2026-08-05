@@ -10,6 +10,8 @@ export interface AuthHeaderProps {
 }
 
 export interface SocialAuthProps {
+  showDivider?: boolean;
+  dividerText?: string;
   onGoogleClick?: () => void;
   onMicrosoftClick?: () => void;
   onAppleClick?: () => void;

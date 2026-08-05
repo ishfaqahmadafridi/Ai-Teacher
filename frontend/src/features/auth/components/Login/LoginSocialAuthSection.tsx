@@ -15,6 +15,7 @@ export function LoginSocialAuthSection({
         {dividerText}
       </div>
       <SocialAuth
+        showDivider={false}
         onGoogleClick={onGoogleClick}
         onMicrosoftClick={onMicrosoftClick}
         onAppleClick={onAppleClick}
