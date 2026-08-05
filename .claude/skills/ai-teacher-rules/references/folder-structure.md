@@ -29,43 +29,176 @@ frontend/src/
 │   └── ask/
 │       └── page.tsx              # Renders AskLayout only
 │
+├── components/
+│   └── ui/                       # SHADCN COMPONENTS ONLY (auto-generated)
+│       ├── button.tsx
+│       ├── dialog.tsx
+│       └── ...                   # Never modify directly — extend via wrappers
+│
 ├── config/                       # Build-time configuration
 │   └── env.ts                    # Validated env vars
 │
 ├── features/                     # SELF-CONTAINED FEATURE MODULES
 │   ├── intro/
-│   │   ├── components/           # UI components (IntroScreen, HeroSection, etc.)
-│   │   ├── constants/            # Feature constants (categories.ts)
+│   │   ├── components/
+│   │   ├── constants/
 │   │   │   └── index.ts          # Barrel export ← REQUIRED
-│   │   ├── hooks/                # Feature hooks (useParticleCanvas)
+│   │   ├── hooks/
+│   │   │   └── index.ts          # Barrel export ← REQUIRED
 │   │   ├── styles/               # Feature-local CSS (intro.css)
-│   │   ├── tests/                # Feature tests (intro.test.ts) ← REQUIRED
-│   │   └── types/                # Feature types (intro.types.ts)
+│   │   ├── tests/
+│   │   └── types/
 │   │       └── index.ts          # Barrel export ← REQUIRED
 │   │
 │   ├── ask/
 │   │   ├── components/
-│   │   ├── hooks/                # useAskSession.ts
-│   │   ├── services/             # askService.ts (API calls)
-│   │   ├── state/                # askStore.ts (Zustand)
+│   │   ├── hooks/
+│   │   │   └── index.ts
+│   │   ├── services/
+│   │   ├── state/
 │   │   ├── tests/
 │   │   ├── types/
-│   │   │   └── index.ts          # Barrel export ← REQUIRED
-│   │   └── validators/           # ask.schema.ts (Zod)
+│   │   │   └── index.ts
+│   │   └── validators/
 │   │
-│   └── classroom/
+│   └── classroom/                        # ← FULLY AUDITED & CANONICAL
 │       ├── components/
-│       │   ├── board/            # Sub-group: board stages
-│       │   ├── teacher/          # Sub-group: teacher animations
-│       │   └── sidebar/          # Sub-group: sidebar
-│       ├── hooks/                # useChunkPlayer, useClassroomApi, useVoiceInput
-│       ├── services/             # classroomService.ts
-│       ├── state/                # classroomSlice.ts (Redux)
+│       │   ├── ClassroomLayout.tsx       # Main layout orchestrator
+│       │   ├── board/                    # Board/chalkboard sub-components
+│       │   │   ├── EquationCard.tsx
+│       │   │   ├── PaneHeader.tsx
+│       │   │   ├── PrincipleItemRow.tsx
+│       │   │   ├── PrinciplesList.tsx
+│       │   │   ├── PrinciplesNotesPane.tsx
+│       │   │   ├── SimulationCanvas.tsx
+│       │   │   ├── SimulationHeader.tsx
+│       │   │   ├── SimulationPane.tsx
+│       │   │   ├── SplitWhiteboardStage.tsx
+│       │   │   ├── ChalkboardStage.tsx
+│       │   │   ├── board.types.ts        # Re-export shim → ../../types/board.types
+│       │   │   └── index.ts
+│       │   ├── input/
+│       │   │   ├── FloatingInteractionBar.tsx
+│       │   │   ├── InputBar.tsx
+│       │   │   ├── MediaControlGroup.tsx
+│       │   │   ├── QuestionInputField.tsx
+│       │   │   ├── RaiseHandButton.tsx
+│       │   │   ├── input.types.ts        # Re-export shim → ../../types/input.types
+│       │   │   └── index.ts
+│       │   ├── sidebar/
+│       │   │   ├── ActiveLessonTree.tsx
+│       │   │   ├── FilterPillButton.tsx
+│       │   │   ├── KeyPointsPanel.tsx
+│       │   │   ├── LessonNavigatorHeader.tsx
+│       │   │   ├── LessonTopicItemRow.tsx
+│       │   │   ├── LessonTreeHeader.tsx
+│       │   │   ├── MobileDrawerBackdrop.tsx
+│       │   │   ├── MobileDrawerHeader.tsx
+│       │   │   ├── MobileSidebar.tsx
+│       │   │   ├── NavTabButtonRow.tsx
+│       │   │   ├── NavTabIcon.tsx
+│       │   │   ├── NavTabList.tsx
+│       │   │   ├── RosterSearchInput.tsx
+│       │   │   ├── Sidebar.tsx
+│       │   │   ├── StudentRosterRow.tsx
+│       │   │   ├── StudentSummaryDot.tsx
+│       │   │   ├── StudentSummaryRow.tsx
+│       │   │   ├── StudentsCard.tsx
+│       │   │   ├── StudentsCardHeader.tsx
+│       │   │   ├── StudentsModal.tsx
+│       │   │   ├── StudentsModalFilterBar.tsx
+│       │   │   ├── StudentsModalHeader.tsx
+│       │   │   ├── StudentsModalStatsBar.tsx
+│       │   │   ├── SuggestionsList.tsx
+│       │   │   ├── TopicItemTitle.tsx
+│       │   │   ├── TopicLiveBadge.tsx
+│       │   │   ├── TopicStatusDot.tsx
+│       │   │   ├── VoiceSelector.tsx
+│       │   │   ├── sidebar.types.ts      # Re-export shim → ../../types/sidebar.types
+│       │   │   └── index.ts
+│       │   ├── stage/
+│       │   │   ├── ClassroomErrorBanner.tsx
+│       │   │   ├── ClassroomMainStage.tsx
+│       │   │   ├── LoadingOverlay.tsx
+│       │   │   ├── SubtitleBar.tsx
+│       │   │   ├── WelcomeOverlay.tsx
+│       │   │   ├── stage.types.ts        # Re-export shim → ../../types/stage.types
+│       │   │   └── index.ts
+│       │   ├── teacher/
+│       │   │   ├── TeacherAvatarSvg.tsx
+│       │   │   ├── TeacherFigure.tsx
+│       │   │   ├── TeacherGlowBackdrop.tsx
+│       │   │   ├── teacher.types.ts      # Re-export shim → ../../types/teacher.types
+│       │   │   └── index.ts
+│       │   └── topbar/
+│       │       ├── CourseInfoBadge.tsx
+│       │       ├── HeaderActionGroup.tsx
+│       │       ├── LeaveClassButton.tsx
+│       │       ├── MobileMenuButton.tsx
+│       │       ├── SessionProgressTimer.tsx
+│       │       ├── TopBar.tsx
+│       │       ├── topbar.types.ts       # Re-export shim → ../../types/topbar.types
+│       │       └── index.ts
+│       │
+│       ├── constants/                    # Feature domain static data ← REQUIRED
+│       │   ├── boardConstants.ts         # DEFAULT_PRINCIPLES, DEFAULT_PRIMARY_EQUATION
+│       │   ├── inputConstants.ts         # DEFAULT_QUESTION_PLACEHOLDER
+│       │   ├── sidebarConstants.ts       # DEFAULT_NAV_TABS, MOCK_STUDENTS, DEFAULT_ATTENDANCE_SUMMARY
+│       │   └── index.ts                  # Barrel export ← REQUIRED
+│       │
+│       ├── hooks/                        # ALL non-UI logic ← REQUIRED
+│       │   ├── useActiveLessonTree.ts
+│       │   ├── useChunkPlayer.ts
+│       │   ├── useClassroomApi.ts
+│       │   ├── useClassroomLayout.ts
+│       │   ├── useFloatingInteractionBar.ts
+│       │   ├── useHeaderActionGroup.ts
+│       │   ├── useKeyPointsPanel.ts
+│       │   ├── useMobileMenuButton.ts
+│       │   ├── useMobileSidebar.ts
+│       │   ├── useNavTabList.ts
+│       │   ├── usePrinciplesNotesPane.ts
+│       │   ├── useStudentsCard.ts
+│       │   ├── useStudentsModal.ts
+│       │   ├── useTopBar.ts
+│       │   ├── useTopicItemRow.ts
+│       │   ├── useVoiceInput.ts
+│       │   ├── useVoiceSelector.ts
+│       │   └── index.ts                  # Barrel export ← REQUIRED
+│       │
+│       ├── services/
+│       │   └── classroomService.ts
+│       │
+│       ├── state/
+│       │   └── classroomSlice.ts
+│       │
 │       ├── tests/
-│       ├── types/
-│       │   └── index.ts          # Barrel export ← REQUIRED
-│       ├── utilities/            # classroomConfig.ts, imageUtils.ts
-│       └── validators/           # classroom.schema.ts (Zod)
+│       │   ├── classroomService.test.ts
+│       │   └── classroomSlice.test.ts
+│       │
+│       ├── types/                        # ALL TypeScript interfaces ← REQUIRED
+│       │   ├── board.types.ts
+│       │   ├── classroom.types.ts
+│       │   ├── input.types.ts
+│       │   ├── sidebar.types.ts
+│       │   ├── stage.types.ts
+│       │   ├── teacher.types.ts
+│       │   ├── topbar.types.ts
+│       │   └── index.ts                  # Barrel export ← REQUIRED
+│       │
+│       ├── utilities/                    # Pure helper functions ← REQUIRED
+│       │   ├── classroomConfig.ts        # 3D scene layout config constants
+│       │   ├── formulaUtils.tsx          # Math formula tokenizer (may contain JSX)
+│       │   ├── imageUtils.ts             # isImageUrl, safeImageSrc
+│       │   ├── keyboardUtils.ts          # createEnterKeyHandler
+│       │   ├── styleUtils.ts             # getTopicItemRowStyles, getStudentSummaryVariantStyles
+│       │   └── index.ts                  # Barrel export ← REQUIRED
+│       │
+│       ├── utils/                        # ← SHIM ONLY — do not add new files here
+│       │   └── index.ts                  # export * from '../utilities'
+│       │
+│       └── validators/
+│           └── classroom.schema.ts
 │
 ├── hooks/                        # GENUINELY SHARED HOOKS ONLY
 │   └── useAppStore.ts            # Typed Redux dispatch/selector
@@ -75,14 +208,63 @@ frontend/src/
 │
 ├── shared/                       # GENUINELY SHARED UI
 │   ├── components/
-│   │   ├── providers/            # Redux, Theme, Voice providers
-│   │   └── FormulaBlock.tsx      # Shared LaTeX renderer
-│   ├── context/                  # ThemeContext
+│   │   └── providers/
 │   └── types/                    # Types used across 2+ features
 │
-└── store/                        # REDUX STORE CONFIG ONLY
-    ├── index.ts                  # configureStore — no business logic
-    └── uiStore.ts                # Global UI state (theme, mobile sidebar)
+├── store/                        # REDUX STORE CONFIG ONLY
+│   ├── index.ts
+│   └── uiStore.ts                # Global UI state (mobile sidebar toggle)
+│
+└── styles/                       # GLOBAL STYLES (see styles section below)
+    ├── globals.css               # Entry: imports Tailwind + sub-stylesheets
+    ├── theme.css                 # @theme design tokens (colors, fonts, spacing)
+    ├── base.css                  # Resets and typography
+    ├── glassmorphism.css         # Glass UI utilities
+    ├── animations.css            # Keyframe animations
+    └── overrides.css             # Vendor/browser overrides
+```
+
+---
+
+## Decision Rules: Where Does a New File Go?
+
+**Q: Is this a React component?**
+→ `features/<feature>/components/<subgroup>/<ComponentName>.tsx`
+
+**Q: Is this a custom hook?**
+→ Single feature → `features/<feature>/hooks/use<Name>.ts`
+→ Used by 2+ features → `hooks/` (global)
+
+**Q: Is this a TypeScript interface or type?**
+→ Single feature → `features/<feature>/types/<area>.types.ts`
+→ Used by 2+ features → `shared/types/`
+
+**Q: Is this a pure helper function (no React, no Redux)?**
+→ `features/<feature>/utilities/<area>Utils.ts`
+
+**Q: Is this static mock data or a default value?**
+→ `features/<feature>/constants/<area>Constants.ts`
+
+**Q: Is this an API call / service?**
+→ `features/<feature>/services/<feature>Service.ts`
+
+**Q: Is this a Shadcn component?**
+→ `src/components/ui/<name>.tsx` (auto-generated by `npx shadcn add`)
+
+---
+
+## Anti-Patterns: What NOT to Do
+
+```
+❌ Defining an interface inside a .tsx component file
+❌ Calling useAppSelector / useState inside a presentational component
+❌ Putting mock data arrays inline in a component file
+❌ Writing inline event handlers with logic (anything beyond calling a hook function)
+❌ Creating a new utils/ folder — use utilities/ only
+❌ Importing from a sibling component's local types file instead of central types/
+❌ Skipping the barrel index.ts file for any folder
+❌ Using <div role="button"> instead of <button type="button">
+❌ Shadcn source modifications — extend via wrapper components instead
 ```
 
 ---
@@ -91,107 +273,24 @@ frontend/src/
 
 ```
 backend/
-│
-├── config/                       # Django project config
-│   ├── settings.py               # Reads ALL values from env vars — no hardcoding
+├── config/
+│   ├── settings.py               # All env-var driven — no hardcoding
 │   ├── urls.py
 │   └── wsgi.py
-│
-├── teacher/                      # Teacher (Ask) Feature
+├── teacher/                      # Ask Feature
 │   ├── services/
-│   │   ├── __init__.py           # Barrel exports
-│   │   ├── llm_service.py        # LLM init, JSON parsing, fallback
-│   │   └── session_service.py    # Session history store (Redis-swappable)
 │   ├── tests/
-│   │   ├── __init__.py
-│   │   ├── test_views.py         # View endpoint tests
-│   │   └── test_inference.py     # Service unit tests
-│   ├── apps.py
-│   ├── inference.py              # Orchestrator only (calls services)
-│   ├── rag.py                    # RAG search (single responsibility)
+│   ├── inference.py
 │   ├── serializers.py
 │   ├── urls.py
 │   └── views.py                  # Thin routing only
-│
-├── physics_teacher/              # Physics Teacher (Classroom) Feature
+├── physics_teacher/              # Classroom Feature
 │   ├── prompts/
-│   │   ├── __init__.py           # Barrel exports
-│   │   └── teaching_prompt.py    # System prompt + RAG template
 │   ├── services/
-│   │   ├── __init__.py           # Barrel exports
-│   │   └── streaming_service.py  # LLM, JSON helpers, SSE generator
 │   ├── tests/
-│   │   ├── __init__.py
-│   │   ├── test_views.py         # View endpoint tests
-│   │   └── test_streaming_service.py  # Service unit tests
-│   ├── apps.py
 │   ├── urls.py
 │   └── views.py                  # Thin routing only (~85 lines)
-│
-├── .env.example                  # Documents all required env vars
-├── .env                          # NOT committed to Git
+├── .env.example
+├── .env                          # NOT in Git
 └── requirements.txt              # All packages pinned to == versions
-```
-
----
-
-## Decision Rules: Where Does a New File Go?
-
-### Ask yourself:
-
-**Q: Is this file only used by one feature?**
-→ YES → Put it inside that feature's folder.
-→ NO → Put it in `shared/`, `hooks/`, or `lib/` only if used by 2+ features.
-
-**Q: Is this a React component?**
-→ Goes in `features/<feature>/components/`
-
-**Q: Is this a custom hook?**
-→ Single feature → `features/<feature>/hooks/`
-→ Used across features → `hooks/` (global, must use `useAppStore.ts` pattern)
-
-**Q: Is this a TypeScript type/interface?**
-→ Single feature → `features/<feature>/types/<feature>.types.ts`
-→ Cross-feature → `shared/types/`
-
-**Q: Is this an API call / fetch / axios request?**
-→ `features/<feature>/services/<feature>Service.ts`
-
-**Q: Is this a Django view?**
-→ Views must be thin. All business logic goes in `<app>/services/`.
-
-**Q: Is this a configuration constant?**
-→ Single feature → `features/<feature>/constants/`
-→ Global → `config/`
-
----
-
-## Rules for Adding a New Feature
-
-When adding a new feature (e.g., `quiz`), create ALL of these folders immediately, even if some start empty:
-
-```
-features/quiz/
-├── components/       # At minimum: QuizLayout.tsx
-├── hooks/            # At minimum: useQuiz.ts stub
-├── services/         # At minimum: quizService.ts stub
-├── state/            # At minimum: quizSlice.ts or quizStore.ts
-├── tests/            # At minimum: quiz.test.ts with one shape test
-├── types/            # At minimum: quiz.types.ts + index.ts barrel
-└── validators/       # At minimum: quiz.schema.ts stub
-```
-
-Partial feature folders (missing tests, types, or services) are **not acceptable**.
-
----
-
-## Anti-Pattern: What NOT to Do
-
-```
-❌ src/types/classroom.types.ts        ← global types folder for feature-specific types
-❌ src/services/classroomService.ts    ← global services folder for feature-specific service
-❌ src/hooks/useChunkPlayer.ts         ← global hooks folder for feature-specific hook
-❌ src/utils/imageUtils.ts             ← global utils for a feature utility
-❌ backend/teacher/views.py with 600+ lines  ← logic in views, not in services
-❌ backend/physics_teacher/views.py embedding the system prompt ← prompt not in prompts/
 ```

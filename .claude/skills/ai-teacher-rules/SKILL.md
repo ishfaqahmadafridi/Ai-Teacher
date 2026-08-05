@@ -1,17 +1,17 @@
 ---
 name: ai-teacher:rules
-description: "Master engineering rules for the AI Teacher project. Every AI agent (Claude, Gemini, Codex, Cursor, Copilot, or any other) MUST read and follow these rules before writing any code, creating any file, or modifying any folder in this repository. Rules cover: screaming feature-based architecture, TypeScript discipline, Django services layer, security, testing requirements, naming conventions, import paths, state management, and anti-patterns to avoid."
-argument-hint: "[area] e.g. frontend | backend | testing | security"
+description: "Master engineering rules for the AI Teacher project. Every AI agent (Claude, Gemini, Codex, Cursor, Copilot, or any other) MUST read and follow these rules before writing any code, creating any file, or modifying any folder in this repository. Rules cover: screaming feature-based architecture, component decomposition, custom hooks, TypeScript discipline, constants, utilities, styles folder, shadcn usage, accessibility, Django services layer, security, testing requirements, naming conventions, import paths, state management, and anti-patterns to avoid."
+argument-hint: "[area] e.g. frontend | backend | testing | security | components | hooks | types"
 license: MIT
 metadata:
   author: AI Teacher Team
-  version: "1.0.0"
+  version: "2.0.0"
 ---
 
 # AI Teacher — Agent Engineering Rules
 
 > **MANDATORY**: Every AI agent MUST read this file AND the relevant reference files before generating any code.
-> Ignorance of these rules is not acceptable. They exist to prevent degradation of a 9.5/10 production-grade codebase.
+> Ignorance of these rules is not acceptable. They exist to prevent degradation of a production-grade codebase.
 
 ---
 
@@ -53,51 +53,63 @@ If a file serves only one feature, it lives inside that feature's folder. No exc
 ❌ hooks/useChunkPlayer.ts   ← wrong, not shared
 ```
 
-### RULE 3 — No Magic Numbers or Hardcoded Strings
-All configuration values go in a `constants/` or `utilities/` file inside the feature.
-```
-✅ CLASSROOM_LAYOUT.teacher.positions.left   (from classroomConfig.ts)
-❌ x = -3.0   ← hardcoded in a component
+### RULE 3 — Five-Folder Rule (Frontend Feature Modules)
+Every file in a feature belongs to exactly ONE of five folders:
+
+| Folder | Contains |
+|--------|----------|
+| `components/` | Pure UI templates — zero useState/useSelector |
+| `hooks/` | All state, selectors, event handlers, side effects |
+| `utilities/` | Pure helper functions (no React, no Redux) |
+| `constants/` | Static mock data, default values, config arrays |
+| `types/` | TypeScript interfaces and type aliases |
+
+### RULE 4 — No Inline Interfaces
+Component prop interfaces NEVER go inside component files. They go in `types/<area>.types.ts`.
+```typescript
+// ✅ CORRECT
+import type { StudentsCardProps } from '../../types/sidebar.types';
+
+// ❌ WRONG
+export interface StudentsCardProps { ... }  // inside StudentsCard.tsx
 ```
 
-### RULE 4 — No Secrets in Code
+### RULE 5 — No State in Components
+Components must be 100% pure presentation. All `useState`, `useSelector`, `useDispatch`, `useRouter` calls go in a custom hook in `hooks/`.
+
+### RULE 6 — Static Data Belongs in Constants
+Mock data arrays, default values, and configuration lists NEVER live in component files.
+```typescript
+// ✅ CORRECT — constants/sidebarConstants.ts
+export const MOCK_STUDENTS: StudentRecord[] = [ ... ];
+
+// ❌ WRONG — inside StudentsModal.tsx
+const mockStudents = [ ... ];
+```
+
+### RULE 7 — No Magic Numbers or Hardcoded Strings
+All configuration values go in `constants/` or `utilities/` inside the feature.
+
+### RULE 8 — Every Component Uses memo() and displayName
+```tsx
+export const Foo = memo(function Foo({ ... }: FooProps) { ... });
+Foo.displayName = 'Foo';
+```
+
+### RULE 9 — No `<div role="button">` (Accessibility)
+Always use native `<button type="button">`. Divs are not keyboard-focusable.
+
+### RULE 10 — Barrel Index Files Are Required
+Every folder (`hooks/`, `types/`, `constants/`, `utilities/`, each component sub-group) MUST have an `index.ts` that exports everything inside it.
+
+### RULE 11 — No Secrets in Code
 Environment-specific values ALWAYS come from environment variables.
-```
-✅ os.environ.get('GEMINI_API_KEY')
-❌ api_key = "AIzaSy..."   ← never
-```
 
-### RULE 5 — Every New Feature Needs Tests
-A feature is not complete without at least:
-- Backend: view tests + service/helper unit tests
-- Frontend: constant shape tests + type contract tests
+### RULE 12 — `utils/` Is a Shim — Do Not Add Files to It
+The canonical utilities folder is `utilities/`. The `utils/index.ts` only exists as a compatibility re-export shim. All new utility code goes in `utilities/`.
 
-### RULE 6 — Types Go in types/ Not in Components
-Never define an interface or type inside a component file if it is used by more than one file.
-```
-✅ import type { DiagramCommand } from '../types/classroom.types'
-❌ interface DiagramCommand { ... }   ← inside a component file
-```
-
-### RULE 7 — Import from Barrel Files
-When a `types/index.ts` barrel file exists, import from it.
-```
-✅ import type { DiagramCommand } from '@/features/classroom/types'
-✅ import type { DiagramCommand } from '@/features/classroom/types/classroom.types'   (also ok)
-❌ import type { DiagramCommand } from '@/features/classroom/types/classroom.types'   (if barrel exists, prefer it)
-```
-
-### RULE 8 — Document the WHY, Not the WHAT
-Every file must have a module docstring. Comments explain WHY a decision was made, not what the code does.
-```python
-# ✅ WHY comment
-# Session history is stored in-memory here, not Redis, because this is a
-# single-process development server. See session_service.py for the Redis swap guide.
-
-# ❌ WHAT comment (obvious from the code)
-# Store the session in the dictionary
-_sessions[session_id] = history
-```
+### RULE 13 — Shadcn Components Live in `src/components/ui/`
+Never modify shadcn source files. Extend them via wrapper components.
 
 ---
 
