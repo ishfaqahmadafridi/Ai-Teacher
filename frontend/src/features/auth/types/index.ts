@@ -2,25 +2,14 @@
  * features/auth/types/index.ts
  *
  * Barrel export for all auth feature TypeScript types.
- * Always import from here, not from auth.types.ts directly:
- *   import type { RegisterFormData, AuthUser } from '@/features/auth/types';
+ * Modularized sub-feature types:
+ *   - domain.types.ts: AuthUser, AuthState, RegisterFormData, LoginFormData, AuthResponseData
+ *   - createAccount.types.ts: Create Account component props
+ *   - login.types.ts: Login component props
+ *   - verify.types.ts: Verification OTP component props
  */
-export type {
-  AuthRole,
-  RegisterFormData,
-  LoginFormData,
-  AuthUser,
-  AuthState,
-  CreateAccountFormProps,
-  AuthHeaderProps,
-  SocialAuthProps,
-  PasswordFieldProps,
-  AuthFieldProps,
-  AuthErrorProps,
-  AuthConsentProps,
-  VerificationMethod,
-  VerifyOtpFormData,
-  MethodSelectorProps,
-  OtpInputGroupProps,
-  ResendTimerProps,
-} from './auth.types';
+
+export * from './domain.types';
+export * from './createAccount.types';
+export * from './login.types';
+export * from './verify.types';

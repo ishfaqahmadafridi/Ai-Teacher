@@ -67,3 +67,12 @@
 .animate-marquee {
   animation: marquee 30s linear infinite;
 }
+
+@keyframes float-dot {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.5; box-shadow: 0 0 10px currentColor; }
+  50% { transform: translateY(-20px) scale(1.4); opacity: 1; box-shadow: 0 0 25px currentColor; }
+}
+
+.live-dot {
+  animation: float-dot 4s ease-in-out infinite;
+}

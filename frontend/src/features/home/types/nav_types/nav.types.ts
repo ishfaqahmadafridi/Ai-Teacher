@@ -11,7 +11,9 @@ export interface DesktopNavProps {
 
 export interface RegisterButtonProps {
   className?: string;
+  href?: string;
   onClick?: () => void;
+  children?: React.ReactNode;
 }
 
 export interface MobileMenuProps {

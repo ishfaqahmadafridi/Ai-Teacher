@@ -1,4 +1,4 @@
-export type { HomeState } from './home.types';
+export type { HomeState, ActionButtonsProps } from './home.types';
 export type {
   ChooseUsCard,
   FutureFeatureItem,
@@ -6,5 +6,3 @@ export type {
   TailoredFeatureCard,
 } from './features.types';
 export type { AitoolItem } from './aitool.types';
-
-

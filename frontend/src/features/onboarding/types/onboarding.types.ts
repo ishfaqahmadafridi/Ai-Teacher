@@ -25,3 +25,10 @@ export interface OnboardingProgressBarProps {
   currentStep: number;
   totalSteps?: number;
 }
+
+export interface OnboardingHeaderProps {
+  className?: string;
+  logoHref?: string;
+  showNav?: boolean;
+  showAction?: boolean;
+}
