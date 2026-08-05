@@ -1,7 +1,6 @@
 'use client';
 
-import { AuthField } from './AuthField';
-import type { RegisterFormData } from '../../types';
+import { EmailField } from './EmailField';
 
 interface EmailFieldSectionProps {
   value: string;
@@ -11,19 +10,11 @@ interface EmailFieldSectionProps {
 
 export function EmailFieldSection({ value, error, onChange }: EmailFieldSectionProps) {
   return (
-    <div>
-      <AuthField
-        id="email"
-        name="email"
-        label="Email Address"
-        placeholder="name@example.com"
-        type="email"
-        value={value}
-        onChange={onChange}
-        required
-        autoComplete="email"
-      />
-      {error && <p className="mt-1 text-xs text-[#ffb4ab] pl-1">{error}</p>}
-    </div>
+    <EmailField
+      value={value}
+      error={error}
+      onChange={onChange}
+    />
   );
 }
+
