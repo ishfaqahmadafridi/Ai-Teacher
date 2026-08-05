@@ -11,37 +11,31 @@ interface PasswordRowProps {
 
 export function PasswordRow({ form, fieldErrors, onChange }: PasswordRowProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <PasswordField
-          id="password"
-          name="password"
-          label="Password"
-          placeholder="••••••••"
-          value={form.password}
-          onChange={onChange}
-          required
-          autoComplete="new-password"
-        />
-        {fieldErrors.password && (
-          <p className="mt-1 text-xs text-[#ffb4ab] pl-1">{fieldErrors.password}</p>
-        )}
-      </div>
-      <div>
-        <PasswordField
-          id="confirmPassword"
-          name="confirmPassword"
-          label="Confirm Password"
-          placeholder="••••••••"
-          value={form.confirmPassword}
-          onChange={onChange}
-          required
-          autoComplete="new-password"
-        />
-        {fieldErrors.confirmPassword && (
-          <p className="mt-1 text-xs text-[#ffb4ab] pl-1">{fieldErrors.confirmPassword}</p>
-        )}
-      </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <PasswordField
+        id="password"
+        name="password"
+        label="Password"
+        placeholder="••••••••"
+        value={form.password}
+        onChange={onChange}
+        required
+        autoComplete="new-password"
+        error={fieldErrors.password}
+      />
+      <PasswordField
+        id="confirmPassword"
+        name="confirmPassword"
+        label="Confirm Password"
+        placeholder="••••••••"
+        value={form.confirmPassword}
+        onChange={onChange}
+        required
+        autoComplete="new-password"
+        error={fieldErrors.confirmPassword}
+      />
     </div>
   );
 }
+
+

@@ -23,7 +23,7 @@ export function CreateAccountForm({ onSuccess }: CreateAccountFormProps) {
   } = useRegister();
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
 
       {/* Global error banner */}
       <AuthError message={error ?? ''} />
@@ -61,12 +61,9 @@ export function CreateAccountForm({ onSuccess }: CreateAccountFormProps) {
         agreeToPrivacy={form.agreeToPrivacy}
         onTermsChange={(checked) => handleConsentChange('agreeToTerms', checked)}
         onPrivacyChange={(checked) => handleConsentChange('agreeToPrivacy', checked)}
+        termsError={fieldErrors.agreeToTerms}
+        privacyError={fieldErrors.agreeToPrivacy}
       />
-      {(fieldErrors.agreeToTerms || fieldErrors.agreeToPrivacy) && (
-        <p className="text-xs text-[#ffb4ab] pl-1">
-          {fieldErrors.agreeToTerms ?? fieldErrors.agreeToPrivacy}
-        </p>
-      )}
 
       {/* Submit + Sign-in link */}
       <FormActions isLoading={isLoading} />
@@ -77,3 +74,4 @@ export function CreateAccountForm({ onSuccess }: CreateAccountFormProps) {
     </form>
   );
 }
+

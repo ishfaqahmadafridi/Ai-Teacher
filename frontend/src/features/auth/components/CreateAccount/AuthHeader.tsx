@@ -1,22 +1,22 @@
 import type { AuthHeaderProps } from '../../types';
+import { LoginLogo } from '../Login/LoginLogo';
 
-export function AuthHeader({ title, subtitle }: AuthHeaderProps) {
+export function AuthHeader({
+  title = 'Create Account',
+  subtitle = 'Begin your high-tech gateway to the future of learning.',
+}: AuthHeaderProps) {
   return (
-    <div className="text-center mb-10">
-      <h1
-        className="mb-2 text-[32px] font-semibold leading-10 text-[#e5e2e3]"
-        style={{ fontFamily: 'Montserrat, sans-serif' }}
-      >
+    <div className="text-center mb-6">
+      <LoginLogo />
+      <h2 className="font-['Hanken_Grotesk',sans-serif] text-2xl sm:text-3xl font-bold text-[#e1e2eb] mb-2 tracking-tight">
         {title}
-      </h1>
+      </h2>
       {subtitle && (
-        <p
-          className="text-[16px] leading-6 font-normal"
-          style={{ color: '#c6c6cc', fontFamily: 'Inter, sans-serif' }}
-        >
+        <p className="text-[#c4c5d9] text-sm font-['Inter',sans-serif]">
           {subtitle}
         </p>
       )}
     </div>
   );
 }
+
