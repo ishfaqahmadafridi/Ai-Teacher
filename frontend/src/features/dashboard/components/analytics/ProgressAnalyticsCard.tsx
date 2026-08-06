@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Award, Clock, BookOpen, UserCheck, Sparkles, FileCheck, CheckCircle2 } from 'lucide-react';
+import { Award, HelpCircle, BookOpen, UserCheck, Sparkles, FileCheck, CheckCircle2 } from 'lucide-react';
 import type { ProgressAnalyticsCardProps } from '../../types/dashboard.types';
 
 export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
@@ -13,6 +13,8 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
   classBehaviorScore = 95,
   assignmentsCompleted = 14,
   totalAssignments = 15,
+  quizzesPassed = 8,
+  totalQuizzes = 10,
   className = '',
 }: ProgressAnalyticsCardProps) {
   return (
@@ -101,7 +103,22 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
           </div>
         </div>
 
-        {/* Assignments & Quizzes */}
+        {/* Quizzes Passed */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#004ac6]/10 text-[#004ac6] flex items-center justify-center shrink-0">
+            <HelpCircle className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Quizzes
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {quizzesPassed}/{totalQuizzes} Passed
+            </span>
+          </div>
+        </div>
+
+        {/* Assignments */}
         <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
           <div className="w-9 h-9 rounded-lg bg-[#2563eb]/10 text-[#2563eb] flex items-center justify-center shrink-0">
             <FileCheck className="w-4.5 h-4.5" aria-hidden="true" />
@@ -112,21 +129,6 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
             </span>
             <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
               {assignmentsCompleted}/{totalAssignments} Done
-            </span>
-          </div>
-        </div>
-
-        {/* Study Time */}
-        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
-          <div className="w-9 h-9 rounded-lg bg-[#004ac6]/10 text-[#004ac6] flex items-center justify-center shrink-0">
-            <Clock className="w-4.5 h-4.5" aria-hidden="true" />
-          </div>
-          <div className="min-w-0">
-            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
-              Study Time
-            </span>
-            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
-              48 Hours
             </span>
           </div>
         </div>

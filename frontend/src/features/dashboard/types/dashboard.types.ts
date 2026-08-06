@@ -101,6 +101,8 @@ export interface ProgressAnalyticsCardProps {
   classBehaviorScore?: number;
   assignmentsCompleted?: number;
   totalAssignments?: number;
+  quizzesPassed?: number;
+  totalQuizzes?: number;
   className?: string;
 }
 
