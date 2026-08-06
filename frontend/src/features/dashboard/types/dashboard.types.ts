@@ -32,6 +32,8 @@ export interface AssignmentItem {
   dueDate: string;
   status: 'pending' | 'completed' | 'in_progress';
   points: number;
+  type?: 'assignment' | 'quiz' | 'practice_set';
+  isUrgent?: boolean;
 }
 
 export interface DashboardNavLink {
@@ -89,6 +91,8 @@ export interface ClassCardProps {
 
 export interface AssignmentsSectionProps {
   assignments?: AssignmentItem[];
+  onSelectAssignment?: (id: string) => void;
+  onAskAiHelp?: (title: string) => void;
   className?: string;
 }
 
