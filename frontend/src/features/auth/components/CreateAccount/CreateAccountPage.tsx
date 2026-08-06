@@ -18,10 +18,12 @@ export function CreateAccountPage() {
     togglePassword,
   } = useRegister();
 
-  const inputStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.06)',
-    border: '1px solid rgba(255,255,255,0.1)',
-  };
+  const inputCls = "w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]";
+  const inputStyle: React.CSSProperties = { background: '#1a2235', border: 'none' };
+  const inputErrStyle = (hasErr: boolean): React.CSSProperties => ({
+    background: '#1a2235',
+    border: hasErr ? '1.5px solid #EF4444' : 'none',
+  });
 
   return (
     <div
@@ -103,8 +105,8 @@ export function CreateAccountPage() {
                   value={form.firstName}
                   onChange={handleChange}
                   placeholder="John"
-                  className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                  style={{ ...inputStyle, borderColor: fieldErrors.firstName ? '#EF4444' : undefined }}
+                  className={inputCls}
+                  style={inputErrStyle(!!fieldErrors.firstName)}
                 />
                 {fieldErrors.firstName && <p className="text-xs text-red-400 mt-1">{fieldErrors.firstName}</p>}
               </div>
@@ -120,8 +122,8 @@ export function CreateAccountPage() {
                   value={form.lastName}
                   onChange={handleChange}
                   placeholder="Doe"
-                  className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                  style={{ ...inputStyle, borderColor: fieldErrors.lastName ? '#EF4444' : undefined }}
+                  className={inputCls}
+                  style={inputErrStyle(!!fieldErrors.lastName)}
                 />
                 {fieldErrors.lastName && <p className="text-xs text-red-400 mt-1">{fieldErrors.lastName}</p>}
               </div>
@@ -141,7 +143,7 @@ export function CreateAccountPage() {
                   value={form.username}
                   onChange={handleChange}
                   placeholder="johndoe"
-                  className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
+                  className={inputCls}
                   style={inputStyle}
                 />
               </div>
@@ -157,7 +159,7 @@ export function CreateAccountPage() {
                   value={form.mobile}
                   onChange={handleChange}
                   placeholder="+1 234 567"
-                  className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
+                  className={inputCls}
                   style={inputStyle}
                 />
               </div>
@@ -176,8 +178,8 @@ export function CreateAccountPage() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="john@example.com"
-                className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                style={{ ...inputStyle, borderColor: fieldErrors.email ? '#EF4444' : undefined }}
+                className={inputCls}
+                style={inputErrStyle(!!fieldErrors.email)}
               />
               {fieldErrors.email && <p className="text-xs text-red-400 mt-1">{fieldErrors.email}</p>}
             </div>
@@ -198,7 +200,7 @@ export function CreateAccountPage() {
                     onChange={handleChange}
                     placeholder="••••••••"
                     className="w-full rounded-xl px-4 py-3 pr-10 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                    style={{ ...inputStyle, borderColor: fieldErrors.password ? '#EF4444' : undefined }}
+                    style={inputErrStyle(!!fieldErrors.password)}
                   />
                   <button
                     type="button"
@@ -222,8 +224,8 @@ export function CreateAccountPage() {
                   value={form.confirmPassword}
                   onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                  style={{ ...inputStyle, borderColor: fieldErrors.confirmPassword ? '#EF4444' : undefined }}
+                  className={inputCls}
+                  style={inputErrStyle(!!fieldErrors.confirmPassword)}
                 />
                 {fieldErrors.confirmPassword && <p className="text-xs text-red-400 mt-1">{fieldErrors.confirmPassword}</p>}
               </div>
