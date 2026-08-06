@@ -14,7 +14,7 @@ import {
   Award,
   FolderOpen,
   Settings,
-  Zap,
+  Sparkles,
 } from 'lucide-react';
 import { DEFAULT_DASHBOARD_NAV_LINKS } from '../../constants/dashboardConstants';
 import type { DashboardSideNavProps } from '../../types/dashboard.types';
@@ -50,13 +50,13 @@ export const DashboardSideNav = memo(function DashboardSideNav({
     >
       {/* Brand & Student Header */}
       <div className="mb-8 mt-2">
-        {/* Actual Project Brand Logo & Name: Flow State AI */}
-        <div className="flex items-center gap-2.5 mb-6">
-          <div className="w-9 h-9 rounded-xl bg-[#004ac6] text-white flex items-center justify-center shadow-md shadow-[#004ac6]/20">
-            <Zap className="w-5 h-5 fill-current" aria-hidden="true" />
+        {/* Actual Project Brand Logo & Name: AI Teacher */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-[#2563eb] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
+            <Sparkles className="w-5 h-5 fill-current" aria-hidden="true" />
           </div>
           <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-extrabold text-[#004ac6] tracking-tight">
-            Flow State AI
+            AI Teacher
           </h1>
         </div>
 
