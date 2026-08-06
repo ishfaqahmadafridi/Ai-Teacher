@@ -2,12 +2,7 @@
 
 import { memo } from 'react';
 import { PrincipleItemRow } from './PrincipleItemRow';
-import type { PrincipleItem } from './board.types';
-
-export interface PrinciplesListProps {
-  principles: PrincipleItem[];
-  className?: string;
-}
+import type { PrinciplesListProps } from '../../types/board.types';
 
 export const PrinciplesList = memo(function PrinciplesList({
   principles,

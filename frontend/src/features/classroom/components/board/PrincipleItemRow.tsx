@@ -1,12 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import type { PrincipleItem } from './board.types';
-
-export interface PrincipleItemRowProps {
-  item: PrincipleItem;
-  index: number;
-}
+import type { PrincipleItemRowProps } from '../../types/board.types';
 
 export const PrincipleItemRow = memo(function PrincipleItemRow({
   item,

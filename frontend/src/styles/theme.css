@@ -7,6 +7,7 @@
   --color-surface-container: #1e2024;
   --color-surface-container-high: #282a2e;
   --color-surface-container-highest: #333539;
+  --color-surface-variant: #333539;
   --color-on-surface: #e2e2e8;
   --color-on-surface-variant: #c4c5d9;
   --color-inverse-surface: #e2e2e8;
@@ -46,13 +47,20 @@
   --color-neural-electric: #2e5bff;
   --color-instructional-white: #ffffff;
   --color-glass-stroke: rgba(255, 255, 255, 0.12);
+  --color-background: #111318;
+  --color-on-background: #e2e2e8;
 
   /* Custom Spacing */
-  --spacing-margin-mobile: 16px;
-  --spacing-margin-desktop: 64px;
-  --spacing-gutter: 24px;
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
   --spacing-base: 8px;
   --spacing-unit: 8px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --spacing-xl: 80px;
+  --spacing-gutter: 24px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 64px;
   --spacing-container-max: 1280px;
   --spacing-section-gap: 120px;
   --spacing-stage-margin: 64px;
@@ -76,4 +84,3 @@
   --font-inter: 'Inter', sans-serif;
   --font-hanken: 'Hanken Grotesk', sans-serif;
 }
-

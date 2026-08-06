@@ -2,12 +2,7 @@
 
 import { memo } from 'react';
 import { Activity } from 'lucide-react';
-
-export interface SimulationHeaderProps {
-  title?: string;
-  badgeText?: string;
-  className?: string;
-}
+import type { SimulationHeaderProps } from '../../types/board.types';
 
 export const SimulationHeader = memo(function SimulationHeader({
   title = 'Force Vectors',

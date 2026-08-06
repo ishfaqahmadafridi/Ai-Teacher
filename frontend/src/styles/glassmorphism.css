@@ -1,4 +1,4 @@
-/* ─── Premium Glassmorphism and UI Effects ───────────────────────────────── */
+/* ─── Atmospheric Glassmorphism and UI Effects ────────────────────────────── */
 .glass {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
@@ -68,3 +68,17 @@
   -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
 }
 
+/* ─── Custom Scrollbar for Atmospheric Panels ────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

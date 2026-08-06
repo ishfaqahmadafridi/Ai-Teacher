@@ -1,10 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-
-export interface SimulationCanvasProps {
-  className?: string;
-}
+import type { SimulationCanvasProps } from '../../types/board.types';
 
 export const SimulationCanvas = memo(function SimulationCanvas({
   className = '',
