@@ -1,0 +1,183 @@
+'use client';
+
+import { memo } from 'react';
+import { Award, Clock, BookOpen, UserCheck, Sparkles, FileCheck, CheckCircle2 } from 'lucide-react';
+import type { ProgressAnalyticsCardProps } from '../../types/dashboard.types';
+
+export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
+  weeklyProgressPercent = 75,
+  streakDays = 7,
+  attendancePercent = 96,
+  classesAttended = 28,
+  totalClasses = 29,
+  classBehaviorScore = 95,
+  assignmentsCompleted = 14,
+  totalAssignments = 15,
+  className = '',
+}: ProgressAnalyticsCardProps) {
+  return (
+    <div
+      className={`bg-white rounded-20 p-6 card-shadow border border-[#E2E8F0]/50 font-['Hanken_Grotesk',sans-serif] space-y-6 ${className}`}
+    >
+      {/* Title Header */}
+      <div className="flex items-center justify-between">
+        <h3 className="font-['Hanken_Grotesk',sans-serif] text-lg font-bold text-[#0F172A]">
+          Overall Performance
+        </h3>
+        <span className="font-['JetBrains_Mono',monospace] text-[11px] font-semibold text-[#10B981] bg-[#10B981]/10 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+          Top 5% Student
+        </span>
+      </div>
+
+      {/* Circular Progress Gauge */}
+      <div className="relative flex flex-col items-center justify-center my-2">
+        <svg className="w-44 h-44 -rotate-90 transform" viewBox="0 0 36 36">
+          <path
+            className="text-[#F1F5F9]"
+            strokeWidth="3.5"
+            stroke="currentColor"
+            fill="none"
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+          <path
+            className="text-[#2563eb] transition-all duration-1000 ease-out"
+            strokeDasharray={`${weeklyProgressPercent}, 100`}
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            stroke="currentColor"
+            fill="none"
+            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          />
+        </svg>
+        <div className="absolute flex flex-col items-center justify-center text-center">
+          <span className="font-['Hanken_Grotesk',sans-serif] text-3xl font-extrabold text-[#0F172A]">
+            {weeklyProgressPercent}%
+          </span>
+          <span className="font-['JetBrains_Mono',monospace] text-[11px] font-semibold text-[#737686] uppercase tracking-wider">
+            Completed
+          </span>
+        </div>
+      </div>
+
+      {/* Attendance Highlight Bar */}
+      <div className="bg-[#F8FAFC] rounded-xl p-4 border border-[#E2E8F0]/70">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <UserCheck className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+            <span className="font-['JetBrains_Mono',monospace] text-xs font-semibold text-[#0F172A] uppercase tracking-wider">
+              Attendance Rate
+            </span>
+          </div>
+          <span className="font-['JetBrains_Mono',monospace] text-xs font-bold text-[#10B981]">
+            {attendancePercent}% ({classesAttended}/{totalClasses} Classes)
+          </span>
+        </div>
+        <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
+          <div
+            className="bg-[#10B981] h-2 rounded-full transition-all duration-500 ease-out"
+            style={{ width: `${attendancePercent}%` }}
+            role="progressbar"
+            aria-valuenow={attendancePercent}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
+        </div>
+      </div>
+
+      {/* Comprehensive Academic Metrics Grid */}
+      <div className="grid grid-cols-2 gap-3 pt-2">
+        {/* Class Behavior / Response */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#712ae2]/10 text-[#712ae2] flex items-center justify-center shrink-0">
+            <Sparkles className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Class Behavior
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {classBehaviorScore}% Excellent
+            </span>
+          </div>
+        </div>
+
+        {/* Assignments & Quizzes */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#2563eb]/10 text-[#2563eb] flex items-center justify-center shrink-0">
+            <FileCheck className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Assignments
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {assignmentsCompleted}/{totalAssignments} Done
+            </span>
+          </div>
+        </div>
+
+        {/* Study Time */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#004ac6]/10 text-[#004ac6] flex items-center justify-center shrink-0">
+            <Clock className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Study Time
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              48 Hours
+            </span>
+          </div>
+        </div>
+
+        {/* Avg Score */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#10B981]/10 text-[#10B981] flex items-center justify-center shrink-0">
+            <Award className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Avg Score
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              92%
+            </span>
+          </div>
+        </div>
+
+        {/* Active Courses */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#712ae2]/10 text-[#712ae2] flex items-center justify-center shrink-0">
+            <BookOpen className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Active Courses
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              4 Enrolled
+            </span>
+          </div>
+        </div>
+
+        {/* Streak */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Streak
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {streakDays} Days
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+ProgressAnalyticsCard.displayName = 'ProgressAnalyticsCard';
