@@ -128,7 +128,7 @@ export const DEFAULT_DASHBOARD_NAV_LINKS: DashboardNavLink[] = [
   { id: 'attendance', label: 'Attendance', iconName: 'user_check', href: '#' },
   { id: 'assignments', label: 'Assignments', iconName: 'assignment', href: '#', badgeCount: 3 },
   { id: 'quizzes', label: 'Quizzes', iconName: 'quiz', href: '#' },
-  { id: 'calendar', label: 'Calendar', iconName: 'event', href: '#' },
+  { id: 'schedule', label: 'Schedule', iconName: 'event', href: '#' },
   { id: 'grades', label: 'Grades', iconName: 'grade', href: '#' },
   { id: 'resources', label: 'Resources', iconName: 'folder_open', href: '#' },
   { id: 'settings', label: 'Settings', iconName: 'settings', href: '#' },
