@@ -9,9 +9,9 @@ export function HeroPanel({
   className = '',
 }: HeroPanelProps) {
   return (
-    <div className={`hidden lg:block w-1/2 relative min-h-screen overflow-hidden ${className}`}>
+    <div className={`hidden lg:block lg:w-1/2 shrink-0 relative min-h-screen overflow-hidden ${className}`}>
       {/* Dark tint overlay */}
-      <div className="absolute inset-0 bg-[#10131a]/20 z-10 pointer-events-none" />
+      <div className="absolute inset-0 bg-[#10131a]/30 z-10 pointer-events-none" />
       
       {/* Hero background scene */}
       <Image
@@ -24,7 +24,7 @@ export function HeroPanel({
       />
       
       {/* Edge gradient transition blending into left form split */}
-      <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-[#10131a] via-[#10131a]/80 to-transparent z-20 pointer-events-none" />
+      <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#10131a] via-[#10131a]/70 to-transparent z-20 pointer-events-none" />
     </div>
   );
 }
