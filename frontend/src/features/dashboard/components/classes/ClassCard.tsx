@@ -17,7 +17,7 @@ export const ClassCard = memo(function ClassCard({
 
   return (
     <div
-      className={`bg-white rounded-2xl p-5 card-shadow border border-[#E2E8F0] flex flex-col justify-between hover:border-[#2563eb]/40 transition-all duration-300 group font-['Hanken_Grotesk',sans-serif] space-y-4 ${className}`}
+      className={`bg-white rounded-2xl p-5 card-shadow border border-[#E2E8F0] flex flex-col justify-between hover:border-[#2563eb]/40 hover:shadow-md transition-all duration-300 group font-['Hanken_Grotesk',sans-serif] space-y-4 ${className}`}
     >
       <div>
         {/* Top Header: Subject Pill & Live Status */}
@@ -43,7 +43,7 @@ export const ClassCard = memo(function ClassCard({
         </h3>
 
         {/* Time & Attendance Info */}
-        <div className="flex items-center gap-4 text-xs text-[#737686] mb-3">
+        <div className="flex items-center justify-between text-xs text-[#737686] mb-3">
           <div className="flex items-center gap-1.5">
             <Clock className="w-4 h-4 text-[#737686]" aria-hidden="true" />
             <span>{classItem.timeFormatted}</span>
@@ -89,25 +89,15 @@ export const ClassCard = memo(function ClassCard({
         </div>
       </div>
 
-      {/* Bottom Instructor Footer & Action Button */}
-      <div className="pt-3 border-t border-[#E2E8F0]/60 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <img
-            src={classItem.instructorAvatar}
-            alt={classItem.instructorName}
-            className="w-8 h-8 rounded-full object-cover border border-[#E2E8F0] shrink-0"
-          />
-          <span className="font-['Hanken_Grotesk',sans-serif] text-xs font-semibold text-[#475569] truncate">
-            {classItem.instructorName}
-          </span>
-        </div>
+      {/* Bottom Action Row (Clean, No Teacher Pic) */}
+      <div className="pt-3 border-t border-[#E2E8F0]/60 flex items-center justify-end">
         <button
           type="button"
           onClick={() => onJoinClass?.(classItem.id)}
-          className="bg-[#2563eb] hover:bg-[#004ac6] text-white px-4 py-2 rounded-lg font-['Hanken_Grotesk',sans-serif] font-semibold text-xs transition-colors cursor-pointer flex items-center gap-1.5 shrink-0 shadow-sm active:scale-95 duration-200"
+          className="w-full sm:w-auto bg-[#2563eb] hover:bg-[#004ac6] text-white px-5 py-2.5 rounded-xl font-['Hanken_Grotesk',sans-serif] font-semibold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow-sm active:scale-95 duration-200"
         >
-          <Video className="w-3.5 h-3.5" aria-hidden="true" />
-          Join Class
+          <Video className="w-4 h-4" aria-hidden="true" />
+          <span>{classItem.isLive ? 'Join Live Room' : 'Enter Class'}</span>
         </button>
       </div>
     </div>
