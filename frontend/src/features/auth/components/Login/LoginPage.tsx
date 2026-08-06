@@ -111,7 +111,7 @@ export function LoginPage() {
                 onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                style={{ background: '#1a2235', border: 'none' }}
+                style={{ background: '#1a2235', border: '1px solid rgba(255,255,255,0.18)' }}
               />
             </div>
 
@@ -131,7 +131,7 @@ export function LoginPage() {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   className="w-full rounded-xl px-4 py-3 pr-12 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]"
-                  style={{ background: '#1a2235', border: 'none' }}
+                  style={{ background: '#1a2235', border: '1px solid rgba(255,255,255,0.18)' }}
                 />
                 <button
                   type="button"

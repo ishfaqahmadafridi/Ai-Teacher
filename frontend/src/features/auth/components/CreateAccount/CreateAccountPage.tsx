@@ -19,10 +19,10 @@ export function CreateAccountPage() {
   } = useRegister();
 
   const inputCls = "w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]";
-  const inputStyle: React.CSSProperties = { background: '#1a2235', border: 'none' };
+  const inputStyle: React.CSSProperties = { background: '#1a2235', border: '1px solid rgba(255,255,255,0.18)' };
   const inputErrStyle = (hasErr: boolean): React.CSSProperties => ({
     background: '#1a2235',
-    border: hasErr ? '1.5px solid #EF4444' : 'none',
+    border: hasErr ? '1.5px solid #EF4444' : '1px solid rgba(255,255,255,0.18)',
   });
 
   return (
