@@ -108,6 +108,8 @@ export interface ProgressAnalyticsCardProps {
   doubtsResolvedCount?: number;
   assignmentsCompleted?: number;
   totalAssignments?: number;
+  quizzesPassed?: number;
+  totalQuizzes?: number;
   className?: string;
 }
 

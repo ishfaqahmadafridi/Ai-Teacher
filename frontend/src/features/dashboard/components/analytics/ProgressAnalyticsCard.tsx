@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Award, Zap, Brain, BookOpen, UserCheck, Sparkles, Lightbulb, CheckCircle2 } from 'lucide-react';
+import { Award, Zap, Brain, UserCheck, Sparkles, FileCheck, HelpCircle, CheckCircle2 } from 'lucide-react';
 import type { ProgressAnalyticsCardProps } from '../../types/dashboard.types';
 
 export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
@@ -13,7 +13,10 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
   classBehaviorScore = 95,
   aiFocusScore = 98,
   conceptMasteryScore = 88,
-  doubtsResolvedCount = 36,
+  assignmentsCompleted = 14,
+  totalAssignments = 15,
+  quizzesPassed = 8,
+  totalQuizzes = 10,
   className = '',
 }: ProgressAnalyticsCardProps) {
   return (
@@ -87,6 +90,36 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
 
       {/* Comprehensive Academic Metrics Grid */}
       <div className="grid grid-cols-2 gap-3 pt-2">
+        {/* Assignments */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#2563eb]/10 text-[#2563eb] flex items-center justify-center shrink-0">
+            <FileCheck className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Assignments
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {assignmentsCompleted}/{totalAssignments} Done
+            </span>
+          </div>
+        </div>
+
+        {/* Quizzes */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
+          <div className="w-9 h-9 rounded-lg bg-[#712ae2]/10 text-[#712ae2] flex items-center justify-center shrink-0">
+            <HelpCircle className="w-4.5 h-4.5" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
+              Quizzes
+            </span>
+            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
+              {quizzesPassed}/{totalQuizzes} Passed
+            </span>
+          </div>
+        </div>
+
         {/* AI Focus Level */}
         <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
           <div className="w-9 h-9 rounded-lg bg-[#F59E0B]/10 text-[#F59E0B] flex items-center justify-center shrink-0">
@@ -104,7 +137,7 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
 
         {/* Concept Mastery */}
         <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
-          <div className="w-9 h-9 rounded-lg bg-[#2563eb]/10 text-[#2563eb] flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-[#004ac6]/10 text-[#004ac6] flex items-center justify-center shrink-0">
             <Brain className="w-4.5 h-4.5" aria-hidden="true" />
           </div>
           <div className="min-w-0">
@@ -132,24 +165,9 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
           </div>
         </div>
 
-        {/* AI Doubts Resolved */}
-        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
-          <div className="w-9 h-9 rounded-lg bg-[#10B981]/10 text-[#10B981] flex items-center justify-center shrink-0">
-            <Lightbulb className="w-4.5 h-4.5" aria-hidden="true" />
-          </div>
-          <div className="min-w-0">
-            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
-              Doubts Resolved
-            </span>
-            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
-              {doubtsResolvedCount} Solved
-            </span>
-          </div>
-        </div>
-
         {/* Avg Score */}
         <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
-          <div className="w-9 h-9 rounded-lg bg-[#004ac6]/10 text-[#004ac6] flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-lg bg-[#10B981]/10 text-[#10B981] flex items-center justify-center shrink-0">
             <Award className="w-4.5 h-4.5" aria-hidden="true" />
           </div>
           <div className="min-w-0">
@@ -162,22 +180,7 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
           </div>
         </div>
 
-        {/* Active Courses */}
-        <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center gap-3 border border-[#E2E8F0]/60">
-          <div className="w-9 h-9 rounded-lg bg-[#712ae2]/10 text-[#712ae2] flex items-center justify-center shrink-0">
-            <BookOpen className="w-4.5 h-4.5" aria-hidden="true" />
-          </div>
-          <div className="min-w-0">
-            <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] uppercase block truncate">
-              Active Courses
-            </span>
-            <span className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] truncate">
-              4 Enrolled
-            </span>
-          </div>
-        </div>
-
-        {/* Streak */}
+        {/* Streak Footer */}
         <div className="bg-[#F8FAFC] rounded-xl p-3 flex items-center justify-center gap-2 col-span-2 py-2.5">
           <CheckCircle2 className="w-4 h-4 text-[#F59E0B]" aria-hidden="true" />
           <span className="font-['JetBrains_Mono',monospace] text-xs font-bold text-[#0F172A]">
