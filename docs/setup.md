@@ -4,7 +4,7 @@
 
 ### 1. Django REST Backend
 ```bash
-cd backend
+cd backend/django_app
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements/local.txt
@@ -14,7 +14,7 @@ python manage.py runserver --settings=config.settings.local 8000
 
 ### 2. FastAPI Inference Service
 ```bash
-cd fastapi_app
+cd backend/fastapi_app
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
