@@ -51,11 +51,11 @@ export const DashboardSideNav = memo(function DashboardSideNav({
       {/* Brand & Student Header */}
       <div className="mb-8 mt-2">
         {/* Actual Project Brand Logo & Name: NEUROLEARN */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#004ac6] via-[#2563eb] to-[#0ea5e9] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
+        <div className="flex items-center gap-3.5 mb-6">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] text-white flex items-center justify-center shadow-lg shadow-[#2563eb]/30 shrink-0">
             <Brain className="w-5.5 h-5.5 text-white" aria-hidden="true" />
           </div>
-          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-black text-white tracking-wider uppercase">
+          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-black text-white tracking-[0.12em] uppercase">
             NEUROLEARN
           </h1>
         </div>

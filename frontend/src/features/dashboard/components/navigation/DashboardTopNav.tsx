@@ -16,11 +16,11 @@ export const DashboardTopNav = memo(function DashboardTopNav({
       className={`hidden md:flex backdrop-blur-xl bg-[#0B132B]/90 border-b border-[#1E293B] fixed top-0 left-0 w-full z-50 justify-between items-center px-10 h-20 pl-72 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {/* Left: Brand Title NEUROLEARN */}
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#004ac6] via-[#2563eb] to-[#0ea5e9] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
-          <Brain className="w-5 h-5 text-white" aria-hidden="true" />
+      <div className="flex items-center gap-3.5">
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] text-white flex items-center justify-center shadow-lg shadow-[#2563eb]/30 shrink-0">
+          <Brain className="w-5.5 h-5.5 text-white" aria-hidden="true" />
         </div>
-        <span className="font-['Hanken_Grotesk',sans-serif] text-xl font-black text-white tracking-wider uppercase">
+        <span className="font-['Hanken_Grotesk',sans-serif] text-xl font-black text-white tracking-[0.12em] uppercase">
           NEUROLEARN
         </span>
       </div>

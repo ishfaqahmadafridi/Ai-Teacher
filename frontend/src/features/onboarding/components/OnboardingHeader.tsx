@@ -1,5 +1,7 @@
-import Image from 'next/image';
+'use client';
+
 import Link from 'next/link';
+import { Brain } from 'lucide-react';
 import type { OnboardingHeaderProps } from '../types';
 
 export function OnboardingHeader({
@@ -9,22 +11,13 @@ export function OnboardingHeader({
   showAction = true,
 }: OnboardingHeaderProps) {
   return (
-    <header className={`fixed top-0 w-full z-50 bg-[#0a0f1d]/60 backdrop-blur-[40px] saturate-[180%] border-b border-white/10 shadow-[0px_0px_20px_rgba(0,67,235,0.15)] ${className}`}>
-      <div className="flex justify-between items-center px-4 md:px-10 py-3 max-w-[1280px] mx-auto">
-        <Link href={logoHref} className="flex items-center gap-3 no-underline">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#0043eb] to-[#ddb7ff] p-[2px] shadow-[0_0_15px_rgba(0,67,235,0.5)]">
-            <div className="w-full h-full bg-[#0a0f1d] rounded-[10px] flex items-center justify-center">
-              <Image
-                src="/neurolearn-logo.png"
-                alt="NeuroLearn Logo"
-                width={26}
-                height={26}
-                className="object-contain drop-shadow-[0_0_8px_rgba(79,195,247,0.8)]"
-                priority
-              />
-            </div>
+    <header className={`fixed top-0 w-full z-50 bg-[#0a0f1d]/75 backdrop-blur-[30px] border-b border-white/10 ${className}`}>
+      <div className="flex justify-between items-center px-4 md:px-10 py-3.5 max-w-[1280px] mx-auto">
+        <Link href={logoHref} className="flex items-center gap-3.5 no-underline select-none group">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] text-white flex items-center justify-center shadow-lg shadow-[#2563eb]/30 shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <Brain className="w-5.5 h-5.5 text-white" aria-hidden="true" />
           </div>
-          <span className="font-extrabold tracking-[0.14em] uppercase text-white text-base font-['Montserrat',sans-serif]">
+          <span className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors text-lg font-['Hanken_Grotesk',sans-serif]">
             NEUROLEARN
           </span>
         </Link>
@@ -49,7 +42,7 @@ export function OnboardingHeader({
           <div>
             <Link
               href="/register"
-              className="px-5 py-2 rounded-full bg-[#0043eb] hover:bg-[#1a58ff] text-white text-xs font-semibold tracking-wide shadow-[0_0_15px_rgba(0,67,235,0.6)] transition-all no-underline inline-block"
+              className="px-5 py-2 rounded-full bg-[#2563eb] hover:bg-[#004ac6] text-white text-xs font-semibold tracking-wide shadow-md transition-all no-underline inline-block"
             >
               Get Started
             </Link>
