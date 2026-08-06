@@ -46,7 +46,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
 
   return (
     <aside
-      className={`hidden md:flex flex-col bg-white border-r border-[#E2E8F0] shadow-sm fixed left-0 top-0 h-full w-72 p-6 z-40 font-['Hanken_Grotesk',sans-serif] ${className}`}
+      className={`hidden md:flex flex-col bg-[#0B132B] border-r border-[#1E293B] shadow-lg fixed left-0 top-0 h-full w-72 p-6 z-40 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {/* Brand & Student Header */}
       <div className="mb-8 mt-2">
@@ -55,7 +55,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#004ac6] via-[#2563eb] to-[#0ea5e9] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
             <Brain className="w-5.5 h-5.5 text-white" aria-hidden="true" />
           </div>
-          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-black text-[#004ac6] tracking-wider uppercase">
+          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-black text-white tracking-wider uppercase">
             NEUROLEARN
           </h1>
         </div>
@@ -64,13 +64,13 @@ export const DashboardSideNav = memo(function DashboardSideNav({
           <img
             src={studentAvatar}
             alt={studentName}
-            className="w-12 h-12 rounded-full object-cover border border-[#E2E8F0] shrink-0"
+            className="w-12 h-12 rounded-full object-cover border border-[#1E293B] shrink-0"
           />
           <div className="min-w-0">
-            <h2 className="font-['Hanken_Grotesk',sans-serif] text-base font-semibold text-[#0F172A] truncate">
+            <h2 className="font-['Hanken_Grotesk',sans-serif] text-base font-semibold text-white truncate">
               Good Morning, {studentName} 👋
             </h2>
-            <p className="font-['JetBrains_Mono',monospace] text-xs text-[#737686]">
+            <p className="font-['JetBrains_Mono',monospace] text-xs text-[#94A3B8]">
               {dateFormatted}
             </p>
           </div>
@@ -90,8 +90,8 @@ export const DashboardSideNav = memo(function DashboardSideNav({
               onClick={() => onSelectTab?.(link.id)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'bg-[#2563eb]/10 text-[#004ac6] font-semibold border-l-4 border-[#2563eb]'
-                  : 'text-[#475569] hover:bg-[#F2F4F6] hover:text-[#0F172A]'
+                  ? 'bg-[#2563eb]/20 text-[#38BDF8] font-semibold border-l-4 border-[#38BDF8]'
+                  : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
               }`}
             >
               {IconComponent}
@@ -99,7 +99,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
                 {link.label}
               </span>
               {link.badgeCount && link.badgeCount > 0 ? (
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2563eb]/10 text-[#004ac6]">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2563eb]/30 text-[#38BDF8]">
                   {link.badgeCount}
                 </span>
               ) : null}
@@ -110,14 +110,14 @@ export const DashboardSideNav = memo(function DashboardSideNav({
 
       {/* Pinned Settings Link at Bottom */}
       {settingsLink && (
-        <div className="pt-4 mt-2 border-t border-[#E2E8F0]">
+        <div className="pt-4 mt-2 border-t border-[#1E293B]">
           <Link
             href={settingsLink.href}
             onClick={() => onSelectTab?.('settings')}
             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
               activeTabId === 'settings'
-                ? 'bg-[#2563eb]/10 text-[#004ac6] font-semibold border-l-4 border-[#2563eb]'
-                : 'text-[#475569] hover:bg-[#F2F4F6] hover:text-[#0F172A]'
+                ? 'bg-[#2563eb]/20 text-[#38BDF8] font-semibold border-l-4 border-[#38BDF8]'
+                : 'text-[#94A3B8] hover:bg-[#1E293B] hover:text-white'
             }`}
           >
             {ICON_MAP.settings}

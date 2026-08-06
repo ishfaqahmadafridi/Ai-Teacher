@@ -1,0 +1,21 @@
+/* ─── Lumina Dark Theme Dashboard Styles ────────────────────────── */
+.dashboard-bg {
+  background-color: #0A0F18;
+  color: #F8FAFC;
+}
+
+.dashboard-glass-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+.dashboard-card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.dashboard-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}

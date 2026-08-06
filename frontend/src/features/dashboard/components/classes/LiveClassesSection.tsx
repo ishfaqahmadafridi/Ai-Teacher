@@ -12,21 +12,21 @@ export const LiveClassesSection = memo(function LiveClassesSection({
 }: LiveClassesSectionProps) {
   return (
     <section
-      className={`bg-white rounded-20 p-6 card-shadow border border-[#E2E8F0]/50 font-['Hanken_Grotesk',sans-serif] ${className}`}
+      className={`bg-[#0F172A]/90 backdrop-blur-md rounded-20 p-6 shadow-xl border border-[#1E293B] font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {/* Section Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="font-['Hanken_Grotesk',sans-serif] text-xl font-bold text-[#0F172A]">
+          <h2 className="font-['Hanken_Grotesk',sans-serif] text-xl font-bold text-white">
             Enrolled Subject Classes
           </h2>
-          <p className="font-['Hanken_Grotesk',sans-serif] text-xs text-[#737686] mt-0.5">
+          <p className="font-['Hanken_Grotesk',sans-serif] text-xs text-[#94A3B8] mt-0.5">
             Real-time schedule progress and live room access for all your enrolled subjects.
           </p>
         </div>
         <button
           type="button"
-          className="text-[#2563eb] font-['JetBrains_Mono',monospace] text-xs font-semibold uppercase tracking-wider hover:underline cursor-pointer shrink-0"
+          className="text-[#38BDF8] font-['JetBrains_Mono',monospace] text-xs font-semibold uppercase tracking-wider hover:underline cursor-pointer shrink-0"
         >
           View All ({classes.length})
         </button>
