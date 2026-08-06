@@ -10,7 +10,7 @@ export const DashboardHeroSection = memo(function DashboardHeroSection({
 }: DashboardHeroSectionProps) {
   return (
     <section
-      className={`bg-gradient-to-r from-[#0C3B73] via-[#0E4482] to-[#0A305E] rounded-20 p-6 md:p-10 flex flex-col md:flex-row justify-between items-center relative overflow-hidden font-['Hanken_Grotesk',sans-serif] shadow-lg ${className}`}
+      className={`bg-gradient-to-r from-[#0C3B73] via-[#0E4482] to-[#0A305E] rounded-20 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row justify-between items-center relative overflow-hidden font-['Hanken_Grotesk',sans-serif] shadow-lg gap-6 ${className}`}
     >
       {/* Decorative Star Particles in Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true">
@@ -24,13 +24,13 @@ export const DashboardHeroSection = memo(function DashboardHeroSection({
       </div>
 
       {/* Left Greeting & Subtitle */}
-      <div className="z-10 w-full md:w-3/5 text-white space-y-3 py-2">
-        <h1 className="font-['Hanken_Grotesk',sans-serif] text-3xl sm:text-4xl lg:text-[42px] font-bold text-white tracking-tight">
+      <div className="z-10 flex-1 min-w-0 text-white space-y-3 py-1">
+        <h1 className="font-['Hanken_Grotesk',sans-serif] text-3xl sm:text-4xl lg:text-[40px] font-bold text-white tracking-tight leading-tight">
           Good Morning, {studentName}
         </h1>
-        <p className="font-['Hanken_Grotesk',sans-serif] text-base sm:text-lg text-[#E2E8F0] leading-relaxed max-w-xl">
+        <p className="font-['Hanken_Grotesk',sans-serif] text-base sm:text-lg text-[#E2E8F0] leading-relaxed max-w-2xl">
           You've learned{' '}
-          <span className="font-extrabold text-[#FF6B35] drop-shadow-sm">
+          <span className="font-extrabold text-[#FF6B35] drop-shadow-sm whitespace-nowrap">
             {weeklyProgressPercent}% of your
           </span>{' '}
           goal this week! Keep it up and improve your results!
@@ -38,8 +38,8 @@ export const DashboardHeroSection = memo(function DashboardHeroSection({
       </div>
 
       {/* Right Student Desk Study SVG Illustration */}
-      <div className="z-10 w-full md:w-2/5 flex justify-center md:justify-end mt-4 md:mt-0">
-        <div className="relative w-64 h-44 sm:w-72 sm:h-48 lg:w-80 lg:h-52">
+      <div className="z-10 shrink-0 flex justify-center md:justify-end mt-2 md:mt-0">
+        <div className="w-56 h-36 sm:w-64 sm:h-44 md:w-72 md:h-48">
           <svg
             viewBox="0 0 320 200"
             fill="none"
