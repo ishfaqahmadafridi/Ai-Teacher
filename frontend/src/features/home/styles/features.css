@@ -1,0 +1,374 @@
+/* ─── Immersive Features Sections Styling ──────────────────────────────── */
+
+/* 1. Why Choose Us Section */
+.feat-section {
+  padding: 80px 24px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feat-header {
+  text-align: center;
+  margin-bottom: 50px;
+  max-width: 700px;
+}
+
+.feat-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #a78bfa; /* Violet accent */
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.feat-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.01em;
+}
+
+.feat-desc {
+  font-size: clamp(14px, 1.6vw, 17px);
+  line-height: 1.6;
+  color: rgba(224, 242, 254, 0.6);
+  margin: 0;
+}
+
+/* Grid of Cards */
+.feat-grid-6 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .feat-grid-6 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .feat-grid-6 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.feat-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 32px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  backdrop-filter: blur(12px);
+}
+
+.feat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(147, 197, 253, 0.2);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4), 0 0 25px rgba(99, 102, 241, 0.05);
+}
+
+.feat-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
+  margin-bottom: 24px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.feat-card:hover .feat-icon-wrapper {
+  background: rgba(167, 139, 250, 0.15);
+  border-color: rgba(167, 139, 250, 0.3);
+  box-shadow: 0 0 15px rgba(167, 139, 250, 0.25);
+}
+
+.feat-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.01em;
+}
+
+.feat-card-desc {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: rgba(224, 242, 254, 0.55);
+  margin: 0;
+}
+
+/* 2. Future Interface Section */
+.future-flex {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  width: 100%;
+}
+
+@media (max-width: 968px) {
+  .future-flex {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+}
+
+.future-left {
+  flex: 1;
+  max-width: 580px;
+  text-align: left;
+}
+
+@media (max-width: 968px) {
+  .future-left {
+    text-align: center;
+    max-width: 100%;
+  }
+}
+
+.future-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.future-title-gradient {
+  background: linear-gradient(135deg, #a78bfa 0%, #c084fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.future-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.future-item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.future-item-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(147, 197, 253, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 968px) {
+  .future-item-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.future-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(147, 197, 253, 0.08);
+  border: 1px solid rgba(147, 197, 253, 0.15);
+  color: #93c5fd;
+  flex-shrink: 0;
+}
+
+.future-item-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.future-item-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(224, 242, 254, 0.5);
+  margin: 0;
+}
+
+/* Floating Mockup Styling */
+.future-mockup-container {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.future-mockup-glow {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 70%);
+  filter: blur(40px);
+  z-index: 1;
+}
+
+.future-mockup-img {
+  position: relative;
+  z-index: 2;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 50px rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: perspective(1000px) rotateY(-10deg) rotateX(10deg);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.future-mockup-container:hover .future-mockup-img {
+  transform: perspective(1000px) rotateY(-3deg) rotateX(4deg) translateY(-8px);
+  box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.9), 0 0 60px rgba(99, 102, 241, 0.2);
+}
+
+/* 3. Tailored Levels Section */
+.level-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 48px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 6px;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+}
+
+.level-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(224, 242, 254, 0.5);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.level-tab-btn:hover {
+  color: #ffffff;
+}
+
+.level-tab-btn.active {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #a78bfa; /* Violet text */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid of Cards for levels */
+.level-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 1100px) {
+  .level-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .level-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.level-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 28px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+}
+
+.level-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(167, 139, 250, 0.15);
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(167, 139, 250, 0.03);
+}
+
+.level-icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(147, 197, 253, 0.05);
+  border: 1px solid rgba(147, 197, 253, 0.1);
+  color: #93c5fd;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  transition: all 0.25s ease;
+}
+
+.level-card:hover .level-icon-box {
+  background: rgba(147, 197, 253, 0.12);
+  border-color: rgba(147, 197, 253, 0.25);
+  box-shadow: 0 0 12px rgba(147, 197, 253, 0.15);
+}
+
+.level-card-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+
+.level-card-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: rgba(224, 242, 254, 0.5);
+  margin: 0;
+}

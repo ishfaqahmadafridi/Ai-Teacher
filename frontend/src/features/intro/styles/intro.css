@@ -1,0 +1,209 @@
+/* ─── Immersive Intro CSS Keyframes and Animations ────────────────────────── */
+
+@keyframes intro-floatY {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-18px) rotate(1deg); }
+  66% { transform: translateY(-8px) rotate(-1deg); }
+}
+
+@keyframes intro-floatX {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(12px); }
+}
+
+@keyframes intro-pulseGlow {
+  0%, 100% { opacity: 0.4; filter: blur(80px); }
+  50% { opacity: 0.7; filter: blur(60px); }
+}
+
+@keyframes intro-pulseGlow2 {
+  0%, 100% { opacity: 0.3; filter: blur(100px); }
+  50% { opacity: 0.55; filter: blur(80px); }
+}
+
+@keyframes intro-fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes intro-fadeInScale {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes intro-driftCard {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+  25% { transform: translateY(-12px) translateX(4px) rotate(0.5deg); }
+  50% { transform: translateY(-6px) translateX(-4px) rotate(-0.5deg); }
+  75% { transform: translateY(-16px) translateX(2px) rotate(0.3deg); }
+}
+
+@keyframes intro-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes intro-rotateOrb {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes intro-scanLine {
+  0% { transform: translateY(-100%); opacity: 0; }
+  10% { opacity: 0.06; }
+  90% { opacity: 0.06; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes intro-gridPulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.07; }
+}
+
+@keyframes intro-titleReveal {
+  from { opacity: 0; transform: translateY(60px) skewY(2deg); filter: blur(8px); }
+  to { opacity: 1; transform: translateY(0) skewY(0deg); filter: blur(0); }
+}
+
+@keyframes intro-subtitleReveal {
+  from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes intro-ctaReveal {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes intro-borderGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 179, 237, 0.15), 0 0 60px rgba(99, 179, 237, 0.05), inset 0 1px 0 rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 30px rgba(99, 179, 237, 0.25), 0 0 80px rgba(99, 179, 237, 0.1), inset 0 1px 0 rgba(255,255,255,0.15); }
+}
+
+@keyframes intro-ctaHoverPulse {
+  0%, 100% { box-shadow: 0 8px 32px rgba(99, 179, 237, 0.2), 0 0 60px rgba(99, 179, 237, 0.08); }
+  50% { box-shadow: 0 8px 48px rgba(99, 179, 237, 0.35), 0 0 100px rgba(99, 179, 237, 0.15); }
+}
+
+@keyframes intro-scroll-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes intro-scroll-x-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+/* Track Scrolling Speeds */
+.intro-category-track-1 {
+  animation: intro-scroll-x 40s linear infinite;
+}
+.intro-category-track-2 {
+  animation: intro-scroll-x-reverse 35s linear infinite;
+}
+.intro-category-track-3 {
+  animation: intro-scroll-x 50s linear infinite;
+}
+
+/* Glow Orb pulse animations */
+.intro-orb-pulse-1 {
+  animation: intro-pulseGlow 8s ease-in-out infinite;
+}
+
+.intro-orb-pulse-2 {
+  animation: intro-pulseGlow2 10s ease-in-out infinite;
+}
+
+.intro-orb-pulse-3 {
+  animation: intro-pulseGlow 12s ease-in-out 4s infinite;
+}
+
+/* CTA and interaction buttons */
+.intro-cta-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  animation: intro-ctaReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both, intro-borderGlow 3s ease-in-out 2.6s infinite;
+}
+
+.intro-cta-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: intro-shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.intro-cta-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  animation: intro-ctaReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both, intro-ctaHoverPulse 1.5s ease-in-out infinite;
+}
+
+.intro-cta-btn:active {
+  transform: translateY(0px) scale(0.99);
+}
+
+.intro-category-pill {
+  flex-shrink: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.intro-category-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 20px rgba(99,179,237,0.15);
+}
+
+/* ─── Premium Scroll Reveal Presets ────────────────────────────────────────── */
+.reveal-up {
+  transform: translateY(30px);
+}
+.reveal-down {
+  transform: translateY(-30px);
+}
+.reveal-left {
+  transform: translateX(-40px);
+}
+.reveal-right {
+  transform: translateX(40px);
+}
+.reveal-scale {
+  transform: scale(0.94);
+}
+.reveal-fade {
+  transform: none;
+}
+
+.reveal.active.reveal-up,
+.reveal.active.reveal-down,
+.reveal.active.reveal-left,
+.reveal.active.reveal-right {
+  transform: translateY(0) translateX(0);
+}
+
+.reveal.active.reveal-scale {
+  transform: scale(1);
+}
+
+/* Custom delay transitions */
+.delay-100 { transition-delay: 100ms !important; }
+.delay-200 { transition-delay: 200ms !important; }
+.delay-300 { transition-delay: 300ms !important; }
+.delay-400 { transition-delay: 400ms !important; }
+.delay-500 { transition-delay: 500ms !important; }
+.delay-600 { transition-delay: 600ms !important; }
+.delay-700 { transition-delay: 700ms !important; }
+.delay-800 { transition-delay: 800ms !important; }
+
+/* Enhanced hover effects for cards */
+.hover-glow-card {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+.hover-glow-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 30px rgba(124, 77, 255, 0.15);
+  border-color: rgba(205, 189, 255, 0.25) !important;
+}
+
