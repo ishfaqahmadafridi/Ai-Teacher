@@ -131,4 +131,5 @@ export const DEFAULT_DASHBOARD_NAV_LINKS: DashboardNavLink[] = [
   { id: 'calendar', label: 'Calendar', iconName: 'event', href: '#' },
   { id: 'grades', label: 'Grades', iconName: 'grade', href: '#' },
   { id: 'resources', label: 'Resources', iconName: 'folder_open', href: '#' },
+  { id: 'settings', label: 'Settings', iconName: 'settings', href: '#' },
 ];
