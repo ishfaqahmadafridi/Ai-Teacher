@@ -5,25 +5,25 @@ import Link from 'next/link';
 
 export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-3 no-underline select-none">
+    <Link href="/" className="flex items-center gap-3 no-underline select-none group">
       <span
-        className="font-extrabold tracking-[0.12em] uppercase text-white"
+        className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors"
         style={{
-          fontSize: '1.05rem',
+          fontSize: '1.2rem',
           fontFamily: 'var(--font-outfit), sans-serif',
           letterSpacing: '0.14em',
         }}
       >
         NEUROLEARN
       </span>
-      <div className="relative" style={{ width: 64, height: 64, flexShrink: 0, marginTop: '-12px', marginBottom: '-12px' }}>
+      <div className="relative w-12 h-12 shrink-0">
         <Image
-          src="/neurolearn-logo.png"
-          alt="NeuroLearn Logo"
+          src="/neurolearn-brain-logo.png"
+          alt="NeuroLearn Neural Brain Logo"
           fill
-          sizes="64px"
+          sizes="48px"
           className="object-contain"
-          style={{ filter: 'drop-shadow(0 0 10px rgba(79,195,247,0.75))' }}
+          style={{ filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.8))' }}
           priority
         />
       </div>
