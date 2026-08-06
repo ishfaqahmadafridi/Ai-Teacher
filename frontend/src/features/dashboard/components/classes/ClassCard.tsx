@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Clock, Users, Video, BookOpenCheck } from 'lucide-react';
+import { Clock, Users, Video, CheckCircle2, Hourglass } from 'lucide-react';
 import type { ClassCardProps } from '../../types/dashboard.types';
 
 export const ClassCard = memo(function ClassCard({
@@ -9,9 +9,11 @@ export const ClassCard = memo(function ClassCard({
   onJoinClass,
   className = '',
 }: ClassCardProps) {
-  const progress = classItem.progressPercent ?? 50;
-  const completed = classItem.completedLessons ?? 10;
+  const progress = classItem.progressPercent ?? 65;
+  const completed = classItem.completedLessons ?? 13;
   const total = classItem.totalLessons ?? 20;
+  const remaining = total - completed;
+  const remainingPercent = 100 - progress;
 
   return (
     <div
@@ -52,27 +54,33 @@ export const ClassCard = memo(function ClassCard({
           </div>
         </div>
 
-        {/* Course Progress & Schedule Coverage Bar */}
-        <div className="bg-[#F8FAFC] rounded-xl p-3 border border-[#E2E8F0]/70 space-y-1.5">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-['JetBrains_Mono',monospace] text-[11px] font-semibold text-[#0F172A] flex items-center gap-1">
-              <BookOpenCheck className="w-3.5 h-3.5 text-[#2563eb]" aria-hidden="true" />
-              Curriculum Progress
+        {/* Schedule Completed vs Remaining Breakdown Box */}
+        <div className="bg-[#F8FAFC] rounded-xl p-3.5 border border-[#E2E8F0]/70 space-y-2">
+          <div className="flex items-center justify-between font-['JetBrains_Mono',monospace] text-xs">
+            <span className="font-bold text-[#10B981] flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
+              Completed: {completed} ({progress}%)
             </span>
-            <span className="font-['JetBrains_Mono',monospace] text-xs font-bold text-[#2563eb]">
-              {progress}% ({completed}/{total} Lessons)
+            <span className="font-bold text-[#D97706] flex items-center gap-1">
+              <Hourglass className="w-3.5 h-3.5 text-[#D97706]" aria-hidden="true" />
+              Remaining: {remaining} ({remainingPercent}%)
             </span>
           </div>
-          <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
+
+          {/* Segmented Dual Progress Bar */}
+          <div className="w-full bg-[#E2E8F0] rounded-full h-2.5 flex overflow-hidden">
             <div
-              className="bg-[#2563eb] h-2 rounded-full transition-all duration-500 ease-out"
+              className="bg-[#2563eb] h-full rounded-l-full transition-all duration-500"
               style={{ width: `${progress}%` }}
-              role="progressbar"
-              aria-valuenow={progress}
-              aria-valuemin={0}
-              aria-valuemax={100}
+              title={`Completed Schedule: ${progress}% (${completed} Classes)`}
+            />
+            <div
+              className="bg-[#F59E0B] h-full rounded-r-full transition-all duration-500 opacity-80"
+              style={{ width: `${remainingPercent}%` }}
+              title={`Remaining Schedule: ${remainingPercent}% (${remaining} Classes)`}
             />
           </div>
+
           {classItem.timeRemaining && (
             <span className="font-['JetBrains_Mono',monospace] text-[10px] text-[#737686] block text-right">
               {classItem.timeRemaining}
