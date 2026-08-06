@@ -46,6 +46,8 @@ frontend/build/
 # Stitch / design exports (local only)
 stitch_premium_ai_learning_saas/
 stitch_premium_ai_learning_saas.zip
+stitch_dynamic_split_form_interface*/
+stitch_dynamic_split_form_interface*.zip
 
 # OS files
 .DS_Store
