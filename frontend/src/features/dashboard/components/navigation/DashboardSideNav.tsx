@@ -14,7 +14,7 @@ import {
   Award,
   FolderOpen,
   Settings,
-  Sparkles,
+  Brain,
 } from 'lucide-react';
 import { DEFAULT_DASHBOARD_NAV_LINKS } from '../../constants/dashboardConstants';
 import type { DashboardSideNavProps } from '../../types/dashboard.types';
@@ -50,13 +50,13 @@ export const DashboardSideNav = memo(function DashboardSideNav({
     >
       {/* Brand & Student Header */}
       <div className="mb-8 mt-2">
-        {/* Actual Project Brand Logo & Name: AI Teacher */}
+        {/* Actual Project Brand Logo & Name: NEUROLEARN */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-[#2563eb] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
-            <Sparkles className="w-5 h-5 fill-current" aria-hidden="true" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#004ac6] via-[#2563eb] to-[#0ea5e9] text-white flex items-center justify-center shadow-md shadow-[#2563eb]/25 shrink-0">
+            <Brain className="w-5.5 h-5.5 text-white" aria-hidden="true" />
           </div>
-          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-extrabold text-[#004ac6] tracking-tight">
-            AI Teacher
+          <h1 className="font-['Hanken_Grotesk',sans-serif] text-2xl font-black text-[#004ac6] tracking-wider uppercase">
+            NEUROLEARN
           </h1>
         </div>
 
