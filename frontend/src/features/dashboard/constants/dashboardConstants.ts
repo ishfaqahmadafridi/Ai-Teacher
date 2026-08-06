@@ -34,6 +34,10 @@ export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
     isLive: true,
     attendanceCount: 42,
     bgGradient: 'from-blue-600/20 to-purple-600/20',
+    progressPercent: 65,
+    completedLessons: 13,
+    totalLessons: 20,
+    timeRemaining: '45 mins remaining',
   },
   {
     id: 'class-2',
@@ -46,6 +50,10 @@ export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
     isLive: false,
     attendanceCount: 38,
     bgGradient: 'from-emerald-600/20 to-teal-600/20',
+    progressPercent: 40,
+    completedLessons: 8,
+    totalLessons: 20,
+    timeRemaining: 'Starts in 2h 30m',
   },
 ];
 

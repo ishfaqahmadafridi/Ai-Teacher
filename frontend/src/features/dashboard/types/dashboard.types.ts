@@ -23,6 +23,10 @@ export interface LiveClassItem {
   isLive: boolean;
   attendanceCount: number;
   bgGradient: string;
+  progressPercent?: number;
+  completedLessons?: number;
+  totalLessons?: number;
+  timeRemaining?: string;
 }
 
 export interface AssignmentItem {
