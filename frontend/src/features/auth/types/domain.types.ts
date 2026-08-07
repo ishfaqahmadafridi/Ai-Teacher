@@ -25,6 +25,7 @@ export interface RegisterFormData {
   firstName: string;
   lastName: string;
   username: string;
+  countryCode: string;
   mobile: string;
   email: string;
   password: string;

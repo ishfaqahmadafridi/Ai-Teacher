@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../state/authStore';
 import { AuthService } from '../services/authService';
 import { registerSchema } from '../validators/auth.schema';
+import { DEFAULT_COUNTRY_CODE } from '../constants';
 import type { RegisterFormData } from '../types';
 
 export interface UseRegisterReturn {
@@ -11,7 +12,7 @@ export interface UseRegisterReturn {
   showPassword: boolean;
   isLoading: boolean;
   error: string | null;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
   handleSubmit: (e: React.FormEvent) => Promise<void>;
   togglePassword: () => void;
@@ -21,6 +22,7 @@ const initialForm: RegisterFormData = {
   firstName: '',
   lastName: '',
   username: '',
+  countryCode: DEFAULT_COUNTRY_CODE,
   mobile: '',
   email: '',
   password: '',
@@ -37,11 +39,14 @@ export function useRegister(): UseRegisterReturn {
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof RegisterFormData, string>>>({});
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const isCheckbox = e.target instanceof HTMLInputElement && e.target.type === 'checkbox';
+    const val = isCheckbox ? (e.target as HTMLInputElement).checked : value;
+
     setForm((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: val,
     }));
     setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     setError(null);
@@ -68,7 +73,9 @@ export function useRegister(): UseRegisterReturn {
         const errors: Partial<Record<keyof RegisterFormData, string>> = {};
         result.error.issues.forEach((issue) => {
           const key = issue.path[0] as keyof RegisterFormData;
-          errors[key] = issue.message;
+          if (!errors[key]) {
+            errors[key] = issue.message;
+          }
         });
         setFieldErrors(errors);
         return;
@@ -102,4 +109,3 @@ export function useRegister(): UseRegisterReturn {
     togglePassword,
   };
 }
-

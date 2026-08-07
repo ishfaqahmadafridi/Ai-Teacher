@@ -1,4 +1,13 @@
 import type { ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import type { RegisterFormData } from './domain.types';
+
+// ─── Country Code Option ──────────────────────────────────────────────────────
+export interface CountryCodeOption {
+  code: string;
+  name: string;
+  dialCode: string;
+  flag: string;
+}
 
 // ─── Shared base for all auth input fields ────────────────────────────────────
 export interface BaseInputFieldProps {
@@ -20,10 +29,32 @@ export interface AuthFieldProps extends BaseInputFieldProps {
 }
 
 // ─── PasswordField (adds password-specific toggle behaviour) ──────────────────
-export type PasswordFieldProps = BaseInputFieldProps;
+export interface PasswordFieldProps extends BaseInputFieldProps {
+  showPassword?: boolean;
+  onTogglePassword?: () => void;
+}
+
+// ─── Mobile Field with Country Code ───────────────────────────────────────────
+export interface MobileFieldSectionProps {
+  countryCode: string;
+  mobile: string;
+  onCountryCodeChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onMobileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  mobileError?: string;
+  countryCodeError?: string;
+}
 
 // ─── Form-level props ─────────────────────────────────────────────────────────
 export interface CreateAccountFormProps {
+  form: RegisterFormData;
+  fieldErrors: Partial<Record<keyof RegisterFormData, string>>;
+  showPassword: boolean;
+  isLoading: boolean;
+  error: string | null;
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
+  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  togglePassword: () => void;
   onSuccess?: () => void;
 }
 
@@ -56,9 +87,3 @@ export interface SocialAuthProps {
   onMicrosoftClick?: () => void;
   onAppleClick?: () => void;
 }
-
-// NOTE: ConsentItemProps lives in:
-//   src/features/auth/components/ui/ConsentItem/ConsentItem.types.ts
-// and is re-exported from the ui barrel — do NOT duplicate it here.
-
-
