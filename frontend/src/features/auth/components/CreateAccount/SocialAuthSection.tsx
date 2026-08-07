@@ -2,38 +2,17 @@
 
 import { memo } from 'react';
 import { SOCIAL_PROVIDERS } from '../../constants';
-import { getInputStyle } from '../../utilities';
-import { GoogleIcon, MicrosoftIcon, AppleIcon } from '../ui/Icons';
+import { getInputStyle, renderProviderIcon } from '../../utilities';
+import { useSocialAuth } from '../../hooks/useSocialAuth';
 import type { SocialAuthSectionProps, SocialProviderOption } from '../../types';
 
-function renderProviderIcon(provider: SocialProviderOption['provider']) {
-  switch (provider) {
-    case 'google':
-      return <GoogleIcon />;
-    case 'microsoft':
-      return <MicrosoftIcon />;
-    case 'apple':
-      return <AppleIcon />;
-  }
-}
+export const SocialAuthSection = memo(function SocialAuthSection(props: SocialAuthSectionProps) {
+  const {
+    showDivider = true,
+    dividerText = 'Or sign up with',
+  } = props;
 
-export const SocialAuthSection = memo(function SocialAuthSection({
-  showDivider = true,
-  dividerText = 'Or sign up with',
-  onGoogleClick,
-  onMicrosoftClick,
-  onAppleClick,
-}: SocialAuthSectionProps) {
-  const getClickHandler = (provider: SocialProviderOption['provider']) => {
-    switch (provider) {
-      case 'google':
-        return onGoogleClick;
-      case 'microsoft':
-        return onMicrosoftClick;
-      case 'apple':
-        return onAppleClick;
-    }
-  };
+  const { getClickHandler } = useSocialAuth(props);
 
   return (
     <>
