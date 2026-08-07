@@ -1,12 +1,18 @@
-import type { ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import type { ChangeEvent, HTMLInputTypeAttribute, FormEvent } from 'react';
 import type { RegisterFormData } from './domain.types';
 
-// ─── Country Code Option ──────────────────────────────────────────────────────
+// ─── Country Code & Social Provider Options ──────────────────────────────────
 export interface CountryCodeOption {
   code: string;
   name: string;
   dialCode: string;
   flag: string;
+}
+
+export interface SocialProviderOption {
+  id: string;
+  label: string;
+  provider: 'google' | 'microsoft' | 'apple';
 }
 
 // ─── Shared base for all auth input fields ────────────────────────────────────
@@ -22,19 +28,37 @@ export interface BaseInputFieldProps {
   error?: string;
 }
 
-// ─── AuthField (generic text/email/tel input) ─────────────────────────────────
 export interface AuthFieldProps extends BaseInputFieldProps {
   type?: HTMLInputTypeAttribute;
   className?: string;
 }
 
-// ─── PasswordField (adds password-specific toggle behaviour) ──────────────────
 export interface PasswordFieldProps extends BaseInputFieldProps {
   showPassword?: boolean;
   onTogglePassword?: () => void;
 }
 
-// ─── Mobile Field with Country Code ───────────────────────────────────────────
+// ─── Section Component Props ──────────────────────────────────────────────────
+export interface IdentitySectionProps {
+  firstName: string;
+  lastName: string;
+  firstNameError?: string;
+  lastNameError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface UsernameSectionProps {
+  username: string;
+  usernameError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface EmailSectionProps {
+  email: string;
+  emailError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+
 export interface MobileFieldSectionProps {
   countryCode: string;
   mobile: string;
@@ -42,6 +66,39 @@ export interface MobileFieldSectionProps {
   onMobileChange: (e: ChangeEvent<HTMLInputElement>) => void;
   mobileError?: string;
   countryCodeError?: string;
+}
+
+export interface PasswordSectionProps {
+  password: string;
+  confirmPassword: string;
+  showPassword: boolean;
+  passwordError?: string;
+  confirmPasswordError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: () => void;
+}
+
+export interface AuthConsentSectionProps {
+  agreeToTerms: boolean;
+  agreeToPrivacy: boolean;
+  termsError?: string;
+  privacyError?: string;
+  onConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
+}
+
+export interface AuthConsentProps {
+  agreeToTerms: boolean;
+  agreeToPrivacy: boolean;
+  onTermsChange: (checked: boolean) => void;
+  onPrivacyChange: (checked: boolean) => void;
+  termsError?: string;
+  privacyError?: string;
+}
+
+export interface FormSubmitButtonProps {
+  isLoading: boolean;
+  loadingText?: string;
+  buttonText?: string;
 }
 
 // ─── Form-level props ─────────────────────────────────────────────────────────
@@ -53,33 +110,20 @@ export interface CreateAccountFormProps {
   error: string | null;
   handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   handleConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
+  handleSubmit: (e: FormEvent) => Promise<void>;
   togglePassword: () => void;
   onSuccess?: () => void;
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
 export interface AuthHeaderProps {
   title?: string;
   subtitle?: string;
 }
 
-// ─── Global error banner ──────────────────────────────────────────────────────
 export interface AuthErrorProps {
   message: string;
 }
 
-// ─── Consent checkboxes ───────────────────────────────────────────────────────
-export interface AuthConsentProps {
-  agreeToTerms: boolean;
-  agreeToPrivacy: boolean;
-  onTermsChange: (checked: boolean) => void;
-  onPrivacyChange: (checked: boolean) => void;
-  termsError?: string;
-  privacyError?: string;
-}
-
-// ─── Social sign-in section ───────────────────────────────────────────────────
 export interface SocialAuthProps {
   showDivider?: boolean;
   dividerText?: string;
