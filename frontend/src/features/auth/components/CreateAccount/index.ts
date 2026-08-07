@@ -9,5 +9,4 @@ export { PasswordSection } from './PasswordSection';
 export { AuthConsentSection } from './AuthConsentSection';
 export { FormSubmitButton } from './FormSubmitButton';
 export { SocialAuthSection } from './SocialAuthSection';
-export { SocialAuth } from './SocialAuth';
 export { AuthError } from './AuthError';

@@ -131,3 +131,5 @@ export interface SocialAuthProps {
   onMicrosoftClick?: () => void;
   onAppleClick?: () => void;
 }
+
+export type SocialAuthSectionProps = SocialAuthProps;
