@@ -14,26 +14,31 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-_llm = None
+_llm_cache: dict = {}
 
 
 def get_llm(temperature: float = 0.7):
     """
-    Lazily initialise the Gemini 2.5 Flash LLM (singleton).
+    Lazily initialise the Gemini 2.5 Flash LLM (cached per temperature).
     Returns a LangChain ChatGoogleGenerativeAI instance.
     """
     from langchain_google_genai import ChatGoogleGenerativeAI
-    global _llm
+    global _llm_cache
+
     api_key = os.getenv('GEMINI_API_KEY')
     if not api_key:
         logger.warning('GEMINI_API_KEY not set in environment.')
-    if _llm is None:
-        _llm = ChatGoogleGenerativeAI(
+
+    cache_key = (api_key, temperature)
+    if cache_key not in _llm_cache:
+        _llm_cache[cache_key] = ChatGoogleGenerativeAI(
             model='gemini-2.5-flash',
             google_api_key=api_key,
             temperature=temperature,
+            max_retries=2,
+            request_timeout=30.0,
         )
-    return _llm
+    return _llm_cache[cache_key]
 
 
 def extract_json(raw: str) -> dict:

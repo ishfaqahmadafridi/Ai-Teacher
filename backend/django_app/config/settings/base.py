@@ -2,10 +2,12 @@
 Base Django settings shared across all environments.
 """
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(BASE_DIR.parent / '.env')
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get(
@@ -13,10 +15,11 @@ SECRET_KEY = os.environ.get(
     'django-insecure-local-dev-only-replace-in-production'
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
-
-_allowed_hosts_env = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1')
-ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_env.split(',') if h.strip()]
+# Validate SECRET_KEY in production mode
+if not os.environ.get('DJANGO_SECRET_KEY') and 'test' not in sys.argv and not os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes'):
+    raise RuntimeError(
+        "DJANGO_SECRET_KEY environment variable MUST be explicitly set in production environments."
+    )
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,9 +34,11 @@ INSTALLED_APPS = [
     'corsheaders',
 
     # Local apps
+    'apps.users',
     'teacher.apps.TeacherConfig',
-    'physics_teacher.apps.PhysicsTeacherConfig',
 ]
+
+AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -47,6 +52,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 TEMPLATES = [
     {
@@ -63,40 +69,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
-
-DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3')
-
-if 'postgresql' in DB_ENGINE:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ.get('DB_NAME', 'ai_teacher_db'),
-            'USER': os.environ.get('DB_USER', 'ai_teacher_user'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', 'ai_teacher_secret_pass'),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -110,14 +82,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-_cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', '')
-if DEBUG and not _cors_origins_env:
-    CORS_ALLOW_ALL_ORIGINS = True
-else:
-    CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins_env.split(',') if o.strip()]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

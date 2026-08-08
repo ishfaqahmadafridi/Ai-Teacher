@@ -1,8 +1,5 @@
 """
-Django settings package.
-
-Usage:
-    DJANGO_SETTINGS_MODULE=config.settings.local    (development)
-    DJANGO_SETTINGS_MODULE=config.settings.production (production)
-    DJANGO_SETTINGS_MODULE=config.settings.test     (test suite)
+Django settings package entrypoint.
+Defaults to local settings for development convenience.
 """
+from .local import *  # noqa: F403, F401

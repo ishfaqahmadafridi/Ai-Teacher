@@ -1,13 +1,19 @@
 fine_tuned_physics_model.zip
 backend/venv/
+.venv/
+venv/
+**/.venv/
+**/venv/
 backend/db.sqlite3
 *.pyc
 __pycache__/
+**/__pycache__/
 
 # Large binaries & local models
 college-physics-2e_-_WEB.pdf
 backend/model/
 backend/chroma_db/
+**/chroma_db/
 
 # Local environment variables and secrets
 backend/.env

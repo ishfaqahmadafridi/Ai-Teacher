@@ -52,7 +52,7 @@ class AskViewTests(TestCase):
         data = response.json()
         self.assertIn('error', data)
 
-    @patch('teacher.views.generate_answer')
+    @patch('teacher.views.ask_view.generate_answer')
     def test_valid_question_returns_200(self, mock_generate):
         mock_generate.return_value = {
             'chunks': [{'speak': 'Gravity pulls you down.', 'diagram': {'action': 'none'}}],
@@ -72,7 +72,7 @@ class AskViewTests(TestCase):
         self.assertIn('chunks', data)
         self.assertIn('topic', data)
 
-    @patch('teacher.views.generate_answer')
+    @patch('teacher.views.ask_view.generate_answer')
     def test_session_id_is_forwarded_to_generate_answer(self, mock_generate):
         mock_generate.return_value = {
             'chunks': [], 'topic': 'test', 'diagram_type': 'default',
@@ -84,13 +84,16 @@ class AskViewTests(TestCase):
             content_type='application/json',
         )
         call_kwargs = mock_generate.call_args
-        self.assertEqual(call_kwargs.kwargs.get('session_id') or call_kwargs[1].get('session_id') or call_kwargs[0][1], 'my-session-123')
+        actual_session = call_kwargs.kwargs.get('session_id') if call_kwargs.kwargs else None
+        if not actual_session and call_kwargs.args:
+            actual_session = call_kwargs.args[1] if len(call_kwargs.args) > 1 else call_kwargs.args[0]
+        self.assertEqual(actual_session, 'my-session-123')
 
 
 class ClearSessionViewTests(TestCase):
     """POST /api/clear/"""
 
-    @patch('teacher.views.clear_session')
+    @patch('teacher.views.session_view.clear_session')
     def test_clear_session_returns_200(self, mock_clear):
         response = self.client.post(
             '/api/clear/',
@@ -102,7 +105,7 @@ class ClearSessionViewTests(TestCase):
         self.assertEqual(data['status'], 'cleared')
         self.assertEqual(data['session_id'], 'test-session')
 
-    @patch('teacher.views.clear_session')
+    @patch('teacher.views.session_view.clear_session')
     def test_clear_session_calls_clear_with_correct_id(self, mock_clear):
         self.client.post(
             '/api/clear/',

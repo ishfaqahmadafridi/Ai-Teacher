@@ -1,0 +1,7 @@
+{
+  "venvPath": "backend/django_app",
+  "venv": ".venv",
+  "extraPaths": [
+    "backend/django_app"
+  ]
+}

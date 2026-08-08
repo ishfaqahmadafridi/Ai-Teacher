@@ -1,7 +1,24 @@
 """
-Testing settings.
+Testing environment settings — Optimized for test execution speed.
 """
-from .base import *
+from .base import *  # noqa: F403
 
 DEBUG = False
-TESTING = True
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+}
+
+# Use fast MD5 hashing to speed up tests creating user accounts
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
