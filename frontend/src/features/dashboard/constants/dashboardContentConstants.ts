@@ -3,6 +3,7 @@ import type {
   LiveClassItem,
   AssignmentItem,
 } from '../types/dashboard.types';
+import type { RegisteredCourseItem } from '../types/courses.types';
 
 export const DEFAULT_CONTINUE_LEARNING: ContinueLearningCourse = {
   id: 'c1',
@@ -10,6 +11,57 @@ export const DEFAULT_CONTINUE_LEARNING: ContinueLearningCourse = {
   chapter: 'Chapter 4: Perturbation Theory & Feynman Diagrams',
   progressPercent: 68,
 };
+
+export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
+  {
+    id: 'rc1',
+    title: 'Introduction to Computer Science & Software Engineering',
+    subjectField: 'Computer Science & IT',
+    courseCode: 'CS-101',
+    creditHours: 4,
+    progressPercent: 75,
+    completedLessons: 12,
+    totalLessons: 16,
+    enrolledDate: 'Jan 10, 2026',
+    status: 'active',
+  },
+  {
+    id: 'rc2',
+    title: 'Data Structures, Algorithms & Problem Solving',
+    subjectField: 'Computer Science & IT',
+    courseCode: 'CS-201',
+    creditHours: 4,
+    progressPercent: 60,
+    completedLessons: 9,
+    totalLessons: 15,
+    enrolledDate: 'Jan 15, 2026',
+    status: 'active',
+  },
+  {
+    id: 'rc3',
+    title: 'Database Management Systems & SQL Architecture',
+    subjectField: 'Information Technology',
+    courseCode: 'IT-305',
+    creditHours: 3,
+    progressPercent: 40,
+    completedLessons: 6,
+    totalLessons: 15,
+    enrolledDate: 'Jan 20, 2026',
+    status: 'active',
+  },
+  {
+    id: 'rc4',
+    title: 'Full-Stack Web Development & Cloud Infrastructure',
+    subjectField: 'Information Technology',
+    courseCode: 'IT-402',
+    creditHours: 3,
+    progressPercent: 25,
+    completedLessons: 4,
+    totalLessons: 16,
+    enrolledDate: 'Feb 01, 2026',
+    status: 'active',
+  },
+];
 
 export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
   {

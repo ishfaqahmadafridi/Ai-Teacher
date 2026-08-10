@@ -9,12 +9,14 @@ import {
   LineChart,
   FileText,
   Settings,
+  BookOpen,
 } from 'lucide-react';
 import { DEFAULT_DASHBOARD_NAV_LINKS } from '../../constants/dashboardConstants';
 import type { DashboardSideNavProps } from '../../types/sidebar.types';
 
 const ICON_MAP: Record<string, React.ReactNode> = {
   dashboard: <LayoutDashboard className="w-5 h-5 shrink-0" aria-hidden="true" />,
+  registered_courses: <BookOpen className="w-5 h-5 shrink-0" aria-hidden="true" />,
   classes: <Video className="w-5 h-5 shrink-0" aria-hidden="true" />,
   ask: <Bot className="w-5 h-5 shrink-0" aria-hidden="true" />,
   analytics: <LineChart className="w-5 h-5 shrink-0" aria-hidden="true" />,
@@ -74,7 +76,12 @@ export const DashboardSideNav = memo(function DashboardSideNav({
             <Link
               key={link.id}
               href={link.href}
-              onClick={() => onSelectTab?.(link.id)}
+              onClick={(e) => {
+                if (link.href === '/dashboard') {
+                  e.preventDefault();
+                }
+                onSelectTab?.(link.id);
+              }}
               className={`relative flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-200 ${
                 isActive
                   ? 'bg-[#132A5E] text-[#38BDF8] font-bold shadow-lg shadow-[#132A5E]/40'

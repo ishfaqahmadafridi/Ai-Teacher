@@ -2,10 +2,10 @@
 
 import { memo } from 'react';
 import { useDashboard } from '../hooks/useDashboard';
+import { DashboardBackgroundGlow } from './DashboardBackgroundGlow';
+import { DashboardOverviewGrid } from './DashboardOverviewGrid';
 import { DashboardTopNav, DashboardSideNav } from './navigation';
-import { ContinueLearningBanner, DashboardHeroSection } from './hero';
-import { LiveClassesSection } from './classes';
-import { ProgressAnalyticsCard, AssignmentsSection } from './analytics';
+import { RegisteredCoursesSection, RegisterCourseModal } from './courses';
 import { UserProfileModal } from './profile';
 
 export const DashboardLayout = memo(function DashboardLayout() {
@@ -14,6 +14,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
     activeTabId,
     profile,
     isProfileOpen,
+    isRegisterCourseModalOpen,
+    registeredCourses,
     continueLearning,
     liveClasses,
     assignments,
@@ -22,6 +24,9 @@ export const DashboardLayout = memo(function DashboardLayout() {
     handleOpenProfile,
     handleCloseProfile,
     handleSaveProfile,
+    handleOpenRegisterCourseModal,
+    handleCloseRegisterCourseModal,
+    handleRegisterCourse,
     handleJoinClass,
     handleResumeCourse,
   } = useDashboard();
@@ -29,14 +34,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
   return (
     <div className="min-h-screen bg-[#0A0F18] font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] relative">
       {/* Glow Orbs in Background */}
-      <div
-        className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#2563eb]/10 rounded-full blur-[120px] pointer-events-none z-0"
-        aria-hidden="true"
-      />
-      <div
-        className="fixed bottom-0 right-10 w-[400px] h-[400px] bg-[#712ae2]/10 rounded-full blur-[100px] pointer-events-none z-0"
-        aria-hidden="true"
-      />
+      <DashboardBackgroundGlow />
 
       {/* Top Navbar Header */}
       <DashboardTopNav
@@ -59,41 +57,32 @@ export const DashboardLayout = memo(function DashboardLayout() {
 
       {/* Main Workspace Area */}
       <main className="md:ml-72 pt-24 px-4 md:px-10 max-w-[1440px] mx-auto min-h-screen pb-10 relative z-10">
-        {/* Top Continue Learning Course Banner */}
-        <ContinueLearningBanner
-          course={continueLearning}
-          onResume={() => handleResumeCourse(continueLearning.id)}
-          className="mb-6"
-        />
-
-        {/* 12-Column Responsive Dashboard Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column (8 Columns): Hero, Live Classes, Assignments */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            <DashboardHeroSection
-              studentName={profile.name}
-              streakDays={profile.streakDays}
-              weeklyProgressPercent={profile.weeklyProgressPercent}
-              onJoinTodayClass={handleJoinClass}
-            />
-
-            <LiveClassesSection
-              classes={liveClasses}
-              onJoinClass={handleJoinClass}
-            />
-
-            <AssignmentsSection assignments={assignments} />
-          </div>
-
-          {/* Right Column (4 Columns): Performance Analytics */}
-          <div className="lg:col-span-4 flex flex-col gap-6">
-            <ProgressAnalyticsCard
-              weeklyProgressPercent={profile.weeklyProgressPercent}
-              streakDays={profile.streakDays}
-            />
-          </div>
-        </div>
+        {activeTabId === 'registered_courses' ? (
+          <RegisteredCoursesSection
+            courses={registeredCourses}
+            onJoinCourse={handleJoinClass}
+            onOpenRegisterModal={handleOpenRegisterCourseModal}
+          />
+        ) : (
+          <DashboardOverviewGrid
+            studentName={profile.name}
+            streakDays={profile.streakDays}
+            weeklyProgressPercent={profile.weeklyProgressPercent}
+            continueLearning={continueLearning}
+            liveClasses={liveClasses}
+            assignments={assignments}
+            onJoinClass={handleJoinClass}
+            onResumeCourse={handleResumeCourse}
+          />
+        )}
       </main>
+
+      {/* Course Registration Modal */}
+      <RegisterCourseModal
+        isOpen={isRegisterCourseModalOpen}
+        onClose={handleCloseRegisterCourseModal}
+        onRegisterCourse={handleRegisterCourse}
+      />
 
       {/* Student User Profile Modal */}
       <UserProfileModal

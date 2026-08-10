@@ -181,6 +181,22 @@ export interface ProgressAnalyticsCardProps {
   className?: string;
 }
 
+export interface DashboardBackgroundGlowProps {
+  className?: string;
+}
+
+export interface DashboardOverviewGridProps {
+  studentName: string;
+  streakDays: number;
+  weeklyProgressPercent: number;
+  continueLearning: ContinueLearningCourse;
+  liveClasses: LiveClassItem[];
+  assignments: AssignmentItem[];
+  onJoinClass?: (id?: string) => void;
+  onResumeCourse?: (id?: string) => void;
+  className?: string;
+}
+
 export interface DashboardLayoutProps {
   className?: string;
 }
