@@ -12,6 +12,7 @@ export interface AuthUser {
   mobile?: string;
   role: AuthRole;
   avatarUrl?: string;
+  coverUrl?: string;
   createdAt: string;
 }
 

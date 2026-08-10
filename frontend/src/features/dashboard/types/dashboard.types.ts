@@ -1,9 +1,17 @@
 export interface StudentProfile {
   name: string;
+  email: string;
+  phone: string;
+  studentId: string;
+  gradeLevel: string;
   dateFormatted: string;
   streakDays: number;
   weeklyProgressPercent: number;
   avatarUrl: string;
+  coverUrl?: string;
+  joinedDate?: string;
+  bio?: string;
+  preferredLanguage?: string;
 }
 
 export interface ContinueLearningCourse {
@@ -53,6 +61,7 @@ export interface DashboardTopNavProps {
   onSearchChange: (val: string) => void;
   unreadNotificationsCount?: number;
   studentAvatar: string;
+  onOpenProfile?: () => void;
   className?: string;
 }
 
@@ -63,6 +72,61 @@ export interface DashboardSideNavProps {
   dateFormatted: string;
   studentAvatar: string;
   onJoinTodayClass?: () => void;
+  onOpenProfile?: () => void;
+  className?: string;
+}
+
+export interface UserProfileModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  profile: StudentProfile;
+  onSaveProfile: (updated: Partial<StudentProfile>) => void;
+}
+
+export interface ProfileCoverHeaderProps {
+  coverUrl?: string;
+  showCoverMenu: boolean;
+  showCoverPresets: boolean;
+  onToggleCoverMenu: () => void;
+  onToggleCoverPresets: () => void;
+  onCloseCoverMenu: () => void;
+  onSelectPresetCover: (url: string) => void;
+  onUploadCoverClick: () => void;
+  onCloseModal: () => void;
+  className?: string;
+}
+
+export interface ProfileAvatarHeaderProps {
+  avatarUrl: string;
+  studentName: string;
+  showAvatarMenu: boolean;
+  showAvatarPresets: boolean;
+  onToggleAvatarMenu: () => void;
+  onToggleAvatarPresets: () => void;
+  onCloseAvatarMenu: () => void;
+  onSelectPresetAvatar: (url: string) => void;
+  onUploadAvatarClick: () => void;
+  className?: string;
+}
+
+export interface ProfileMetaInfoProps {
+  name: string;
+  email: string;
+  phone: string;
+  studentId: string;
+  gradeLevel: string;
+  className?: string;
+}
+
+export interface ProfilePersonalTabProps {
+  formData: StudentProfile;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  className?: string;
+}
+
+export interface ProfilePreferencesTabProps {
+  formData: StudentProfile;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   className?: string;
 }
 

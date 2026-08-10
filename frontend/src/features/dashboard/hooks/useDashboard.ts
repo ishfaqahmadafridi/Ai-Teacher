@@ -2,8 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useStudentProfile } from './useStudentProfile';
 import {
-  DEFAULT_STUDENT_PROFILE,
   DEFAULT_CONTINUE_LEARNING,
   DEFAULT_LIVE_CLASSES,
   DEFAULT_ASSIGNMENTS,
@@ -12,10 +12,17 @@ import {
 
 export function useDashboard() {
   const router = useRouter();
+  const {
+    profile,
+    isProfileOpen,
+    handleOpenProfile,
+    handleCloseProfile,
+    handleSaveProfile,
+  } = useStudentProfile();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTabId, setActiveTabId] = useState('dashboard');
 
-  const profile = DEFAULT_STUDENT_PROFILE;
   const continueLearning = DEFAULT_CONTINUE_LEARNING;
   const liveClasses = DEFAULT_LIVE_CLASSES;
   const assignments = DEFAULT_ASSIGNMENTS;
@@ -25,9 +32,15 @@ export function useDashboard() {
     setSearchQuery(val);
   }, []);
 
-  const handleSelectTab = useCallback((id: string) => {
-    setActiveTabId(id);
-  }, []);
+  const handleSelectTab = useCallback(
+    (id: string) => {
+      setActiveTabId(id);
+      if (id === 'settings') {
+        handleOpenProfile();
+      }
+    },
+    [handleOpenProfile]
+  );
 
   const handleJoinClass = useCallback(
     (_classId?: string) => {
@@ -47,12 +60,16 @@ export function useDashboard() {
     searchQuery,
     activeTabId,
     profile,
+    isProfileOpen,
     continueLearning,
     liveClasses,
     assignments,
     navLinks,
     handleSearchChange,
     handleSelectTab,
+    handleOpenProfile,
+    handleCloseProfile,
+    handleSaveProfile,
     handleJoinClass,
     handleResumeCourse,
   };

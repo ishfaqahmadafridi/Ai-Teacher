@@ -6,17 +6,22 @@ import { DashboardTopNav, DashboardSideNav } from './navigation';
 import { ContinueLearningBanner, DashboardHeroSection } from './hero';
 import { LiveClassesSection } from './classes';
 import { ProgressAnalyticsCard, AssignmentsSection } from './analytics';
+import { UserProfileModal } from './profile';
 
 export const DashboardLayout = memo(function DashboardLayout() {
   const {
     searchQuery,
     activeTabId,
     profile,
+    isProfileOpen,
     continueLearning,
     liveClasses,
     assignments,
     handleSearchChange,
     handleSelectTab,
+    handleOpenProfile,
+    handleCloseProfile,
+    handleSaveProfile,
     handleJoinClass,
     handleResumeCourse,
   } = useDashboard();
@@ -38,6 +43,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         searchQuery={searchQuery}
         onSearchChange={handleSearchChange}
         studentAvatar={profile.avatarUrl}
+        onOpenProfile={handleOpenProfile}
       />
 
       {/* Side Navbar Drawer */}
@@ -48,6 +54,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         dateFormatted={profile.dateFormatted}
         studentAvatar={profile.avatarUrl}
         onJoinTodayClass={handleJoinClass}
+        onOpenProfile={handleOpenProfile}
       />
 
       {/* Main Workspace Area */}
@@ -87,6 +94,14 @@ export const DashboardLayout = memo(function DashboardLayout() {
           </div>
         </div>
       </main>
+
+      {/* Student User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileOpen}
+        onClose={handleCloseProfile}
+        profile={profile}
+        onSaveProfile={handleSaveProfile}
+      />
     </div>
   );
 });

@@ -1,0 +1,93 @@
+import type {
+  ContinueLearningCourse,
+  LiveClassItem,
+  AssignmentItem,
+} from '../types/dashboard.types';
+
+export const DEFAULT_CONTINUE_LEARNING: ContinueLearningCourse = {
+  id: 'c1',
+  title: 'Advanced Quantum Electrodynamics',
+  chapter: 'Chapter 4: Perturbation Theory & Feynman Diagrams',
+  progressPercent: 68,
+};
+
+export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
+  {
+    id: 'lc1',
+    title: 'Thermodynamics & Statistical Mechanics',
+    subject: 'Physics III',
+    instructorName: 'Dr. Aris Thorne',
+    instructorAvatar:
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    timeFormatted: 'Today at 2:00 PM',
+    isLive: true,
+    attendanceCount: 42,
+    bgGradient: 'from-[#1e1b4b] to-[#311b92]',
+    progressPercent: 40,
+    completedLessons: 6,
+    totalLessons: 15,
+  },
+  {
+    id: 'lc2',
+    title: 'Special Relativity & Spacetime Geometry',
+    subject: 'Astrophysics',
+    instructorName: 'Prof. Elena Rostova',
+    instructorAvatar:
+      'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80',
+    timeFormatted: 'Tomorrow at 10:00 AM',
+    isLive: false,
+    attendanceCount: 38,
+    bgGradient: 'from-[#0c4a6e] to-[#075985]',
+    progressPercent: 80,
+    completedLessons: 12,
+    totalLessons: 15,
+  },
+  {
+    id: 'lc3',
+    title: 'Electromagnetic Field Equations',
+    subject: 'Classical Field Theory',
+    instructorName: 'Dr. Marcus Vance',
+    instructorAvatar:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+    timeFormatted: 'Jan 26 at 4:30 PM',
+    isLive: false,
+    attendanceCount: 51,
+    bgGradient: 'from-[#365314] to-[#1a2e05]',
+    progressPercent: 20,
+    completedLessons: 3,
+    totalLessons: 15,
+  },
+];
+
+export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
+  {
+    id: 'a1',
+    title: 'Derivation of Wave Equation in Vacuum',
+    subject: 'Electromagnetism',
+    dueDate: 'Due in 2 days',
+    status: 'in_progress',
+    points: 100,
+    type: 'assignment',
+    isUrgent: true,
+  },
+  {
+    id: 'a2',
+    title: 'Quantum Harmonic Oscillator Quiz',
+    subject: 'Quantum Mechanics',
+    dueDate: 'Due Jan 28',
+    status: 'pending',
+    points: 50,
+    type: 'quiz',
+    isUrgent: false,
+  },
+  {
+    id: 'a3',
+    title: 'Entropy & Maxwell Relations Practice Set',
+    subject: 'Thermodynamics',
+    dueDate: 'Completed Jan 20',
+    status: 'completed',
+    points: 100,
+    type: 'practice_set',
+    isUrgent: false,
+  },
+];
