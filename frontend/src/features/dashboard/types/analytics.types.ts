@@ -1,4 +1,5 @@
 import type { AssignmentItem } from './dashboard.types';
+export * from './progress.types';
 
 export interface AssignmentsSectionProps {
   assignments?: AssignmentItem[];

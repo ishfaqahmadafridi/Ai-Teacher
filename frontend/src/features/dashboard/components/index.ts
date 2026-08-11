@@ -7,4 +7,5 @@ export * from './classes';
 export * from './analytics';
 export * from './courses';
 export * from './schedule';
+export * from './progress';
 export * from './profile';

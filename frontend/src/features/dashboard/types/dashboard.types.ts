@@ -85,3 +85,4 @@ export * from './classes.types';
 export * from './analytics.types';
 export * from './courses.types';
 export * from './schedule.types';
+export * from './progress.types';

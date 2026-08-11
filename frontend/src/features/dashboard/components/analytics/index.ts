@@ -1,2 +1,2 @@
-export { ProgressAnalyticsCard } from './ProgressAnalyticsCard';
-export { AssignmentsSection } from './AssignmentsSection';
+export * from './ProgressAnalyticsCard';
+export * from './AssignmentsSection';
