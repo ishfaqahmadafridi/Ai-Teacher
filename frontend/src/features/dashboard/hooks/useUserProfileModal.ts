@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { StudentProfile, UserProfileModalProps } from '../types/dashboard.types';
+import type { StudentProfile, UserProfileModalProps } from '../types';
 
 export function useUserProfileModal({
   isOpen,

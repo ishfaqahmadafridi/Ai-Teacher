@@ -16,3 +16,13 @@ export interface NavActionControlsProps {
   onOpenProfile?: () => void;
   className?: string;
 }
+
+export interface DashboardTopNavProps {
+  searchQuery: string;
+  onSearchChange: (val: string) => void;
+  unreadNotificationsCount?: number;
+  studentAvatar: string;
+  onOpenProfile?: () => void;
+  className?: string;
+}
+

@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import type { DashboardHeroSectionProps } from '../../types/dashboard.types';
+import type { DashboardHeroSectionProps } from '../../types';
 
 export const DashboardHeroSection = memo(function DashboardHeroSection({
   studentName = 'John',

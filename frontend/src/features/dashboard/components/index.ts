@@ -6,4 +6,5 @@ export * from './hero';
 export * from './classes';
 export * from './analytics';
 export * from './courses';
+export * from './schedule';
 export * from './profile';

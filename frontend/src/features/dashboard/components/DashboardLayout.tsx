@@ -6,6 +6,7 @@ import { DashboardBackgroundGlow } from './DashboardBackgroundGlow';
 import { DashboardOverviewGrid } from './DashboardOverviewGrid';
 import { DashboardTopNav, DashboardSideNav } from './navigation';
 import { RegisteredCoursesSection, RegisterCourseModal } from './courses';
+import { ClassScheduleSection } from './schedule';
 import { UserProfileModal } from './profile';
 
 export const DashboardLayout = memo(function DashboardLayout() {
@@ -63,6 +64,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
             onJoinCourse={handleJoinClass}
             onOpenRegisterModal={handleOpenRegisterCourseModal}
           />
+        ) : activeTabId === 'schedule' ? (
+          <ClassScheduleSection onJoinClass={handleJoinClass} />
         ) : (
           <DashboardOverviewGrid
             studentName={profile.name}
