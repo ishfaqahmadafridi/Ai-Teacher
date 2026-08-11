@@ -1,5 +1,5 @@
 'use client';
-import type { DiagramCommand } from '@/features/classroom/types/classroom.types';
+import type { DiagramCommand } from '@/types';
 import { FormulaBlock } from '@/shared/components/FormulaBlock';
 
 interface FormulaOverlayProps {

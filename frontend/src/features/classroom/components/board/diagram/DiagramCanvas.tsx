@@ -2,8 +2,8 @@
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Scene } from './Scene';
-import type { DiagramCommand, DiagramType } from '@/features/classroom/types/classroom.types';
-import { CLASSROOM_LAYOUT } from '@/features/classroom/utilities/classroomConfig';
+import type { DiagramCommand, DiagramType } from '@/types';
+import { CLASSROOM_LAYOUT } from '@/utils/classroomConfig';
 
 interface DiagramCanvasProps {
   diagramType: DiagramType;

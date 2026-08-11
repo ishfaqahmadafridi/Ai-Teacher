@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch } from '@/hooks/useAppStore';
 import { setVoices } from '@/features/classroom/state/classroomSlice';
-import type { SerializedVoice } from '@/features/classroom/types/classroom.types';
+import type { SerializedVoice } from '@/types';
 
 export function VoiceLoader() {
   const dispatch = useAppDispatch();

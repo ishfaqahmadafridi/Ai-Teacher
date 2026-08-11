@@ -1,5 +1,5 @@
-import type { DiagramType, DiagramCommand } from '@/features/classroom/types/classroom.types';
-import { isImageUrl } from '@/features/classroom/utilities/imageUtils';
+import type { DiagramType, DiagramCommand } from '@/types';
+import { isImageUrl } from '@/utils/imageUtils';
 import { GravityScene } from './GravityScene';
 import { ProjectileScene } from './ProjectileScene';
 import { WaveScene } from './WaveScene';
