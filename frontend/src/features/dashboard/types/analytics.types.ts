@@ -1,12 +1,4 @@
-import type { AssignmentItem } from './dashboard.types';
 export * from './progress.types';
-
-export interface AssignmentsSectionProps {
-  assignments?: AssignmentItem[];
-  onSelectAssignment?: (id: string) => void;
-  onAskAiHelp?: (title: string) => void;
-  className?: string;
-}
 
 export interface ProgressAnalyticsCardProps {
   weeklyProgressPercent?: number;

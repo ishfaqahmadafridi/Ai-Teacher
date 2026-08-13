@@ -60,6 +60,12 @@ export interface DashboardBackgroundGlowProps {
   className?: string;
 }
 
+export interface UseDashboardOverviewGridOptions {
+  continueLearningId?: string;
+  onResumeCourse?: (id?: string) => void;
+  onJoinClass?: (id?: string) => void;
+}
+
 export interface DashboardOverviewGridProps {
   studentName: string;
   streakDays: number;
@@ -76,6 +82,22 @@ export interface DashboardLayoutProps {
   className?: string;
 }
 
+export interface DashboardMainContentProps {
+  activeTabId: string;
+  studentName: string;
+  streakDays: number;
+  weeklyProgressPercent: number;
+  registeredCourses: import('./courses.types').RegisteredCourseItem[];
+  continueLearning: ContinueLearningCourse;
+  liveClasses: LiveClassItem[];
+  assignments: AssignmentItem[];
+  autoOpenTask?: import('./assignments.types').AutoOpenTaskPayload | null;
+  onJoinClass?: (id?: string) => void;
+  onResumeCourse?: (id?: string) => void;
+  onOpenRegisterCourseModal?: () => void;
+  className?: string;
+}
+
 // Canonical Re-exports for Feature Types
 export * from './sidebar.types';
 export * from './topbar.types';
@@ -86,3 +108,4 @@ export * from './analytics.types';
 export * from './courses.types';
 export * from './schedule.types';
 export * from './progress.types';
+export * from './assignments.types';

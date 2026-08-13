@@ -1,9 +1,11 @@
 'use client';
 
 import { memo } from 'react';
+import { useDashboardOverviewGrid } from '../hooks';
 import { ContinueLearningBanner, DashboardHeroSection } from './hero';
 import { LiveClassesSection } from './classes';
-import { ProgressAnalyticsCard, AssignmentsSection } from './analytics';
+import { ProgressAnalyticsCard } from './analytics';
+import { AssignmentsSection } from './assignments';
 import type { DashboardOverviewGridProps } from '../types/dashboard.types';
 
 export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
@@ -17,12 +19,18 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
   onResumeCourse,
   className = '',
 }: DashboardOverviewGridProps) {
+  const { handleResume, handleJoinClass } = useDashboardOverviewGrid({
+    continueLearningId: continueLearning.id,
+    onResumeCourse,
+    onJoinClass,
+  });
+
   return (
     <div className={className}>
       {/* Top Continue Learning Course Banner */}
       <ContinueLearningBanner
         course={continueLearning}
-        onResume={() => onResumeCourse?.(continueLearning.id)}
+        onResume={handleResume}
         className="mb-6"
       />
 
@@ -34,12 +42,12 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
             studentName={studentName}
             streakDays={streakDays}
             weeklyProgressPercent={weeklyProgressPercent}
-            onJoinTodayClass={onJoinClass}
+            onJoinTodayClass={handleJoinClass}
           />
 
           <LiveClassesSection
             classes={liveClasses}
-            onJoinClass={onJoinClass}
+            onJoinClass={handleJoinClass}
           />
 
           <AssignmentsSection assignments={assignments} />

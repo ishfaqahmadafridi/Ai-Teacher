@@ -1,13 +1,11 @@
 'use client';
 
 import { memo } from 'react';
-import { useDashboard } from '../hooks/useDashboard';
+import { useDashboardLayout } from '../hooks';
 import { DashboardBackgroundGlow } from './DashboardBackgroundGlow';
-import { DashboardOverviewGrid } from './DashboardOverviewGrid';
 import { DashboardTopNav, DashboardSideNav } from './navigation';
-import { RegisteredCoursesSection, RegisterCourseModal } from './courses';
-import { ClassScheduleSection } from './schedule';
-import { ClassProgressSection } from './progress';
+import { DashboardMainContent } from './DashboardMainContent';
+import { RegisterCourseModal } from './courses';
 import { UserProfileModal } from './profile';
 
 export const DashboardLayout = memo(function DashboardLayout() {
@@ -21,8 +19,10 @@ export const DashboardLayout = memo(function DashboardLayout() {
     continueLearning,
     liveClasses,
     assignments,
+    autoOpenTask,
     handleSearchChange,
     handleSelectTab,
+    handleNotificationClick,
     handleOpenProfile,
     handleCloseProfile,
     handleSaveProfile,
@@ -31,7 +31,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
     handleRegisterCourse,
     handleJoinClass,
     handleResumeCourse,
-  } = useDashboard();
+  } = useDashboardLayout();
 
   return (
     <div className="min-h-screen bg-[#0A0F18] font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] relative">
@@ -44,6 +44,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onSearchChange={handleSearchChange}
         studentAvatar={profile.avatarUrl}
         onOpenProfile={handleOpenProfile}
+        onNotificationClick={handleNotificationClick}
       />
 
       {/* Side Navbar Drawer */}
@@ -58,39 +59,29 @@ export const DashboardLayout = memo(function DashboardLayout() {
       />
 
       {/* Main Workspace Area */}
-      <main className="md:ml-72 pt-24 px-4 md:px-10 max-w-[1440px] mx-auto min-h-screen pb-10 relative z-10">
-        {activeTabId === 'registered_courses' ? (
-          <RegisteredCoursesSection
-            courses={registeredCourses}
-            onJoinCourse={handleJoinClass}
-            onOpenRegisterModal={handleOpenRegisterCourseModal}
-          />
-        ) : activeTabId === 'schedule' ? (
-          <ClassScheduleSection onJoinClass={handleJoinClass} />
-        ) : activeTabId === 'class_progress' ? (
-          <ClassProgressSection studentName={profile.name} />
-        ) : (
-          <DashboardOverviewGrid
-            studentName={profile.name}
-            streakDays={profile.streakDays}
-            weeklyProgressPercent={profile.weeklyProgressPercent}
-            continueLearning={continueLearning}
-            liveClasses={liveClasses}
-            assignments={assignments}
-            onJoinClass={handleJoinClass}
-            onResumeCourse={handleResumeCourse}
-          />
-        )}
-      </main>
+      <DashboardMainContent
+        activeTabId={activeTabId}
+        studentName={profile.name}
+        streakDays={profile.streakDays}
+        weeklyProgressPercent={profile.weeklyProgressPercent}
+        registeredCourses={registeredCourses}
+        continueLearning={continueLearning}
+        liveClasses={liveClasses}
+        assignments={assignments}
+        autoOpenTask={autoOpenTask}
+        onJoinClass={handleJoinClass}
+        onResumeCourse={handleResumeCourse}
+        onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
+      />
 
-      {/* Course Registration Modal */}
+      {/* Course Enrollment Dialog Modal */}
       <RegisterCourseModal
         isOpen={isRegisterCourseModalOpen}
         onClose={handleCloseRegisterCourseModal}
         onRegisterCourse={handleRegisterCourse}
       />
 
-      {/* Student User Profile Modal */}
+      {/* User Student Profile Dialog Modal */}
       <UserProfileModal
         isOpen={isProfileOpen}
         onClose={handleCloseProfile}
