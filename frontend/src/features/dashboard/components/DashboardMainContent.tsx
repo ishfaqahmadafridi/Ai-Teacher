@@ -42,10 +42,12 @@ export const DashboardMainContent = memo(function DashboardMainContent({
           streakDays={streakDays}
           weeklyProgressPercent={weeklyProgressPercent}
           continueLearning={continueLearning}
+          registeredCourses={registeredCourses}
           liveClasses={liveClasses}
           assignments={assignments}
           onJoinClass={onJoinClass}
           onResumeCourse={onResumeCourse}
+          onOpenRegisterCourseModal={onOpenRegisterCourseModal}
         />
       )}
     </main>

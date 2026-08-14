@@ -2,19 +2,20 @@
 
 import { memo } from 'react';
 import { useDashboardOverviewGrid } from '../hooks';
-import { DashboardHeroSection } from './hero';
-import { LiveClassesSection } from './classes';
+import { DashboardHeroSection, ContinueLearningBanner } from './hero';
 import { ProgressAnalyticsCard } from './analytics';
-import { AssignmentsSection } from './assignments';
+import { RegisteredCoursesSection } from './courses';
 import type { DashboardOverviewGridProps } from '../types/dashboard.types';
 
 export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
   studentName,
   streakDays,
   weeklyProgressPercent,
-  liveClasses,
-  assignments,
+  continueLearning,
+  registeredCourses,
   onJoinClass,
+  onResumeCourse,
+  onOpenRegisterCourseModal,
   className = '',
 }: DashboardOverviewGridProps) {
   const { handleJoinClass } = useDashboardOverviewGrid({
@@ -22,31 +23,39 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
   });
 
   return (
-    <div className={className}>
-      {/* 12-Column Responsive Dashboard Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column (8 Columns): Hero, Live Classes, Assignments */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          <DashboardHeroSection
-            studentName={studentName}
-            streakDays={streakDays}
-            weeklyProgressPercent={weeklyProgressPercent}
-            onJoinTodayClass={handleJoinClass}
-          />
+    <div className={`space-y-6 ${className}`}>
+      {/* Top Banner: Dynamic Student Greeting Hero */}
+      <DashboardHeroSection
+        studentName={studentName}
+        streakDays={streakDays}
+        weeklyProgressPercent={weeklyProgressPercent}
+        onJoinTodayClass={handleJoinClass}
+      />
 
-          <LiveClassesSection
-            classes={liveClasses}
-            onJoinClass={handleJoinClass}
-          />
+      {/* Active Course Continue Learning Action Banner */}
+      {continueLearning && (
+        <ContinueLearningBanner
+          course={continueLearning}
+          onResume={() => onResumeCourse?.(continueLearning.id)}
+        />
+      )}
 
-          <AssignmentsSection assignments={assignments} />
-        </div>
-
-        {/* Right Column (4 Columns): Performance Analytics */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
+      {/* Main Dashboard Layout Showcase */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Section (7 Columns): Overall Performance Analytics Card */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
           <ProgressAnalyticsCard
             weeklyProgressPercent={weeklyProgressPercent}
             streakDays={streakDays}
+          />
+        </div>
+
+        {/* Right Section (5 Columns): Registered Courses & Discipline Overview */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+          <RegisteredCoursesSection
+            courses={registeredCourses}
+            onJoinCourse={handleJoinClass}
+            onOpenRegisterModal={onOpenRegisterCourseModal}
           />
         </div>
       </div>

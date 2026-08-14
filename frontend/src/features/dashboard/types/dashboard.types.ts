@@ -71,10 +71,12 @@ export interface DashboardOverviewGridProps {
   streakDays: number;
   weeklyProgressPercent: number;
   continueLearning?: ContinueLearningCourse;
-  liveClasses: LiveClassItem[];
-  assignments: AssignmentItem[];
+  registeredCourses?: import('./courses.types').RegisteredCourseItem[];
+  liveClasses?: LiveClassItem[];
+  assignments?: AssignmentItem[];
   onJoinClass?: (id?: string) => void;
   onResumeCourse?: (id?: string) => void;
+  onOpenRegisterCourseModal?: () => void;
   className?: string;
 }
 
