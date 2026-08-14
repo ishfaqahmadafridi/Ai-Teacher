@@ -70,7 +70,7 @@ export interface DashboardOverviewGridProps {
   studentName: string;
   streakDays: number;
   weeklyProgressPercent: number;
-  continueLearning: ContinueLearningCourse;
+  continueLearning?: ContinueLearningCourse;
   liveClasses: LiveClassItem[];
   assignments: AssignmentItem[];
   onJoinClass?: (id?: string) => void;
@@ -88,7 +88,7 @@ export interface DashboardMainContentProps {
   streakDays: number;
   weeklyProgressPercent: number;
   registeredCourses: import('./courses.types').RegisteredCourseItem[];
-  continueLearning: ContinueLearningCourse;
+  continueLearning?: ContinueLearningCourse;
   liveClasses: LiveClassItem[];
   assignments: AssignmentItem[];
   autoOpenTask?: import('./assignments.types').AutoOpenTaskPayload | null;

@@ -13,6 +13,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
   studentName,
   dateFormatted,
   studentAvatar,
+  greeting,
   onOpenProfile,
   className = '',
 }: DashboardSideNavProps) {
@@ -27,6 +28,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
         studentName={studentName}
         studentAvatar={studentAvatar}
         dateFormatted={dateFormatted}
+        greeting={greeting}
         onOpenProfile={onOpenProfile}
       />
 

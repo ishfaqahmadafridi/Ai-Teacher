@@ -1,15 +1,20 @@
 'use client';
 
 import { memo } from 'react';
+import { useTimeGreeting } from '../../hooks';
 import type { SidebarUserHeaderProps } from '../../types/sidebar.types';
 
 export const SidebarUserHeader = memo(function SidebarUserHeader({
   studentName,
   studentAvatar,
   dateFormatted,
+  greeting: customGreeting,
   onOpenProfile,
   className = '',
 }: SidebarUserHeaderProps) {
+  const timeGreeting = useTimeGreeting();
+  const greeting = customGreeting || timeGreeting;
+
   return (
     <div className={`mb-6 mt-1 ${className}`}>
       <button
@@ -25,7 +30,7 @@ export const SidebarUserHeader = memo(function SidebarUserHeader({
         />
         <div className="min-w-0 flex-1">
           <h2 className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-white truncate group-hover:text-[#38BDF8] transition-colors">
-            Good Morning, {studentName}
+            {greeting}, {studentName}
           </h2>
           <p className="font-['JetBrains_Mono',monospace] text-[11px] text-[#94A3B8] mt-0.5">
             {dateFormatted}
