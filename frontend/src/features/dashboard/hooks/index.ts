@@ -19,5 +19,9 @@ export * from './useSubmitAssignmentModal';
 export * from './useQuizPlayer';
 export * from './useTimeGreeting';
 export * from './useDashboardHeroSection';
+export * from './useProgressAnalyticsCard';
+export * from './useAnalyticsMetricsGrid';
+
+
 
 

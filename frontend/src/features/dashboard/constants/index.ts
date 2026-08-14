@@ -6,3 +6,5 @@ export * from './assignmentsConstants';
 export * from './notificationsConstants';
 export * from './progressConstants';
 export * from './scheduleConstants';
+export * from './analyticsConstants';
+

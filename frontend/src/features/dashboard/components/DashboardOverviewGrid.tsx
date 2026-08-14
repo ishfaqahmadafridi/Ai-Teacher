@@ -29,7 +29,7 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
         onJoinTodayClass={handleJoinClass}
       />
 
-      {/* Active Course Continue Learning Action Banner */}
+      {/* Active Field Action Banner */}
       {continueLearning && (
         <ContinueLearningBanner
           course={continueLearning}
@@ -37,8 +37,8 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
         />
       )}
 
-      {/* Main Overall Performance Analytics Card */}
-      <div className="max-w-4xl">
+      {/* Featured Overall Performance Analytics Card */}
+      <div className="w-full">
         <ProgressAnalyticsCard
           weeklyProgressPercent={weeklyProgressPercent}
           streakDays={streakDays}

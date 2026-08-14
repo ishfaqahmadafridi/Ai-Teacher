@@ -8,9 +8,9 @@ import type { ScheduleItem } from '../types/schedule.types';
 
 export const DEFAULT_CONTINUE_LEARNING: ContinueLearningCourse = {
   id: 'c1',
-  title: 'Artificial Intelligence & Deep Learning (AI)',
-  chapter: 'Chapter 4: Neural Networks & Transformer Architectures',
-  progressPercent: 68,
+  title: 'Computer Science & Artificial Intelligence (CS & AI)',
+  chapter: '',
+  progressPercent: 75,
 };
 
 export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
