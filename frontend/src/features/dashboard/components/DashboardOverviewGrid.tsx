@@ -4,7 +4,6 @@ import { memo } from 'react';
 import { useDashboardOverviewGrid } from '../hooks';
 import { DashboardHeroSection, ContinueLearningBanner } from './hero';
 import { ProgressAnalyticsCard } from './analytics';
-import { RegisteredCoursesSection } from './courses';
 import type { DashboardOverviewGridProps } from '../types/dashboard.types';
 
 export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
@@ -12,10 +11,8 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
   streakDays,
   weeklyProgressPercent,
   continueLearning,
-  registeredCourses,
   onJoinClass,
   onResumeCourse,
-  onOpenRegisterCourseModal,
   className = '',
 }: DashboardOverviewGridProps) {
   const { handleJoinClass } = useDashboardOverviewGrid({
@@ -40,24 +37,12 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
         />
       )}
 
-      {/* Main Dashboard Layout Showcase */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Section (7 Columns): Overall Performance Analytics Card */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          <ProgressAnalyticsCard
-            weeklyProgressPercent={weeklyProgressPercent}
-            streakDays={streakDays}
-          />
-        </div>
-
-        {/* Right Section (5 Columns): Registered Courses & Discipline Overview */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-          <RegisteredCoursesSection
-            courses={registeredCourses}
-            onJoinCourse={handleJoinClass}
-            onOpenRegisterModal={onOpenRegisterCourseModal}
-          />
-        </div>
+      {/* Main Overall Performance Analytics Card */}
+      <div className="max-w-4xl">
+        <ProgressAnalyticsCard
+          weeklyProgressPercent={weeklyProgressPercent}
+          streakDays={streakDays}
+        />
       </div>
     </div>
   );
