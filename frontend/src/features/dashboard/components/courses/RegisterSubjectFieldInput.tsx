@@ -24,12 +24,14 @@ export const RegisterSubjectFieldInput = memo(function RegisterSubjectFieldInput
         onChange={onChange}
         className="w-full bg-[#1E293B] border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] transition-colors cursor-pointer"
       >
-        <option value="Computer Science & IT">Computer Science & IT</option>
-        <option value="Physics & Engineering">Physics & Engineering</option>
-        <option value="Astrophysics">Astrophysics</option>
-        <option value="Classical Field Theory">Classical Field Theory</option>
-        <option value="Quantum Mechanics">Quantum Mechanics</option>
-        <option value="Mathematics & Calculus">Mathematics & Calculus</option>
+        <option value="Computer Science (CS)">Computer Science (CS)</option>
+        <option value="Information Technology (IT)">Information Technology (IT)</option>
+        <option value="Artificial Intelligence (AI)">Artificial Intelligence (AI)</option>
+        <option value="Software Engineering (SE)">Software Engineering (SE)</option>
+        <option value="Data Science & Analytics">Data Science & Analytics</option>
+        <option value="Cyber Security & Networking">Cyber Security & Networking</option>
+        <option value="Business & FinTech">Business & FinTech</option>
+        <option value="Biomedical & Medical Sciences">Biomedical & Medical Sciences</option>
       </select>
     </div>
   );

@@ -8,8 +8,8 @@ import type { ScheduleItem } from '../types/schedule.types';
 
 export const DEFAULT_CONTINUE_LEARNING: ContinueLearningCourse = {
   id: 'c1',
-  title: 'Advanced Quantum Electrodynamics',
-  chapter: 'Chapter 4: Perturbation Theory & Feynman Diagrams',
+  title: 'Artificial Intelligence & Deep Learning (AI)',
+  chapter: 'Chapter 4: Neural Networks & Transformer Architectures',
   progressPercent: 68,
 };
 
@@ -17,7 +17,7 @@ export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
   {
     id: 'rc1',
     title: 'Introduction to Computer Science & Software Engineering',
-    subjectField: 'Computer Science & IT',
+    subjectField: 'Computer Science (CS)',
     courseCode: 'CS-101',
     creditHours: 4,
     progressPercent: 75,
@@ -29,7 +29,7 @@ export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
   {
     id: 'rc2',
     title: 'Data Structures, Algorithms & Problem Solving',
-    subjectField: 'Computer Science & IT',
+    subjectField: 'Computer Science (CS)',
     courseCode: 'CS-201',
     creditHours: 4,
     progressPercent: 60,
@@ -41,7 +41,7 @@ export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
   {
     id: 'rc3',
     title: 'Database Management Systems & SQL Architecture',
-    subjectField: 'Information Technology',
+    subjectField: 'Information Technology (IT)',
     courseCode: 'IT-305',
     creditHours: 3,
     progressPercent: 40,
@@ -52,13 +52,13 @@ export const DEFAULT_REGISTERED_COURSES: RegisteredCourseItem[] = [
   },
   {
     id: 'rc4',
-    title: 'Full-Stack Web Development & Cloud Infrastructure',
-    subjectField: 'Information Technology',
-    courseCode: 'IT-402',
+    title: 'Artificial Intelligence & Neural Network Models',
+    subjectField: 'Artificial Intelligence (AI)',
+    courseCode: 'AI-402',
     creditHours: 3,
-    progressPercent: 25,
-    completedLessons: 4,
-    totalLessons: 16,
+    progressPercent: 68,
+    completedLessons: 10,
+    totalLessons: 15,
     enrolledDate: 'Feb 01, 2026',
     status: 'active',
   },
@@ -68,7 +68,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's1',
     title: 'Data Structures & Algorithms - Weekly Lecture',
-    subject: 'Computer Science & IT',
+    subject: 'Computer Science (CS)',
     timeFormatted: '09:00 AM - 10:30 AM',
     startTime: '09:00 AM',
     endTime: '10:30 AM',
@@ -81,8 +81,8 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   },
   {
     id: 's2',
-    title: 'Object-Oriented Programming (Java & C++)',
-    subject: 'Software Engineering',
+    title: 'Object-Oriented Software Design (Java & C++)',
+    subject: 'Software Engineering (SE)',
     timeFormatted: '11:00 AM - 12:30 PM',
     startTime: '11:00 AM',
     endTime: '12:30 PM',
@@ -96,7 +96,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's3',
     title: 'AI & Machine Learning Foundations',
-    subject: 'Artificial Intelligence',
+    subject: 'Artificial Intelligence (AI)',
     timeFormatted: '02:00 PM - 03:30 PM',
     startTime: '02:00 PM',
     endTime: '03:30 PM',
@@ -110,7 +110,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's4',
     title: 'Database Systems & SQL Lab Practice',
-    subject: 'Information Technology',
+    subject: 'Information Technology (IT)',
     timeFormatted: '02:00 PM - 03:30 PM',
     startTime: '02:00 PM',
     endTime: '03:30 PM',
@@ -124,7 +124,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's5',
     title: 'Computer Networks & Cyber Security',
-    subject: 'Cyber Security',
+    subject: 'Cyber Security & Networking',
     timeFormatted: '10:00 AM - 11:30 AM',
     startTime: '10:00 AM',
     endTime: '11:30 AM',
@@ -138,7 +138,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's6',
     title: 'Full-Stack Web Architecture & Cloud DevOps',
-    subject: 'Information Technology',
+    subject: 'Information Technology (IT)',
     timeFormatted: '04:00 PM - 05:30 PM',
     startTime: '04:00 PM',
     endTime: '05:30 PM',
@@ -152,7 +152,7 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   {
     id: 's7',
     title: 'Open Source Development & Git Masterclass',
-    subject: 'Computer Science',
+    subject: 'Computer Science (CS)',
     timeFormatted: '11:00 AM - 12:30 PM',
     startTime: '11:00 AM',
     endTime: '12:30 PM',
@@ -165,12 +165,11 @@ export const DEFAULT_SCHEDULE_ITEMS: ScheduleItem[] = [
   },
 ];
 
-
 export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
   {
     id: 'lc1',
-    title: 'Thermodynamics & Statistical Mechanics',
-    subject: 'Physics III',
+    title: 'Data Structures & Algorithms Masterclass',
+    subject: 'Computer Science (CS)',
     instructorName: 'Dr. Aris Thorne',
     instructorAvatar:
       'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
@@ -184,8 +183,8 @@ export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
   },
   {
     id: 'lc2',
-    title: 'Special Relativity & Spacetime Geometry',
-    subject: 'Astrophysics',
+    title: 'Artificial Intelligence & Neural Networks',
+    subject: 'Artificial Intelligence (AI)',
     instructorName: 'Prof. Elena Rostova',
     instructorAvatar:
       'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&auto=format&fit=crop&q=80',
@@ -199,8 +198,8 @@ export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
   },
   {
     id: 'lc3',
-    title: 'Electromagnetic Field Equations',
-    subject: 'Classical Field Theory',
+    title: 'Full-Stack Web Development & Cloud DevOps',
+    subject: 'Information Technology (IT)',
     instructorName: 'Dr. Marcus Vance',
     instructorAvatar:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
@@ -217,8 +216,8 @@ export const DEFAULT_LIVE_CLASSES: LiveClassItem[] = [
 export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
   {
     id: 'a1',
-    title: 'Derivation of Wave Equation in Vacuum',
-    subject: 'Electromagnetism',
+    title: 'Data Structures & Algorithm Analysis Lab',
+    subject: 'Computer Science (CS)',
     dueDate: 'Due in 2 days',
     status: 'in_progress',
     points: 100,
@@ -227,8 +226,8 @@ export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
   },
   {
     id: 'a2',
-    title: 'Quantum Harmonic Oscillator Quiz',
-    subject: 'Quantum Mechanics',
+    title: 'AI Neural Networks & Transformer Architectures Quiz',
+    subject: 'Artificial Intelligence (AI)',
     dueDate: 'Due Jan 28',
     status: 'pending',
     points: 50,
@@ -237,8 +236,8 @@ export const DEFAULT_ASSIGNMENTS: AssignmentItem[] = [
   },
   {
     id: 'a3',
-    title: 'Entropy & Maxwell Relations Practice Set',
-    subject: 'Thermodynamics',
+    title: 'SQL Database System Architecture & Practice Set',
+    subject: 'Information Technology (IT)',
     dueDate: 'Completed Jan 20',
     status: 'completed',
     points: 100,
