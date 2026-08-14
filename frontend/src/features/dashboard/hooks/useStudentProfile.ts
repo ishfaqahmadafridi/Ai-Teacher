@@ -14,7 +14,7 @@ export function useStudentProfile() {
   const [profile, setProfile] = useState<StudentProfile>(DEFAULT_STUDENT_PROFILE);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  // Sync profile state dynamically with live user data and restore from localStorage on refresh
+  // Sync profile state dynamically with live user data, onboarding selections, and restore from localStorage
   useEffect(() => {
     let savedProfile: Partial<StudentProfile> = {};
     if (typeof window !== 'undefined') {
@@ -25,6 +25,21 @@ export function useStudentProfile() {
         }
       } catch (e) {
         console.error('Failed to parse dashboard_profile from localStorage', e);
+      }
+    }
+
+    let savedOnboarding: any = {};
+    if (typeof window !== 'undefined') {
+      try {
+        const storedOb = localStorage.getItem('onboarding-store');
+        if (storedOb) {
+          const parsedOb = JSON.parse(storedOb);
+          if (parsedOb?.state) {
+            savedOnboarding = parsedOb.state;
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse onboarding-store from localStorage', e);
       }
     }
 
@@ -46,31 +61,35 @@ export function useStudentProfile() {
     setProfile((prev) => {
       let updated = { ...prev, ...savedProfile };
 
-      if (currentUser) {
-        const fullName =
-          savedProfile.name ||
-          [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') ||
-          currentUser.username ||
-          'Student User';
+      const onboardingName = savedOnboarding?.profile?.fullName;
+      const onboardingLang = savedOnboarding?.profile?.language;
 
-        const formattedPhone =
-          savedProfile.phone ||
-          formatPhoneWithCountryCode(currentUser.mobile, currentUser.countryCode);
+      const fullName =
+        savedProfile.name ||
+        onboardingName ||
+        (currentUser
+          ? [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.username
+          : null) ||
+        'Student User';
 
-        const formattedStudentId =
-          savedProfile.studentId ||
-          generateFormattedStudentId(currentUser.id ?? currentUser.username);
+      const formattedPhone =
+        savedProfile.phone ||
+        (currentUser ? formatPhoneWithCountryCode(currentUser.mobile, currentUser.countryCode) : prev.phone);
 
-        updated = {
-          ...updated,
-          name: fullName,
-          email: savedProfile.email || currentUser.email || prev.email,
-          phone: formattedPhone,
-          studentId: formattedStudentId,
-          avatarUrl: savedProfile.avatarUrl || currentUser.avatarUrl || prev.avatarUrl,
-          coverUrl: savedProfile.coverUrl || (currentUser as any).coverUrl || prev.coverUrl,
-        };
-      }
+      const formattedStudentId =
+        savedProfile.studentId ||
+        (currentUser ? generateFormattedStudentId(currentUser.id ?? currentUser.username) : prev.studentId);
+
+      updated = {
+        ...updated,
+        name: fullName,
+        email: savedProfile.email || currentUser?.email || prev.email,
+        phone: formattedPhone,
+        studentId: formattedStudentId,
+        preferredLanguage: savedProfile.preferredLanguage || onboardingLang || prev.preferredLanguage,
+        avatarUrl: savedProfile.avatarUrl || currentUser?.avatarUrl || prev.avatarUrl,
+        coverUrl: savedProfile.coverUrl || (currentUser as any)?.coverUrl || prev.coverUrl,
+      };
 
       return updated;
     });

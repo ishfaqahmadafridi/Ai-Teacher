@@ -12,7 +12,7 @@ export function useOnboarding() {
   const handleNextStep = async () => {
     const nextStep = store.currentStep + 1;
     if (nextStep > 6) {
-      router.push('/classroom');
+      router.push('/dashboard');
     } else {
       store.setStep(nextStep);
       router.push(`/onboarding/step-${nextStep}`);
@@ -62,7 +62,7 @@ export function useOnboarding() {
     } catch {
       // Mock fallback
     }
-    router.push('/classroom');
+    router.push('/dashboard');
   };
 
   return {

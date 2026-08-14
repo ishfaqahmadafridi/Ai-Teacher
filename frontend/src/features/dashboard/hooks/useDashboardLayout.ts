@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStudentProfile } from './useStudentProfile';
 import {
@@ -13,6 +13,7 @@ import {
 import type { RegisteredCourseItem } from '../types/courses.types';
 import type { NotificationItem } from '../types/topbar.types';
 import type { AutoOpenTaskPayload } from '../types/assignments.types';
+import type { ContinueLearningCourse } from '../types/dashboard.types';
 
 export function useDashboardLayout() {
   const router = useRouter();
@@ -30,9 +31,34 @@ export function useDashboardLayout() {
   const [registeredCourses, setRegisteredCourses] = useState<RegisteredCourseItem[]>(
     DEFAULT_REGISTERED_COURSES
   );
+  const [continueLearning, setContinueLearning] = useState<ContinueLearningCourse>(
+    DEFAULT_CONTINUE_LEARNING
+  );
   const [autoOpenTask, setAutoOpenTask] = useState<AutoOpenTaskPayload | null>(null);
 
-  const continueLearning = DEFAULT_CONTINUE_LEARNING;
+  // Dynamic synchronization of selected onboarding interests into Active Learning Field banner
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const storedOb = localStorage.getItem('onboarding-store');
+        if (storedOb) {
+          const parsed = JSON.parse(storedOb);
+          const interests: string[] = parsed?.state?.selectedInterests || [];
+          if (interests.length > 0) {
+            setContinueLearning({
+              id: 'c1',
+              title: interests.slice(0, 3).join(' & '),
+              chapter: '',
+              progressPercent: 75,
+            });
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse selectedInterests from onboarding-store', e);
+      }
+    }
+  }, []);
+
   const liveClasses = DEFAULT_LIVE_CLASSES;
   const assignments = DEFAULT_ASSIGNMENTS;
   const navLinks = DEFAULT_DASHBOARD_NAV_LINKS;
