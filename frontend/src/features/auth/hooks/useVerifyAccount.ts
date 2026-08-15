@@ -107,13 +107,13 @@ export function useVerifyAccount() {
       await AuthService.verifyOtp(method, code);
       setSuccess(true);
       setTimeout(() => {
-        router.push('/classroom');
+        router.push('/onboarding/step-3');
       }, 1500);
     } catch {
       // Mock success for design preview if API endpoint not running
       setSuccess(true);
       setTimeout(() => {
-        router.push('/classroom');
+        router.push('/onboarding/step-3');
       }, 1500);
     } finally {
       setIsLoading(false);

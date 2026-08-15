@@ -115,6 +115,20 @@ export interface CreateAccountFormProps {
   onSuccess?: () => void;
 }
 
+export interface RegisterFormFieldsProps {
+  form: {
+    fullName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
+  showPassword: boolean;
+  isLoading: boolean;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: () => void;
+  onSubmit: (e: FormEvent) => Promise<void>;
+}
+
 export interface AuthHeaderProps {
   title?: string;
   subtitle?: string;

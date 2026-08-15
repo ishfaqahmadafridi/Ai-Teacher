@@ -1,39 +1,39 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { memo } from 'react';
+import type { AcademicLevelToggleProps } from '../../types';
 
-interface AcademicLevelToggleProps {
-  levelMode: 'high_school' | 'university';
-  onToggle: (mode: 'high_school' | 'university') => void;
-}
-
-export function AcademicLevelToggle({ levelMode, onToggle }: AcademicLevelToggleProps) {
+function AcademicLevelToggleComponent({
+  levelMode,
+  onToggleLevel,
+}: AcademicLevelToggleProps) {
   return (
-    <div className="flex p-1.5 bg-white/5 rounded-full mb-10 border border-white/10 backdrop-blur-md">
-      <Button
+    <div className="flex items-center gap-2 p-1.5 bg-[#0F172A] border border-[#1E293B] rounded-2xl w-fit font-['Hanken_Grotesk',sans-serif]">
+      <button
         type="button"
-        variant="ghost"
-        onClick={() => onToggle('high_school')}
-        className={`px-8 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+        onClick={() => onToggleLevel('high_school')}
+        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
           levelMode === 'high_school'
-            ? 'bg-[#0043eb] text-white shadow-[0_0_20px_rgba(0,67,235,0.5)] hover:bg-[#003ad6]'
-            : 'text-[#c6c6cc] hover:text-white hover:bg-transparent'
+            ? 'bg-[#2563EB] text-white shadow-md'
+            : 'text-[#94A3B8] hover:text-white'
         }`}
       >
         High School
-      </Button>
-      <Button
+      </button>
+      <button
         type="button"
-        variant="ghost"
-        onClick={() => onToggle('university')}
-        className={`px-8 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+        onClick={() => onToggleLevel('university')}
+        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
           levelMode === 'university'
-            ? 'bg-[#0043eb] text-white shadow-[0_0_20px_rgba(0,67,235,0.5)] hover:bg-[#003ad6]'
-            : 'text-[#c6c6cc] hover:text-white hover:bg-transparent'
+            ? 'bg-[#2563EB] text-white shadow-md'
+            : 'text-[#94A3B8] hover:text-white'
         }`}
       >
         University
-      </Button>
+      </button>
     </div>
   );
 }
+
+export const AcademicLevelToggle = memo(AcademicLevelToggleComponent);
+AcademicLevelToggle.displayName = 'AcademicLevelToggle';

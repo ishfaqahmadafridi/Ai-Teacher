@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '../../auth/state/authStore';
 import type { StudentProfile, UserProfileModalProps } from '../types';
 
 export function useUserProfileModal({
@@ -9,6 +11,9 @@ export function useUserProfileModal({
   profile,
   onSaveProfile,
 }: UserProfileModalProps) {
+  const router = useRouter();
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+
   const [activeTab, setActiveTab] = useState<'personal' | 'preferences'>('personal');
   const [formData, setFormData] = useState<StudentProfile>(profile);
   const [isSaved, setIsSaved] = useState(false);
@@ -106,6 +111,21 @@ export function useUserProfileModal({
     onClose();
   }, [onClose]);
 
+  const handleLogout = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('auth-store');
+        localStorage.removeItem('dashboard_profile');
+        localStorage.removeItem('onboarding-store');
+      } catch (e) {
+        console.error('Failed to clear local storage on logout', e);
+      }
+    }
+    clearAuth();
+    onClose();
+    router.push('/login');
+  }, [clearAuth, onClose, router]);
+
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
@@ -142,6 +162,7 @@ export function useUserProfileModal({
     handleToggleAvatarPresets,
     handleCloseAvatarMenu,
     handleCloseAllMenus,
+    handleLogout,
     handleSubmit,
   };
 }

@@ -1,26 +1,20 @@
 'use client';
 
-interface EducationProgressHeaderProps {
-  step: number;
-  totalSteps: number;
-  percentage: number;
-}
+import { memo } from 'react';
+import type { EducationProgressHeaderProps } from '../../types';
 
-export function EducationProgressHeader({ step, totalSteps, percentage }: EducationProgressHeaderProps) {
+function EducationProgressHeaderComponent({ className = '' }: EducationProgressHeaderProps) {
   return (
-    <div className="w-full max-w-3xl mb-12">
-      <div className="flex justify-between items-center mb-2 text-sm font-medium">
-        <span className="text-[#ddb7ff] uppercase tracking-widest text-xs font-semibold">
-          Step {step} of {totalSteps}
-        </span>
-        <span className="text-[#c6c6cc]">Personalization ({percentage}%)</span>
-      </div>
-      <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-[#0043eb] to-[#ddb7ff] rounded-full shadow-[0_0_15px_rgba(0,67,235,0.8)] transition-all duration-500"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
+    <div className={`flex items-center gap-3 font-['JetBrains_Mono',monospace] ${className}`}>
+      <span className="px-3 py-1 rounded-full bg-[#2563EB]/15 border border-[#2563EB]/30 text-[#38BDF8] text-xs font-bold uppercase tracking-wider">
+        Step 4 of 6
+      </span>
+      <span className="text-xs text-[#94A3B8] font-medium uppercase tracking-widest">
+        Educational Qualification
+      </span>
     </div>
   );
 }
+
+export const EducationProgressHeader = memo(EducationProgressHeaderComponent);
+EducationProgressHeader.displayName = 'EducationProgressHeader';

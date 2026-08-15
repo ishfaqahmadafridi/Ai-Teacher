@@ -85,7 +85,28 @@ export function useRegister(): UseRegisterReturn {
       try {
         const data = await AuthService.register(form);
         setUser(data.user, data.access);
-        router.push('/classroom');
+
+        // Pre-fill student full name into onboarding store
+        if (typeof window !== 'undefined') {
+          try {
+            const fullName = [form.firstName, form.lastName].filter(Boolean).join(' ');
+            const storedOb = localStorage.getItem('onboarding-store');
+            const parsedOb = storedOb ? JSON.parse(storedOb) : { state: {} };
+            parsedOb.state = {
+              ...parsedOb.state,
+              currentStep: 3,
+              profile: {
+                ...parsedOb.state?.profile,
+                fullName: fullName || parsedOb.state?.profile?.fullName || '',
+              },
+            };
+            localStorage.setItem('onboarding-store', JSON.stringify(parsedOb));
+          } catch (e) {
+            console.error('Failed to update onboarding-store', e);
+          }
+        }
+
+        router.push('/onboarding/step-3');
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : 'Registration failed. Please try again.';

@@ -1,38 +1,34 @@
 'use client';
 
-import { Label } from "@/components/ui/label";
+import { memo } from 'react';
+import { Label } from '@/components/ui/label';
+import { Clock } from 'lucide-react';
+import { TIMEZONE_OPTIONS } from '../../constants';
+import type { TimezoneSelectProps } from '../../types';
 
-interface TimezoneSelectProps {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export function TimezoneSelect({ value, onChange }: TimezoneSelectProps) {
+function TimezoneSelectComponent({ value, onChange }: TimezoneSelectProps) {
   return (
     <div className="space-y-2">
       <Label className="text-xs font-semibold uppercase tracking-wider text-[#c6c6cc]">
-        Time Zone
+        Timezone
       </Label>
       <div className="relative">
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-12 w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#b8c3ff] transition-all text-sm appearance-none cursor-pointer pr-10"
+          className="h-12 w-full bg-black/30 border border-white/15 rounded-xl pl-10 pr-4 text-white focus:outline-none focus:border-[#b8c3ff] focus:ring-1 focus:ring-[#b8c3ff]/30 transition-all text-sm font-medium appearance-none cursor-pointer"
         >
-          <option value="" disabled>Select time zone</option>
-          <option value="UTC-8">PST (UTC-8)</option>
-          <option value="UTC-5">EST (UTC-5)</option>
-          <option value="UTC+0">GMT (UTC+0)</option>
-          <option value="UTC+1">CET (UTC+1)</option>
-          <option value="UTC+9">JST (UTC+9)</option>
+          {TIMEZONE_OPTIONS.map((tz) => (
+            <option key={tz.value} value={tz.value} className="bg-[#0b1220] text-white">
+              {tz.label} ({tz.offset})
+            </option>
+          ))}
         </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#c6c6cc]">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" strokeWidth="2" />
-            <path strokeLinecap="round" strokeWidth="2" d="M12 6v6l4 2" />
-          </svg>
-        </div>
+        <Clock className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
       </div>
     </div>
   );
 }
+
+export const TimezoneSelect = memo(TimezoneSelectComponent);
+TimezoneSelect.displayName = 'TimezoneSelect';

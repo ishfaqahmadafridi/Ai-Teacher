@@ -1,24 +1,22 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { EducationBackgroundGradients } from './EducationBackgroundGradients';
-import { EducationProgressHeader } from './EducationProgressHeader';
-import { EducationHeader } from './EducationHeader';
+import { memo } from 'react';
+import type { Step4EducationLayoutProps } from '../../types';
 
-interface Step4EducationLayoutProps {
-  children: ReactNode;
-}
-
-export function Step4EducationLayout({ children }: Step4EducationLayoutProps) {
+function Step4EducationLayoutComponent({ children }: Step4EducationLayoutProps) {
   return (
-    <div className="min-h-screen bg-[#0A0F1D] text-[#e5e2e3] font-sans relative overflow-x-hidden flex flex-col items-center pt-6 pb-16">
-      <EducationBackgroundGradients />
+    <main className="min-h-screen w-full bg-[#030712] text-white flex flex-col justify-between relative overflow-x-hidden font-['Hanken_Grotesk',sans-serif]">
+      {/* Background Ambient Glows */}
+      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-[#2563EB]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-[#38BDF8]/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 md:px-10 flex flex-col items-center">
-        <EducationProgressHeader step={4} totalSteps={6} percentage={66} />
-        <EducationHeader />
+      {/* Content Container */}
+      <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 flex flex-col justify-center">
         {children}
       </div>
-    </div>
+    </main>
   );
 }
+
+export const Step4EducationLayout = memo(Step4EducationLayoutComponent);
+Step4EducationLayout.displayName = 'Step4EducationLayout';

@@ -5,3 +5,5 @@ export type { UseRegisterReturn } from './useRegister';
 export { useVerifyAccount } from './useVerifyAccount';
 export { useSocialAuth } from './useSocialAuth';
 export type { UseSocialAuthReturn } from './useSocialAuth';
+export { useRegisterPage } from './useRegisterPage';
+export { useLoginPage } from './useLoginPage';
