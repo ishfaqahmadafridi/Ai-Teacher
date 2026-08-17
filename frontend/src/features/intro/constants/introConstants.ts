@@ -4,7 +4,7 @@ export const NEXT_GEN_BADGE_TEXT = 'NEXT-GEN AI EDUCATION PLATFORM';
 export const HERO_TITLE_PREFIX = 'The Future of';
 export const HERO_TITLE_GRADIENT = 'Adaptive Learning Starts Here';
 export const HERO_DESCRIPTION =
-  'Intelligent, real-time AI physics simulator, adaptive voice tutor, interactive blackboard, and full academic curriculum from primary school to quantum physics.';
+  'Intelligent adaptive AI teacher, voice tutor, interactive blackboard, and comprehensive academic curriculum across all major fields and disciplines.';
 
 export const STATS_DATA: StatItem[] = [
   {
@@ -35,6 +35,6 @@ export const STATS_DATA: StatItem[] = [
 
 export const BRAND_CONFIG = {
   name: 'NEUROLEARN',
-  tagline: 'AI Education & Physics Simulator Platform',
+  tagline: 'AI Education & Learning Platform',
   logoAlt: 'NEUROLEARN Logo',
 };

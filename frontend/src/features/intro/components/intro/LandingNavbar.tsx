@@ -26,7 +26,7 @@ export const LandingNavbar = memo(function LandingNavbar({
               {BRAND_CONFIG.name}
             </span>
             <span className="hidden sm:block text-[10px] text-cyan-400/80 font-mono tracking-widest uppercase">
-              AI Physics & Education
+              AI Education & Learning Platform
             </span>
           </div>
         </div>

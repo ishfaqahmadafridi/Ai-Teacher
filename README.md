@@ -1,6 +1,6 @@
-# 🧠 NEUROLEARN — Next-Gen AI Education & Physics Simulator Platform
+# 🧠 NEUROLEARN — Next-Gen Multi-Discipline AI Education & Learning Platform
 
-An enterprise-grade, hybrid monorepo platform delivering intelligent, real-time adaptive education, 3D physics trajectory simulations, voice-guided AI tutoring, and an automated interactive blackboard.
+An enterprise-grade, hybrid monorepo platform delivering intelligent, real-time adaptive education, voice-guided AI tutoring, interactive visual studio, and automated step-by-step problem solving across 26+ academic disciplines.
 
 ---
 
@@ -8,7 +8,7 @@ An enterprise-grade, hybrid monorepo platform delivering intelligent, real-time 
 
 ### ⚡ Hybrid Microservice Backend
 * **Django REST Engine (`backend/django_app/`)**: Source of truth for PostgreSQL ORM, JWT authentication, student profiles, academic course registrations, and admin portals.
-* **FastAPI Async Engine (`backend/fastapi_app/`)**: Ultra-fast ASGI service for real-time Server-Sent Events (SSE), 60FPS physics vector streaming, and AI model inference.
+* **FastAPI Async Engine (`backend/fastapi_app/`)**: Ultra-fast ASGI service for real-time Server-Sent Events (SSE), sub-200ms token streaming, interactive canvas rendering, and AI model inference.
 * **Shared Modules (`backend/shared/`)**: Domain contracts, constants, and enums shared seamlessly across services.
 * **Nginx Reverse Proxy (`infra/nginx/`)**: Enterprise gateway routing `/api/*` to Django REST, `/ai/*` to FastAPI, and `/` to Next.js.
 
@@ -22,10 +22,12 @@ An enterprise-grade, hybrid monorepo platform delivering intelligent, real-time 
   - `types/` — Canonical TypeScript interface contracts
 * **Lumina Dark Mode Theme**: High-aesthetic dark UI featuring neon cyan & purple glow effects, glassmorphism, floating formula canvases, and particle networks.
 
-### ⚛️ Physics Simulator & Interactive Classroom
-* **Live Vector Simulation**: Real-time visualization of projectile trajectories, gravitational acceleration ($g = 9.8 \text{ m/s}^2$), wave mechanics, and kinematic equations.
-* **Dynamic Blackboard Canvas**: Automated step-by-step chalk math proofs rendered with LaTeX / KaTeX formatting.
-* **26+ Academic Disciplines**: Structured pathways covering Computer Science, Artificial Intelligence, Medical Sciences, Engineering, Economics, Humanities, and SAT/Exam Prep.
+### 📚 Comprehensive Academic Coverage (26+ Disciplines)
+* **Computer Science & AI**: Programming, Software Engineering, Algorithms, Machine Learning.
+* **Medical & Healthcare**: Anatomy, Genetics, Biology, Clinical Studies.
+* **Pure & Applied Sciences**: Mathematics, Physics, Chemistry, Molecular Dynamics.
+* **Humanities & Social Sciences**: Economics, World History, Legal Studies, Global Languages.
+* **Business & Professional**: Finance, Accounting, Career Acceleration, Exam & SAT Prep.
 
 ---
 
@@ -170,4 +172,4 @@ Open `http://localhost:3000` in your browser.
 
 ## 📜 License & Copyright
 
-© {new Date().getFullYear()} NEUROLEARN Project. Built for high-performance AI education.
+© {new Date().getFullYear()} NEUROLEARN Project. Built for high-performance multi-discipline AI education.
