@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactNode } from 'react';
+import type { ChangeEvent, ReactNode, FormEvent } from 'react';
 
 export interface LoginHeaderProps {
   title?: string;
@@ -66,5 +66,14 @@ export interface HeroPanelProps {
 }
 
 export interface LoginFormFieldsProps {
-  className?: string;
+  form: {
+    email: string;
+    password: string;
+  };
+  showPassword: boolean;
+  isLoading: boolean;
+  error: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: () => void;
+  onSubmit: (e: FormEvent) => Promise<void>;
 }

@@ -1,21 +1,20 @@
 'use client';
 
+import { memo } from 'react';
 import { AcademicYearOptionCard } from './AcademicYearOptionCard';
-import { YearOption, AcademicYear } from '../../types';
+import type { AcademicYearGridProps } from '../../types';
 
-interface AcademicYearGridProps {
-  years: YearOption[];
-  selectedYear: AcademicYear | null;
-  onSelectYear: (year: AcademicYear) => void;
-}
-
-export function AcademicYearGrid({ years, selectedYear, onSelectYear }: AcademicYearGridProps) {
+function AcademicYearGridComponent({
+  years,
+  selectedYear,
+  onSelectYear,
+}: AcademicYearGridProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mb-16">
-      {years.map((yr) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+      {years.map((year) => (
         <AcademicYearOptionCard
-          key={yr.id}
-          year={yr}
+          key={year.id}
+          year={year}
           selectedYear={selectedYear}
           onSelect={onSelectYear}
         />
@@ -23,3 +22,6 @@ export function AcademicYearGrid({ years, selectedYear, onSelectYear }: Academic
     </div>
   );
 }
+
+export const AcademicYearGrid = memo(AcademicYearGridComponent);
+AcademicYearGrid.displayName = 'AcademicYearGrid';

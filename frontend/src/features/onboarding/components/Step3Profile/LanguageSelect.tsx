@@ -1,15 +1,14 @@
 'use client';
 
-import { Label } from "@/components/ui/label";
+import { memo } from 'react';
+import { Label } from '@/components/ui/label';
+import { Globe } from 'lucide-react';
+import { LANGUAGE_OPTIONS } from '../../constants';
+import type { LanguageSelectProps } from '../../types';
 
-interface LanguageSelectProps {
-  value?: string;
-  onChange: (value: string) => void;
-}
-
-export function LanguageSelect({ value = 'English (US)', onChange }: LanguageSelectProps) {
+function LanguageSelectComponent({ value, onChange }: LanguageSelectProps) {
   return (
-    <div className="space-y-2 md:col-span-2">
+    <div className="space-y-2">
       <Label className="text-xs font-semibold uppercase tracking-wider text-[#c6c6cc]">
         Preferred Language
       </Label>
@@ -17,21 +16,19 @@ export function LanguageSelect({ value = 'English (US)', onChange }: LanguageSel
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="h-12 w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#b8c3ff] transition-all text-sm appearance-none cursor-pointer pr-10"
+          className="h-12 w-full bg-black/30 border border-white/15 rounded-xl pl-10 pr-4 text-white focus:outline-none focus:border-[#b8c3ff] focus:ring-1 focus:ring-[#b8c3ff]/30 transition-all text-sm font-medium appearance-none cursor-pointer"
         >
-          <option value="English (US)">English (US)</option>
-          <option value="Español">Español</option>
-          <option value="Français">Français</option>
-          <option value="Deutsch">Deutsch</option>
-          <option value="中文">中文</option>
+          {LANGUAGE_OPTIONS.map((lang) => (
+            <option key={lang.code} value={lang.name} className="bg-[#0b1220] text-white">
+              {lang.flag} {lang.name} ({lang.nativeName})
+            </option>
+          ))}
         </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#c6c6cc]">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" strokeWidth="2" />
-            <path strokeLinecap="round" strokeWidth="2" d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-          </svg>
-        </div>
+        <Globe className="w-4 h-4 text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
       </div>
     </div>
   );
 }
+
+export const LanguageSelect = memo(LanguageSelectComponent);
+LanguageSelect.displayName = 'LanguageSelect';

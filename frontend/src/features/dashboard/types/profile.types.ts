@@ -144,6 +144,7 @@ export interface ProfileModalTabNavProps {
 export interface ProfileModalFooterProps {
   isSaved: boolean;
   onClose: () => void;
+  onLogout?: () => void;
   className?: string;
 }
 

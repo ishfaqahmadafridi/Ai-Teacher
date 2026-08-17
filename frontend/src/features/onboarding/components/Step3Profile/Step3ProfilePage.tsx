@@ -1,24 +1,48 @@
 'use client';
 
+import { memo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useOnboarding } from '../../hooks/useOnboarding';
 import { Step3ProfileLayout } from './Step3ProfileLayout';
 import { ProfileFormContainer } from './ProfileFormContainer';
+import { ProfileFormFields } from './ProfileFormFields';
 import { AIMentorBannerCard } from './AIMentorBannerCard';
+import type { StudentProfileData } from '../../types';
 
-export function Step3ProfilePage() {
+export const Step3ProfilePage = memo(function Step3ProfilePage() {
   const router = useRouter();
   const { profile, updateProfile, submitProfile } = useOnboarding();
 
+  const handleFieldChange = useCallback(
+    (field: keyof StudentProfileData, value: string) => {
+      updateProfile({ [field]: value });
+    },
+    [updateProfile]
+  );
+
+  const handleBack = useCallback(() => {
+    router.back();
+  }, [router]);
+
   return (
     <Step3ProfileLayout>
-      <ProfileFormContainer
-        profile={profile}
-        updateProfile={updateProfile}
-        onSubmit={submitProfile}
-        onBack={() => router.back()}
-      />
-      <AIMentorBannerCard fullName={profile.fullName} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="lg:col-span-2">
+          <ProfileFormContainer>
+            <ProfileFormFields
+              profile={profile}
+              onChange={handleFieldChange}
+              onSubmit={submitProfile}
+              onBack={handleBack}
+            />
+          </ProfileFormContainer>
+        </div>
+        <div className="lg:col-span-1">
+          <AIMentorBannerCard />
+        </div>
+      </div>
     </Step3ProfileLayout>
   );
-}
+});
+
+Step3ProfilePage.displayName = 'Step3ProfilePage';

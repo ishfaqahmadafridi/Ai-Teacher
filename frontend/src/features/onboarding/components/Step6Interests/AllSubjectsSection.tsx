@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { SubjectItem } from '../../types';
 import { Card } from '@/components/ui/card';
 
@@ -9,7 +10,7 @@ interface AllSubjectsSectionProps {
   onToggleInterest: (name: string) => void;
 }
 
-export function AllSubjectsSection({
+function AllSubjectsSectionComponent({
   items,
   selectedInterests,
   onToggleInterest,
@@ -24,14 +25,14 @@ export function AllSubjectsSection({
             <Card
               key={item.name}
               onClick={() => onToggleInterest(item.name)}
-              className={`p-4 rounded-xl flex flex-col items-start gap-2 text-left transition-all cursor-pointer ${
+              className={`p-4 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-[#0043eb]/30 border border-[#b8c3ff] text-[#b8c3ff]'
+                  ? 'bg-[#0043eb]/30 border border-[#b8c3ff] text-white shadow-lg shadow-[#0043eb]/20'
                   : 'bg-white/5 border border-white/10 text-[#c6c6cc] hover:bg-white/10 hover:text-white'
               }`}
             >
-              <span className="text-xl">{item.icon}</span>
               <span className="font-semibold text-sm">{item.name}</span>
+              {isSelected && <span className="text-[#38BDF8] text-xs font-bold">✓</span>}
             </Card>
           );
         })}
@@ -39,3 +40,6 @@ export function AllSubjectsSection({
     </div>
   );
 }
+
+export const AllSubjectsSection = memo(AllSubjectsSectionComponent);
+AllSubjectsSection.displayName = 'AllSubjectsSection';

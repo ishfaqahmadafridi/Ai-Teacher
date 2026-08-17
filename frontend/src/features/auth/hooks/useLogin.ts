@@ -69,7 +69,27 @@ export function useLogin(): UseLoginReturn {
       try {
         const data = await AuthService.login(form);
         setUser(data.user, data.access);
-        router.push('/classroom');
+
+        let hasCompletedOnboarding = false;
+        if (typeof window !== 'undefined') {
+          try {
+            const storedOb = localStorage.getItem('onboarding-store');
+            if (storedOb) {
+              const parsed = JSON.parse(storedOb);
+              if (parsed?.state?.selectedInterests?.length > 0 || parsed?.state?.currentStep > 3) {
+                hasCompletedOnboarding = true;
+              }
+            }
+          } catch (e) {
+            console.error('Failed to parse onboarding-store during login', e);
+          }
+        }
+
+        if (hasCompletedOnboarding) {
+          router.push('/dashboard');
+        } else {
+          router.push('/onboarding/step-3');
+        }
       } catch (err: unknown) {
         const message =
           err instanceof Error ? err.message : 'Login failed. Please check your credentials.';

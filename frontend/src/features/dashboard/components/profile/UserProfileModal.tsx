@@ -37,6 +37,7 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
     handleToggleAvatarPresets,
     handleCloseAvatarMenu,
     handleCloseAllMenus,
+    handleLogout,
     handleSubmit,
   } = useUserProfileModal(props);
 
@@ -109,7 +110,7 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
           )}
 
           {/* Action Buttons Footer Subcomponent */}
-          <ProfileModalFooter isSaved={isSaved} onClose={props.onClose} />
+          <ProfileModalFooter isSaved={isSaved} onClose={props.onClose} onLogout={handleLogout} />
         </form>
       </div>
     </div>

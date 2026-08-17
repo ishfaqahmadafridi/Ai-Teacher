@@ -1,15 +1,14 @@
 'use client';
 
+import { memo } from 'react';
 import { Card } from '@/components/ui/card';
-import { YearOption, AcademicYear } from '../../types';
+import type { AcademicYearOptionCardProps } from '../../types';
 
-interface AcademicYearOptionCardProps {
-  year: YearOption;
-  selectedYear: AcademicYear | null;
-  onSelect: (id: AcademicYear) => void;
-}
-
-export function AcademicYearOptionCard({ year, selectedYear, onSelect }: AcademicYearOptionCardProps) {
+export const AcademicYearOptionCard = memo(function AcademicYearOptionCard({
+  year,
+  selectedYear,
+  onSelect,
+}: AcademicYearOptionCardProps) {
   const isSelected = selectedYear === year.id;
 
   return (
@@ -23,7 +22,7 @@ export function AcademicYearOptionCard({ year, selectedYear, onSelect }: Academi
     >
       <div>
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+          <h3 className="text-xl font-bold text-white font-['Montserrat',sans-serif]">
             {year.title}
           </h3>
           <div
@@ -38,4 +37,6 @@ export function AcademicYearOptionCard({ year, selectedYear, onSelect }: Academi
       </div>
     </Card>
   );
-}
+});
+
+AcademicYearOptionCard.displayName = 'AcademicYearOptionCard';

@@ -1,28 +1,39 @@
 'use client';
 
-import { Button } from "@/components/ui/button";
+import { memo } from 'react';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import type { ProfileFormActionsProps } from '../../types';
 
-interface ProfileFormActionsProps {
-  onBack: () => void;
-}
-
-export function ProfileFormActions({ onBack }: ProfileFormActionsProps) {
+function ProfileFormActionsComponent({
+  onBack,
+  onSubmit,
+  isSubmitDisabled = false,
+}: ProfileFormActionsProps) {
   return (
-    <div className="pt-6 flex flex-col md:flex-row gap-4">
+    <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/10">
       <Button
         type="button"
-        variant="outline"
+        variant="ghost"
         onClick={onBack}
-        className="flex-1 h-12 order-2 md:order-1 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-all border-white/10 rounded-xl cursor-pointer"
+        className="h-12 px-5 rounded-xl border border-white/15 text-[#c6c6cc] hover:text-white hover:bg-white/10 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2"
       >
-        Back
+        <ArrowLeft className="w-4 h-4" />
+        <span>Back</span>
       </Button>
+
       <Button
-        type="submit"
-        className="flex-[2] h-12 order-1 md:order-2 bg-gradient-to-r from-[#0043eb] to-[#0035be] hover:from-[#003ad6] hover:to-[#002cb0] text-white font-semibold text-sm shadow-[0_0_20px_rgba(0,67,235,0.4)] hover:shadow-[0_0_35px_rgba(0,67,235,0.6)] transition-all rounded-xl cursor-pointer"
+        type="button"
+        onClick={onSubmit}
+        disabled={isSubmitDisabled}
+        className="h-12 px-8 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#004AC6] text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-[#2563eb]/40 hover:from-[#1D4ED8] hover:to-[#003BB0] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
       >
-        Save & Continue
+        <span>Continue</span>
+        <ArrowRight className="w-4 h-4" />
       </Button>
     </div>
   );
 }
+
+export const ProfileFormActions = memo(ProfileFormActionsComponent);
+ProfileFormActions.displayName = 'ProfileFormActions';

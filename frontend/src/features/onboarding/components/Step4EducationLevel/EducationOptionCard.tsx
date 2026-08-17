@@ -1,15 +1,14 @@
 'use client';
 
+import { memo } from 'react';
 import { Card } from '@/components/ui/card';
-import { LevelOption, EducationLevel } from '../../types';
+import type { EducationOptionCardProps } from '../../types';
 
-interface EducationOptionCardProps {
-  option: LevelOption;
-  selectedLevel: EducationLevel | null;
-  onSelect: (id: EducationLevel) => void;
-}
-
-export function EducationOptionCard({ option, selectedLevel, onSelect }: EducationOptionCardProps) {
+export const EducationOptionCard = memo(function EducationOptionCard({
+  option,
+  selectedLevel,
+  onSelect,
+}: EducationOptionCardProps) {
   const isSelected = selectedLevel === option.id;
 
   return (
@@ -24,7 +23,7 @@ export function EducationOptionCard({ option, selectedLevel, onSelect }: Educati
       <div className="w-16 h-16 rounded-xl bg-white/5 flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform">
         {option.icon}
       </div>
-      <h3 className="text-lg font-semibold text-white mb-1.5" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+      <h3 className="text-lg font-semibold text-white mb-1.5 font-['Montserrat',sans-serif]">
         {option.title}
       </h3>
       <p className="text-xs text-[#c6c6cc] leading-relaxed">
@@ -32,4 +31,6 @@ export function EducationOptionCard({ option, selectedLevel, onSelect }: Educati
       </p>
     </Card>
   );
-}
+});
+
+EducationOptionCard.displayName = 'EducationOptionCard';

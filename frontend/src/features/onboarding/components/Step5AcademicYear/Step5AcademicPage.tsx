@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useOnboarding } from '../../hooks/useOnboarding';
 import { highSchoolYears, universityYears } from '../../types';
 import { Step5AcademicLayout } from './Step5AcademicLayout';
@@ -8,7 +8,7 @@ import { AcademicLevelToggle } from './AcademicLevelToggle';
 import { AcademicYearGrid } from './AcademicYearGrid';
 import { GrowthTrajectoryCard } from './GrowthTrajectoryCard';
 
-export function Step5AcademicPage() {
+export const Step5AcademicPage = memo(function Step5AcademicPage() {
   const { academicYear, selectAcademicYear } = useOnboarding();
   const [levelMode, setLevelMode] = useState<'high_school' | 'university'>('university');
 
@@ -16,7 +16,7 @@ export function Step5AcademicPage() {
 
   return (
     <Step5AcademicLayout>
-      <AcademicLevelToggle levelMode={levelMode} onToggle={setLevelMode} />
+      <AcademicLevelToggle levelMode={levelMode} onToggleLevel={setLevelMode} />
       
       <AcademicYearGrid
         years={currentYears}
@@ -27,4 +27,6 @@ export function Step5AcademicPage() {
       <GrowthTrajectoryCard />
     </Step5AcademicLayout>
   );
-}
+});
+
+Step5AcademicPage.displayName = 'Step5AcademicPage';

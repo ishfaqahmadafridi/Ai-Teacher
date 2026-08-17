@@ -1,45 +1,61 @@
 'use client';
 
-import { StudentProfileData } from '../../types';
+import { memo } from 'react';
+import type { ProfileFormFieldsProps } from '../../types';
 import { FullNameInput } from './FullNameInput';
 import { DobInput } from './DobInput';
 import { CountrySelect } from './CountrySelect';
 import { TimezoneSelect } from './TimezoneSelect';
 import { LanguageSelect } from './LanguageSelect';
+import { ProfileFormActions } from './ProfileFormActions';
 
-interface ProfileFormFieldsProps {
-  profile: StudentProfileData;
-  updateProfile: (data: Partial<StudentProfileData>) => void;
-}
-
-export function ProfileFormFields({ profile, updateProfile }: ProfileFormFieldsProps) {
+function ProfileFormFieldsComponent({
+  profile,
+  onChange,
+  onSubmit,
+  onBack,
+}: ProfileFormFieldsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-6 font-['Hanken_Grotesk',sans-serif]">
+      {/* 1. Full Name */}
       <FullNameInput
         value={profile.fullName}
-        onChange={(fullName) => updateProfile({ fullName })}
+        onChange={(val) => onChange('fullName', val)}
       />
 
-      <DobInput
-        value={profile.dob}
-        onChange={(dob) => updateProfile({ dob })}
-      />
+      {/* 2. Date of Birth & Country Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <DobInput
+          value={profile.dob}
+          onChange={(val) => onChange('dob', val)}
+        />
+        <CountrySelect
+          value={profile.country}
+          onChange={(val) => onChange('country', val)}
+        />
+      </div>
 
-      <CountrySelect
-        value={profile.country}
-        onChange={(country) => updateProfile({ country })}
-      />
+      {/* 3. Timezone & Preferred Language Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TimezoneSelect
+          value={profile.timezone}
+          onChange={(val) => onChange('timezone', val)}
+        />
+        <LanguageSelect
+          value={profile.language || 'English'}
+          onChange={(val) => onChange('language', val)}
+        />
+      </div>
 
-      <TimezoneSelect
-        value={profile.timezone}
-        onChange={(timezone) => updateProfile({ timezone })}
-      />
-
-      <LanguageSelect
-        value={profile.language}
-        onChange={(language) => updateProfile({ language })}
+      {/* Form Action Buttons */}
+      <ProfileFormActions
+        onBack={onBack}
+        onSubmit={onSubmit}
+        isSubmitDisabled={!profile.fullName.trim()}
       />
     </div>
   );
 }
 
+export const ProfileFormFields = memo(ProfileFormFieldsComponent);
+ProfileFormFields.displayName = 'ProfileFormFields';

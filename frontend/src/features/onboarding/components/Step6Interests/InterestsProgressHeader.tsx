@@ -1,24 +1,20 @@
 'use client';
 
-interface InterestsProgressHeaderProps {
-  step: number;
-  totalSteps: number;
-  percentage: number;
-}
+import { memo } from 'react';
+import type { InterestsProgressHeaderProps } from '../../types';
 
-export function InterestsProgressHeader({ step, totalSteps, percentage }: InterestsProgressHeaderProps) {
+function InterestsProgressHeaderComponent({ className = '' }: InterestsProgressHeaderProps) {
   return (
-    <div className="w-full bg-[#1c1b1d]/60 border border-white/10 p-4 rounded-2xl backdrop-blur-xl">
-      <div className="flex justify-between items-center mb-2.5 text-sm font-medium">
-        <span className="text-[#c6c6cc]">Step {step} of {totalSteps}</span>
-        <span className="text-[#b8c3ff] font-semibold">{percentage}% Complete</span>
-      </div>
-      <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-gradient-to-r from-[#0043eb] to-[#ddb7ff] transition-all duration-500 rounded-full shadow-[0_0_15px_rgba(0,67,235,0.8)]"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
+    <div className={`flex items-center gap-3 font-['JetBrains_Mono',monospace] ${className}`}>
+      <span className="px-3 py-1 rounded-full bg-[#2563EB]/15 border border-[#2563EB]/30 text-[#38BDF8] text-xs font-bold uppercase tracking-wider">
+        Step 6 of 6
+      </span>
+      <span className="text-xs text-[#94A3B8] font-medium uppercase tracking-widest">
+        Final Step: Academic Interests
+      </span>
     </div>
   );
 }
+
+export const InterestsProgressHeader = memo(InterestsProgressHeaderComponent);
+InterestsProgressHeader.displayName = 'InterestsProgressHeader';

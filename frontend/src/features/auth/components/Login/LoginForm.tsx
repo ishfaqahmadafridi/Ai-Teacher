@@ -1,16 +1,31 @@
 'use client';
 
+import { memo } from 'react';
+import { useLoginPage } from '../../hooks/useLoginPage';
 import { LoginFormFields } from './LoginFormFields';
-import { LoginFooter } from './LoginFooter';
-import { LoginSocialAuthSection } from './LoginSocialAuthSection';
 
-export function LoginForm() {
+export const LoginForm = memo(function LoginForm() {
+  const {
+    form,
+    showPassword,
+    isLoading,
+    error,
+    handleChange,
+    togglePassword,
+    handleSubmit,
+  } = useLoginPage();
+
   return (
-    <div className="w-full">
-      <LoginFormFields />
-      <LoginFooter />
-
-      <LoginSocialAuthSection />
-    </div>
+    <LoginFormFields
+      form={form}
+      showPassword={showPassword}
+      isLoading={isLoading}
+      error={error}
+      onChange={handleChange}
+      onTogglePassword={togglePassword}
+      onSubmit={handleSubmit}
+    />
   );
-}
+});
+
+LoginForm.displayName = 'LoginForm';
