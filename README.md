@@ -1,137 +1,173 @@
-# 🎓 AI Physics Teacher (Prof. Gemini)
+# 🧠 NEUROLEARN — Next-Gen AI Education & Physics Simulator Platform
 
-An interactive, immersive AI-powered classroom simulator that brings physics lessons to life. Using **Retrieval-Augmented Generation (RAG)** from physics textbooks and **Server-Sent Events (SSE) streaming**, Prof. Gemini walks, speaks, writes on the board, and draws interactive 3D diagrams in real-time response to student questions.
-
----
-
-## 🌟 Key Features
-
-### 🧠 Intelligent Backend (Django)
-* **Real-time SSE Streaming**: Emits token-by-token lesson phases, sync signals, and spoken lecture blocks using server-sent events.
-* **Background RAG Engine**: Non-blocking database initialization and chunking of college physics textbooks into a high-performance vector store (ChromaDB).
-* **Gemini LLM Inference**: Formulates response lessons structured as step-by-step teaching phases containing verbal lectures, mathematical formulas, diagram rendering commands, and walk animations.
-
-### 🎨 Immersive Frontend (React, Vite, & Tailwind)
-* **Interactive 3D Avatar (Three.js/Fiber)**: A dynamic, animated professor figure that walks, stands, and writes on the board in sync with the spoken lecture.
-* **Smart Blackboard & Diagram Stage**: A blackboard canvas that automatically displays key lecture points in a chalk font and animates 3D physics diagrams (like gravity or projectile motion) dynamically.
-* **Synchronized Text-to-Speech Chunk Player**: Streams speech chunk-by-chunk using Web Speech API, with active subtitle tracking.
-* **Speech-to-Text Voice Input**: Allowing students to ask questions naturally using voice commands.
+An enterprise-grade, hybrid monorepo platform delivering intelligent, real-time adaptive education, 3D physics trajectory simulations, voice-guided AI tutoring, and an automated interactive blackboard.
 
 ---
 
-## 🛠️ Tech Stack
+## 🌟 Architecture & Highlights
 
-| Component | Technologies Used |
+### ⚡ Hybrid Microservice Backend
+* **Django REST Engine (`backend/django_app/`)**: Source of truth for PostgreSQL ORM, JWT authentication, student profiles, academic course registrations, and admin portals.
+* **FastAPI Async Engine (`backend/fastapi_app/`)**: Ultra-fast ASGI service for real-time Server-Sent Events (SSE), 60FPS physics vector streaming, and AI model inference.
+* **Shared Modules (`backend/shared/`)**: Domain contracts, constants, and enums shared seamlessly across services.
+* **Nginx Reverse Proxy (`infra/nginx/`)**: Enterprise gateway routing `/api/*` to Django REST, `/ai/*` to FastAPI, and `/` to Next.js.
+
+### 🎨 Modular Five-Folder Frontend (`frontend/src/`)
+* **Next.js 15 & React 19**: App Router architecture with Turbopack compilation.
+* **Five-Folder Rule**: Strict decoupled separation of concerns across features (`intro`, `dashboard`, `classroom`, `ask`, `auth`, `onboarding`):
+  - `components/` — Pure UI presentation templates with `memo()` and `displayName`
+  - `hooks/` — Encapsulated state, handlers, and side-effects
+  - `utilities/` — Pure helper functions and math engines
+  - `constants/` — Static mock data and configuration objects
+  - `types/` — Canonical TypeScript interface contracts
+* **Lumina Dark Mode Theme**: High-aesthetic dark UI featuring neon cyan & purple glow effects, glassmorphism, floating formula canvases, and particle networks.
+
+### ⚛️ Physics Simulator & Interactive Classroom
+* **Live Vector Simulation**: Real-time visualization of projectile trajectories, gravitational acceleration ($g = 9.8 \text{ m/s}^2$), wave mechanics, and kinematic equations.
+* **Dynamic Blackboard Canvas**: Automated step-by-step chalk math proofs rendered with LaTeX / KaTeX formatting.
+* **26+ Academic Disciplines**: Structured pathways covering Computer Science, Artificial Intelligence, Medical Sciences, Engineering, Economics, Humanities, and SAT/Exam Prep.
+
+---
+
+## 🛠️ Technology Stack
+
+| Domain | Technologies Used |
 | :--- | :--- |
-| **Backend Framework** | Python · Django · Django REST Framework (DRF) |
-| **AI / RAG Pipeline** | LangChain · ChromaDB · Google Gemini API (gemini-2.5-flash) · PyTorch / Transformers |
-| **Frontend Core** | React 19 · Vite · TypeScript |
-| **3D Rendering** | Three.js · React Three Fiber · React Three Drei |
-| **Styling & UI** | Tailwind CSS · PostCSS · Autoprefixer |
-| **State Management** | Redux Toolkit (RTK) |
-| **Text/Math Formatting**| React Markdown · KaTeX · Rehype-Katex |
+| **Frontend Core** | Next.js 15 (App Router) · React 19 · TypeScript · Tailwind CSS |
+| **State & Hooks** | Custom React Hooks · Redux Toolkit (RTK) · Context API |
+| **Design System** | Lumina Dark Mode · Glassmorphism · Custom CSS Keyframes |
+| **Primary Backend** | Python 3.12 · Django REST Framework (DRF) · PostgreSQL · SQLite |
+| **AI Inference Backend**| FastAPI · Uvicorn (ASGI) · LangChain · Google Gemini 2.5 API |
+| **Vector DB & RAG** | ChromaDB · pgvector · HuggingFace Embeddings |
+| **Infrastructure** | Docker · Docker Compose · Nginx Reverse Proxy |
 
 ---
 
-## 📐 Architecture & Flow
+## 📐 System Architecture
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Student
-    participant UI as React Frontend
-    participant Django as Django Backend
-    participant Gemini as Gemini API
-    participant Chroma as Chroma Vector DB
-
-    Student->>UI: Types or speaks question (e.g., "Explain gravity")
-    UI->>Django: POST /api/physics-teacher/explain/ (session_id, question)
-    Django->>Chroma: Vector search (retrieves physics textbook context)
-    Chroma-->>Django: Top context chunks
-    Django->>Gemini: Prompt (Question + Textbook Context)
-    Gemini-->>Django: Streams teaching json phases
-    Django-->>UI: Streams SSE events (status: thinking -> result: phases)
-    UI->>UI: Chunk player parses phases
-    par Voice Output
-        UI->>UI: Speak phase text (Web Speech API)
-    and Animated Avatar
-        UI->>UI: Animate walk / gesture in sync
-    and Blackboard
-        UI->>UI: Write chalk key-point / render 3D physics diagram
-    end
+```
+                  ┌─────────────────────────────────────┐
+                  │          Client Browser             │
+                  │   (Next.js 15 App Router Frontend)  │
+                  └──────────────────┬──────────────────┘
+                                     │
+                                     ▼
+                  ┌─────────────────────────────────────┐
+                  │        Nginx Gateway (:8080)        │
+                  └──────────┬──────────────────┬───────┘
+                             │                  │
+               /api/*        │                  │ /ai/*
+                             ▼                  ▼
+             ┌───────────────────────┐  ┌───────────────────────┐
+             │   Django REST Engine  │  │ FastAPI Async Engine  │
+             │       (:8000)         │  │       (:8001)         │
+             └───────────┬───────────┘  └───────────┬───────────┘
+                         │                          │
+                         ▼                          ▼
+             ┌───────────────────────┐  ┌───────────────────────┐
+             │  PostgreSQL / SQLite  │  │ Vector DB (ChromaDB)  │
+             └───────────────────────┘  └───────────────────────┘
 ```
 
 ---
 
-## 🚀 Installation & Setup
+## 📂 Repository Directory Layout
 
-### 1. Backend Setup
-
-1. **Clone the repository and navigate to the backend folder**:
-   ```bash
-   cd backend
-   ```
-
-2. **Create a virtual environment and activate it**:
-   ```bash
-   python -m venv venv
-   # On Windows:
-   .\venv\Scripts\activate
-   # On macOS/Linux:
-   source venv/bin/activate
-   ```
-
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Environment Variables**:
-   Create a `.env` file in the `backend/` directory:
-   ```env
-   GOOGLE_API_KEY=your_gemini_api_key_here
-   ```
-
-5. **Run Database Migrations**:
-   ```bash
-   python manage.py migrate
-   ```
-
-6. **Place the Physics Textbook**:
-   Make sure the PDF textbook `college-physics-2e_-_WEB.pdf` is located in the root workspace directory.
-
-7. **Start the Django Backend Server**:
-   ```bash
-   python manage.py runserver
-   ```
-   *Note: On the first request, the backend will automatically parse and vectorize the textbook PDF into a ChromaDB database in a non-blocking background thread.*
+```
+Ai-Teacher/
+├── backend/
+│   ├── django_app/          # Django REST API, Auth & Database ORM
+│   │   ├── config/          # Django settings (local, base, production)
+│   │   └── teacher/         # Modular 3-layer teacher domain package
+│   ├── fastapi_app/         # Asynchronous AI Streaming & Inference API
+│   │   └── app/             # FastAPI routers, core config & endpoints
+│   ├── shared/              # Common Python constants and enums
+│   └── docs/                # Backend API contracts & setup documentation
+├── frontend/
+│   └── src/
+│       ├── app/             # Next.js 15 App Router pages
+│       ├── features/        # Feature domains (intro, dashboard, classroom, ask, auth, onboarding)
+│       │   └── <feature>/   # Enforced Five-Folder Architecture
+│       │       ├── components/
+│       │       ├── hooks/
+│       │       ├── utilities/
+│       │       ├── constants/
+│       │       └── types/
+│       ├── shared/          # Global UI providers and shared context
+│       └── styles/          # Base, theme, animations, and glassmorphism CSS
+├── infra/
+│   ├── docker-compose.yml   # Multi-container deployment config
+│   └── nginx/               # Reverse proxy route configuration
+└── README.md
+```
 
 ---
 
-### 2. Frontend Setup
+## 🚀 Quick Start Guide
 
-1. **Navigate to the frontend folder**:
+### Option 1: Full-Stack Docker Deployment (Recommended)
+
+1. **Clone the repository**:
    ```bash
-   cd first
+   git clone https://github.com/ishfaqahmadafridi/Ai-Teacher.git
+   cd Ai-Teacher
    ```
 
-2. **Install node modules**:
+2. **Launch with Docker Compose**:
    ```bash
-   npm install
+   cd infra
+   docker compose up --build
    ```
 
-3. **Start the local development server**:
-   ```bash
-   npm run dev
-   ```
-
-4. Open your browser and navigate to `http://localhost:5173/` (Vite's dev URL). The frontend configures a proxy to forward `/api` requests to Django at `http://localhost:8000`.
+3. **Access Services**:
+   - **Frontend Application**: `http://localhost:3000`
+   - **Nginx Gateway**: `http://localhost:8080`
+   - **Django REST API**: `http://localhost:8000/api/`
+   - **FastAPI AI Docs**: `http://localhost:8001/docs`
 
 ---
 
-## 📖 Usage
+### Option 2: Local Development Setup (Manual)
 
-1. **Select a voice**: Choose your preferred browser voice from the dropdown on the left sidebar.
-2. **Ask a question**: Use the suggestions panel, type in the text box, or click the **Microphone icon** to dictate your question.
-3. **Immersive Lecture Mode**: As soon as Prof. Gemini responds, the application will switch into Full-Screen Lecture Mode. Watch the board update, see the 3D diagrams animate, and listen to the audio lecture sync with subtitles.
-4. Click **Stop** or **Pause** at the top right to control the playback at any time.
+#### 1. Django REST Backend (`backend/django_app`)
+```bash
+cd backend/django_app
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements/local.txt
+python manage.py migrate
+python manage.py runserver 8000
+```
+
+#### 2. FastAPI AI Inference Service (`backend/fastapi_app`)
+```bash
+cd backend/fastapi_app
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --port 8001 --reload
+```
+
+#### 3. Next.js 15 Frontend (`frontend`)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+---
+
+## 📏 Engineering Standards & Guidelines
+
+* **Component Memoization**: Every React UI component must be wrapped with `memo()` and explicitly set a `displayName`.
+* **Zero Component State**: `useState`, `useSelector`, and route navigation are strictly encapsulated within custom hooks inside `hooks/`.
+* **Canonical Type Imports**: All TypeScript interfaces must be imported with `import type` directly from canonical `types/` files.
+* **Pure Utilities**: Helper functions in `utilities/` must remain pure with zero React/Redux side-effects.
+
+---
+
+## 📜 License & Copyright
+
+© {new Date().getFullYear()} NEUROLEARN Project. Built for high-performance AI education.
