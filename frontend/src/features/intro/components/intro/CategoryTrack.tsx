@@ -1,34 +1,34 @@
 'use client';
 
+import { memo } from 'react';
 import { CategoryPill } from './CategoryPill';
-import type { CategoryItem } from '../../types/intro.types';
+import type { CategoryTrackProps } from '../../types/intro.types';
 
-interface CategoryTrackProps {
-  items: CategoryItem[];
-  className: string;
-}
-
-export function CategoryTrack({ items, className }: CategoryTrackProps) {
-  // Double items array to create seamless loop wrapping effect
-  const doubledItems = [...items, ...items];
+export const CategoryTrack = memo(function CategoryTrack({
+  items,
+  className = '',
+}: CategoryTrackProps) {
+  // Quadruple items array to guarantee seamless loop scrolling wrapping effect
+  const quadrupledItems = [...items, ...items, ...items, ...items];
 
   return (
     <div
-      className="overflow-hidden"
+      className="overflow-hidden py-1"
       style={{
-        maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+        maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
       }}
     >
-      <div className={`flex gap-3 w-max ${className}`}>
-        {doubledItems.map((item, index) => (
+      <div className={`flex gap-3.5 w-max ${className}`}>
+        {quadrupledItems.map((item, index) => (
           <CategoryPill
-            key={`${item.label}-${index}`}
-            icon={item.icon}
-            label={item.label}
+            key={`${item.id}-${index}`}
+            item={item}
           />
         ))}
       </div>
     </div>
   );
-}
+});
+
+CategoryTrack.displayName = 'CategoryTrack';

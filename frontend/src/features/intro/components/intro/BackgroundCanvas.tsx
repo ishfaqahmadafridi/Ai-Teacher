@@ -1,10 +1,11 @@
 'use client';
 
+import { memo } from 'react';
 import { ParticleCanvas } from './ParticleCanvas';
 import { FloatingSymbols } from './FloatingSymbols';
 import { AmbientOrbs } from './AmbientOrbs';
 
-export function BackgroundCanvas() {
+export const BackgroundCanvas = memo(function BackgroundCanvas() {
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
       <ParticleCanvas />
@@ -12,4 +13,6 @@ export function BackgroundCanvas() {
       <AmbientOrbs />
     </div>
   );
-}
+});
+
+BackgroundCanvas.displayName = 'BackgroundCanvas';

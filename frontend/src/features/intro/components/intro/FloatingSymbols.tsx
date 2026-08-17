@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import type { SymbolData } from '../../types/intro.types';
 
 const SYMBOLS: SymbolData[] = [
@@ -19,7 +20,7 @@ const SYMBOLS: SymbolData[] = [
   { text: '01', x: 95, y: 50, size: 14, delay: 1.1 },
 ];
 
-export function FloatingSymbols() {
+export const FloatingSymbols = memo(function FloatingSymbols() {
   return (
     <div className="absolute inset-0 z-[3] pointer-events-none select-none">
       {SYMBOLS.map((symbol, index) => (
@@ -38,4 +39,6 @@ export function FloatingSymbols() {
       ))}
     </div>
   );
-}
+});
+
+FloatingSymbols.displayName = 'FloatingSymbols';

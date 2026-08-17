@@ -1,30 +1,36 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { memo } from 'react';
+import { useCTAButton } from '../../hooks/useCTAButton';
+import type { CTAButtonProps } from '../../types/intro.types';
 
-export function CTAButton() {
-  const router = useRouter();
-  const [ctaHovered, setCtaHovered] = useState(false);
+export const CTAButton = memo(function CTAButton({
+  label = 'Enter Learning Platform',
+  onNavigate,
+  className = '',
+}: CTAButtonProps) {
+  const { ctaHovered, handleMouseEnter, handleMouseLeave, handleClick } =
+    useCTAButton(onNavigate);
 
   return (
-    <div className="mt-12">
+    <div className={`mt-10 ${className}`}>
       <button
-        onClick={() => router.push('/home')}
-        onMouseEnter={() => setCtaHovered(true)}
-        onMouseLeave={() => setCtaHovered(false)}
-        className="intro-cta-btn inline-flex items-center gap-3 px-11 py-[18px] rounded-full border border-blue-300/25 bg-white/[0.06] backdrop-blur-xl cursor-pointer outline-none text-[#e0f0ff] font-semibold text-[16px] tracking-wide"
+        type="button"
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="intro-cta-btn group relative inline-flex items-center gap-3 px-11 py-[18px] rounded-full border border-cyan-400/30 bg-gradient-to-r from-cyan-500/20 via-blue-600/20 to-purple-600/20 backdrop-blur-xl cursor-pointer outline-none text-[#e0f0ff] font-semibold text-[16px] tracking-wide shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:shadow-[0_0_45px_rgba(6,182,212,0.45)] hover:border-cyan-400/60 transition-all duration-300 active:scale-[0.98]"
         style={{
           WebkitBackdropFilter: 'blur(20px)',
         }}
       >
-        <span>Enter Learning Platform</span>
+        <span>{label}</span>
         <svg
           width="18"
           height="18"
           viewBox="0 0 18 18"
           fill="none"
-          className="transition-transform duration-300 ease-out"
+          className="transition-transform duration-300 ease-out group-hover:translate-x-1"
           style={{
             transform: ctaHovered ? 'translateX(4px)' : 'translateX(0)',
           }}
@@ -40,4 +46,6 @@ export function CTAButton() {
       </button>
     </div>
   );
-}
+});
+
+CTAButton.displayName = 'CTAButton';

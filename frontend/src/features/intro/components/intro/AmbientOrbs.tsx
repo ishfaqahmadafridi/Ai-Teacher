@@ -1,6 +1,8 @@
 'use client';
 
-export function AmbientOrbs() {
+import { memo } from 'react';
+
+export const AmbientOrbs = memo(function AmbientOrbs() {
   return (
     <>
       {/* Glow Orbs */}
@@ -25,10 +27,13 @@ export function AmbientOrbs() {
       <div
         className="absolute left-0 right-0 h-[2px] pointer-events-none z-[3]"
         style={{
-          background: 'linear-gradient(90deg, transparent 0%, rgba(99,179,237,0.12) 30%, rgba(148,210,255,0.18) 50%, rgba(99,179,237,0.12) 70%, transparent 100%)',
+          background:
+            'linear-gradient(90deg, transparent 0%, rgba(99,179,237,0.12) 30%, rgba(148,210,255,0.18) 50%, rgba(99,179,237,0.12) 70%, transparent 100%)',
           animation: 'intro-scanLine 14s linear 3s infinite',
         }}
       />
     </>
   );
-}
+});
+
+AmbientOrbs.displayName = 'AmbientOrbs';

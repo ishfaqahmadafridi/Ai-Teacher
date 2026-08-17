@@ -65,7 +65,7 @@ describe('intro.types.ts interface contracts', () => {
   });
 
   it('CategoryItem type should accept a valid category object', () => {
-    const item: CategoryItem = { label: 'Test Category', icon: '🧪' };
+    const item: CategoryItem = { id: 'test', label: 'Test Category', icon: '🧪' };
     expect(item.label).toBe('Test Category');
     expect(item.icon).toBe('🧪');
   });
