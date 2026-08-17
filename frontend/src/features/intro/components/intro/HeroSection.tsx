@@ -10,18 +10,18 @@ import {
 export const HeroSection = memo(function HeroSection() {
   return (
     <>
-      {/* Main Headline */}
+      {/* Main Headline - Exactly 2 Lines with Clean Fit */}
       <h1
-        className="m-0 text-center font-extrabold tracking-tight max-w-[950px]"
+        className="m-0 text-center font-extrabold tracking-tight max-w-[1280px] w-full"
         style={{
-          fontSize: 'clamp(42px, 6.5vw, 88px)',
-          lineHeight: 1.08,
+          fontSize: 'clamp(28px, 4.4vw, 68px)',
+          lineHeight: 1.15,
           animation: 'intro-titleReveal 1.0s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both',
         }}
       >
-        <span className="block text-[#f0f6ff]">{HERO_TITLE_PREFIX}</span>
+        <span className="block text-[#f0f6ff] mb-1">{HERO_TITLE_PREFIX}</span>
         <span
-          className="block bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-[length:200%_auto] bg-clip-text text-transparent"
+          className="block bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-[length:200%_auto] bg-clip-text text-transparent sm:whitespace-nowrap"
           style={{
             animation: 'intro-shimmer 5s linear infinite',
           }}

@@ -6,12 +6,8 @@ import { BackgroundCanvas } from './BackgroundCanvas';
 import { LandingNavbar } from './LandingNavbar';
 import { NextGenBadge } from './NextGenBadge';
 import { HeroSection } from './HeroSection';
-import { StatsStrip } from './StatsStrip';
 import { CTAButton } from './CTAButton';
 import { CategoryScrollingTracks } from './CategoryScrollingTracks';
-import { FeatureGridSection } from './FeatureGridSection';
-import { AITeacherShowcase } from './AITeacherShowcase';
-import { LandingFooter } from './LandingFooter';
 
 export const IntroScreen = memo(function IntroScreen() {
   const { handleEnterPlatform, handleLogin } = useIntroScreen();
@@ -26,30 +22,20 @@ export const IntroScreen = memo(function IntroScreen() {
       {/* Dynamic Background Particle & Glow Canvas */}
       <BackgroundCanvas />
 
-      {/* Sticky Glass Navbar */}
+      {/* Sticky Glass Navbar - Logo & Name Only */}
       <LandingNavbar onEnterApp={handleEnterPlatform} onLogin={handleLogin} />
 
       {/* Main Page Content Wrapper */}
-      <div className="relative z-10 w-full flex flex-col pt-24">
-        {/* Hero Banner Section */}
-        <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-16 pb-12 px-6 text-center max-w-7xl mx-auto w-full z-10">
+      <div className="relative z-10 w-full flex flex-col pt-20 pb-10">
+        {/* Hero Banner Section - Compact Padding */}
+        <section className="relative flex flex-col items-center justify-center pt-6 pb-8 px-6 text-center max-w-7xl mx-auto w-full z-10">
           <NextGenBadge />
           <HeroSection />
           <CTAButton onNavigate={handleEnterPlatform} />
-          <StatsStrip />
         </section>
 
         {/* Marquee Category Scrolling Tracks */}
         <CategoryScrollingTracks />
-
-        {/* Core Architecture Feature Grid */}
-        <FeatureGridSection />
-
-        {/* AI Physics Teacher Classroom Showcase */}
-        <AITeacherShowcase />
-
-        {/* Footer */}
-        <LandingFooter onNavigate={handleEnterPlatform} />
       </div>
     </div>
   );

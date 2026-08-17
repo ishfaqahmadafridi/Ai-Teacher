@@ -21,9 +21,21 @@ export function useIntroScreen(): UseIntroScreenReturn {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
     };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        router.push('/home');
+      }
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [router]);
 
   return {
     activeFeature,

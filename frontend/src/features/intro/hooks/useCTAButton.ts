@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import type { UseCTAButtonReturn } from '../types/intro.types';
 
 export function useCTAButton(onNavigateOverride?: () => void): UseCTAButtonReturn {
-  const router = useRouter();
   const [ctaHovered, setCtaHovered] = useState<boolean>(false);
 
   const handleMouseEnter = useCallback(() => {
@@ -16,13 +14,15 @@ export function useCTAButton(onNavigateOverride?: () => void): UseCTAButtonRetur
     setCtaHovered(false);
   }, []);
 
-  const handleClick = useCallback(() => {
-    if (onNavigateOverride) {
-      onNavigateOverride();
-    } else {
-      router.push('/home');
-    }
-  }, [router, onNavigateOverride]);
+  const handleClick = useCallback(
+    (e?: React.MouseEvent) => {
+      if (onNavigateOverride) {
+        e?.preventDefault();
+        onNavigateOverride();
+      }
+    },
+    [onNavigateOverride]
+  );
 
   return {
     ctaHovered,

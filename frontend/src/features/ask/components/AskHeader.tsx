@@ -1,11 +1,12 @@
 'use client';
 
+import { memo } from 'react';
 import Link from 'next/link';
-import { Brain } from 'lucide-react';
+import Image from 'next/image';
 import type { AskHeaderProps } from '../types';
 import { Button } from './ui';
 
-export function AskHeader({ drawerOpen, onOpenDrawer }: AskHeaderProps) {
+export const AskHeader = memo(function AskHeader({ drawerOpen, onOpenDrawer }: AskHeaderProps) {
   return (
     <header 
       className="absolute top-0 left-0 right-0 z-30 bg-[#0a0f18]/60 backdrop-blur-[40px] border-b border-white/10 h-16 flex justify-between items-center px-6"
@@ -25,10 +26,21 @@ export function AskHeader({ drawerOpen, onOpenDrawer }: AskHeaderProps) {
           </Button>
         )}
         <Link href="/home" className="flex items-center gap-3 no-underline select-none group">
-          <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#1d4ed8] via-[#2563eb] to-[#38bdf8] text-white flex items-center justify-center shadow-lg shadow-[#2563eb]/30 shrink-0 group-hover:scale-105 transition-transform duration-200">
-            <Brain className="w-5 h-5 text-white" aria-hidden="true" />
+          <div className="relative w-10 h-10 shrink-0 group-hover:scale-105 transition-transform duration-200">
+            <Image
+              src="/neurolearn-brain-logo.png"
+              alt="NEUROLEARN Logo"
+              fill
+              sizes="40px"
+              className="object-contain rounded-lg mix-blend-screen"
+              style={{
+                mixBlendMode: 'screen',
+                filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
+              }}
+              priority
+            />
           </div>
-          <span className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors text-lg font-['Hanken_Grotesk',sans-serif]">
+          <span className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors text-lg font-['Outfit',sans-serif]">
             NEUROLEARN
           </span>
         </Link>
@@ -39,4 +51,6 @@ export function AskHeader({ drawerOpen, onOpenDrawer }: AskHeaderProps) {
       </div>
     </header>
   );
-}
+});
+
+AskHeader.displayName = 'AskHeader';
