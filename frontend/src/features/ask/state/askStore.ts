@@ -3,7 +3,7 @@
 // It doesn't need Redux — only the AskLayout page uses it.
 
 import { create } from 'zustand';
-import type { AskMessage } from '../types/ask.types';
+import type { AskMessage } from '@/types';
 
 interface AskState {
   messages: AskMessage[];

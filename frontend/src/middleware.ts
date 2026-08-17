@@ -17,6 +17,10 @@ export function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-url', request.url);
 
+  // Example redirect rule: if we ever need to redirect /home to /
+  if (pathname === '/home') {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
   return NextResponse.next({
     request: {

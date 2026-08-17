@@ -8,8 +8,11 @@ export interface AuthUser {
   lastName: string;
   email: string;
   username?: string;
+  countryCode?: string;
+  mobile?: string;
   role: AuthRole;
   avatarUrl?: string;
+  coverUrl?: string;
   createdAt: string;
 }
 
@@ -25,6 +28,7 @@ export interface RegisterFormData {
   firstName: string;
   lastName: string;
   username: string;
+  countryCode: string;
   mobile: string;
   email: string;
   password: string;

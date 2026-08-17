@@ -16,6 +16,7 @@ export class AuthService {
       first_name: data.firstName,
       last_name: data.lastName,
       username: data.username || undefined,
+      country_code: data.countryCode,
       mobile: data.mobile || undefined,
       email: data.email,
       password: data.password,
@@ -30,6 +31,16 @@ export class AuthService {
     const response = await apiClient.post<AuthTokenResponse>('/api/auth/login/', {
       email: data.email,
       password: data.password,
+    });
+    return response.data;
+  }
+
+  /**
+   * Authenticates user via Google OAuth ID token.
+   */
+  static async loginWithGoogle(idToken: string): Promise<AuthTokenResponse> {
+    const response = await apiClient.post<AuthTokenResponse>('/api/auth/google/', {
+      id_token: idToken,
     });
     return response.data;
   }

@@ -1,4 +1,19 @@
-import type { ChangeEvent, HTMLInputTypeAttribute } from 'react';
+import type { ChangeEvent, HTMLInputTypeAttribute, FormEvent } from 'react';
+import type { RegisterFormData } from './domain.types';
+
+// ─── Country Code & Social Provider Options ──────────────────────────────────
+export interface CountryCodeOption {
+  code: string;
+  name: string;
+  dialCode: string;
+  flag: string;
+}
+
+export interface SocialProviderOption {
+  id: string;
+  label: string;
+  provider: 'google' | 'microsoft' | 'apple';
+}
 
 // ─── Shared base for all auth input fields ────────────────────────────────────
 export interface BaseInputFieldProps {
@@ -13,32 +28,64 @@ export interface BaseInputFieldProps {
   error?: string;
 }
 
-// ─── AuthField (generic text/email/tel input) ─────────────────────────────────
 export interface AuthFieldProps extends BaseInputFieldProps {
   type?: HTMLInputTypeAttribute;
   className?: string;
 }
 
-// ─── PasswordField (adds password-specific toggle behaviour) ──────────────────
-export type PasswordFieldProps = BaseInputFieldProps;
-
-// ─── Form-level props ─────────────────────────────────────────────────────────
-export interface CreateAccountFormProps {
-  onSuccess?: () => void;
+export interface PasswordFieldProps extends BaseInputFieldProps {
+  showPassword?: boolean;
+  onTogglePassword?: () => void;
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
-export interface AuthHeaderProps {
-  title?: string;
-  subtitle?: string;
+// ─── Section Component Props ──────────────────────────────────────────────────
+export interface IdentitySectionProps {
+  firstName: string;
+  lastName: string;
+  firstNameError?: string;
+  lastNameError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-// ─── Global error banner ──────────────────────────────────────────────────────
-export interface AuthErrorProps {
-  message: string;
+export interface UsernameSectionProps {
+  username: string;
+  usernameError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-// ─── Consent checkboxes ───────────────────────────────────────────────────────
+export interface EmailSectionProps {
+  email: string;
+  emailError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface MobileFieldSectionProps {
+  countryCode: string;
+  mobile: string;
+  onCountryCodeChange: (e: ChangeEvent<HTMLSelectElement>) => void;
+  onMobileChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  mobileError?: string;
+  countryCodeError?: string;
+}
+
+export interface PasswordSectionProps {
+  password: string;
+  confirmPassword: string;
+  showPassword: boolean;
+  passwordError?: string;
+  confirmPasswordError?: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onTogglePassword: () => void;
+}
+
+export interface AuthConsentSectionProps {
+  agreeToTerms: boolean;
+  agreeToPrivacy: boolean;
+  termsError?: string;
+  privacyError?: string;
+  onConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
+}
+
 export interface AuthConsentProps {
   agreeToTerms: boolean;
   agreeToPrivacy: boolean;
@@ -48,7 +95,35 @@ export interface AuthConsentProps {
   privacyError?: string;
 }
 
-// ─── Social sign-in section ───────────────────────────────────────────────────
+export interface FormSubmitButtonProps {
+  isLoading: boolean;
+  loadingText?: string;
+  buttonText?: string;
+}
+
+// ─── Form-level props ─────────────────────────────────────────────────────────
+export interface CreateAccountFormProps {
+  form: RegisterFormData;
+  fieldErrors: Partial<Record<keyof RegisterFormData, string>>;
+  showPassword: boolean;
+  isLoading: boolean;
+  error: string | null;
+  handleChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  handleConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
+  handleSubmit: (e: FormEvent) => Promise<void>;
+  togglePassword: () => void;
+  onSuccess?: () => void;
+}
+
+export interface AuthHeaderProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export interface AuthErrorProps {
+  message: string;
+}
+
 export interface SocialAuthProps {
   showDivider?: boolean;
   dividerText?: string;
@@ -57,8 +132,4 @@ export interface SocialAuthProps {
   onAppleClick?: () => void;
 }
 
-// NOTE: ConsentItemProps lives in:
-//   src/features/auth/components/ui/ConsentItem/ConsentItem.types.ts
-// and is re-exported from the ui barrel — do NOT duplicate it here.
-
-
+export type SocialAuthSectionProps = SocialAuthProps;

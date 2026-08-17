@@ -1,6 +1,6 @@
 'use client';
 import { Image as DreiImage } from '@react-three/drei';
-import type { DiagramCommand } from '@/features/classroom/types/classroom.types';
+import type { DiagramCommand } from '@/types';
 
 interface ImageSceneProps {
   command: DiagramCommand | null;

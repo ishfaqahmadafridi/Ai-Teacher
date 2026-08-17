@@ -9,7 +9,7 @@ export function HeroPanel({
   className = '',
 }: HeroPanelProps) {
   return (
-    <div className={`hidden lg:block lg:w-1/2 shrink-0 relative min-h-screen overflow-hidden ${className}`}>
+    <div className={`hidden lg:block lg:w-1/2 lg:min-w-[50%] lg:max-w-[50%] relative min-h-screen overflow-hidden ${className}`}>
       {/* Dark tint overlay */}
       <div className="absolute inset-0 bg-[#10131a]/30 z-10 pointer-events-none" />
       

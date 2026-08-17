@@ -1,0 +1,6 @@
+-r base.txt
+gunicorn
+psycopg2-binary
+django-redis
+redis
+sentry-sdk

@@ -1,77 +1,95 @@
 'use client';
 
-import { useRegister } from '../../hooks/useRegister';
-import { AuthError } from './AuthError';
-import { IdentityRow } from './IdentityRow';
-import { ContactRow } from './ContactRow';
-import { EmailFieldSection } from './EmailFieldSection';
-import { PasswordRow } from './PasswordRow';
-import { AuthConsent } from './AuthConsent';
-import { SocialAuth } from './SocialAuth';
-import { FormActions } from './FormActions';
+import { memo } from 'react';
+import { IdentitySection } from './IdentitySection';
+import { UsernameSection } from './UsernameSection';
+import { MobileFieldSection } from './MobileFieldSection';
+import { EmailSection } from './EmailSection';
+import { PasswordSection } from './PasswordSection';
+import { AuthConsentSection } from './AuthConsentSection';
+import { FormSubmitButton } from './FormSubmitButton';
+import { SocialAuthSection } from './SocialAuthSection';
 import type { CreateAccountFormProps } from '../../types';
 
-export function CreateAccountForm({ onSuccess }: CreateAccountFormProps) {
-  const {
-    form,
-    fieldErrors,
-    isLoading,
-    error,
-    handleChange,
-    handleConsentChange,
-    handleSubmit,
-  } = useRegister();
-
+export const CreateAccountForm = memo(function CreateAccountForm({
+  form,
+  fieldErrors,
+  showPassword,
+  isLoading,
+  error,
+  handleChange,
+  handleConsentChange,
+  handleSubmit,
+  togglePassword,
+}: CreateAccountFormProps) {
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+      {error && (
+        <div className="rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3">
+          {error}
+        </div>
+      )}
 
-      {/* Global error banner */}
-      <AuthError message={error ?? ''} />
-
-      {/* First Name / Last Name */}
-      <IdentityRow
-        form={form}
-        fieldErrors={fieldErrors}
+      {/* First Name & Last Name */}
+      <IdentitySection
+        firstName={form.firstName}
+        lastName={form.lastName}
+        firstNameError={fieldErrors.firstName}
+        lastNameError={fieldErrors.lastName}
         onChange={handleChange}
       />
 
-      {/* Username / Mobile */}
-      <ContactRow
-        form={form}
+      {/* Username */}
+      <UsernameSection
+        username={form.username}
+        usernameError={fieldErrors.username}
         onChange={handleChange}
       />
 
-      {/* Email */}
-      <EmailFieldSection
-        value={form.email}
-        error={fieldErrors.email}
+      {/* Mobile & Country Code */}
+      <MobileFieldSection
+        countryCode={form.countryCode}
+        mobile={form.mobile}
+        onCountryCodeChange={handleChange}
+        onMobileChange={handleChange}
+        mobileError={fieldErrors.mobile}
+        countryCodeError={fieldErrors.countryCode}
+      />
+
+      {/* Email Address */}
+      <EmailSection
+        email={form.email}
+        emailError={fieldErrors.email}
         onChange={handleChange}
       />
 
-      {/* Password / Confirm Password */}
-      <PasswordRow
-        form={form}
-        fieldErrors={fieldErrors}
+      {/* Password & Confirm Password */}
+      <PasswordSection
+        password={form.password}
+        confirmPassword={form.confirmPassword}
+        showPassword={showPassword}
+        passwordError={fieldErrors.password}
+        confirmPasswordError={fieldErrors.confirmPassword}
         onChange={handleChange}
+        onTogglePassword={togglePassword}
       />
 
-      {/* Terms & Privacy checkboxes */}
-      <AuthConsent
+      {/* Consent Checkboxes */}
+      <AuthConsentSection
         agreeToTerms={form.agreeToTerms}
         agreeToPrivacy={form.agreeToPrivacy}
-        onTermsChange={(checked) => handleConsentChange('agreeToTerms', checked)}
-        onPrivacyChange={(checked) => handleConsentChange('agreeToPrivacy', checked)}
         termsError={fieldErrors.agreeToTerms}
         privacyError={fieldErrors.agreeToPrivacy}
+        onConsentChange={handleConsentChange}
       />
 
-      {/* Submit + Sign-in link */}
-      <FormActions isLoading={isLoading} />
+      {/* Submit Button & Sign In Link */}
+      <FormSubmitButton isLoading={isLoading} />
 
-      {/* Social auth (Google / Microsoft / Apple) */}
-      <SocialAuth />
-
+      {/* Social Auth Providers */}
+      <SocialAuthSection />
     </form>
   );
-}
+});
 
+CreateAccountForm.displayName = 'CreateAccountForm';

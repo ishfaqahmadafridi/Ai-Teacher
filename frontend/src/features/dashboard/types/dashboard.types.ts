@@ -1,9 +1,17 @@
 export interface StudentProfile {
   name: string;
+  email: string;
+  phone: string;
+  studentId: string;
+  gradeLevel: string;
   dateFormatted: string;
   streakDays: number;
   weeklyProgressPercent: number;
   avatarUrl: string;
+  coverUrl?: string;
+  joinedDate?: string;
+  bio?: string;
+  preferredLanguage?: string;
 }
 
 export interface ContinueLearningCourse {
@@ -48,75 +56,58 @@ export interface DashboardNavLink {
   badgeCount?: number;
 }
 
-export interface DashboardTopNavProps {
-  searchQuery: string;
-  onSearchChange: (val: string) => void;
-  unreadNotificationsCount?: number;
-  studentAvatar: string;
+export interface DashboardBackgroundGlowProps {
   className?: string;
 }
 
-export interface DashboardSideNavProps {
-  activeTabId?: string;
-  onSelectTab?: (id: string) => void;
-  studentName: string;
-  dateFormatted: string;
-  studentAvatar: string;
-  onJoinTodayClass?: () => void;
-  className?: string;
+export interface UseDashboardOverviewGridOptions {
+  continueLearningId?: string;
+  onResumeCourse?: (id?: string) => void;
+  onJoinClass?: (id?: string) => void;
 }
 
-export interface DashboardHeroSectionProps {
+export interface DashboardOverviewGridProps {
   studentName: string;
   streakDays: number;
   weeklyProgressPercent: number;
-  onJoinTodayClass?: () => void;
-  onViewSchedule?: () => void;
-  className?: string;
-}
-
-export interface ContinueLearningBannerProps {
-  course: ContinueLearningCourse;
-  onResume?: () => void;
-  className?: string;
-}
-
-export interface LiveClassesSectionProps {
-  classes?: LiveClassItem[];
-  onJoinClass?: (id: string) => void;
-  className?: string;
-}
-
-export interface ClassCardProps {
-  classItem: LiveClassItem;
-  onJoinClass?: (id: string) => void;
-  className?: string;
-}
-
-export interface AssignmentsSectionProps {
+  continueLearning?: ContinueLearningCourse;
+  registeredCourses?: import('./courses.types').RegisteredCourseItem[];
+  liveClasses?: LiveClassItem[];
   assignments?: AssignmentItem[];
-  onSelectAssignment?: (id: string) => void;
-  onAskAiHelp?: (title: string) => void;
-  className?: string;
-}
-
-export interface ProgressAnalyticsCardProps {
-  weeklyProgressPercent?: number;
-  streakDays?: number;
-  attendancePercent?: number;
-  classesAttended?: number;
-  totalClasses?: number;
-  classBehaviorScore?: number;
-  aiFocusScore?: number;
-  conceptMasteryScore?: number;
-  doubtsResolvedCount?: number;
-  assignmentsCompleted?: number;
-  totalAssignments?: number;
-  quizzesPassed?: number;
-  totalQuizzes?: number;
+  onJoinClass?: (id?: string) => void;
+  onResumeCourse?: (id?: string) => void;
+  onOpenRegisterCourseModal?: () => void;
   className?: string;
 }
 
 export interface DashboardLayoutProps {
   className?: string;
 }
+
+export interface DashboardMainContentProps {
+  activeTabId: string;
+  studentName: string;
+  streakDays: number;
+  weeklyProgressPercent: number;
+  registeredCourses: import('./courses.types').RegisteredCourseItem[];
+  continueLearning?: ContinueLearningCourse;
+  liveClasses: LiveClassItem[];
+  assignments: AssignmentItem[];
+  autoOpenTask?: import('./assignments.types').AutoOpenTaskPayload | null;
+  onJoinClass?: (id?: string) => void;
+  onResumeCourse?: (id?: string) => void;
+  onOpenRegisterCourseModal?: () => void;
+  className?: string;
+}
+
+// Canonical Re-exports for Feature Types
+export * from './sidebar.types';
+export * from './topbar.types';
+export * from './profile.types';
+export * from './hero.types';
+export * from './classes.types';
+export * from './analytics.types';
+export * from './courses.types';
+export * from './schedule.types';
+export * from './progress.types';
+export * from './assignments.types';

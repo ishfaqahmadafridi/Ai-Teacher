@@ -1,0 +1,3 @@
+# AI Teacher — Backend Dependencies Entrypoint
+# Delegates to modular requirements package inside requirements/
+-r requirements/local.txt
