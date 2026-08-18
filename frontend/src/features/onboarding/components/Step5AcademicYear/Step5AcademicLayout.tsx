@@ -11,7 +11,7 @@ function Step5AcademicLayoutComponent({ children }: Step5AcademicLayoutProps) {
       <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-[#38BDF8]/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Content Container */}
-      <div className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 flex flex-col justify-center">
+      <div className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 relative z-10 flex flex-col justify-center space-y-6">
         {children}
       </div>
     </main>
