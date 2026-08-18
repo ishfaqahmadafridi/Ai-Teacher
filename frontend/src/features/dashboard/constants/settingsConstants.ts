@@ -42,3 +42,16 @@ export const AVAILABLE_TIMEZONES = [
   '(UTC+01:00) Central European Time',
   '(UTC+08:00) Beijing, Singapore',
 ];
+
+export const PRESET_ACADEMIC_FIELDS = [
+  'Computer Science & IT',
+  'Software Engineering & AI',
+  'Medical & Healthcare',
+  'Pure & Applied Sciences',
+  'Physics & Quantum Mechanics',
+  'Humanities & Social Sciences',
+  'Business & Design',
+  'Robotics & Automation',
+  'Data Science & Analytics',
+  'Biomedical Engineering',
+];

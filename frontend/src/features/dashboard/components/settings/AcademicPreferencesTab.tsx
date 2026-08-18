@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import { GraduationCap, BookOpen } from 'lucide-react';
+import { FieldSelectCombobox } from './FieldSelectCombobox';
 import type { SettingsTabProps } from '../../types/settings.types';
 
 export const AcademicPreferencesTab = memo(function AcademicPreferencesTab({
@@ -47,28 +48,15 @@ export const AcademicPreferencesTab = memo(function AcademicPreferencesTab({
           <div>
             <h4 className="text-sm font-bold text-white">Primary Discipline & Major</h4>
             <p className="text-xs text-[#94A3B8]">
-              Your active field synchronized across AI Teacher recommendations.
+              Type your custom major or select from presets below.
             </p>
           </div>
         </div>
 
-        <select
+        <FieldSelectCombobox
           value={settings.primaryField}
-          onChange={(e) => onChange('primaryField', e.target.value)}
-          className="w-full bg-[#070D1A] border border-[#1E293B] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] cursor-pointer"
-        >
-          {[
-            'Computer Science & IT',
-            'Medical & Healthcare',
-            'Pure & Applied Sciences',
-            'Humanities & Social Sciences',
-            'Business & Design',
-          ].map((field) => (
-            <option key={field} value={field} className="bg-[#0F172A] text-white">
-              {field}
-            </option>
-          ))}
-        </select>
+          onChange={(val) => onChange('primaryField', val)}
+        />
       </div>
     </div>
   );

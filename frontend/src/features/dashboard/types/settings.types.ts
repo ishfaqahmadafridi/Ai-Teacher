@@ -36,3 +36,15 @@ export interface SettingsTabProps {
   onChange: <K extends keyof ProjectSettingsState>(field: K, value: ProjectSettingsState[K]) => void;
   className?: string;
 }
+
+export interface FieldSelectComboboxProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+}
+
+export interface UseFieldSelectComboboxOptions {
+  value: string;
+  onChange: (value: string) => void;
+}
