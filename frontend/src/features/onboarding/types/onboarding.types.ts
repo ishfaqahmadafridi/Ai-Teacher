@@ -140,7 +140,11 @@ export interface AcademicProgressHeaderProps {
   className?: string;
 }
 
-export type AcademicYearMode = EducationLevel;
+export type AcademicYearMode = 'high_school' | 'university' | 'professional' | 'self_learner';
+
+export type UniversityDegreeTrack = 'undergraduate' | 'masters' | 'doctorate' | 'postdoc';
+
+export type AcademicSemester = 'sem_1' | 'sem_2' | 'sem_3';
 
 export interface AcademicLevelToggleProps {
   levelMode: AcademicYearMode;
@@ -151,6 +155,20 @@ export interface AcademicYearGridProps {
   years: YearOption[];
   selectedYear: AcademicYear | null;
   onSelectYear: (year: AcademicYear) => void;
+}
+
+export interface UniversityDegreeSelectorProps {
+  selectedTrack: UniversityDegreeTrack;
+  onSelectTrack: (track: UniversityDegreeTrack) => void;
+  className?: string;
+}
+
+export interface SemesterYearSelectorProps {
+  selectedYear: AcademicYear | null;
+  onSelectYear: (year: AcademicYear) => void;
+  selectedSemester: AcademicSemester;
+  onSelectSemester: (semester: AcademicSemester) => void;
+  className?: string;
 }
 
 export interface Step6InterestsLayoutProps {

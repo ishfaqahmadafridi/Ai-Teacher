@@ -1,4 +1,4 @@
-import type { AcademicYear } from './onboarding.types';
+import type { AcademicYear, UniversityDegreeTrack, AcademicSemester } from './onboarding.types';
 
 export interface YearOption {
   id: AcademicYear;
@@ -7,16 +7,55 @@ export interface YearOption {
   badge?: string;
 }
 
-export const primaryYears: YearOption[] = [
-  { id: 'freshman', title: 'Grade 1-2', subtitle: 'Early Primary - Foundational Literacy' },
-  { id: 'sophomore', title: 'Grade 3-4', subtitle: 'Upper Primary - Core Skills & Curiosity' },
-  { id: 'junior', title: 'Grade 5', subtitle: 'Elementary Exit - Prep for Middle School' },
+export interface DegreeTrackOption {
+  id: UniversityDegreeTrack;
+  title: string;
+  subtitle: string;
+  badge: string;
+  icon: string;
+}
+
+export interface SemesterOption {
+  id: AcademicSemester;
+  label: string;
+  desc: string;
+}
+
+export const universityDegreeTracks: DegreeTrackOption[] = [
+  {
+    id: 'undergraduate',
+    title: 'Undergraduate',
+    subtitle: 'BS / BA / BTech Degree Program',
+    badge: "Bachelor's",
+    icon: '🏛️',
+  },
+  {
+    id: 'masters',
+    title: 'Master’s / MPhil',
+    subtitle: 'MS / MA / MPhil Graduate Degree',
+    badge: "Master's",
+    icon: '🎓',
+  },
+  {
+    id: 'doctorate',
+    title: 'Doctorate (PhD)',
+    subtitle: 'PhD Candidate & Dissertation Research',
+    badge: 'Doctoral',
+    icon: '🔬',
+  },
+  {
+    id: 'postdoc',
+    title: 'Postdoctoral Research',
+    subtitle: 'Postdoc Fellow & Advanced Laboratory Lead',
+    badge: 'Postdoc',
+    icon: '⚡',
+  },
 ];
 
-export const middleYears: YearOption[] = [
-  { id: 'freshman', title: 'Grade 6', subtitle: '6th Grade - Middle School Transition' },
-  { id: 'sophomore', title: 'Grade 7', subtitle: '7th Grade - Intermediate Exploration' },
-  { id: 'junior', title: 'Grade 8', subtitle: '8th Grade - High School & STEM Prep' },
+export const semesterOptions: SemesterOption[] = [
+  { id: 'sem_1', label: 'Semester 1 (Fall)', desc: 'August — December Term' },
+  { id: 'sem_2', label: 'Semester 2 (Spring)', desc: 'January — May Term' },
+  { id: 'sem_3', label: 'Summer / Trimester', desc: 'Accelerated Term' },
 ];
 
 export const highSchoolYears: YearOption[] = [
@@ -31,7 +70,6 @@ export const universityYears: YearOption[] = [
   { id: 'sophomore', title: 'Year 2', subtitle: 'Sophomore - Major Selection' },
   { id: 'junior', title: 'Year 3', subtitle: 'Junior - Advanced Specialization' },
   { id: 'senior', title: 'Year 4', subtitle: 'Senior - Capstone & Research' },
-  { id: 'graduate', title: 'Graduate', subtitle: 'Master / PhD Candidate' },
 ];
 
 export const postgraduateYears: YearOption[] = [

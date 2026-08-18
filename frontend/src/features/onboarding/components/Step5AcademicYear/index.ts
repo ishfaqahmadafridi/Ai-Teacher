@@ -7,3 +7,5 @@ export * from './GrowthTrajectoryCard';
 export * from './AcademicHeader';
 export * from './AcademicProgressHeader';
 export * from './AcademicBackgroundGradients';
+export * from './UniversityDegreeSelector';
+export * from './SemesterYearSelector';
