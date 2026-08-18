@@ -5,8 +5,7 @@ import { useDashboardLayout } from '../hooks';
 import { DashboardBackgroundGlow } from './DashboardBackgroundGlow';
 import { DashboardTopNav, DashboardSideNav } from './navigation';
 import { DashboardMainContent } from './DashboardMainContent';
-import { RegisterCourseModal } from './courses';
-import { UserProfileModal } from './profile';
+import { DashboardDialogs } from './modals';
 
 export const DashboardLayout = memo(function DashboardLayout() {
   const {
@@ -14,6 +13,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
     activeTabId,
     profile,
     isProfileOpen,
+    isSettingsOpen,
     isRegisterCourseModalOpen,
     registeredCourses,
     continueLearning,
@@ -26,6 +26,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
     handleOpenProfile,
     handleCloseProfile,
     handleSaveProfile,
+    handleOpenSettings,
+    handleCloseSettings,
     handleOpenRegisterCourseModal,
     handleCloseRegisterCourseModal,
     handleRegisterCourse,
@@ -44,6 +46,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onSearchChange={handleSearchChange}
         studentAvatar={profile.avatarUrl}
         onOpenProfile={handleOpenProfile}
+        onOpenSettings={handleOpenSettings}
         onNotificationClick={handleNotificationClick}
       />
 
@@ -56,6 +59,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         studentAvatar={profile.avatarUrl}
         onJoinTodayClass={handleJoinClass}
         onOpenProfile={handleOpenProfile}
+        onOpenSettings={handleOpenSettings}
       />
 
       {/* Main Workspace Area */}
@@ -74,19 +78,17 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
       />
 
-      {/* Course Enrollment Dialog Modal */}
-      <RegisterCourseModal
-        isOpen={isRegisterCourseModalOpen}
-        onClose={handleCloseRegisterCourseModal}
+      {/* Dashboard Dialog Modals Container */}
+      <DashboardDialogs
+        isRegisterCourseModalOpen={isRegisterCourseModalOpen}
+        onCloseRegisterCourseModal={handleCloseRegisterCourseModal}
         onRegisterCourse={handleRegisterCourse}
-      />
-
-      {/* User Student Profile Dialog Modal */}
-      <UserProfileModal
-        isOpen={isProfileOpen}
-        onClose={handleCloseProfile}
+        isProfileOpen={isProfileOpen}
+        onCloseProfile={handleCloseProfile}
         profile={profile}
         onSaveProfile={handleSaveProfile}
+        isSettingsOpen={isSettingsOpen}
+        onCloseSettings={handleCloseSettings}
       />
     </div>
   );

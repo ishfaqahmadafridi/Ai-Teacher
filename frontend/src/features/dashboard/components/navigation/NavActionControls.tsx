@@ -11,6 +11,7 @@ import type { NavActionControlsProps } from '../../types/topbar.types';
 export const NavActionControls = memo(function NavActionControls({
   studentAvatar,
   onOpenProfile,
+  onOpenSettings,
   onNotificationClick,
   className = '',
 }: NavActionControlsProps) {
@@ -23,7 +24,7 @@ export const NavActionControls = memo(function NavActionControls({
       <NotificationDropdown {...dropdownProps} />
 
       {/* Settings & Profile Avatar Action Buttons */}
-      <NavSettingsButton onClick={onOpenProfile} />
+      <NavSettingsButton onClick={onOpenSettings || onOpenProfile} />
       <NavProfileAvatarButton studentAvatar={studentAvatar} onClick={onOpenProfile} />
     </div>
   );

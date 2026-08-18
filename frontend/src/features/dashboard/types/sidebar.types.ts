@@ -9,6 +9,7 @@ export interface DashboardSideNavProps {
   greeting?: string;
   onJoinTodayClass?: () => void;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
   className?: string;
 }
 
@@ -41,6 +42,7 @@ export interface SidebarFooterSettingsProps {
   studentName: string;
   onSelectTab?: (id: string) => void;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
   className?: string;
 }
 

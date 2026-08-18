@@ -27,15 +27,6 @@ export const ContinueLearningBanner = memo(function ContinueLearningBanner({
           </h3>
         </div>
       </div>
-
-      {/* Right Action Button */}
-      <button
-        type="button"
-        onClick={onResume}
-        className="bg-[#2563eb] hover:bg-[#004ac6] text-white px-6 py-2.5 rounded-xl font-['Hanken_Grotesk',sans-serif] font-semibold text-sm shadow-md transition-colors cursor-pointer shrink-0 active:scale-95 duration-200"
-      >
-        Resume Field
-      </button>
     </div>
   );
 });

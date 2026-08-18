@@ -12,6 +12,7 @@ export const DashboardTopNav = memo(function DashboardTopNav({
   unreadNotificationsCount = 2,
   studentAvatar,
   onOpenProfile,
+  onOpenSettings,
   onNotificationClick,
   className = '',
 }: DashboardTopNavProps) {
@@ -29,6 +30,7 @@ export const DashboardTopNav = memo(function DashboardTopNav({
           unreadNotificationsCount={unreadNotificationsCount}
           studentAvatar={studentAvatar}
           onOpenProfile={onOpenProfile}
+          onOpenSettings={onOpenSettings}
           onNotificationClick={onNotificationClick}
         />
       </div>

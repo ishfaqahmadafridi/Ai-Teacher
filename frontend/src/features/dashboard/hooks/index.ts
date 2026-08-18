@@ -21,6 +21,10 @@ export * from './useTimeGreeting';
 export * from './useDashboardHeroSection';
 export * from './useProgressAnalyticsCard';
 export * from './useAnalyticsMetricsGrid';
+export * from './useSettingsModal';
+export * from './useFieldSelectCombobox';
+
+
 
 
 
