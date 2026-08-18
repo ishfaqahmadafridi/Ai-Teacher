@@ -24,6 +24,7 @@ export interface NavActionControlsProps {
   unreadNotificationsCount?: number;
   studentAvatar: string;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
   onNotificationClick?: (notification: NotificationItem) => void;
   className?: string;
 }
@@ -100,6 +101,7 @@ export interface DashboardTopNavProps {
   unreadNotificationsCount?: number;
   studentAvatar: string;
   onOpenProfile?: () => void;
+  onOpenSettings?: () => void;
   onNotificationClick?: (notification: NotificationItem) => void;
   className?: string;
 }

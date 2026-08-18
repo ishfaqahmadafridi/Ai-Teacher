@@ -10,6 +10,7 @@ export const SidebarFooterSettings = memo(function SidebarFooterSettings({
   studentName,
   onSelectTab,
   onOpenProfile,
+  onOpenSettings,
   className = '',
 }: SidebarFooterSettingsProps) {
   const firstLetter = studentName ? studentName.charAt(0).toUpperCase() : 'S';
@@ -18,9 +19,14 @@ export const SidebarFooterSettings = memo(function SidebarFooterSettings({
     <div className={`pt-3 mt-2 border-t border-[#162032] ${className}`}>
       <Link
         href={settingsLink?.href || '/dashboard'}
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
           onSelectTab?.('settings');
-          onOpenProfile?.();
+          if (onOpenSettings) {
+            onOpenSettings();
+          } else if (onOpenProfile) {
+            onOpenProfile();
+          }
         }}
         className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-200 ${
           activeTabId === 'settings'

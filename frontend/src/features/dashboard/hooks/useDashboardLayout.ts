@@ -27,6 +27,7 @@ export function useDashboardLayout() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTabId, setActiveTabId] = useState('dashboard');
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isRegisterCourseModalOpen, setIsRegisterCourseModalOpen] = useState(false);
   const [registeredCourses, setRegisteredCourses] = useState<RegisteredCourseItem[]>(
     DEFAULT_REGISTERED_COURSES
@@ -67,6 +68,14 @@ export function useDashboardLayout() {
     setSearchQuery(val);
   }, []);
 
+  const handleOpenSettings = useCallback(() => {
+    setIsSettingsOpen(true);
+  }, []);
+
+  const handleCloseSettings = useCallback(() => {
+    setIsSettingsOpen(false);
+  }, []);
+
   const handleOpenRegisterCourseModal = useCallback(() => {
     setIsRegisterCourseModalOpen(true);
   }, []);
@@ -79,10 +88,10 @@ export function useDashboardLayout() {
     (id: string) => {
       setActiveTabId(id);
       if (id === 'settings') {
-        handleOpenProfile();
+        handleOpenSettings();
       }
     },
-    [handleOpenProfile]
+    [handleOpenSettings]
   );
 
   const handleNotificationClick = useCallback((notification: NotificationItem) => {
@@ -136,6 +145,7 @@ export function useDashboardLayout() {
     activeTabId,
     profile,
     isProfileOpen,
+    isSettingsOpen,
     isRegisterCourseModalOpen,
     registeredCourses,
     continueLearning,
@@ -149,6 +159,8 @@ export function useDashboardLayout() {
     handleOpenProfile,
     handleCloseProfile,
     handleSaveProfile,
+    handleOpenSettings,
+    handleCloseSettings,
     handleOpenRegisterCourseModal,
     handleCloseRegisterCourseModal,
     handleRegisterCourse,
