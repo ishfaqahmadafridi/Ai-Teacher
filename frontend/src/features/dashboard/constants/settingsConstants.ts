@@ -1,27 +1,38 @@
 import type { ProjectSettingsState, SettingsTabId } from '../types/settings.types';
 
 export const DEFAULT_PROJECT_SETTINGS: ProjectSettingsState = {
+  aiAvatarModel: 'prof_gemini',
+  speechRate: '1.0',
   voiceStreaming: true,
   explanationDepth: 'standard',
   autoBlackboardDiagrams: true,
+  liveSubtitles: true,
 
   themeMode: 'lumina_dark',
   interfaceLanguage: 'English',
   timezone: '(UTC+05:00) Islamabad, Karachi',
 
-  emailAssignmentAlerts: true,
-  disruptionWarningsAlerts: true,
-  soundEffects: true,
+  dailyStudyGoalHours: 2,
+  weeklyQuizGoal: 5,
 
   academicLevel: 'Undergraduate',
   primaryField: 'Computer Science & IT',
+  specialization: 'Artificial Intelligence & Systems',
+
+  emailAssignmentAlerts: true,
+  disruptionWarningsAlerts: true,
+  soundEffects: true,
+  currentPassword: '',
+  newPassword: '',
+  confirmPassword: '',
 };
 
 export const SETTINGS_TABS: { id: SettingsTabId; label: string; icon: string }[] = [
   { id: 'ai_mentor', label: 'AI Mentor & Voice', icon: 'Bot' },
   { id: 'general', label: 'General & Lumina Theme', icon: 'Sliders' },
-  { id: 'notifications', label: 'Notifications & Security', icon: 'Bell' },
+  { id: 'study_goals', label: 'Daily Goals & Targets', icon: 'Target' },
   { id: 'academic', label: 'Academic & Major', icon: 'GraduationCap' },
+  { id: 'notifications', label: 'Security & Notifications', icon: 'ShieldCheck' },
 ];
 
 export const AVAILABLE_LANGUAGES = [

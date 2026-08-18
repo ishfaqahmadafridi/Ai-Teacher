@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { GraduationCap, BookOpen } from 'lucide-react';
+import { GraduationCap, BookOpen, Layers } from 'lucide-react';
 import { FieldSelectCombobox } from './FieldSelectCombobox';
 import type { SettingsTabProps } from '../../types/settings.types';
 
@@ -56,6 +56,29 @@ export const AcademicPreferencesTab = memo(function AcademicPreferencesTab({
         <FieldSelectCombobox
           value={settings.primaryField}
           onChange={(val) => onChange('primaryField', val)}
+        />
+      </div>
+
+      {/* Specialization / Focus Area */}
+      <div className="p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#10B981]/15 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] shrink-0">
+            <Layers className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-white">Specialization & Research Focus</h4>
+            <p className="text-xs text-[#94A3B8]">
+              Specific subfield or concentration (e.g. Artificial Intelligence, Quantum Mechanics).
+            </p>
+          </div>
+        </div>
+
+        <input
+          type="text"
+          value={settings.specialization || ''}
+          onChange={(e) => onChange('specialization', e.target.value)}
+          placeholder="e.g. Artificial Intelligence & Machine Learning"
+          className="w-full bg-[#070D1A] border border-[#1E293B] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#38BDF8]"
         />
       </div>
     </div>

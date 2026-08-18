@@ -6,6 +6,7 @@ import { useSettingsModal } from '../../hooks/useSettingsModal';
 import { SettingsTabNav } from './SettingsTabNav';
 import { AIMentorSettingsTab } from './AIMentorSettingsTab';
 import { GeneralThemeSettingsTab } from './GeneralThemeSettingsTab';
+import { StudyGoalsSettingsTab } from './StudyGoalsSettingsTab';
 import { NotificationsSecuritySettingsTab } from './NotificationsSecuritySettingsTab';
 import { AcademicPreferencesTab } from './AcademicPreferencesTab';
 import type { ProjectSettingsModalProps } from '../../types/settings.types';
@@ -44,7 +45,7 @@ export const ProjectSettingsModal = memo(function ProjectSettingsModal(
               Project Preferences & Settings
             </h2>
             <p className="text-xs text-[#94A3B8] mt-0.5">
-              Customize AI Teacher features, Lumina theme, notifications, and academic profile.
+              Customize AI Teacher features, Lumina theme, study goals, notifications, and security.
             </p>
           </div>
           <button
@@ -58,12 +59,12 @@ export const ProjectSettingsModal = memo(function ProjectSettingsModal(
         </div>
 
         {/* Body Container: Left Sidebar + Right Settings Panel */}
-        <div className="flex flex-col md:flex-row min-h-[480px]">
+        <div className="flex flex-col md:flex-row min-h-[500px]">
           {/* Left Vertical Sidebar Nav */}
           <SettingsTabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
           {/* Right Main Settings Form */}
-          <form onSubmit={handleSave} className="flex-1 flex flex-col justify-between p-6 sm:p-8 max-h-[65vh] overflow-y-auto">
+          <form onSubmit={handleSave} className="flex-1 flex flex-col justify-between p-6 sm:p-8 max-h-[68vh] overflow-y-auto">
             <div className="space-y-6">
               {activeTab === 'ai_mentor' && (
                 <AIMentorSettingsTab settings={settings} onChange={handleChange} />
@@ -71,11 +72,14 @@ export const ProjectSettingsModal = memo(function ProjectSettingsModal(
               {activeTab === 'general' && (
                 <GeneralThemeSettingsTab settings={settings} onChange={handleChange} />
               )}
-              {activeTab === 'notifications' && (
-                <NotificationsSecuritySettingsTab settings={settings} onChange={handleChange} />
+              {activeTab === 'study_goals' && (
+                <StudyGoalsSettingsTab settings={settings} onChange={handleChange} />
               )}
               {activeTab === 'academic' && (
                 <AcademicPreferencesTab settings={settings} onChange={handleChange} />
+              )}
+              {activeTab === 'notifications' && (
+                <NotificationsSecuritySettingsTab settings={settings} onChange={handleChange} />
               )}
             </div>
 

@@ -5,4 +5,6 @@ export * from './GeneralThemeSettingsTab';
 export * from './NotificationsSecuritySettingsTab';
 export * from './AcademicPreferencesTab';
 export * from './FieldSelectCombobox';
+export * from './StudyGoalsSettingsTab';
+
 

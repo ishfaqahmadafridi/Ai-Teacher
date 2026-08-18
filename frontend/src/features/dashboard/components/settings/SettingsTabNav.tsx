@@ -1,21 +1,23 @@
 'use client';
 
 import { memo } from 'react';
-import { Bot, Sliders, Bell, GraduationCap } from 'lucide-react';
+import { Bot, Sliders, Target, GraduationCap, ShieldCheck } from 'lucide-react';
 import type { SettingsTabNavProps, SettingsTabId } from '../../types/settings.types';
 
 const TAB_ICONS = {
   ai_mentor: Bot,
   general: Sliders,
-  notifications: Bell,
+  study_goals: Target,
   academic: GraduationCap,
+  notifications: ShieldCheck,
 };
 
 const TABS: { id: SettingsTabId; label: string }[] = [
   { id: 'ai_mentor', label: 'AI Mentor & Voice' },
   { id: 'general', label: 'General & Theme' },
-  { id: 'notifications', label: 'Notifications & Security' },
+  { id: 'study_goals', label: 'Daily Goals & Targets' },
   { id: 'academic', label: 'Academic Profile' },
+  { id: 'notifications', label: 'Security & Alerts' },
 ];
 
 export const SettingsTabNav = memo(function SettingsTabNav({

@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Volume2, Sparkles, LayoutGrid } from 'lucide-react';
+import { Volume2, Sparkles, LayoutGrid, Bot, Mic } from 'lucide-react';
 import type { SettingsTabProps } from '../../types/settings.types';
 
 export const AIMentorSettingsTab = memo(function AIMentorSettingsTab({
@@ -11,6 +11,81 @@ export const AIMentorSettingsTab = memo(function AIMentorSettingsTab({
 }: SettingsTabProps) {
   return (
     <div className={`space-y-6 font-['Hanken_Grotesk',sans-serif] ${className}`}>
+      {/* AI Professor Model Selection */}
+      <div className="p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#2563EB]/15 border border-[#2563EB]/30 flex items-center justify-center text-[#38BDF8] shrink-0">
+            <Bot className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-white">AI Professor Avatar Model</h4>
+            <p className="text-xs text-[#94A3B8]">
+              Select primary AI Teacher persona for live classroom lectures.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          {[
+            { id: 'prof_gemini', name: 'Prof. Gemini', desc: 'Default versatile LLM tutor' },
+            { id: 'prof_physics', name: 'Prof. Physics', desc: 'Specialist in mechanics & calculus' },
+            { id: 'prof_socratic', name: 'Prof. Socratic', desc: 'Interactive Q&A guidance style' },
+          ].map((model) => {
+            const isSelected = settings.aiAvatarModel === model.id;
+            return (
+              <button
+                key={model.id}
+                type="button"
+                onClick={() => onChange('aiAvatarModel', model.id as any)}
+                className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#2563EB]/20 border-[#38BDF8] text-white font-bold'
+                    : 'bg-[#070D1A] border-[#1E293B] text-[#94A3B8] hover:text-white'
+                }`}
+              >
+                <div className="text-xs">{model.name}</div>
+                <div className="text-[11px] opacity-80 mt-0.5">{model.desc}</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* AI Voice Speed Rate */}
+      <div className="p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/15 border border-[#8B5CF6]/30 flex items-center justify-center text-[#C4B5FD] shrink-0">
+            <Mic className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-white">Speech Speed Rate</h4>
+            <p className="text-xs text-[#94A3B8]">
+              Adjust audio playback speed for AI voice lectures.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-3 pt-2">
+          {['0.75', '1.0', '1.25', '1.5'].map((rate) => {
+            const isSelected = settings.speechRate === rate;
+            return (
+              <button
+                key={rate}
+                type="button"
+                onClick={() => onChange('speechRate', rate as any)}
+                className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#8B5CF6]/20 border-[#C4B5FD] text-white font-bold'
+                    : 'bg-[#070D1A] border-[#1E293B] text-[#94A3B8] hover:text-white'
+                }`}
+              >
+                <div className="text-xs">{rate}x</div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Voice Streaming Toggle */}
       <div className="flex items-center justify-between p-4 rounded-2xl bg-[#090D16] border border-[#1E293B]">
         <div className="flex items-center gap-3">
@@ -69,7 +144,7 @@ export const AIMentorSettingsTab = memo(function AIMentorSettingsTab({
                 onClick={() => onChange('explanationDepth', level.id)}
                 className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#2563EB]/20 border-[#38BDF8] text-white'
+                    ? 'bg-[#2563EB]/20 border-[#38BDF8] text-white font-bold'
                     : 'bg-[#070D1A] border-[#1E293B] text-[#94A3B8] hover:text-white'
                 }`}
               >

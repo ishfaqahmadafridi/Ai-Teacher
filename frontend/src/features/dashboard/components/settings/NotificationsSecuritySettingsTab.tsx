@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Bell, AlertTriangle, ShieldCheck, VolumeX } from 'lucide-react';
+import { Bell, AlertTriangle, ShieldCheck, VolumeX, KeyRound } from 'lucide-react';
 import type { SettingsTabProps } from '../../types/settings.types';
 
 export const NotificationsSecuritySettingsTab = memo(function NotificationsSecuritySettingsTab({
@@ -11,6 +11,63 @@ export const NotificationsSecuritySettingsTab = memo(function NotificationsSecur
 }: SettingsTabProps) {
   return (
     <div className={`space-y-6 font-['Hanken_Grotesk',sans-serif] ${className}`}>
+      {/* Change Password Form Card */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-[#090D16] border border-[#1E293B] space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#2563EB]/15 border border-[#2563EB]/30 flex items-center justify-center text-[#38BDF8] shrink-0">
+            <KeyRound className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-white">Account Security & Password</h4>
+            <p className="text-xs text-[#94A3B8]">
+              Update your account password and security credentials.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3 pt-2">
+          <div>
+            <label className="block text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">
+              Current Password
+            </label>
+            <input
+              type="password"
+              value={settings.currentPassword || ''}
+              onChange={(e) => onChange('currentPassword', e.target.value)}
+              placeholder="••••••••••••"
+              className="w-full bg-[#070D1A] border border-[#1E293B] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#38BDF8]"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">
+                New Password
+              </label>
+              <input
+                type="password"
+                value={settings.newPassword || ''}
+                onChange={(e) => onChange('newPassword', e.target.value)}
+                placeholder="Minimum 8 characters"
+                className="w-full bg-[#070D1A] border border-[#1E293B] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#38BDF8]"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-[#94A3B8] uppercase tracking-wider mb-1">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                value={settings.confirmPassword || ''}
+                onChange={(e) => onChange('confirmPassword', e.target.value)}
+                placeholder="Re-enter new password"
+                className="w-full bg-[#070D1A] border border-[#1E293B] rounded-xl px-4 py-2.5 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#38BDF8]"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Email Assignment Alerts */}
       <div className="flex items-center justify-between p-4 rounded-2xl bg-[#090D16] border border-[#1E293B]">
         <div className="flex items-center gap-3">
@@ -96,9 +153,11 @@ export const NotificationsSecuritySettingsTab = memo(function NotificationsSecur
       </div>
 
       {/* Security Info Card */}
-      <div className="p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] flex items-center gap-3 text-xs text-[#10B981]">
-        <ShieldCheck className="w-5 h-5 shrink-0" />
-        <span>Your account uses encrypted SSL token authentication and secure session storage.</span>
+      <div className="p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] flex items-center justify-between gap-3 text-xs text-[#10B981]">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 shrink-0" />
+          <span>Active Session: Current Device (macOS • Chrome) — Token SSL Encrypted.</span>
+        </div>
       </div>
     </div>
   );
