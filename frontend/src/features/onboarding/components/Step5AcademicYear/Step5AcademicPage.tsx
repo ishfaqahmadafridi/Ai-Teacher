@@ -4,6 +4,7 @@ import { useState, memo } from 'react';
 import { useOnboarding } from '../../hooks/useOnboarding';
 import { highSchoolYears, universityYears } from '../../types';
 import { Step5AcademicLayout } from './Step5AcademicLayout';
+import { AcademicHeader } from './AcademicHeader';
 import { AcademicLevelToggle } from './AcademicLevelToggle';
 import { AcademicYearGrid } from './AcademicYearGrid';
 import { GrowthTrajectoryCard } from './GrowthTrajectoryCard';
@@ -16,6 +17,7 @@ export const Step5AcademicPage = memo(function Step5AcademicPage() {
 
   return (
     <Step5AcademicLayout>
+      <AcademicHeader />
       <AcademicLevelToggle levelMode={levelMode} onToggleLevel={setLevelMode} />
       
       <AcademicYearGrid

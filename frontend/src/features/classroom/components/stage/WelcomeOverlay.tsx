@@ -17,11 +17,15 @@ export const WelcomeOverlay = memo(function WelcomeOverlay({
       <div className="flex items-center gap-3">
         <div className="relative w-14 h-14 md:w-16 md:h-16 shrink-0">
           <Image
-            src="/neurolearn-logo.png"
-            alt="NeuroLearn Logo"
+            src="/neurolearn-brain-logo.png"
+            alt="NEUROLEARN Logo"
             fill
             sizes="64px"
-            className="object-contain filter drop-shadow-[0_0_15px_rgba(46,91,255,0.75)] animate-pulse"
+            className="object-contain mix-blend-screen"
+            style={{
+              mixBlendMode: 'screen',
+              filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
+            }}
             priority
           />
         </div>

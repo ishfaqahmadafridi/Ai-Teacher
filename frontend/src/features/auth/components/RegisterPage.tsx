@@ -60,16 +60,20 @@ export const RegisterPage = memo(function RegisterPage() {
         <div className="flex items-center justify-center gap-3 mb-8">
           <div className="relative" style={{ width: 60, height: 60 }}>
             <Image
-              src="/neurolearn-logo.png"
-              alt="NeuroLearn"
+              src="/neurolearn-brain-logo.png"
+              alt="NEUROLEARN Logo"
               fill
               sizes="60px"
-              className="object-contain"
-              style={{ filter: 'drop-shadow(0 0 10px rgba(79,195,247,0.75))' }}
+              className="object-contain mix-blend-screen"
+              style={{
+                mixBlendMode: 'screen',
+                filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
+              }}
+              priority
             />
           </div>
           <span
-            className="font-extrabold tracking-[0.14em] uppercase text-white"
+            className="font-extrabold tracking-[0.14em] uppercase text-white font-['Outfit',sans-serif]"
             style={{ fontSize: '1.05rem' }}
           >
             NEUROLEARN
