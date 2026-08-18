@@ -11,6 +11,18 @@ export function useSettingsModal({ isOpen, onClose }: ProjectSettingsModalProps)
   const [settings, setSettings] = useState<ProjectSettingsState>(DEFAULT_PROJECT_SETTINGS);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Load saved settings from localStorage when modal opens
   useEffect(() => {
     if (isOpen && typeof window !== 'undefined') {
