@@ -25,3 +25,5 @@ function Step6InterestsLayoutComponent({ children, mobileBar }: Step6InterestsLa
 
 export const Step6InterestsLayout = memo(Step6InterestsLayoutComponent);
 Step6InterestsLayout.displayName = 'Step6InterestsLayout';
+
+
