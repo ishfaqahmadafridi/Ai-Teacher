@@ -1,3 +1,11 @@
 export * from './countryConstants';
 export * from './profileConstants';
-export { highSchoolYears, universityYears } from '../types/academicYearData';
+export {
+  primaryYears,
+  middleYears,
+  highSchoolYears,
+  universityYears,
+  postgraduateYears,
+  professionalYears,
+  selfLearnerYears,
+} from '../types/academicYearData';

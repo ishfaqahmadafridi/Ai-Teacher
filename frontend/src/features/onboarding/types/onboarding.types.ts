@@ -140,9 +140,11 @@ export interface AcademicProgressHeaderProps {
   className?: string;
 }
 
+export type AcademicYearMode = EducationLevel;
+
 export interface AcademicLevelToggleProps {
-  levelMode: 'high_school' | 'university';
-  onToggleLevel: (mode: 'high_school' | 'university') => void;
+  levelMode: AcademicYearMode;
+  onToggleLevel: (mode: AcademicYearMode) => void;
 }
 
 export interface AcademicYearGridProps {
