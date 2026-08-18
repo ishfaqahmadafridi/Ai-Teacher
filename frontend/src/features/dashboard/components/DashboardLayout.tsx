@@ -7,6 +7,7 @@ import { DashboardTopNav, DashboardSideNav } from './navigation';
 import { DashboardMainContent } from './DashboardMainContent';
 import { RegisterCourseModal } from './courses';
 import { UserProfileModal } from './profile';
+import { ProjectSettingsModal } from './settings';
 
 export const DashboardLayout = memo(function DashboardLayout() {
   const {
@@ -14,6 +15,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
     activeTabId,
     profile,
     isProfileOpen,
+    isSettingsOpen,
     isRegisterCourseModalOpen,
     registeredCourses,
     continueLearning,
@@ -26,6 +28,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
     handleOpenProfile,
     handleCloseProfile,
     handleSaveProfile,
+    handleOpenSettings,
+    handleCloseSettings,
     handleOpenRegisterCourseModal,
     handleCloseRegisterCourseModal,
     handleRegisterCourse,
@@ -44,6 +48,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onSearchChange={handleSearchChange}
         studentAvatar={profile.avatarUrl}
         onOpenProfile={handleOpenProfile}
+        onOpenSettings={handleOpenSettings}
         onNotificationClick={handleNotificationClick}
       />
 
@@ -56,6 +61,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
         studentAvatar={profile.avatarUrl}
         onJoinTodayClass={handleJoinClass}
         onOpenProfile={handleOpenProfile}
+        onOpenSettings={handleOpenSettings}
       />
 
       {/* Main Workspace Area */}
@@ -87,6 +93,12 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onClose={handleCloseProfile}
         profile={profile}
         onSaveProfile={handleSaveProfile}
+      />
+
+      {/* Project Settings Dialog Modal */}
+      <ProjectSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={handleCloseSettings}
       />
     </div>
   );

@@ -9,3 +9,5 @@ export * from './courses.types';
 export * from './classes.types';
 export * from './hero.types';
 export * from './analytics.types';
+export * from './settings.types';
+

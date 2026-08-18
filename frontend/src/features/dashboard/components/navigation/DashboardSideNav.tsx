@@ -15,6 +15,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
   studentAvatar,
   greeting,
   onOpenProfile,
+  onOpenSettings,
   className = '',
 }: DashboardSideNavProps) {
   const { mainNavLinks, settingsLink } = useDashboardSideNav({ studentName });
@@ -46,6 +47,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
         studentName={studentName}
         onSelectTab={onSelectTab}
         onOpenProfile={onOpenProfile}
+        onOpenSettings={onOpenSettings}
       />
     </aside>
   );

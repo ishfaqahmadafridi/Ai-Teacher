@@ -11,3 +11,5 @@ export * from './schedule';
 export * from './progress';
 export * from './assignments';
 export * from './profile';
+export * from './settings';
+
