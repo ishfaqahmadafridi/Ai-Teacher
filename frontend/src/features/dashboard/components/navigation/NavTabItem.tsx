@@ -40,7 +40,7 @@ export const NavTabItem = memo(function NavTabItem({
       <span className="font-['JetBrains_Mono',monospace] text-xs font-semibold uppercase tracking-wider flex-1 truncate">
         {link.label}
       </span>
-      {link.badgeCount && link.badgeCount > 0 ? (
+      {link.badgeCount !== undefined && link.badgeCount !== 0 ? (
         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#00A3FF]/20 text-[#38BDF8] border border-[#00A3FF]/30">
           {link.badgeCount}
         </span>
