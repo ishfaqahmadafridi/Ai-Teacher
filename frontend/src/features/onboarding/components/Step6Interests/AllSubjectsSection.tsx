@@ -1,16 +1,10 @@
 'use client';
 
 import { memo } from 'react';
-import { SubjectItem } from '../../types';
 import { Card } from '@/components/ui/card';
+import type { AllSubjectsSectionProps } from '../../types/onboarding.types';
 
-interface AllSubjectsSectionProps {
-  items: SubjectItem[];
-  selectedInterests: string[];
-  onToggleInterest: (name: string) => void;
-}
-
-function AllSubjectsSectionComponent({
+export const AllSubjectsSection = memo(function AllSubjectsSection({
   items,
   selectedInterests,
   onToggleInterest,
@@ -39,7 +33,6 @@ function AllSubjectsSectionComponent({
       </div>
     </div>
   );
-}
+});
 
-export const AllSubjectsSection = memo(AllSubjectsSectionComponent);
 AllSubjectsSection.displayName = 'AllSubjectsSection';

@@ -1,8 +1,3 @@
-export type { HomeState, ActionButtonsProps } from './home.types';
-export type {
-  ChooseUsCard,
-  FutureFeatureItem,
-  TailoredLevelTab,
-  TailoredFeatureCard,
-} from './features.types';
-export type { AitoolItem } from './aitool.types';
+export * from './home.types';
+export * from './features.types';
+export * from './aitool.types';

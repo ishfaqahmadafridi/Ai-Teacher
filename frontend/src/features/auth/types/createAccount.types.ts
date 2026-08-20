@@ -86,6 +86,23 @@ export interface AuthConsentSectionProps {
   onConsentChange: (field: 'agreeToTerms' | 'agreeToPrivacy', checked: boolean) => void;
 }
 
+export interface ConsentErrorProps {
+  id: string;
+  message: string;
+}
+
+export interface ConsentLinkProps {
+  href: string;
+  text: string;
+}
+
+export interface ConsentLabelProps {
+  htmlFor: string;
+  labelPrefix: string;
+  linkHref: string;
+  linkText: string;
+}
+
 export interface AuthConsentProps {
   agreeToTerms: boolean;
   agreeToPrivacy: boolean;

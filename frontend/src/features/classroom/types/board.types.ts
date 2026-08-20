@@ -53,3 +53,47 @@ export interface PrinciplesNotesPaneProps {
 export interface SplitWhiteboardStageProps {
   className?: string;
 }
+
+export interface SceneProps {
+  type: import('@/types').DiagramType;
+  command: import('@/types').DiagramCommand | null;
+}
+
+export interface DiagramStageProps {
+  diagramType: import('@/types').DiagramType;
+  command: import('@/types').DiagramCommand | null;
+  formula: string | null;
+}
+
+export interface DiagramCanvasProps {
+  diagramType: import('@/types').DiagramType;
+  command: import('@/types').DiagramCommand | null;
+}
+
+export interface FormulaOverlayProps {
+  command: import('@/types').DiagramCommand | null;
+  formula: string | null;
+}
+
+export interface GravitySceneProps {
+  command: import('@/types').DiagramCommand | null;
+}
+
+export interface ProjectileSceneProps {
+  command: import('@/types').DiagramCommand | null;
+}
+
+export interface WaveSceneProps {
+  command: import('@/types').DiagramCommand | null;
+  resolution?: number;
+  width?: number;
+  baseAmplitude?: number;
+  baseFrequency?: number;
+  baseSpeed?: number;
+  color?: string;
+}
+
+export interface ImageSceneProps {
+  command: import('@/types').DiagramCommand | null;
+  url: string;
+}

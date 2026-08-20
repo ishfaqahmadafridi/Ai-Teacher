@@ -1,18 +1,10 @@
 'use client';
 
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import Link from 'next/link';
+import type { ConsentLinkProps } from '../../../types/createAccount.types';
 
-interface ConsentLinkProps {
-  href: string;
-  text: string;
-}
-
-/**
- * Renders the styled policy link inside a consent label.
- * Stops click propagation to prevent accidentally toggling the checkbox.
- */
-export function ConsentLink({ href, text }: ConsentLinkProps) {
+export const ConsentLink = memo(function ConsentLink({ href, text }: ConsentLinkProps) {
   const handleClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
   }, []);
@@ -26,4 +18,6 @@ export function ConsentLink({ href, text }: ConsentLinkProps) {
       {text}
     </Link>
   );
-}
+});
+
+ConsentLink.displayName = 'ConsentLink';

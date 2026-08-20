@@ -1,14 +1,11 @@
 'use client';
 
-import type { AitoolItem } from '../../types';
+import { memo } from 'react';
+import type { AitoolCardProps } from '../../types';
 import { AitoolIcon } from './AitoolIcon';
 import { Card, CardTitle, CardDescription } from '../ui';
 
-interface AitoolCardProps {
-  tool: AitoolItem;
-}
-
-export function AitoolCard({ tool }: AitoolCardProps) {
+export const AitoolCard = memo(function AitoolCard({ tool }: AitoolCardProps) {
   const glowClass = tool.colorTheme === 'tertiary' 
     ? 'rgba(167, 139, 250, 0.08)' 
     : 'rgba(59, 130, 246, 0.08)';
@@ -39,4 +36,6 @@ export function AitoolCard({ tool }: AitoolCardProps) {
       </CardDescription>
     </Card>
   );
-}
+});
+
+AitoolCard.displayName = 'AitoolCard';

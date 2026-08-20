@@ -1,16 +1,13 @@
 'use client';
+
+import { memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Scene } from './Scene';
-import type { DiagramCommand, DiagramType } from '@/types';
 import { CLASSROOM_LAYOUT } from '@/utils/classroomConfig';
+import type { DiagramCanvasProps } from '../../../types/board.types';
 
-interface DiagramCanvasProps {
-  diagramType: DiagramType;
-  command: DiagramCommand | null;
-}
-
-export default function DiagramCanvas({ diagramType, command }: DiagramCanvasProps) {
+export const DiagramCanvas = memo(function DiagramCanvas({ diagramType, command }: DiagramCanvasProps) {
   return (
     <Canvas
       camera={{ position: CLASSROOM_LAYOUT.camera.position, fov: CLASSROOM_LAYOUT.camera.fov }}
@@ -23,4 +20,7 @@ export default function DiagramCanvas({ diagramType, command }: DiagramCanvasPro
       <OrbitControls enablePan={false} enableZoom={true} />
     </Canvas>
   );
-}
+});
+
+DiagramCanvas.displayName = 'DiagramCanvas';
+export default DiagramCanvas;

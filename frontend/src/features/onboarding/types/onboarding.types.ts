@@ -170,6 +170,24 @@ export interface InterestsSearchBarProps {
   onAddCustom: (subject: string) => void;
 }
 
+export interface AllSubjectsSectionProps {
+  items: SubjectItem[];
+  selectedInterests: string[];
+  onToggleInterest: (name: string) => void;
+}
+
+export interface PopularSubjectsSectionProps {
+  items: SubjectItem[];
+  selectedInterests: string[];
+  onToggleInterest: (name: string) => void;
+}
+
+export interface AIRecommendationsSectionProps {
+  items: SubjectItem[];
+  selectedInterests: string[];
+  onToggleInterest: (name: string) => void;
+}
+
 export interface CategorizedSubjectsSectionProps {
   categories: SubjectCategory[];
   searchQuery: string;

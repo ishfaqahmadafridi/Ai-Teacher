@@ -1,10 +1,7 @@
-import type { ChooseUsCard } from '../../../types';
+import { memo } from 'react';
+import type { WhyChooseUsIconProps } from '../../../types';
 
-interface WhyChooseUsIconProps {
-  name: ChooseUsCard['iconName'];
-}
-
-export function WhyChooseUsIcon({ name }: WhyChooseUsIconProps) {
+export const WhyChooseUsIcon = memo(function WhyChooseUsIcon({ name }: WhyChooseUsIconProps) {
   switch (name) {
     case 'brain':
       return (
@@ -53,4 +50,6 @@ export function WhyChooseUsIcon({ name }: WhyChooseUsIconProps) {
     default:
       return null;
   }
-}
+});
+
+WhyChooseUsIcon.displayName = 'WhyChooseUsIcon';

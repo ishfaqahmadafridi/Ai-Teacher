@@ -1,16 +1,10 @@
 'use client';
 
 import { memo } from 'react';
-import { SubjectItem } from '../../types';
 import { Button } from '@/components/ui/button';
+import type { AIRecommendationsSectionProps } from '../../types/onboarding.types';
 
-interface AIRecommendationsSectionProps {
-  items: SubjectItem[];
-  selectedInterests: string[];
-  onToggleInterest: (name: string) => void;
-}
-
-function AIRecommendationsSectionComponent({
+export const AIRecommendationsSection = memo(function AIRecommendationsSection({
   items,
   selectedInterests,
   onToggleInterest,
@@ -42,7 +36,6 @@ function AIRecommendationsSectionComponent({
       </div>
     </div>
   );
-}
+});
 
-export const AIRecommendationsSection = memo(AIRecommendationsSectionComponent);
 AIRecommendationsSection.displayName = 'AIRecommendationsSection';

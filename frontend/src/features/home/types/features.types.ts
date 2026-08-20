@@ -23,3 +23,18 @@ export interface TailoredFeatureCard {
   description: string;
   iconName: 'sparkles' | 'book' | 'checkbox' | 'laptop';
 }
+
+export interface FutureInterfaceIconProps {
+  name: FutureFeatureItem['iconName'];
+  className?: string;
+}
+
+export interface TailoredLevelsIconProps {
+  name: string;
+  className?: string;
+}
+
+export interface WhyChooseUsIconProps {
+  name: ChooseUsCard['iconName'];
+  className?: string;
+}

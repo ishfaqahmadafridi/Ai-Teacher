@@ -1,17 +1,13 @@
 'use client';
-import { useEffect } from 'react';
+
+import { memo, useEffect } from 'react';
 import { useUIStore } from '@/store/uiStore';
 import { VoiceSelector } from './VoiceSelector';
 import { SuggestionsList } from './SuggestionsList';
 import { KeyPointsPanel } from './KeyPointsPanel';
+import type { SidebarProps } from '../../types/sidebar.types';
 
-interface MobileSidebarProps {
-  onAsk: (q: string) => void;
-  loading: boolean;
-  isPlaying: boolean;
-}
-
-export function MobileSidebar({ onAsk, loading, isPlaying }: MobileSidebarProps) {
+export const MobileSidebar = memo(function MobileSidebar({ onAsk, loading = false, isPlaying = false }: SidebarProps) {
   const { mobileSidebarOpen, setMobileSidebarOpen } = useUIStore();
 
   // Close on Escape key
@@ -52,6 +48,7 @@ export function MobileSidebar({ onAsk, loading, isPlaying }: MobileSidebarProps)
           </div>
           <button
             id="mobile-sidebar-close"
+            type="button"
             onClick={() => setMobileSidebarOpen(false)}
             className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
             aria-label="Close sidebar"
@@ -64,16 +61,20 @@ export function MobileSidebar({ onAsk, loading, isPlaying }: MobileSidebarProps)
         <div className="flex flex-col gap-6 p-5">
           <VoiceSelector />
           <KeyPointsPanel isPlaying={isPlaying} />
-          <SuggestionsList
-            onAsk={(q) => {
-              onAsk(q);
-              setMobileSidebarOpen(false);
-            }}
-            loading={loading}
-            isPlaying={isPlaying}
-          />
+          {onAsk && (
+            <SuggestionsList
+              onAsk={(q) => {
+                onAsk(q);
+                setMobileSidebarOpen(false);
+              }}
+              loading={loading}
+              isPlaying={isPlaying}
+            />
+          )}
         </div>
       </aside>
     </>
   );
-}
+});
+
+MobileSidebar.displayName = 'MobileSidebar';
