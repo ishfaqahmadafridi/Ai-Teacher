@@ -14,6 +14,7 @@ export interface MethodSelectorProps {
 
 export interface OtpInputGroupProps {
   otp: string[];
+  inputRefs: import('react').RefObject<(HTMLInputElement | null)[]>;
   onChangeOtp: (index: number, value: string) => void;
   onKeyDownOtp: (index: number, e: KeyboardEvent<HTMLInputElement>) => void;
   onPasteOtp: (e: ClipboardEvent<HTMLInputElement>) => void;
@@ -22,5 +23,6 @@ export interface OtpInputGroupProps {
 export interface ResendTimerProps {
   timer: number;
   onResend: () => void;
-  canResend: boolean;
+  isLoading?: boolean;
+  canResend?: boolean;
 }

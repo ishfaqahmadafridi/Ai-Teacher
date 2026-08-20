@@ -1,23 +1,16 @@
 'use client';
 
-import { RefObject } from 'react';
+import { memo } from 'react';
 import { Input } from '../ui/Input/Input';
+import type { OtpInputGroupProps } from '../../types/verify.types';
 
-interface OtpInputGroupComponentProps {
-  otp: string[];
-  inputRefs: RefObject<(HTMLInputElement | null)[]>;
-  onChangeOtp: (index: number, value: string) => void;
-  onKeyDownOtp: (index: number, e: React.KeyboardEvent<HTMLInputElement>) => void;
-  onPasteOtp: (e: React.ClipboardEvent<HTMLInputElement>) => void;
-}
-
-export function OtpInputGroup({
+export const OtpInputGroup = memo(function OtpInputGroup({
   otp,
   inputRefs,
   onChangeOtp,
   onKeyDownOtp,
   onPasteOtp,
-}: OtpInputGroupComponentProps) {
+}: OtpInputGroupProps) {
   return (
     <div className="flex items-center gap-3 mb-8" onPaste={onPasteOtp}>
       {/* Digits 1-3 */}
@@ -64,4 +57,6 @@ export function OtpInputGroup({
       })}
     </div>
   );
-}
+});
+
+OtpInputGroup.displayName = 'OtpInputGroup';

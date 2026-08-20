@@ -1,11 +1,10 @@
 'use client';
+
+import { memo } from 'react';
 import { useAppSelector } from '@/hooks/useAppStore';
+import type { KeyPointsPanelProps } from '../../types/sidebar.types';
 
-interface KeyPointsPanelProps {
-  isPlaying: boolean;
-}
-
-export function KeyPointsPanel({ isPlaying }: KeyPointsPanelProps) {
+export const KeyPointsPanel = memo(function KeyPointsPanel({ isPlaying }: KeyPointsPanelProps) {
   const points = useAppSelector((s) => s.classroom.chalkboardPoints);
 
   if (!points.length) return null;
@@ -32,4 +31,6 @@ export function KeyPointsPanel({ isPlaying }: KeyPointsPanelProps) {
       </ul>
     </div>
   );
-}
+});
+
+KeyPointsPanel.displayName = 'KeyPointsPanel';

@@ -1,16 +1,10 @@
 'use client';
 
 import { memo } from 'react';
-import { SubjectItem } from '../../types';
 import { Button } from '@/components/ui/button';
+import type { PopularSubjectsSectionProps } from '../../types/onboarding.types';
 
-interface PopularSubjectsSectionProps {
-  items: SubjectItem[];
-  selectedInterests: string[];
-  onToggleInterest: (name: string) => void;
-}
-
-function PopularSubjectsSectionComponent({
+export const PopularSubjectsSection = memo(function PopularSubjectsSection({
   items,
   selectedInterests,
   onToggleInterest,
@@ -42,7 +36,6 @@ function PopularSubjectsSectionComponent({
       </div>
     </div>
   );
-}
+});
 
-export const PopularSubjectsSection = memo(PopularSubjectsSectionComponent);
 PopularSubjectsSection.displayName = 'PopularSubjectsSection';

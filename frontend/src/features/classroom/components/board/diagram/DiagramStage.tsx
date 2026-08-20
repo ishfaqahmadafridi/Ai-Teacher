@@ -1,10 +1,12 @@
 'use client';
+
+import { memo } from 'react';
 import dynamic from 'next/dynamic';
-import type { DiagramCommand, DiagramType } from '@/types';
 import { FormulaOverlay } from './FormulaOverlay';
+import type { DiagramStageProps } from '../../../types/board.types';
 
 // Lazy-load the heavy Canvas — never bundle it in the initial JS
-const DiagramCanvas = dynamic(() => import('./DiagramCanvas'), {
+const DiagramCanvas = dynamic(() => import('./DiagramCanvas').then(mod => mod.DiagramCanvas), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center w-full h-full">
@@ -13,17 +15,13 @@ const DiagramCanvas = dynamic(() => import('./DiagramCanvas'), {
   ),
 });
 
-interface DiagramStageProps {
-  diagramType: DiagramType;
-  command: DiagramCommand | null;
-  formula: string | null;
-}
-
-export function DiagramStage({ diagramType, command, formula }: DiagramStageProps) {
+export const DiagramStage = memo(function DiagramStage({ diagramType, command, formula }: DiagramStageProps) {
   return (
     <div className="relative w-full h-full">
       <DiagramCanvas diagramType={diagramType} command={command} />
       <FormulaOverlay command={command} formula={formula} />
     </div>
   );
-}
+});
+
+DiagramStage.displayName = 'DiagramStage';

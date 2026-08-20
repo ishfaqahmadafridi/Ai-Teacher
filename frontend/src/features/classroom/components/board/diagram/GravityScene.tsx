@@ -1,14 +1,10 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, Line, Text } from '@react-three/drei';
-import type { DiagramCommand } from '@/types';
 import * as THREE from 'three';
+import type { GravitySceneProps } from '../../../types/board.types';
 
-interface GravitySceneProps {
-  command: DiagramCommand | null;
-}
-
-export function GravityScene({ command }: GravitySceneProps) {
+export const GravityScene = memo(function GravityScene({ command }: GravitySceneProps) {
   const ballRef = useRef<THREE.Mesh>(null);
   const t = useRef(0);
   const speed = command?.speed === 'fast' ? 1.5 : command?.speed === 'slow' ? 0.5 : 1;
@@ -67,4 +63,6 @@ export function GravityScene({ command }: GravitySceneProps) {
       />
     </group>
   );
-}
+});
+
+GravityScene.displayName = 'GravityScene';

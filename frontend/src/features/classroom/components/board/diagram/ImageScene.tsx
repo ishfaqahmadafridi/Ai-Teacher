@@ -1,13 +1,10 @@
 'use client';
+
+import { memo } from 'react';
 import { Image as DreiImage } from '@react-three/drei';
-import type { DiagramCommand } from '@/types';
+import type { ImageSceneProps } from '../../../types/board.types';
 
-interface ImageSceneProps {
-  command: DiagramCommand | null;
-  url: string;
-}
-
-export function ImageScene({ url }: ImageSceneProps) {
+export const ImageScene = memo(function ImageScene({ url }: ImageSceneProps) {
   if (!url) return null;
 
   return (
@@ -21,4 +18,6 @@ export function ImageScene({ url }: ImageSceneProps) {
       />
     </group>
   );
-}
+});
+
+ImageScene.displayName = 'ImageScene';

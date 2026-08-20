@@ -1,12 +1,8 @@
-import { useRef } from 'react';
+import { memo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, Line, Text } from '@react-three/drei';
-import type { DiagramCommand } from '@/types';
 import * as THREE from 'three';
-
-interface ProjectileSceneProps {
-  command: DiagramCommand | null;
-}
+import type { ProjectileSceneProps } from '../../../types/board.types';
 
 const GRAVITY = 9.8;
 const V0 = 8;
@@ -22,7 +18,7 @@ function getPosition(t: number): [number, number, number] {
   return [x, y, 0];
 }
 
-export function ProjectileScene({ command }: ProjectileSceneProps) {
+export const ProjectileScene = memo(function ProjectileScene({ command }: ProjectileSceneProps) {
   const ballRef = useRef<THREE.Mesh>(null);
   const tRef = useRef(0);
   const speed = command?.speed === 'fast' ? 1.4 : command?.speed === 'slow' ? 0.5 : 0.9;
@@ -69,4 +65,6 @@ export function ProjectileScene({ command }: ProjectileSceneProps) {
       </Text>
     </group>
   );
-}
+});
+
+ProjectileScene.displayName = 'ProjectileScene';

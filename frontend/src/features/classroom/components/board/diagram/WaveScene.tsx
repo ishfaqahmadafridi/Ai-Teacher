@@ -1,19 +1,9 @@
-import { useRef, useMemo } from 'react';
+import { memo, useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Line, Text } from '@react-three/drei';
-import type { DiagramCommand } from '@/types';
+import type { WaveSceneProps } from '../../../types/board.types';
 
-interface WaveSceneProps {
-  command: DiagramCommand | null;
-  resolution?: number;
-  width?: number;
-  baseAmplitude?: number;
-  baseFrequency?: number;
-  baseSpeed?: number;
-  color?: string;
-}
-
-export function WaveScene({
+export const WaveScene = memo(function WaveScene({
   command,
   resolution = 80,
   width = 8,
@@ -76,4 +66,6 @@ export function WaveScene({
       </Text>
     </group>
   );
-}
+});
+
+WaveScene.displayName = 'WaveScene';

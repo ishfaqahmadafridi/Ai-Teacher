@@ -1,15 +1,12 @@
 'use client';
+
+import { memo } from 'react';
 import { VoiceSelector } from './VoiceSelector';
 import { SuggestionsList } from './SuggestionsList';
 import { KeyPointsPanel } from './KeyPointsPanel';
+import type { SidebarProps } from '../../types/sidebar.types';
 
-interface SidebarProps {
-  onAsk: (q: string) => void;
-  loading: boolean;
-  isPlaying: boolean;
-}
-
-export function Sidebar({ onAsk, loading, isPlaying }: SidebarProps) {
+export const Sidebar = memo(function Sidebar({ onAsk, loading = false, isPlaying = false }: SidebarProps) {
   return (
     <aside className="hidden lg:flex flex-col w-72 shrink-0 bg-slate-900/80 backdrop-blur border-r border-slate-800 overflow-y-auto">
       {/* Logo / Branding */}
@@ -28,8 +25,10 @@ export function Sidebar({ onAsk, loading, isPlaying }: SidebarProps) {
       <div className="flex flex-col gap-6 p-5">
         <VoiceSelector />
         <KeyPointsPanel isPlaying={isPlaying} />
-        <SuggestionsList onAsk={onAsk} loading={loading} isPlaying={isPlaying} />
+        {onAsk && <SuggestionsList onAsk={onAsk} loading={loading} isPlaying={isPlaying} />}
       </div>
     </aside>
   );
-}
+});
+
+Sidebar.displayName = 'Sidebar';

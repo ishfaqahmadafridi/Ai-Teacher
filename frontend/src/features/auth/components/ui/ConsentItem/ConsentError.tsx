@@ -1,13 +1,9 @@
-interface ConsentErrorProps {
-  id: string;
-  message: string;
-}
+'use client';
 
-/**
- * Renders the inline validation error message for a consent checkbox.
- * The `id` matches aria-describedby on the checkbox for screen-reader support.
- */
-export function ConsentError({ id, message }: ConsentErrorProps) {
+import { memo } from 'react';
+import type { ConsentErrorProps } from '../../../types/createAccount.types';
+
+export const ConsentError = memo(function ConsentError({ id, message }: ConsentErrorProps) {
   return (
     <p
       id={id}
@@ -18,4 +14,6 @@ export function ConsentError({ id, message }: ConsentErrorProps) {
       {message}
     </p>
   );
-}
+});
+
+ConsentError.displayName = 'ConsentError';

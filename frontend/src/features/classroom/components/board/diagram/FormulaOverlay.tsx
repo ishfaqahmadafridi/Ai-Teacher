@@ -1,13 +1,10 @@
 'use client';
-import type { DiagramCommand } from '@/types';
+
+import { memo } from 'react';
 import { FormulaBlock } from '@/shared/components/FormulaBlock';
+import type { FormulaOverlayProps } from '../../../types/board.types';
 
-interface FormulaOverlayProps {
-  command: DiagramCommand | null;
-  formula: string | null;
-}
-
-export function FormulaOverlay({ command, formula }: FormulaOverlayProps) {
+export const FormulaOverlay = memo(function FormulaOverlay({ command, formula }: FormulaOverlayProps) {
   if (!formula && (!command || command.action !== 'show_formula')) return null;
   
   const displayFormula = formula || command?.formula;
@@ -25,4 +22,6 @@ export function FormulaOverlay({ command, formula }: FormulaOverlayProps) {
       </div>
     </div>
   );
-}
+});
+
+FormulaOverlay.displayName = 'FormulaOverlay';

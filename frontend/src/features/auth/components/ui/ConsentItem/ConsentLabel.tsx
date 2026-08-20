@@ -1,19 +1,11 @@
 'use client';
 
+import { memo } from 'react';
 import { Label } from '../Label/Label';
 import { ConsentLink } from './ConsentLink';
+import type { ConsentLabelProps } from '../../../types/createAccount.types';
 
-interface ConsentLabelProps {
-  htmlFor: string;
-  labelPrefix: string;
-  linkHref: string;
-  linkText: string;
-}
-
-/**
- * Renders the label text alongside the policy link for a consent checkbox row.
- */
-export function ConsentLabel({
+export const ConsentLabel = memo(function ConsentLabel({
   htmlFor,
   labelPrefix,
   linkHref,
@@ -28,4 +20,6 @@ export function ConsentLabel({
       <ConsentLink href={linkHref} text={linkText} />
     </Label>
   );
-}
+});
+
+ConsentLabel.displayName = 'ConsentLabel';

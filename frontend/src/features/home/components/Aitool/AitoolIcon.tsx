@@ -1,11 +1,7 @@
-import type { AitoolItem } from '../../types';
+import { memo } from 'react';
+import type { AitoolIconProps } from '../../types';
 
-interface AitoolIconProps {
-  name: AitoolItem['iconName'];
-  themeColor: AitoolItem['colorTheme'];
-}
-
-export function AitoolIcon({ name, themeColor }: AitoolIconProps) {
+export const AitoolIcon = memo(function AitoolIcon({ name, themeColor }: AitoolIconProps) {
   const colorClass = themeColor === 'tertiary' ? 'text-purple-400' : 'text-blue-400';
   switch (name) {
     case 'auto_awesome':
@@ -52,4 +48,6 @@ export function AitoolIcon({ name, themeColor }: AitoolIconProps) {
     default:
       return null;
   }
-}
+});
+
+AitoolIcon.displayName = 'AitoolIcon';

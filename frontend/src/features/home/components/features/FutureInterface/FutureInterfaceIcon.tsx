@@ -1,10 +1,7 @@
-import type { FutureFeatureItem } from '../../../types';
+import { memo } from 'react';
+import type { FutureInterfaceIconProps } from '../../../types';
 
-interface FutureInterfaceIconProps {
-  name: FutureFeatureItem['iconName'];
-}
-
-export function FutureInterfaceIcon({ name }: FutureInterfaceIconProps) {
+export const FutureInterfaceIcon = memo(function FutureInterfaceIcon({ name }: FutureInterfaceIconProps) {
   switch (name) {
     case 'sparkles':
       return (
@@ -22,4 +19,6 @@ export function FutureInterfaceIcon({ name }: FutureInterfaceIconProps) {
     default:
       return null;
   }
-}
+});
+
+FutureInterfaceIcon.displayName = 'FutureInterfaceIcon';

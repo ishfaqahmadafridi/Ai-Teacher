@@ -1,14 +1,10 @@
 'use client';
 
+import { memo } from 'react';
 import { Button } from '../ui/Button/Button';
+import type { ResendTimerProps } from '../../types/verify.types';
 
-interface ResendTimerComponentProps {
-  timer: number;
-  onResend: () => void;
-  isLoading: boolean;
-}
-
-export function ResendTimer({ timer, onResend, isLoading }: ResendTimerComponentProps) {
+export const ResendTimer = memo(function ResendTimer({ timer, onResend, isLoading = false }: ResendTimerProps) {
   const formatTimer = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -17,7 +13,7 @@ export function ResendTimer({ timer, onResend, isLoading }: ResendTimerComponent
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[#c6c6cc]/60 text-sm">Didn't receive a code?</span>
+      <span className="text-[#c6c6cc]/60 text-sm">Didn&apos;t receive a code?</span>
       {timer > 0 ? (
         <span className="text-[#b8c3ff] font-semibold text-sm">
           Resend code in {formatTimer(timer)}
@@ -34,4 +30,6 @@ export function ResendTimer({ timer, onResend, isLoading }: ResendTimerComponent
       )}
     </div>
   );
-}
+});
+
+ResendTimer.displayName = 'ResendTimer';
