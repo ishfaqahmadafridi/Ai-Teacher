@@ -1,10 +1,26 @@
-fastapi>=0.110.0
-uvicorn>=0.28.0
-pydantic>=2.6.0
-pydantic-settings>=2.2.0
-python-jose>=3.3.0
-httpx>=0.27.0
-asyncpg>=0.29.0
-sqlalchemy>=2.0.28
-redis>=5.0.1
-pgvector>=0.2.5
+# AI Teacher — FastAPI Inference Engine Dependencies
+# Install with: pip install -r requirements.txt
+
+# ── FastAPI Core ──────────────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.13.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+
+# ── CORS & Async ─────────────────────────────────────────────────────────────
+httpx==0.28.1
+anyio==4.7.0
+
+# ── LLM & AI (shared with Django backend) ────────────────────────────────────
+langchain==1.3.4
+langchain-core==1.4.1
+langchain-google-genai==4.2.4
+python-dotenv==1.2.2
+
+# ── RAG (shared ChromaDB vector store) ───────────────────────────────────────
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# ── WebSocket ────────────────────────────────────────────────────────────────
+websockets==14.1

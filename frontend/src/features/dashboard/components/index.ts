@@ -1,7 +1,5 @@
-export * from './DashboardLayout';
-export * from './DashboardMainContent';
-export * from './DashboardBackgroundGlow';
-export * from './DashboardOverviewGrid';
+export * from './layout';
+export * from './overview';
 export * from './navigation';
 export * from './hero';
 export * from './classes';
@@ -13,5 +11,3 @@ export * from './assignments';
 export * from './profile';
 export * from './settings';
 export * from './modals';
-
-

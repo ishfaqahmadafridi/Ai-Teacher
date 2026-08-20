@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStudentProfile } from './useStudentProfile';
 import {
@@ -11,7 +11,7 @@ import {
   DEFAULT_REGISTERED_COURSES,
 } from '../constants/dashboardConstants';
 import type { RegisteredCourseItem } from '../types/courses.types';
-import type { NotificationItem } from '../types/topbar.types';
+import type { NotificationItem, SearchResultItem } from '../types/topbar.types';
 import type { AutoOpenTaskPayload } from '../types/assignments.types';
 import type { ContinueLearningCourse } from '../types/dashboard.types';
 
@@ -60,13 +60,64 @@ export function useDashboardLayout() {
     }
   }, []);
 
-  const liveClasses = DEFAULT_LIVE_CLASSES;
-  const assignments = DEFAULT_ASSIGNMENTS;
   const navLinks = DEFAULT_DASHBOARD_NAV_LINKS;
+
+  // Filter content based on active searchQuery if user types in search bar
+  const filteredCourses = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return registeredCourses;
+    return registeredCourses.filter(
+      (c) =>
+        c.title.toLowerCase().includes(q) ||
+        c.subjectField.toLowerCase().includes(q) ||
+        c.courseCode.toLowerCase().includes(q)
+    );
+  }, [searchQuery, registeredCourses]);
+
+  const filteredLiveClasses = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return DEFAULT_LIVE_CLASSES;
+    return DEFAULT_LIVE_CLASSES.filter(
+      (lc) =>
+        lc.title.toLowerCase().includes(q) ||
+        lc.subject.toLowerCase().includes(q) ||
+        lc.instructorName.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
+
+  const filteredAssignments = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return DEFAULT_ASSIGNMENTS;
+    return DEFAULT_ASSIGNMENTS.filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.subject.toLowerCase().includes(q) ||
+        (a.type ? a.type.toLowerCase().includes(q) : false)
+    );
+  }, [searchQuery]);
 
   const handleSearchChange = useCallback((val: string) => {
     setSearchQuery(val);
   }, []);
+
+  const handleSelectSearchResult = useCallback(
+    (item: SearchResultItem) => {
+      const { actionPayload } = item;
+      if (actionPayload.targetTab) {
+        setActiveTabId(actionPayload.targetTab);
+      }
+      if (item.type === 'course' || item.type === 'live_class') {
+        router.push('/classroom');
+      } else if (item.type === 'assignment') {
+        setAutoOpenTask({
+          taskId: actionPayload.taskId || 'asg-101',
+          modalType: item.badgeText === 'Quiz' ? 'quiz' : 'submit',
+        });
+        setActiveTabId('assignments_quizzes');
+      }
+    },
+    [router]
+  );
 
   const handleOpenSettings = useCallback(() => {
     setIsSettingsOpen(true);
@@ -147,13 +198,14 @@ export function useDashboardLayout() {
     isProfileOpen,
     isSettingsOpen,
     isRegisterCourseModalOpen,
-    registeredCourses,
+    registeredCourses: filteredCourses,
     continueLearning,
-    liveClasses,
-    assignments,
+    liveClasses: filteredLiveClasses,
+    assignments: filteredAssignments,
     navLinks,
     autoOpenTask,
     handleSearchChange,
+    handleSelectSearchResult,
     handleSelectTab,
     handleNotificationClick,
     handleOpenProfile,
@@ -168,3 +220,4 @@ export function useDashboardLayout() {
     handleResumeCourse,
   };
 }
+
