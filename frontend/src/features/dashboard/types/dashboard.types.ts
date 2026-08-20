@@ -53,7 +53,7 @@ export interface DashboardNavLink {
   label: string;
   iconName: string;
   href: string;
-  badgeCount?: number;
+  badgeCount?: number | string;
 }
 
 export interface DashboardBackgroundGlowProps {

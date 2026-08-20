@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { AskMessageListProps } from '../types';
 import { AskMessageItem } from './AskMessageItem';
 
@@ -13,12 +14,25 @@ export function AskMessageList({
     <main className="flex-1 pt-24 pb-28 relative overflow-y-auto px-4 md:px-0 flex flex-col items-center custom-scrollbar">
       {messages.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 max-w-md mx-auto text-center px-4 my-auto">
-          <div className="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-3xl animate-bounce">
-            💬
+          <div className="relative w-20 h-20 shrink-0 mb-2">
+            <Image
+              src="/neurolearn-brain-logo.png"
+              alt="NEUROLEARN Brain Logo"
+              fill
+              sizes="80px"
+              className="object-contain rounded-2xl mix-blend-screen"
+              style={{
+                mixBlendMode: 'screen',
+                filter: 'drop-shadow(0 0 20px rgba(56,189,248,0.9))',
+              }}
+              priority
+            />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white mb-2">Interactive Chat Assistant</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h2 className="text-xl font-bold text-white mb-2 font-['Outfit',sans-serif]">
+              Interactive Chat Assistant
+            </h2>
+            <p className="text-sm text-slate-400 leading-relaxed font-['Hanken_Grotesk',sans-serif]">
               Ask anything about formulas, concepts, algorithms, code reviews, or physics textbooks. The AI Tutor is ready to assist you.
             </p>
           </div>

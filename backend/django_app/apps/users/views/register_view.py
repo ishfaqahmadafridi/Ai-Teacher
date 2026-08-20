@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from ..serializers import UserRegisterSerializer, UserSerializer
-from .token_utils import generate_user_tokens
+from apps.users.utilities import generate_user_tokens
 
 class RegisterView(APIView):
     """

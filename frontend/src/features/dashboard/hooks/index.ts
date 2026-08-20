@@ -23,6 +23,8 @@ export * from './useProgressAnalyticsCard';
 export * from './useAnalyticsMetricsGrid';
 export * from './useSettingsModal';
 export * from './useFieldSelectCombobox';
+export * from './useNavSearchBar';
+
 
 
 

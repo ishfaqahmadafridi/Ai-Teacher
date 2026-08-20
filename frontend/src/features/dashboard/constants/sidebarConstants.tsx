@@ -6,11 +6,13 @@ import {
   Calendar,
   LineChart,
   ClipboardList,
+  Bot,
 } from 'lucide-react';
 import type { DashboardNavLink } from '../types/dashboard.types';
 
 export const SIDEBAR_ICON_MAP: Record<string, React.ReactNode> = {
   dashboard: <LayoutDashboard className="w-5 h-5 shrink-0" aria-hidden="true" />,
+  ai_chatbot: <Bot className="w-5 h-5 shrink-0 text-[#38BDF8]" aria-hidden="true" />,
   registered_courses: <BookOpen className="w-5 h-5 shrink-0" aria-hidden="true" />,
   schedule: <Calendar className="w-5 h-5 shrink-0" aria-hidden="true" />,
   class_progress: <LineChart className="w-5 h-5 shrink-0" aria-hidden="true" />,
@@ -24,5 +26,6 @@ export const DEFAULT_DASHBOARD_NAV_LINKS: DashboardNavLink[] = [
   { id: 'schedule', label: 'Class Schedule', iconName: 'Calendar', href: '/dashboard', badgeCount: 7 },
   { id: 'class_progress', label: 'Class Progress', iconName: 'LineChart', href: '/dashboard' },
   { id: 'assignments_quizzes', label: 'Assignments & Quizzes', iconName: 'ClipboardList', href: '/dashboard', badgeCount: 5 },
+  { id: 'ai_chatbot', label: 'Ask Prof. Gemini', iconName: 'Bot', href: '/ask', badgeCount: 'AI' },
   { id: 'settings', label: 'Settings', iconName: 'Settings', href: '/dashboard' },
 ];

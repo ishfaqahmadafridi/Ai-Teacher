@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from ..serializers import UserSerializer
-from .token_utils import generate_user_tokens
+from apps.users.utilities import generate_user_tokens
 
 User = get_user_model()
 

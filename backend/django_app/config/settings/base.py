@@ -32,10 +32,12 @@ INSTALLED_APPS = [
     # Third-party
     'rest_framework',
     'corsheaders',
+    'drf_spectacular',
 
     # Local apps
     'apps.users',
-    'teacher.apps.TeacherConfig',
+    'apps.dashboard.apps.DashboardConfig',
+    'apps.classroom.apps.ClassroomConfig',
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -93,6 +95,28 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# ── OpenAPI / Swagger Docs (drf-spectacular) ───────────────────────────────────
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'AI Teacher API',
+    'DESCRIPTION': (
+        'AI Teacher is an enterprise academic platform powered by Gemini 2.5 Flash, '
+        'RAG (ChromaDB), and a feature-based Django REST API. '
+        'This document covers all Dashboard, Classroom, and Auth endpoints.'
+    ),
+    'VERSION': '1.0.0',
+    'CONTACT': {'name': 'AI Teacher Engineering', 'email': 'engineering@ai-teacher.io'},
+    'LICENSE': {'name': 'Proprietary'},
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SORT_OPERATIONS': False,
+    'TAGS': [
+        {'name': 'auth', 'description': 'User authentication, registration, and token management'},
+        {'name': 'dashboard', 'description': 'Dashboard global search, course progress, and metrics'},
+        {'name': 'classroom', 'description': 'AI classroom tutor: ask questions, manage sessions, health'},
+    ],
 }
 
 MODEL_PATH = BASE_DIR / 'model'
@@ -117,12 +141,17 @@ LOGGING = {
         'level': 'INFO',
     },
     'loggers': {
-        'teacher': {
+        'apps.dashboard': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'physics_teacher': {
+        'apps.classroom': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'apps.users': {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False,
