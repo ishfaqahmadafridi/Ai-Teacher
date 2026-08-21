@@ -1,12 +1,13 @@
 'use client';
 
-import { useAskLayout } from '../hooks/useAskLayout';
-import { AskSidebar } from './AskSidebar';
+import { memo } from 'react';
+import { useAskLayout } from '../../hooks/useAskLayout';
+import { AskSidebar } from '../sidebar';
 import { AskHeader } from './AskHeader';
-import { AskMessageList } from './AskMessageList';
-import { AskInputFooter } from './AskInputFooter';
+import { AskMessageList } from '../chat';
+import { AskInputFooter } from '../input';
 
-export function AskLayout() {
+export const AskLayout = memo(function AskLayout() {
   const {
     messages,
     loading,
@@ -61,6 +62,7 @@ export function AskLayout() {
       </div>
     </div>
   );
-}
+});
 
+AskLayout.displayName = 'AskLayout';
 export default AskLayout;

@@ -1,12 +1,20 @@
-import Image from 'next/image';
-import type { AskMessageItemProps } from '../types';
-import { FormulaBlock } from '@/shared/components/FormulaBlock';
-import { Button, Card } from './ui';
+'use client';
 
-export function AskMessageItem({ msg, speakingId, onSpeak }: AskMessageItemProps) {
+import { memo } from 'react';
+import Image from 'next/image';
+import { FormulaBlock } from '@/shared/components/FormulaBlock';
+import { Button, Card } from '../ui';
+import type { AskMessageItemProps } from '../../types/ask.types';
+
+export const AskMessageItem = memo(function AskMessageItem({
+  msg,
+  speakingId,
+  onSpeak,
+  className = '',
+}: AskMessageItemProps) {
   return (
     <div
-      className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-2`}
+      className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-2 ${className}`}
     >
       {msg.role === 'user' ? (
         <Card className="max-w-[85%] p-4 rounded-2xl rounded-tr-none border border-white/10 bg-[#1c1b1d] text-slate-100 shadow-md">
@@ -34,6 +42,7 @@ export function AskMessageItem({ msg, speakingId, onSpeak }: AskMessageItemProps
 
             {/* Speaker button */}
             <Button
+              type="button"
               onClick={() => onSpeak(msg.id, msg.content)}
               className={`p-1.5 rounded-lg transition-all ${
                 speakingId === msg.id
@@ -58,4 +67,6 @@ export function AskMessageItem({ msg, speakingId, onSpeak }: AskMessageItemProps
       </span>
     </div>
   );
-}
+});
+
+AskMessageItem.displayName = 'AskMessageItem';
