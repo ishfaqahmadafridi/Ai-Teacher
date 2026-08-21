@@ -1,4 +1,4 @@
-import { AskLayout } from '@/features/ask/components/AskLayout';
+import { AskLayout } from '@/features/ask/components';
 
 export default function AskPage() {
   return <AskLayout />;

@@ -3,22 +3,26 @@
 import { memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import type { AskHeaderProps } from '../types';
-import { Button } from './ui';
+import { Button } from '../ui';
+import type { AskHeaderProps } from '../../types/ask.types';
 
-export const AskHeader = memo(function AskHeader({ drawerOpen, onOpenDrawer }: AskHeaderProps) {
+export const AskHeader = memo(function AskHeader({
+  drawerOpen,
+  onOpenDrawer,
+  className = '',
+}: AskHeaderProps) {
   return (
-    <header 
-      className="absolute top-0 left-0 right-0 z-30 bg-[#0a0f18]/60 backdrop-blur-[40px] border-b border-white/10 h-16 flex justify-between items-center px-6"
-    >
+    <header className={`absolute top-0 left-0 right-0 z-20 h-16 flex items-center justify-between px-6 bg-[#0a0f18]/80 backdrop-blur-md border-b border-white/5 ${className}`}>
+      {/* Brand & Drawer Trigger */}
       <div className="flex items-center gap-4">
         {!drawerOpen && (
-          <Button 
+          <Button
+            type="button"
             onClick={onOpenDrawer}
-            className="flex items-center justify-center p-2 rounded-lg text-slate-300 hover:bg-white/5 transition-all duration-200 cursor-pointer border-none outline-none bg-transparent"
+            className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5 transition-all duration-200 border-none bg-transparent cursor-pointer"
+            title="Open Sidebar"
           >
-            {/* Hamburger Icon */}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" x2="20" y1="12" y2="12"/>
               <line x1="4" x2="20" y1="6" y2="6"/>
               <line x1="4" x2="20" y1="18" y2="18"/>
