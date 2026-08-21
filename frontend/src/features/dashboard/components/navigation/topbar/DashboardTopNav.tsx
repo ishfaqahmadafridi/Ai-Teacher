@@ -19,23 +19,27 @@ export const DashboardTopNav = memo(function DashboardTopNav({
 }: DashboardTopNavProps) {
   return (
     <header
-      className={`h-20 bg-[#030712]/80 backdrop-blur-xl border-b border-[#1E293B] px-8 flex items-center justify-between shrink-0 z-40 ${className}`}
+      className={`h-20 bg-[#030712]/80 backdrop-blur-xl px-8 flex items-center justify-between shrink-0 sticky top-0 z-40 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
-      <NavBrandHeader className="lg:hidden" />
+      {/* Left: NEUROLEARN Brand Logo — right side of the sidebar border */}
+      <NavBrandHeader />
 
-      <NavSearchBar
-        searchQuery={searchQuery}
-        onSearchChange={onSearchChange}
-        onSelectSearchResult={onSelectSearchResult}
-      />
+      {/* Right: Search Bar + Action Controls */}
+      <div className="flex items-center gap-5">
+        <NavSearchBar
+          searchQuery={searchQuery}
+          onSearchChange={onSearchChange}
+          onSelectSearchResult={onSelectSearchResult}
+        />
 
-      <NavActionControls
-        unreadNotificationsCount={unreadNotificationsCount}
-        studentAvatar={studentAvatar}
-        onOpenProfile={onOpenProfile}
-        onOpenSettings={onOpenSettings}
-        onNotificationClick={onNotificationClick}
-      />
+        <NavActionControls
+          unreadNotificationsCount={unreadNotificationsCount}
+          studentAvatar={studentAvatar}
+          onOpenProfile={onOpenProfile}
+          onOpenSettings={onOpenSettings}
+          onNotificationClick={onNotificationClick}
+        />
+      </div>
     </header>
   );
 });

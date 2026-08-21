@@ -9,24 +9,24 @@ export const NavBrandHeader = memo(function NavBrandHeader({
   className = '',
 }: NavBrandHeaderProps) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <div className="relative w-11 h-11 shrink-0">
+    <div className={`flex items-center gap-3.5 ${className}`}>
+      <div className="relative w-10 h-10 shrink-0">
         <Image
           src="/neurolearn-brain-logo.png"
-          alt="NeuroLearn Logo"
+          alt="NEUROLEARN Logo"
           fill
-          className="object-contain"
+          sizes="40px"
+          className="object-contain rounded-lg mix-blend-screen"
+          style={{
+            mixBlendMode: 'screen',
+            filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
+          }}
           priority
         />
       </div>
-      <div className="min-w-0">
-        <span className="text-base font-extrabold tracking-wider text-white block leading-tight">
-          {brandName}
-        </span>
-        <span className="text-[10px] text-[#8B5CF6] font-semibold tracking-widest uppercase block">
-          AI Physics Tutor
-        </span>
-      </div>
+      <span className="font-['Outfit',sans-serif] text-xl font-extrabold tracking-[0.14em] uppercase text-white leading-tight">
+        {brandName}
+      </span>
     </div>
   );
 });
