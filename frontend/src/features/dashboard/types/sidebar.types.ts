@@ -6,6 +6,8 @@ export interface DashboardSideNavProps {
   studentName: string;
   dateFormatted: string;
   studentAvatar: string;
+  streakDays?: number;
+  coursesCount?: number;
   greeting?: string;
   onJoinTodayClass?: () => void;
   onOpenProfile?: () => void;
@@ -17,6 +19,8 @@ export interface SidebarUserHeaderProps {
   studentName: string;
   studentAvatar: string;
   dateFormatted: string;
+  streakDays?: number;
+  coursesCount?: number;
   greeting?: string;
   onOpenProfile?: () => void;
   className?: string;

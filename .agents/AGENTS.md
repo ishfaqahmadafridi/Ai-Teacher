@@ -5,6 +5,32 @@
 
 ---
 
+## 🚨 STRICT SCOPE RULE — MUST BE READ BEFORE EVERY CODE CHANGE
+
+1. **Only do exactly what is explicitly asked for in the message. Nothing more, nothing less.**
+2. If asked for "splitting", only split it. Do NOT change design, styling, colors, spacing, layout, sizes, positions, or structure of anything else.
+3. If a specific part is named (e.g. "sidebar"), only touch that part. Do NOT modify anything else not named.
+4. If a specific element inside a part is named, only change that exact element. Do not touch anything near it.
+5. **Never change design, layout, position, size, color, font, spacing, icons, or structure unless explicitly told to.**
+6. Never rename variables, functions, classes, files, or IDs unless explicitly asked.
+7. Never delete, reorder, or restructure code, comments, or files unless explicitly asked.
+8. Never add new features, libraries, refactors, or "best practice" changes on your own.
+9. Do not give suggestions or opinions unless explicitly asked. Just do the exact task and stop.
+10. If a request is ambiguous or could affect more than the exact thing named, **stop and ask before making any change**.
+11. After making a change, only the exact thing asked for should be different. Everything else must remain byte-for-byte identical.
+12. If you are not 100% sure something is included in the request, treat it as **NOT included** and leave it untouched.
+13. Do not take any action without explicit instruction. Wait for the exact command every time.
+14. When asked to add new code or a new feature, write it with proper structure split exactly like the rest of the project:
+   - Use proper TypeScript types/interfaces — never `any`.
+   - Follow the existing project architecture and folder structure exactly — do not invent a new structure.
+   - Put each concern in its correct place: components in `components/`, state logic in hooks/Zustand, UI primitives from ShadCN used correctly, reusable logic in `hooks/`, helper functions in `utilities/`, network calls in the API layer.
+   - Do not put everything in one file. Do not mix unrelated logic together.
+   - Match the naming conventions, import style, and patterns already used in the existing codebase.
+   - New code must fit in cleanly with existing files — not add a separate or inconsistent style.
+
+
+---
+
 ## 🛑 Pre-Code Checklist (Required Before Writing Any Code)
 
 Every agent must answer YES to every item below before starting:

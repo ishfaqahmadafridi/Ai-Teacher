@@ -23,7 +23,7 @@ export const DashboardMainContent = memo(function DashboardMainContent({
   onOpenRegisterCourseModal,
 }: DashboardMainContentProps) {
   return (
-    <main className="md:ml-72 pt-24 px-4 md:px-10 max-w-[1440px] mx-auto min-h-screen pb-10 relative z-10">
+    <main className="px-4 md:px-10 py-8 max-w-[1440px] mx-auto w-full pb-16 relative z-10">
       {activeTabId === 'registered_courses' ? (
         <RegisteredCoursesSection
           courses={registeredCourses}
