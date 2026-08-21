@@ -37,20 +37,9 @@ export const DashboardLayout = memo(function DashboardLayout() {
   } = useDashboardLayout();
 
   return (
-    <div className="min-h-screen bg-[#0A0F18] font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] relative">
+    <div className="min-h-screen bg-[#0A0F18] font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] relative flex">
       {/* Glow Orbs in Background */}
       <DashboardBackgroundGlow />
-
-      {/* Top Navbar Header */}
-      <DashboardTopNav
-        searchQuery={searchQuery}
-        onSearchChange={handleSearchChange}
-        onSelectSearchResult={handleSelectSearchResult}
-        studentAvatar={profile.avatarUrl}
-        onOpenProfile={handleOpenProfile}
-        onOpenSettings={handleOpenSettings}
-        onNotificationClick={handleNotificationClick}
-      />
 
       {/* Side Navbar Drawer */}
       <DashboardSideNav
@@ -64,21 +53,35 @@ export const DashboardLayout = memo(function DashboardLayout() {
         onOpenSettings={handleOpenSettings}
       />
 
-      {/* Main Workspace Area */}
-      <DashboardMainContent
-        activeTabId={activeTabId}
-        studentName={profile.name}
-        streakDays={profile.streakDays}
-        weeklyProgressPercent={profile.weeklyProgressPercent}
-        registeredCourses={registeredCourses}
-        continueLearning={continueLearning}
-        liveClasses={liveClasses}
-        assignments={assignments}
-        autoOpenTask={autoOpenTask}
-        onJoinClass={handleJoinClass}
-        onResumeCourse={handleResumeCourse}
-        onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
-      />
+      {/* Main Workspace Column */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen relative z-10">
+        {/* Top Navbar Header */}
+        <DashboardTopNav
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          onSelectSearchResult={handleSelectSearchResult}
+          studentAvatar={profile.avatarUrl}
+          onOpenProfile={handleOpenProfile}
+          onOpenSettings={handleOpenSettings}
+          onNotificationClick={handleNotificationClick}
+        />
+
+        {/* Main Workspace Area */}
+        <DashboardMainContent
+          activeTabId={activeTabId}
+          studentName={profile.name}
+          streakDays={profile.streakDays}
+          weeklyProgressPercent={profile.weeklyProgressPercent}
+          registeredCourses={registeredCourses}
+          continueLearning={continueLearning}
+          liveClasses={liveClasses}
+          assignments={assignments}
+          autoOpenTask={autoOpenTask}
+          onJoinClass={handleJoinClass}
+          onResumeCourse={handleResumeCourse}
+          onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
+        />
+      </div>
 
       {/* Dashboard Dialog Modals Container */}
       <DashboardDialogs
