@@ -1,9 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { VoiceSelector } from './VoiceSelector';
-import { SuggestionsList } from './SuggestionsList';
-import { KeyPointsPanel } from './KeyPointsPanel';
+import { VoiceSelector, SuggestionsList, KeyPointsPanel } from './tutor';
 import type { SidebarProps } from '../../types/sidebar.types';
 
 export const Sidebar = memo(function Sidebar({ onAsk, loading = false, isPlaying = false }: SidebarProps) {
