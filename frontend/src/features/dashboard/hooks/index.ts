@@ -1,6 +1,7 @@
 export * from './useDashboardLayout';
 export * from './useDashboardOverviewGrid';
 export * from './useDashboard';
+export * from './useDashboardData';
 export * from './useStudentProfile';
 export * from './useNotificationDropdown';
 export * from './useNotificationCardItem';
@@ -24,10 +25,3 @@ export * from './useAnalyticsMetricsGrid';
 export * from './useSettingsModal';
 export * from './useFieldSelectCombobox';
 export * from './useNavSearchBar';
-
-
-
-
-
-
-
