@@ -5,6 +5,31 @@
 
 ---
 
+## 🚨 STRICT SCOPE RULE — MUST BE READ BEFORE EVERY CODE CHANGE
+
+1. **Only do exactly what is explicitly asked for in the message. Nothing more, nothing less.**
+2. If asked for "splitting" (splitting a component/file/function), only split it. Do NOT change design, styling, colors, spacing, layout, sizes, positions, or structure of anything else. Do not "improve" or "clean up" anything not mentioned.
+3. If a specific part is named (example: "sidebar"), only touch that part. Do NOT modify, restyle, resize, move, or reformat the header, main content, or any other section/component/file not named.
+4. If a specific element inside a part is named (example: "the settings button inside the sidebar"), only change that exact element. Do not touch other buttons, icons, text, colors, or spacing near it, even if they look related.
+5. **Never change design, layout, position, size, color, font, spacing, icons, or structure unless explicitly told to change that specific thing.**
+6. Never rename variables, functions, classes, files, or IDs unless explicitly asked for a rename.
+7. Never delete, reorder, or restructure code, comments, or files unless explicitly asked for it.
+8. Never add new features, libraries, refactors, or "best practice" changes on your own. Do not act on assumptions or guesses about what the user "probably wants."
+9. Do not give suggestions, recommendations, or opinions about whether a change should be made or not, unless explicitly asked. Just do the exact task and stop.
+10. If a request is ambiguous or could affect more than the exact thing named, **stop and ask before making any change**. Do not proceed on your own judgment.
+11. After making a change, only the exact thing asked for should be different. Everything else in the code/design must remain byte-for-byte identical to before — same position, same color, same icon, same size.
+12. If you are not 100% sure something is included in the request, treat it as **NOT included** and leave it untouched.
+13. Do not take any action, edit, decision, or recommendation without explicit instruction. Wait for the exact command every time.
+14. When asked to add new code or a new feature (example: a new button in the dashboard that does a specific task), write it with proper structure, split exactly like the rest of the project:
+   - Use proper TypeScript types/interfaces — never `any`.
+   - Follow the existing project architecture and folder structure exactly — do not invent a new structure.
+   - Put each concern in its correct place: components in the `components/` folder, state logic in custom hooks or Zustand store, UI primitives from ShadCN used correctly, shared state/providers in Context API, reusable logic in `hooks/`, helper functions in `utilities/`, network calls in the API layer.
+   - Do not put everything in one file. Do not mix unrelated logic together.
+   - Match the naming conventions, import style, and patterns already used in the existing codebase.
+   - New code must fit in cleanly with existing files — not add a separate or inconsistent style.
+
+---
+
 ## 🛑 Pre-Code Checklist (Required Before Writing Any Code)
 
 Every agent must answer YES to every item below before starting:
