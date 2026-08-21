@@ -1,8 +1,7 @@
 'use client';
 import { useAppSelector } from '@/hooks/useAppStore';
 import { useClassroomApi } from '../hooks/useClassroomApi';
-import { Sidebar } from './sidebar/Sidebar';
-import { MobileSidebar } from './sidebar/MobileSidebar';
+import { Sidebar, MobileSidebar } from './sidebar';
 import { TopBar } from './topbar/TopBar';
 import { ChalkboardStage } from './board/ChalkboardStage';
 import { DiagramStage } from './board/diagram/DiagramStage';

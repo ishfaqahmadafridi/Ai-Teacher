@@ -66,6 +66,18 @@ export interface NavTabItem {
   badgeCount?: number;
 }
 
+export interface NavTabButtonRowProps {
+  tab: NavTabItem;
+  isActive: boolean;
+  onSelectTab: (id: string) => void;
+  className?: string;
+}
+
+export interface NavTabIconProps {
+  iconName: NavTabItem['iconName'];
+  className?: string;
+}
+
 export interface StudentRecord {
   id: string;
   name: string;
