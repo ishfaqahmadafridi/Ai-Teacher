@@ -12,6 +12,7 @@ export const ScheduleTimelineView = memo(function ScheduleTimelineView({
   onSelectDay,
   scheduleItems,
   onJoinClass,
+  onSelectNoticeItem,
   className = '',
 }: ScheduleTimelineViewProps) {
   return (
@@ -33,6 +34,7 @@ export const ScheduleTimelineView = memo(function ScheduleTimelineView({
           selectedDay={selectedDay}
           scheduleItems={scheduleItems}
           onJoinClass={onJoinClass}
+          onSelectNoticeItem={onSelectNoticeItem}
         />
       </div>
     </div>

@@ -10,6 +10,7 @@ export const ScheduleSlotList = memo(function ScheduleSlotList({
   selectedDay,
   scheduleItems,
   onJoinClass,
+  onSelectNoticeItem,
   className = '',
 }: ScheduleSlotListProps) {
   const dayItems = filterScheduleItemsByDay(scheduleItems, selectedDay);
@@ -26,6 +27,7 @@ export const ScheduleSlotList = memo(function ScheduleSlotList({
           item={item}
           isLast={index === dayItems.length - 1}
           onJoinClass={onJoinClass}
+          onSelectNoticeItem={onSelectNoticeItem}
         />
       ))}
     </div>

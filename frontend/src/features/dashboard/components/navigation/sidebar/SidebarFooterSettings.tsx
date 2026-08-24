@@ -21,7 +21,10 @@ export const SidebarFooterSettings = memo(function SidebarFooterSettings({
       {settingsLink && (
         <Link
           href={settingsLink.href}
-          onClick={() => {
+          onClick={(e) => {
+            if (settingsLink.href === '/dashboard' || settingsLink.href === '#') {
+              e.preventDefault();
+            }
             onSelectTab?.(settingsLink.id);
             onOpenSettings?.();
           }}

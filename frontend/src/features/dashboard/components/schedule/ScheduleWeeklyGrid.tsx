@@ -9,6 +9,7 @@ import type { ScheduleWeeklyGridProps } from '../../types/schedule.types';
 export const ScheduleWeeklyGrid = memo(function ScheduleWeeklyGrid({
   scheduleItems,
   onJoinClass,
+  onSelectNoticeItem,
   className = '',
 }: ScheduleWeeklyGridProps) {
   return (
@@ -26,6 +27,7 @@ export const ScheduleWeeklyGrid = memo(function ScheduleWeeklyGrid({
               weekdays={WEEKDAYS_MATRIX}
               scheduleItems={scheduleItems}
               onJoinClass={onJoinClass}
+              onSelectNoticeItem={onSelectNoticeItem}
             />
           ))}
         </div>

@@ -3,8 +3,6 @@
 import { memo } from 'react';
 import { useNotificationDropdown } from '../../../hooks';
 import { NotificationDropdown, NavNotificationButton } from '../notifications';
-import { NavSettingsButton } from './NavSettingsButton';
-import { NavProfileAvatarButton } from './NavProfileAvatarButton';
 import type { NavActionControlsProps } from '../../../types/topbar.types';
 
 export const NavActionControls = memo(function NavActionControls({
@@ -32,13 +30,6 @@ export const NavActionControls = memo(function NavActionControls({
       <NavNotificationButton
         unreadCount={unreadCount}
         onClick={toggleOpen}
-      />
-
-      <NavSettingsButton onClick={onOpenSettings} />
-
-      <NavProfileAvatarButton
-        studentAvatar={studentAvatar}
-        onClick={onOpenProfile}
       />
 
       <NotificationDropdown

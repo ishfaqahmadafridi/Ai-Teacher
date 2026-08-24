@@ -19,7 +19,12 @@ export const NavTabItem = memo(function NavTabItem({
   return (
     <Link
       href={link.href}
-      onClick={() => onSelectTab?.(link.id)}
+      onClick={(e) => {
+        if (link.href === '/dashboard' || link.href === '#') {
+          e.preventDefault();
+        }
+        onSelectTab?.(link.id);
+      }}
       className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${
         isActive
           ? 'bg-[#8B5CF6] text-white shadow-lg shadow-[#8B5CF6]/20 font-bold'

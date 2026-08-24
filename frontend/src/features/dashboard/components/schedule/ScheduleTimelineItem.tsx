@@ -8,6 +8,7 @@ export const ScheduleTimelineItem = memo(function ScheduleTimelineItem({
   item,
   isLast,
   onJoinClass,
+  onSelectNoticeItem,
   className = '',
 }: ScheduleTimelineItemProps) {
   return (
@@ -22,7 +23,7 @@ export const ScheduleTimelineItem = memo(function ScheduleTimelineItem({
 
       {/* Slot Card */}
       <div className="flex-1">
-        <ScheduleItemCard item={item} onJoinClass={onJoinClass} />
+        <ScheduleItemCard item={item} onJoinClass={onJoinClass} onSelectNoticeItem={onSelectNoticeItem} />
       </div>
     </div>
   );

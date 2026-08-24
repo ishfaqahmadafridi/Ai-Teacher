@@ -26,6 +26,20 @@ export interface SidebarUserHeaderProps {
   className?: string;
 }
 
+export interface UserAvatarBadgeProps {
+  studentAvatar: string;
+  studentName: string;
+}
+
+export interface UserInfoTitleProps {
+  studentName: string;
+}
+
+export interface UserStatsRowProps {
+  coursesCount: number;
+  streakDays: number;
+}
+
 export interface NavTabItemProps {
   link: DashboardNavLink;
   isActive: boolean;
