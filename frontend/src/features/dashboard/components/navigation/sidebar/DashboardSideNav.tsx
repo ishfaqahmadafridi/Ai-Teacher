@@ -33,6 +33,7 @@ export const DashboardSideNav = memo(function DashboardSideNav({
           dateFormatted={dateFormatted}
           streakDays={streakDays}
           coursesCount={coursesCount}
+          onOpenProfile={onOpenProfile}
         />
       </div>
 

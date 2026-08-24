@@ -59,6 +59,7 @@ export interface ScheduleTimelineItemProps {
   item: ScheduleItem;
   isLast: boolean;
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
@@ -66,6 +67,7 @@ export interface ScheduleSlotListProps {
   selectedDay: DayOfWeek;
   scheduleItems: ScheduleItem[];
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
@@ -75,6 +77,7 @@ export interface ScheduleTimelineViewProps {
   onSelectDay: (day: DayOfWeek) => void;
   scheduleItems: ScheduleItem[];
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
@@ -87,6 +90,7 @@ export interface ScheduleGridCellProps {
   item?: ScheduleItem;
   day: DayOfWeek;
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
@@ -95,19 +99,43 @@ export interface ScheduleGridRowProps {
   weekdays: DayOfWeek[];
   scheduleItems: ScheduleItem[];
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
 export interface ScheduleWeeklyGridProps {
   scheduleItems: ScheduleItem[];
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
 }
 
 export interface ScheduleItemCardProps {
   item: ScheduleItem;
   onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
   className?: string;
+}
+
+export interface UseScheduleItemCardOptions {
+  item: ScheduleItem;
+  onJoinClass?: (id: string) => void;
+  onSelectNoticeItem?: (item: ScheduleItem) => void;
+}
+
+export interface ScheduleItemCardNoticePopoverProps {
+  item: ScheduleItem;
+  onClose: () => void;
+}
+
+export interface ScheduleItemCardBadgesProps {
+  item: ScheduleItem;
+  isLive: boolean;
+}
+
+export interface ScheduleItemCardActionButtonProps {
+  isLive: boolean;
+  onClick: (e?: React.MouseEvent) => void;
 }
 
 export interface ClassScheduleSectionProps {

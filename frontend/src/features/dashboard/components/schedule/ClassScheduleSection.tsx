@@ -1,11 +1,12 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { useClassScheduleSection } from '../../hooks/useClassScheduleSection';
 import { ScheduleHeaderBanner } from './ScheduleHeaderBanner';
 import { ScheduleTimelineView } from './ScheduleTimelineView';
 import { ScheduleWeeklyGrid } from './ScheduleWeeklyGrid';
-import type { ClassScheduleSectionProps } from '../../types/schedule.types';
+import { ScheduledClassNoticeModal } from './ScheduledClassNoticeModal';
+import type { ClassScheduleSectionProps, ScheduleItem } from '../../types/schedule.types';
 
 export const ClassScheduleSection = memo(function ClassScheduleSection(
   props: ClassScheduleSectionProps
@@ -19,6 +20,12 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
     setViewMode,
     scheduleItems,
   } = useClassScheduleSection(options);
+
+  const [selectedNoticeItem, setSelectedNoticeItem] = useState<ScheduleItem | null>(null);
+
+  const handleCloseNotice = useCallback(() => {
+    setSelectedNoticeItem(null);
+  }, []);
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -36,13 +43,22 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
           onSelectDay={setSelectedDay}
           scheduleItems={scheduleItems}
           onJoinClass={onJoinClass}
+          onSelectNoticeItem={setSelectedNoticeItem}
         />
       ) : (
         <ScheduleWeeklyGrid
           scheduleItems={scheduleItems}
           onJoinClass={onJoinClass}
+          onSelectNoticeItem={setSelectedNoticeItem}
         />
       )}
+
+      {/* Scheduled Class Time Notice Modal */}
+      <ScheduledClassNoticeModal
+        isOpen={Boolean(selectedNoticeItem)}
+        item={selectedNoticeItem}
+        onClose={handleCloseNotice}
+      />
     </div>
   );
 });

@@ -1,4 +1,7 @@
 export * from './NavBrandHeader';
+export * from './UserAvatarBadge';
+export * from './UserInfoTitle';
+export * from './UserStatsRow';
 export * from './SidebarUserHeader';
 export * from './NavTabItem';
 export * from './NavTabList';

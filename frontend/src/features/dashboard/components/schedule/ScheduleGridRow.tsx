@@ -11,6 +11,7 @@ export const ScheduleGridRow = memo(function ScheduleGridRow({
   weekdays,
   scheduleItems,
   onJoinClass,
+  onSelectNoticeItem,
   className = '',
 }: ScheduleGridRowProps) {
   return (
@@ -30,6 +31,7 @@ export const ScheduleGridRow = memo(function ScheduleGridRow({
             item={item}
             day={day}
             onJoinClass={onJoinClass}
+            onSelectNoticeItem={onSelectNoticeItem}
           />
         );
       })}

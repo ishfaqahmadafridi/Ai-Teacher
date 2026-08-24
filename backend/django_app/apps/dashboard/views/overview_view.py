@@ -33,8 +33,7 @@ class DashboardOverviewView(APIView):
     def get(self, request):
         try:
             overview_data = get_dashboard_overview()
-            serializer = DashboardOverviewSerializer(data=overview_data)
-            serializer.is_valid(raise_exception=True)
+            serializer = DashboardOverviewSerializer(overview_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             logger.exception(f"[DashboardOverviewView] Failed to fetch overview: {e}")
