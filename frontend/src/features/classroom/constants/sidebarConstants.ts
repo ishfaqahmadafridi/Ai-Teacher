@@ -1,4 +1,4 @@
-import type { LessonTopicItem, NavTabItem, StudentRecord } from '../types/sidebar.types';
+import type { LessonTopicItem, NavTabItem, StudentRecord, LectureNoteItem } from '../types/sidebar.types';
 
 export interface AttendanceSummary {
   total: number;
@@ -6,14 +6,18 @@ export interface AttendanceSummary {
   absent: number;
 }
 
+export const DEFAULT_LECTURE_TITLE = "Newton's Laws & Classical Dynamics";
+export const DEFAULT_MODULE_NAME = "Module 2 • Physics Mechanics";
+
 export const DEFAULT_LESSON_TOPICS: LessonTopicItem[] = [
-  { id: 'intro', title: 'Introduction' },
-  { id: 'definition', title: 'Definition & Scope' },
-  { id: 'core-formulae', title: 'Core Formulae', isLive: true },
-  { id: 'practical-examples', title: 'Practical Examples', isDisabled: true },
+  { id: 'intro', title: '1. Introduction to Dynamics' },
+  { id: 'inertia', title: "2. First Law (Inertia & Motion)" },
+  { id: 'core-formulae', title: "3. Second Law (F = m · a)", isLive: true },
+  { id: 'action-reaction', title: "4. Third Law (Action-Reaction)" },
+  { id: 'practical-examples', title: '5. Practical Friction & Gravity' },
 ];
 
-export const DEFAULT_MODULE_TITLE = "Today's Lesson";
+export const DEFAULT_MODULE_TITLE = "Today's Outline";
 export const DEFAULT_ACTIVE_TOPIC_ID = 'core-formulae';
 
 export const DEFAULT_NAV_TABS: NavTabItem[] = [
@@ -21,6 +25,44 @@ export const DEFAULT_NAV_TABS: NavTabItem[] = [
   { id: 'assignments', label: 'Assignments', iconName: 'assignments' },
   { id: 'quiz', label: 'Quiz', iconName: 'quiz' },
   { id: 'announcements', label: 'Announcements', iconName: 'announcements' },
+];
+
+export const DEFAULT_LECTURE_NOTES: LectureNoteItem[] = [
+  {
+    id: 'intro',
+    title: "1. Introduction to Dynamics",
+    content: "Dynamics studies forces and their effect on particle motion in 3D space.",
+    formula: "F_net = m · a",
+    tag: "Introduction"
+  },
+  {
+    id: 'inertia',
+    title: "2. First Law (Inertia & Motion)",
+    content: "An object remains at rest or in uniform motion in a straight line unless acted upon by a net external force.",
+    formula: "∑F = 0 ⟹ a = 0",
+    tag: "Inertia"
+  },
+  {
+    id: 'core-formulae',
+    title: "3. Second Law (F = m · a)",
+    content: "The acceleration of an object is directly proportional to the net force and inversely proportional to its mass.",
+    formula: "F_net = m · a",
+    tag: "Core Live Formula"
+  },
+  {
+    id: 'action-reaction',
+    title: "4. Third Law (Action-Reaction)",
+    content: "For every action force exerted, there is an equal magnitude and opposite direction reaction force.",
+    formula: "F_A→B = -F_B→A",
+    tag: "Symmetry"
+  },
+  {
+    id: 'practical-examples',
+    title: "5. Practical Friction & Gravity",
+    content: "Attractive force between two point masses is inversely proportional to the square of their distance.",
+    formula: "F_g = G · (m₁ · m₂) / r²",
+    tag: "Gravity"
+  }
 ];
 
 export const DEFAULT_ATTENDANCE_SUMMARY: AttendanceSummary = {

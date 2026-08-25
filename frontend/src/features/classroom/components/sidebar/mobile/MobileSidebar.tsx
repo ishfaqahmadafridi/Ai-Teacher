@@ -1,14 +1,28 @@
 'use client';
 
 import { memo, useEffect } from 'react';
+import { ListTree, FileText, HelpCircle } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
-import { VoiceSelector } from '../tutor/VoiceSelector';
-import { SuggestionsList } from '../tutor/SuggestionsList';
-import { KeyPointsPanel } from '../tutor/KeyPointsPanel';
+import { useClassroomSidebar } from '../../../hooks/useClassroomSidebar';
+import { LectureHeader } from '../LectureHeader';
+import { SidebarAccordionSection } from '../SidebarAccordionSection';
+import { TodayOutlinePanel } from '../TodayOutlinePanel';
+import { LectureNotesPanel } from '../LectureNotesPanel';
+import { QuickDoubtPanel } from '../QuickDoubtPanel';
 import type { SidebarProps } from '../../../types/sidebar.types';
 
-export const MobileSidebar = memo(function MobileSidebar({ onAsk, loading = false, isPlaying = false }: SidebarProps) {
+export const MobileSidebar = memo(function MobileSidebar({
+  onAsk,
+  loading = false,
+}: SidebarProps) {
   const { mobileSidebarOpen, setMobileSidebarOpen } = useUIStore();
+  const {
+    expandedSections,
+    activeTopicId,
+    activeTopicTitle,
+    toggleSection,
+    handleSelectTopic,
+  } = useClassroomSidebar();
 
   // Close on Escape key
   useEffect(() => {
@@ -31,46 +45,73 @@ export const MobileSidebar = memo(function MobileSidebar({ onAsk, loading = fals
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 h-full w-72 z-50 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 left-0 h-full w-80 z-50 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-800">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-lg">
-              🎓
-            </div>
-            <div>
-              <p className="font-bold text-white text-sm">Prof. Gemini</p>
-              <p className="text-xs text-slate-400">AI Physics Teacher</p>
-            </div>
-          </div>
+        {/* Top Header — Lecture Name & Close Button */}
+        <div className="relative">
+          <LectureHeader lectureTitle={activeTopicTitle} />
           <button
             id="mobile-sidebar-close"
             type="button"
             onClick={() => setMobileSidebarOpen(false)}
-            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all"
+            className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
             aria-label="Close sidebar"
           >
             ✕
           </button>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col gap-6 p-5">
-          <VoiceSelector />
-          <KeyPointsPanel isPlaying={isPlaying} />
-          {onAsk && (
-            <SuggestionsList
+        {/* Accordion Sections List */}
+        <div className="p-3.5 space-y-3.5 flex-1 overflow-y-auto">
+          {/* Section 1: Today's Outline */}
+          <SidebarAccordionSection
+            id="outline"
+            title="Today's Outline"
+            badge="5 Topics"
+            icon={ListTree}
+            isExpanded={expandedSections.outline}
+            onToggle={toggleSection}
+          >
+            <TodayOutlinePanel
+              activeTopicId={activeTopicId}
+              onSelectTopic={(id) => {
+                handleSelectTopic(id);
+                setMobileSidebarOpen(false);
+              }}
+            />
+          </SidebarAccordionSection>
+
+          {/* Section 2: Lecture Notes */}
+          <SidebarAccordionSection
+            id="notes"
+            title="Lecture Notes & Formulas"
+            badge="Current"
+            icon={FileText}
+            isExpanded={expandedSections.notes}
+            onToggle={toggleSection}
+          >
+            <LectureNotesPanel activeTopicId={activeTopicId} />
+          </SidebarAccordionSection>
+
+          {/* Section 3: NEW Live Doubt Assistant (Voice & Suggestions removed) */}
+          <SidebarAccordionSection
+            id="doubts"
+            title="Ask AI Tutor & Doubts"
+            badge="Interactive"
+            icon={HelpCircle}
+            isExpanded={expandedSections.doubts}
+            onToggle={toggleSection}
+          >
+            <QuickDoubtPanel
               onAsk={(q) => {
-                onAsk(q);
+                onAsk?.(q);
                 setMobileSidebarOpen(false);
               }}
               loading={loading}
-              isPlaying={isPlaying}
             />
-          )}
+          </SidebarAccordionSection>
         </div>
       </aside>
     </>
