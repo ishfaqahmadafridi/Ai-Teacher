@@ -15,3 +15,7 @@ export { useTopBar } from './useTopBar';
 export { useClassroomApi } from './useClassroomApi';
 export { useChunkPlayer } from './useChunkPlayer';
 export { useVoiceInput } from './useVoiceInput';
+export { useClassroomSidebar } from './useClassroomSidebar';
+export { useLectureNotesPanel } from './useLectureNotesPanel';
+export { useQuickDoubtPanel } from './useQuickDoubtPanel';
+export { useTodayOutlinePanel } from './useTodayOutlinePanel';

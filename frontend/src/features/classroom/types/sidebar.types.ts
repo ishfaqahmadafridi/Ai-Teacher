@@ -191,3 +191,141 @@ export interface VoiceSelectorProps {
   className?: string;
 }
 
+export type ClassroomSidebarTabId = 'outline' | 'notes' | 'doubts' | 'suggestions';
+
+export interface QuickDoubtPanelProps {
+  onAsk?: (question: string) => void;
+  loading?: boolean;
+  className?: string;
+}
+
+export interface LectureHeaderProps {
+  lectureTitle?: string;
+  subject?: string;
+  moduleName?: string;
+  topicCount?: number;
+  className?: string;
+}
+
+export interface SidebarTabsProps {
+  activeTab: ClassroomSidebarTabId | null;
+  onTabChange: (tab: ClassroomSidebarTabId) => void;
+  className?: string;
+}
+
+export interface TodayOutlinePanelProps {
+  topics?: LessonTopicItem[];
+  activeTopicId?: string;
+  onSelectTopic?: (id: string) => void;
+  className?: string;
+}
+
+export interface LectureNoteItem {
+  id: string;
+  title: string;
+  content: string;
+  formula?: string;
+  tag?: string;
+}
+
+export interface LectureNotesPanelProps {
+  notes?: LectureNoteItem[];
+  activeTopicId?: string;
+  className?: string;
+}
+
+export interface UseClassroomSidebarOptions {
+  defaultTab?: ClassroomSidebarTabId;
+}
+
+export interface SidebarAccordionSectionProps {
+  id: ClassroomSidebarTabId;
+  title: string;
+  badge?: string | number;
+  icon: React.ComponentType<{ className?: string }>;
+  isExpanded: boolean;
+  onToggle: (id: ClassroomSidebarTabId) => void;
+  children: React.ReactNode;
+  className?: string;
+}
+
+export interface DoubtHeaderProps {
+  title?: string;
+  badge?: string;
+  className?: string;
+}
+
+export interface DoubtPromptListProps {
+  prompts: string[];
+  onPromptClick: (prompt: string) => void;
+  loading?: boolean;
+  className?: string;
+}
+
+export interface DoubtInputFormProps {
+  query: string;
+  onQueryChange: (query: string) => void;
+  onSubmit: (e?: React.FormEvent) => void;
+  loading?: boolean;
+  className?: string;
+}
+
+export interface NoteLanguageSelectorProps {
+  selectedLanguage: string;
+  savedCustomLang: string;
+  activeLangLabel: string;
+  onPillClick: (id: string) => void;
+  className?: string;
+}
+
+export interface NoteCustomInputFormProps {
+  customLangInput: string;
+  onCustomLangInputChange: (value: string) => void;
+  onSubmit: (e?: React.FormEvent) => void;
+  className?: string;
+}
+
+export interface NoteDownloadActionCardProps {
+  title: string;
+  activeLangLabel: string;
+  onDownloadPdf: () => void;
+  onDownloadDocx: () => void;
+  className?: string;
+}
+
+export interface LessonTopicItem {
+  id: string;
+  title: string;
+  duration?: string;
+  isLive?: boolean;
+  isDisabled?: boolean;
+}
+
+export interface TodayOutlinePanelProps {
+  topics?: LessonTopicItem[];
+  activeTopicId?: string;
+  onSelectTopic?: (topicId: string) => void;
+  className?: string;
+}
+
+export interface OutlineAgendaHeaderProps {
+  topicCount: number;
+  className?: string;
+}
+
+export interface OutlineTopicCardProps {
+  topic: LessonTopicItem;
+  index: number;
+  isActive: boolean;
+  isCompleted: boolean;
+  onSelectTopic?: (topicId: string) => void;
+  className?: string;
+}
+
+export interface OutlineTopicListProps {
+  topics: LessonTopicItem[];
+  activeTopicId: string;
+  onSelectTopic?: (topicId: string) => void;
+  className?: string;
+}
+
