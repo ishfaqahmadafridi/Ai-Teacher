@@ -34,7 +34,7 @@ export const ChalkboardNotesView = memo(function ChalkboardNotesView({
         <div className="flex items-center gap-2 mt-2">
           <div className="w-2.5 h-6 bg-emerald-400 animate-pulse rounded-sm shadow-md shadow-emerald-400/50" />
           <span className="text-xs font-mono text-emerald-300/80 italic animate-pulse">
-            Prof. Gemini is writing on the board...
+            AI Tutor is writing on the board...
           </span>
         </div>
       )}

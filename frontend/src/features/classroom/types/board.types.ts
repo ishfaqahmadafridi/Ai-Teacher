@@ -111,7 +111,7 @@ export interface ChalkboardTrayProps {
 }
 
 export interface ChalkboardWelcomeSlateProps {
-  onSelectSamplePrompt: (prompt: string) => void;
+  onSelectSamplePrompt?: (prompt: string) => void;
   className?: string;
 }
 

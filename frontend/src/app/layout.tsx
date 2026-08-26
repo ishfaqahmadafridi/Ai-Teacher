@@ -25,14 +25,14 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: 'AI Physics Teacher — Prof. Gemini',
+  title: 'AI Physics Teacher — NeuroLearn',
   description:
-    'An immersive, AI-powered classroom simulator that brings physics lessons to life using Gemini LLM, RAG, and real-time SSE streaming.',
-  keywords: ['AI teacher', 'physics', 'Gemini', 'education', 'interactive learning'],
+    'An immersive, AI-powered classroom simulator that brings physics lessons to life using LLM intelligence, RAG, and real-time SSE streaming.',
+  keywords: ['AI teacher', 'physics', 'NeuroLearn', 'education', 'interactive learning'],
   openGraph: {
-    title: 'AI Physics Teacher — Prof. Gemini',
+    title: 'AI Physics Teacher — NeuroLearn',
     description:
-      'Ask Prof. Gemini any physics question and watch the lecture come alive with chalkboard, diagrams, and voice.',
+      'Ask any physics question and watch the lecture come alive with chalkboard, diagrams, and voice.',
     type: 'website',
   },
 };
