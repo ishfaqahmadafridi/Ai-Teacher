@@ -38,3 +38,37 @@ export const ATOM_ORBITS: readonly AtomOrbitConfig[] = [
   { radius: 1.8, speed: 0.7, color: '#a78bfa', electronColor: '#8b5cf6', phaseOffset: 1.1 },
   { radius: 2.5, speed: 0.45, color: '#34d399', electronColor: '#10b981', phaseOffset: 2.3 },
 ] as const;
+
+export interface SamplePhysicsPrompt {
+  id: string;
+  icon: string;
+  topic: string;
+  prompt: string;
+}
+
+export const SAMPLE_PHYSICS_PROMPTS: SamplePhysicsPrompt[] = [
+  {
+    id: 'newton2',
+    icon: '⚡',
+    topic: "Newton's 2nd Law",
+    prompt: "Explain Newton's Second Law of Motion F = m · a with step-by-step examples",
+  },
+  {
+    id: 'gravity',
+    icon: '🌍',
+    topic: 'Gravitational Force',
+    prompt: 'Derive Universal Gravitation F = G(m1·m2)/r^2 and planetary orbits',
+  },
+  {
+    id: 'projectile',
+    icon: '🎯',
+    topic: 'Projectile Trajectory',
+    prompt: 'How to calculate maximum height and velocity range in parabolic projectile motion',
+  },
+  {
+    id: 'waves',
+    icon: '🌊',
+    topic: 'Wave Interference',
+    prompt: 'Explain constructive vs destructive wave interference and frequency',
+  },
+];

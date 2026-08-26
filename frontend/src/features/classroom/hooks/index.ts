@@ -20,3 +20,8 @@ export { useLectureNotesPanel } from './useLectureNotesPanel';
 export { useQuickDoubtPanel } from './useQuickDoubtPanel';
 export { useTodayOutlinePanel } from './useTodayOutlinePanel';
 export { useInputBar } from './useInputBar';
+export { useInputBarToasts } from './useInputBarToasts';
+export { useInputBarDockContainer } from './useInputBarDockContainer';
+export { useInputBarPlayback } from './useInputBarPlayback';
+export { useChalkboardStage } from './useChalkboardStage';
+export { useClassroomStageArea } from './useClassroomStageArea';

@@ -15,7 +15,7 @@ export const QuestionTextInput = memo(function QuestionTextInput({
       <textarea
         id="question-input"
         rows={1}
-        placeholder="Ask Prof. Gemini anything about physics..."
+        placeholder="Ask anything about physics..."
         value={inputText}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}

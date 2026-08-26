@@ -38,7 +38,7 @@ export function useClassroomApi() {
 
       dispatch(resetClassroomState());
       dispatch(setLoading(true));
-      dispatch(setLoadingStatus('Connecting to Prof. Gemini…'));
+      dispatch(setLoadingStatus('Connecting to AI Tutor…'));
 
       const sessionId = getSessionId();
       const url = `${BACKEND_URL}/api/physics-teacher/explain/?question=${encodeURIComponent(question)}&session_id=${encodeURIComponent(sessionId)}`;

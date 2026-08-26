@@ -97,3 +97,26 @@ export interface ImageSceneProps {
   command: import('@/types').DiagramCommand | null;
   url: string;
 }
+
+export interface ChalkboardHeaderProps {
+  topic?: string | null;
+  isWriting?: boolean;
+  showGrid?: boolean;
+  onToggleGrid?: () => void;
+  className?: string;
+}
+
+export interface ChalkboardTrayProps {
+  className?: string;
+}
+
+export interface ChalkboardWelcomeSlateProps {
+  onSelectSamplePrompt?: (prompt: string) => void;
+  className?: string;
+}
+
+export interface ChalkboardNotesViewProps {
+  points: string[];
+  isWriting: boolean;
+  className?: string;
+}
