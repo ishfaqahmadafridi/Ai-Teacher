@@ -23,5 +23,6 @@ export { useInputBar } from './useInputBar';
 export { useInputBarToasts } from './useInputBarToasts';
 export { useInputBarDockContainer } from './useInputBarDockContainer';
 export { useInputBarPlayback } from './useInputBarPlayback';
+export { useClassroomChatInbox } from './useClassroomChatInbox';
 export { useChalkboardStage } from './useChalkboardStage';
 export { useClassroomStageArea } from './useClassroomStageArea';
