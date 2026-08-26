@@ -77,19 +77,6 @@ export function ClassroomLayout() {
           {/* Teacher */}
           <TeacherFigure />
 
-          {/* Welcome overlay when idle */}
-          {!loading && !isPlaying && chunks.length === 0 && (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 pointer-events-none">
-              <div className="text-6xl animate-bounce">🎓</div>
-              <h2 className="text-2xl font-bold text-white/80">
-                Welcome to Prof. Gemini&apos;s Classroom
-              </h2>
-              <p className="text-slate-400 text-base">
-                Ask a physics question to start your lesson
-              </p>
-            </div>
-          )}
-
           {/* Loading overlay */}
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm z-20">

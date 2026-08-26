@@ -20,3 +20,4 @@ export { useLectureNotesPanel } from './useLectureNotesPanel';
 export { useQuickDoubtPanel } from './useQuickDoubtPanel';
 export { useTodayOutlinePanel } from './useTodayOutlinePanel';
 export { useInputBar } from './useInputBar';
+export { useChalkboardStage } from './useChalkboardStage';
