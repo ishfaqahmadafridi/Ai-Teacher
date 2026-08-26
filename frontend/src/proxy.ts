@@ -2,15 +2,15 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Global Next.js middleware.
- * Executes on every route request. Useful for auth guards, headers, and logs.
+ * Next.js 16 Proxy handler.
+ * Replaces legacy middleware.ts to eliminate deprecation warnings.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Logging Request in development
   if (process.env.NODE_ENV === 'development') {
-    console.log(`[Middleware Request] ${request.method} -> ${pathname}`);
+    console.log(`[Proxy Request] ${request.method} -> ${pathname}`);
   }
 
   // Request/Response Headers Setup
@@ -24,7 +24,7 @@ export function middleware(request: NextRequest) {
   });
 }
 
-// Config matching: Apply middleware to all routes except static resources and next internals
+// Config matching: Apply proxy to all routes except static resources and next internals
 export const config = {
   matcher: [
     /*
