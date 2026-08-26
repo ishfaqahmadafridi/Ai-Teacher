@@ -19,4 +19,3 @@ export { useClassroomSidebar } from './useClassroomSidebar';
 export { useLectureNotesPanel } from './useLectureNotesPanel';
 export { useQuickDoubtPanel } from './useQuickDoubtPanel';
 export { useTodayOutlinePanel } from './useTodayOutlinePanel';
-export { useInputBar } from './useInputBar';
