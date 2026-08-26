@@ -2,16 +2,12 @@
 
 import { memo } from 'react';
 import { LogOut } from 'lucide-react';
-
-export interface LeaveClassButtonProps {
-  onLeaveClass: () => void;
-  className?: string;
-}
+import type { TopBarLeaveClassButtonProps } from '../../types/topbar.types';
 
 export const LeaveClassButton = memo(function LeaveClassButton({
   onLeaveClass,
   className = '',
-}: LeaveClassButtonProps) {
+}: TopBarLeaveClassButtonProps) {
   return (
     <button
       type="button"

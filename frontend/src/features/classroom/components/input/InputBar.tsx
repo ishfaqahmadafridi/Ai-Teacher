@@ -1,144 +1,113 @@
 'use client';
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setInputText, setError } from '@/features/classroom/state/classroomSlice';
-import { useVoiceInput } from '../../hooks/useVoiceInput';
-import { useChunkPlayer } from '../../hooks/useChunkPlayer';
-import { useClassroomApi } from '../../hooks/useClassroomApi';
-import { useState } from 'react';
 
-export function InputBar() {
-  const dispatch = useAppDispatch();
-  const inputText = useAppSelector((s) => s.classroom.inputText);
-  const loading = useAppSelector((s) => s.classroom.loading);
-  const isPlaying = useAppSelector((s) => s.classroom.isPlaying);
-  const isPaused = useAppSelector((s) => s.classroom.isPaused);
-  const voiceError = useAppSelector((s) => s.classroom.voiceError);
-  const chunks = useAppSelector((s) => s.classroom.chunks);
+import { memo } from 'react';
+import { X } from 'lucide-react';
+import { useInputBar } from '../../hooks/useInputBar';
+import {
+  LeaveClassButton,
+  RaiseHandButton,
+  EmojiReactionPopover,
+  QuestionTextInput,
+  VoiceMicButton,
+  SubmitAskButton,
+  PlaybackControlsRow,
+} from './toolbar';
 
-  const { isListening, startListening, stopListening } = useVoiceInput();
-  const { sendQuestion } = useClassroomApi();
-  const { play, pause, resume, stop } = useChunkPlayer();
-
-  const [localError, setLocalError] = useState<string | null>(null);
-
-  const handleSubmit = async () => {
-    if (!inputText.trim()) return;
-    setLocalError(null);
-    await sendQuestion(inputText.trim());
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
-
-  const handleMicClick = () => {
-    if (isListening) stopListening();
-    else startListening();
-  };
-
-  const handlePlayPause = () => {
-    if (!isPlaying && chunks.length > 0) {
-      play();
-    } else if (isPlaying && !isPaused) {
-      pause();
-    } else if (isPlaying && isPaused) {
-      resume();
-    }
-  };
+export const InputBar = memo(function InputBar() {
+  const {
+    inputText,
+    loading,
+    isPlaying,
+    isPaused,
+    voiceError,
+    localError,
+    chunks,
+    isListening,
+    handRaised,
+    showEmojiPicker,
+    reactionToast,
+    setShowEmojiPicker,
+    handleSubmit,
+    handleKeyDown,
+    handleMicClick,
+    handleToggleHand,
+    handleSendReaction,
+    handlePlayPause,
+    stop,
+    clearErrors,
+    updateInputText,
+  } = useInputBar();
 
   return (
-    <div className="flex flex-col gap-2">
-      {/* Error */}
+    <div className="flex flex-col gap-2.5 font-sans max-w-6xl mx-auto w-full px-2">
+      {/* Voice or System Error Banner */}
       {(voiceError || localError) && (
-        <div className="text-red-400 text-xs bg-red-400/10 border border-red-400/20 rounded-lg px-3 py-2">
-          {voiceError ?? localError}
+        <div className="text-red-300 text-xs bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2.5 flex items-center justify-between shadow-lg backdrop-blur-md">
+          <span className="font-medium">{voiceError ?? localError}</span>
           <button
-            className="ml-2 text-red-300 hover:text-white"
-            onClick={() => { dispatch(setError(null)); setLocalError(null); }}
+            type="button"
+            className="text-red-400 hover:text-white transition-colors cursor-pointer"
+            onClick={clearErrors}
           >
-            ✕
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Input row */}
-      <div className="flex items-end gap-2 bg-slate-800/80 border border-slate-700 rounded-2xl px-4 py-3">
-        <textarea
-          id="question-input"
-          rows={2}
-          placeholder="Ask Prof. Gemini anything about physics…"
-          value={inputText}
-          onChange={(e) => dispatch(setInputText(e.target.value))}
-          onKeyDown={handleKeyDown}
-          disabled={loading || isPlaying}
-          className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 resize-none focus:outline-none disabled:opacity-50"
-        />
+      {/* Floating Reaction Toast Notification */}
+      {reactionToast && (
+        <div className="self-center px-4 py-1.5 rounded-full bg-slate-900/95 border border-violet-500/40 text-xs font-medium text-violet-300 shadow-2xl animate-in fade-in zoom-in-95 duration-200 flex items-center gap-2 backdrop-blur-xl">
+          <span className="w-2 h-2 rounded-full bg-violet-400 animate-ping" />
+          <span>{reactionToast}</span>
+        </div>
+      )}
 
-        {/* Mic button */}
-        <button
-          id="mic-btn"
-          onClick={handleMicClick}
-          title={isListening ? 'Stop listening' : 'Voice input'}
-          className={`p-2.5 rounded-xl transition-all duration-200 ${
-            isListening
-              ? 'bg-red-500 text-white animate-pulse'
-              : 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white'
-          }`}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-2.06A9 9 0 0 0 21 12v-2h-2z"/>
-          </svg>
-        </button>
+      {/* Authentic Zoom Live Meeting Control Dock */}
+      <div className="flex items-center justify-between gap-4 bg-[#0A0E1A]/95 border border-slate-800/90 rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
+        {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions) */}
+        <div className="flex items-center gap-2 shrink-0">
+          <VoiceMicButton isListening={isListening} onMicClick={handleMicClick} />
+          <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
+          <EmojiReactionPopover
+            showEmojiPicker={showEmojiPicker}
+            onTogglePicker={() => setShowEmojiPicker((prev) => !prev)}
+            onSendReaction={handleSendReaction}
+          />
+        </div>
 
-        {/* Submit button */}
-        <button
-          id="ask-btn"
-          onClick={handleSubmit}
-          disabled={loading || isPlaying || !inputText.trim()}
-          className="px-4 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          {loading ? (
-            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-            </svg>
-          )}
-          Ask
-        </button>
+        {/* 2. Center Section: Prominent Integrated Ask AI Input Box */}
+        <div className="flex-1 max-w-2xl bg-[#060913] border border-slate-800 focus-within:border-violet-500/80 focus-within:ring-2 focus-within:ring-violet-500/20 rounded-xl px-3 py-1.5 flex items-center gap-2 transition-all">
+          <QuestionTextInput
+            inputText={inputText}
+            onChange={updateInputText}
+            onKeyDown={handleKeyDown}
+            disabled={loading || isPlaying}
+          />
+          <SubmitAskButton
+            loading={loading}
+            disabled={loading || isPlaying || !inputText.trim()}
+            onSubmit={handleSubmit}
+          />
+        </div>
+
+        {/* 3. Right Section: Iconic Zoom Red Leave Meeting Button */}
+        <div className="shrink-0 flex items-center">
+          <LeaveClassButton />
+        </div>
       </div>
 
-      {/* Playback controls */}
+      {/* Playback Controls Row */}
       {chunks.length > 0 && (
-        <div className="flex items-center gap-2 px-1">
-          <button
-            id="play-pause-btn"
-            onClick={handlePlayPause}
-            className="flex items-center gap-2 text-sm text-slate-300 hover:text-white px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all"
-          >
-            {isPlaying && !isPaused ? (
-              <>⏸ Pause</>
-            ) : isPaused ? (
-              <>▶ Resume</>
-            ) : (
-              <>▶ Play Lecture</>
-            )}
-          </button>
-          {(isPlaying || isPaused) && (
-            <button
-              id="stop-btn"
-              onClick={stop}
-              className="flex items-center gap-2 text-sm text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all"
-            >
-              ⏹ Stop
-            </button>
-          )}
-        </div>
+        <PlaybackControlsRow
+          chunksLength={chunks.length}
+          isPlaying={isPlaying}
+          isPaused={isPaused}
+          onPlayPause={handlePlayPause}
+          onStop={stop}
+        />
       )}
     </div>
   );
-}
+});
+
+InputBar.displayName = 'InputBar';

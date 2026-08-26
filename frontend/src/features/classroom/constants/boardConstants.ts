@@ -24,3 +24,17 @@ export const DEFAULT_PRINCIPLES: PrincipleItem[] = [
 export const DEFAULT_PRIMARY_EQUATION = 'F = m * a';
 export const DEFAULT_EQUATION_LABEL = 'Primary Equation';
 export const DEFAULT_PRINCIPLES_TITLE = 'Core Principles';
+
+export interface AtomOrbitConfig {
+  radius: number;
+  speed: number;
+  color: string;
+  electronColor: string;
+  phaseOffset: number;
+}
+
+export const ATOM_ORBITS: readonly AtomOrbitConfig[] = [
+  { radius: 1.1, speed: 1.2, color: '#60a5fa', electronColor: '#3b82f6', phaseOffset: 0 },
+  { radius: 1.8, speed: 0.7, color: '#a78bfa', electronColor: '#8b5cf6', phaseOffset: 1.1 },
+  { radius: 2.5, speed: 0.45, color: '#34d399', electronColor: '#10b981', phaseOffset: 2.3 },
+] as const;

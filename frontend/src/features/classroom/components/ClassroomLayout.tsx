@@ -50,9 +50,6 @@ export function ClassroomLayout() {
 
       {/* Main area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        {/* Top bar */}
-        <TopBar />
-
         {/* Stage */}
         <main className="relative flex-1 overflow-hidden">
           {/* Background — classroom wall */}

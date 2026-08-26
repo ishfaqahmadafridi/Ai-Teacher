@@ -44,6 +44,9 @@ Every agent must answer YES to every item below before starting:
 - [ ] Are all logger names using `logging.getLogger(__name__)`?
 - [ ] Is all real business logic in `services/` — NOT in `views/`?
 - [ ] Is all static/mock data in `constants/` — NOT inside a component or view?
+- [ ] Have I ensured zero code duplication and zero hardcoded inline data?
+- [ ] Am I using established libraries and shared utilities instead of re-inventing existing code?
+- [ ] Did I check if an established library exists before creating manual constants or custom data lists?
 
 ---
 
@@ -402,10 +405,27 @@ backend/shared/
 └── enums.py        # UserRole enum
 ```
 
-> Do NOT duplicate shared constants in both Django and FastAPI separately.
+### Code Quality & Standards Rules
+
+#### 1. Zero Code Duplication Rule
+- **NEVER** duplicate code, logic, interfaces, or static data across components, hooks, or backend services.
+- If logic or data is needed in multiple places, extract it immediately into a shared utility (`utilities/`), custom hook (`hooks/`), or constant (`constants/`).
+
+#### 2. Code Consistency Rule
+- Maintain 100% strict architectural and design consistency across all features.
+- Follow identical file structures, naming conventions, import ordering (`import type`), and design tokens (`theme.css`).
+
+#### 3. No Hardcoded Data Rule (Use Libraries & Constants)
+- **NEVER** hardcode static arrays, mock objects, magic numbers, or inline options inside components or views.
+- **Always use established libraries** (e.g., Lucide icons, `zod`, `axios`, `jspdf`, `docx`) and centralized constants (`constants/`) instead of writing custom inline implementations.
+
+#### 4. Library-First Before Manual Constants Rule
+- **BEFORE** writing any custom constant array, custom enum, or manual data list, **ALWAYS check if an established third-party library or standard package exists** (e.g., `@emoji-mart/react`, `iso-639-1`, `lucide-react`, `date-fns`, `zod`, `axios`).
+- **NEVER** create manual constant arrays or write custom implementations for data/features that are standardly provided by established libraries.
 
 ---
 
 ## Full Reference
 
 See `.claude/skills/ai-teacher-rules/SKILL.md` for the complete engineering reference covering TypeScript patterns, state management, testing strategy, security, and anti-patterns.
+
