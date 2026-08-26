@@ -73,9 +73,10 @@ def _sync_search(query: str, top_k: int = 3) -> str:
             n_results=top_k,
             include=["documents"],
         )
-        passages = results.get("documents", [[]])[0]
-        if not passages:
+        docs = results.get("documents") if results else None
+        if not docs or not docs[0]:
             return ""
+        passages = docs[0]
         combined = "\n\n---\n\n".join(passages)
         logger.info(f"[RAG] Retrieved {len(passages)} passages for: '{query[:60]}'")
         return combined
