@@ -88,3 +88,27 @@ export const MOCK_STUDENTS: StudentRecord[] = [
   { id: '14', name: 'Charlotte Martin', rollNumber: 'ST-114', status: 'present', avatarBg: 'bg-emerald-700' },
   { id: '15', name: 'Henry Thompson', rollNumber: 'ST-115', status: 'present', avatarBg: 'bg-blue-700' },
 ];
+
+export const DEFAULT_CHAT_MESSAGES: import('../types/input.types').ChatMessage[] = [
+  {
+    id: 'msg-1',
+    sender: 'AI Teacher',
+    role: 'teacher',
+    text: 'Welcome to Physics Mechanics Class! Today we are exploring Newton’s 2nd Law F = m · a.',
+    timestamp: '10:00 AM',
+  },
+  {
+    id: 'msg-2',
+    sender: 'Sophia Chen',
+    role: 'student',
+    text: 'Can we also simulate pendulum swing under gravity?',
+    timestamp: '10:02 AM',
+  },
+  {
+    id: 'msg-3',
+    sender: 'AI Teacher',
+    role: 'teacher',
+    text: 'Yes! Type any physics doubt or select a topic to draw 3D diagrams.',
+    timestamp: '10:03 AM',
+  },
+];

@@ -68,3 +68,43 @@ export interface PlaybackControlsRowProps {
   onStop: () => void;
   className?: string;
 }
+
+export interface ChatMessage {
+  id: string;
+  sender: string;
+  role: 'teacher' | 'student' | 'system';
+  text: string;
+  timestamp: string;
+}
+
+export interface ClassroomChatInboxPopoverProps {
+  className?: string;
+}
+
+export interface ChatMessageItemRowProps {
+  msg: ChatMessage;
+}
+
+export interface ChatMessageListProps {
+  messages: ChatMessage[];
+  className?: string;
+}
+
+export interface ChatInputBarProps {
+  inputMsg: string;
+  onChange: (val: string) => void;
+  onSend: () => void;
+  className?: string;
+}
+
+export interface ChatInboxHeaderProps {
+  onClose: () => void;
+  className?: string;
+}
+
+export interface ChatInboxTriggerButtonProps {
+  isOpen: boolean;
+  messageCount: number;
+  onToggle: () => void;
+  className?: string;
+}

@@ -7,6 +7,7 @@ import { RaiseHandButton } from './RaiseHandButton';
 import { QuestionTextInput } from './QuestionTextInput';
 import { VoiceMicButton } from './VoiceMicButton';
 import { SubmitAskButton } from './SubmitAskButton';
+import { ClassroomChatInboxPopover } from './ClassroomChatInboxPopover';
 import { DynamicEmojiReactionPopover } from '@/features/classroom/utilities/lazyComponents';
 
 export const InputBarDockContainer = memo(function InputBarDockContainer() {
@@ -28,7 +29,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
 
   return (
     <div className="flex items-center justify-between gap-4 bg-[#0A0E1A]/95 border border-slate-800/90 rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
-      {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions) */}
+      {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
       <div className="flex items-center gap-2 shrink-0">
         <VoiceMicButton isListening={isListening} onMicClick={handleMicClick} />
         <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
@@ -37,6 +38,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
           onTogglePicker={() => setShowEmojiPicker((prev) => !prev)}
           onSendReaction={handleSendReaction}
         />
+        <ClassroomChatInboxPopover />
       </div>
 
       {/* 2. Center Section: Prominent Integrated Ask AI Input Box */}

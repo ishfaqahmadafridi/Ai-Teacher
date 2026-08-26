@@ -5,3 +5,4 @@ export { QuestionTextInput } from './QuestionTextInput';
 export { VoiceMicButton } from './VoiceMicButton';
 export { SubmitAskButton } from './SubmitAskButton';
 export { PlaybackControlsRow } from './PlaybackControlsRow';
+export { ClassroomChatInboxPopover } from './ClassroomChatInboxPopover';
