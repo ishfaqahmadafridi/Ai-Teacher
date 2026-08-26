@@ -27,3 +27,8 @@ export interface HeaderActionGroupProps {
 export interface TopBarProps {
   className?: string;
 }
+
+export interface TopBarLeaveClassButtonProps {
+  onLeaveClass?: () => void;
+  className?: string;
+}

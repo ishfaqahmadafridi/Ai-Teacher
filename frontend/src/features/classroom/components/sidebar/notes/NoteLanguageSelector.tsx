@@ -1,7 +1,8 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import { Globe } from 'lucide-react';
+import ISO6391 from 'iso-639-1';
 import type { NoteLanguageSelectorProps } from '../../../types/sidebar.types';
 
 export const NoteLanguageSelector = memo(function NoteLanguageSelector({
@@ -11,15 +12,17 @@ export const NoteLanguageSelector = memo(function NoteLanguageSelector({
   onPillClick,
   className = '',
 }: NoteLanguageSelectorProps) {
-  const options = [
-    { id: 'English', label: 'English' },
-    { id: 'Urdu', label: 'اردو' },
-    { id: 'Hinglish', label: 'Hinglish' },
-    {
-      id: 'Custom',
-      label: savedCustomLang.trim() ? savedCustomLang.trim() : 'Custom',
-    },
-  ];
+  const options = useMemo(() => {
+    return [
+      { id: 'English', label: ISO6391.getNativeName('en') || 'English' },
+      { id: 'Urdu', label: ISO6391.getNativeName('ur') || 'اردو' },
+      { id: 'Hinglish', label: 'Hinglish' },
+      {
+        id: 'Custom',
+        label: savedCustomLang.trim() ? savedCustomLang.trim() : 'Custom',
+      },
+    ];
+  }, [savedCustomLang]);
 
   return (
     <div className={`space-y-1.5 ${className}`}>
