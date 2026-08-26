@@ -25,20 +25,25 @@ def get_llm(temperature: float = 0.7):
     from langchain_google_genai import ChatGoogleGenerativeAI
     global _llm_cache
 
-    api_key = os.getenv('GEMINI_API_KEY')
+    api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
     if not api_key:
-        logger.warning('GEMINI_API_KEY not set in environment.')
+        logger.warning('GEMINI_API_KEY not set in environment. Returning None for offline fallback.')
+        return None
 
     cache_key = (api_key, temperature)
     if cache_key not in _llm_cache:
-        _llm_cache[cache_key] = ChatGoogleGenerativeAI(
-            model='gemini-2.5-flash',
-            google_api_key=api_key,
-            temperature=temperature,
-            max_retries=2,
-            request_timeout=30.0,
-        )
-    return _llm_cache[cache_key]
+        try:
+            _llm_cache[cache_key] = ChatGoogleGenerativeAI(
+                model='gemini-2.5-flash',
+                google_api_key=api_key,
+                temperature=temperature,
+                max_retries=2,
+                request_timeout=30.0,
+            )
+        except Exception as e:
+            logger.error(f"[LLM Service] Failed to initialize Gemini model: {e}")
+            return None
+    return _llm_cache.get(cache_key)
 
 
 def extract_json(raw: str) -> dict:

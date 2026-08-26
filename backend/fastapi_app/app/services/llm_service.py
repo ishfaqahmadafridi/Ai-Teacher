@@ -23,18 +23,9 @@ _RAG_SUFFIX = "\n\n[Relevant textbook context for your response]:\n{rag_context}
 
 
 def _build_llm(temperature: float = 0.7):
-    """Build a LangChain Gemini LLM instance (sync, fast)."""
-    try:
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash",
-            google_api_key=os.getenv("GEMINI_API_KEY", ""),
-            temperature=temperature,
-            streaming=True,
-        )
-    except Exception as e:
-        logger.error(f"[LLM] Could not build Gemini LLM: {e}")
-        return None
+    """Build a LangChain Gemini LLM instance using app.langchain."""
+    from app.langchain import get_langchain_llm
+    return get_langchain_llm(temperature=temperature, streaming=True)
 
 
 async def stream_answer(
@@ -78,7 +69,8 @@ async def stream_answer(
         async for chunk in llm.astream(messages):
             token = chunk.content
             if token:
-                yield token
+                token_str = token if isinstance(token, str) else str(token)
+                yield token_str
     except Exception as e:
         logger.error(f"[LLM] Streaming error for session='{session_id}': {e}")
         yield f"\n\n[Error: {str(e)}]"

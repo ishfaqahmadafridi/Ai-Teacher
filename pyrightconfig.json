@@ -2,6 +2,9 @@
   "venvPath": "backend/django_app",
   "venv": ".venv",
   "extraPaths": [
-    "backend/django_app"
+    "backend/django_app",
+    "backend/fastapi_app",
+    "backend"
   ]
 }
+

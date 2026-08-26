@@ -9,7 +9,7 @@ Routes registered:
   WS   /api/v1/ws/classroom/{id}   → WebSocket live classroom session
 """
 from fastapi import APIRouter
-from app.api.v1.endpoints import health, stream, websocket
+from app.api.v1.endpoints import health, stream, websocket, agents
 
 api_router = APIRouter()
 
@@ -29,4 +29,10 @@ api_router.include_router(
     websocket.router,
     prefix="/ws",
     tags=["classroom"],
+)
+
+api_router.include_router(
+    agents.router,
+    prefix="/agents",
+    tags=["agents"],
 )
