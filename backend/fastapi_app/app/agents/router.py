@@ -6,7 +6,7 @@ Shared constants imported from shared.constants following AGENTS.md rules.
 """
 import logging
 from typing import Dict, Any
-from app.agents.state import ClassroomState
+from .state import ClassroomState
 from shared.constants import (
     INTENT_ASSIGNMENT_KEYWORDS,
     INTENT_QUIZ_KEYWORDS,

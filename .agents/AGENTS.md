@@ -22,6 +22,7 @@ Every agent must answer YES to every item below before starting:
 - [ ] Have I ensured zero code duplication and zero hardcoded inline data?
 - [ ] Am I using established libraries and shared utilities instead of re-inventing existing code?
 - [ ] Did I check if an established library exists before creating manual constants or custom data lists?
+- [ ] Is all user-created or mutated data pushed and persisted to the real database (ORM models & backend APIs) instead of remaining purely static in-memory?
 
 ---
 
@@ -48,6 +49,12 @@ Every file in any frontend feature (`classroom`, `dashboard`, `auth`) belongs to
 5. **No inline static data** — Arrays and defaults in `constants/<area>Constants.ts`
 6. **No `<div role="button">`** — Always use `<button type="button">`
 7. **Barrel exports required** — Every folder has `index.ts` that exports everything
+
+### Data Persistence & Backend Sync Rule (Frontend)
+
+- **Static constants in `constants/` are strictly for fallback initial states or seed defaults.**
+- When a user performs any mutation (creates a class slot, adds an assignment, updates profile preferences, enrolls in a course), the custom hook **MUST dispatch an API request to the backend** to persist the record in the database.
+- State in custom hooks should be synchronized with real backend responses or use optimistic updates with rollback upon failure. Never rely purely on volatile in-memory React state for persistent business entities.
 
 ### Type Import Rule
 
@@ -127,6 +134,13 @@ backend/django_app/apps/
 
 > ❌ WRONG — `teacher/`, `academic_core/`, or any monolith folder
 > ✅ CORRECT — every feature owns its dedicated `apps/<feature>/` directory
+
+### Database Persistence & CRUD Standards Rule (Backend)
+
+- **Every persistent domain entity MUST have an ORM Model and Database Migration.**
+- User actions (e.g. creating/updating timetable slots, submitting assignments, saving preferences) must commit to the database through the Django ORM inside `services/`.
+- Never store application state only in global Python variables or mock return dictionaries when a database model is required.
+- All CRUD operations must be exposed via RESTful API views with full serializer validation and OpenAPI documentation (`@extend_schema`).
 
 ### Package `__init__.py` Rule
 
@@ -398,9 +412,15 @@ backend/shared/
 - **BEFORE** writing any custom constant array, custom enum, or manual data list, **ALWAYS check if an established third-party library or standard package exists** (e.g., `@emoji-mart/react`, `iso-639-1`, `lucide-react`, `date-fns`, `zod`, `axios`).
 - **NEVER** create manual constant arrays or write custom implementations for data/features that are standardly provided by established libraries.
 
+#### 5. Real Database Persistence Rule (No Purely Static Mutations)
+- **NEVER** leave user mutations (created timetable slots, registered courses, submitted assignments, updated profile settings) trapped in temporary static React state or mock arrays.
+- **ALWAYS** push and persist created/updated data to the backend database via the Django 3-Layer Architecture (`views` → `services` → `serializers` → ORM Models).
+- Static data in `constants/` is strictly for default fallback initial seeds, not a replacement for database persistence.
+
 ---
 
 ## Full Reference
 
 See `.claude/skills/ai-teacher-rules/SKILL.md` for the complete engineering reference covering TypeScript patterns, state management, testing strategy, security, and anti-patterns.
+
 

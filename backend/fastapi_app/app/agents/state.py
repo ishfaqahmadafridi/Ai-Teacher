@@ -2,7 +2,9 @@
 fastapi_app/app/agents/state.py
 Minimal typed graph state for high-performance LangGraph execution.
 """
-from typing import TypedDict, List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional
+from typing_extensions import TypedDict
+
 
 
 class ClassroomState(TypedDict, total=False):

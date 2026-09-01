@@ -52,6 +52,36 @@ class TestAPIEndpoints(unittest.TestCase):
         self.assertIn("feedback", data)
         self.assertEqual(data["max_score"], 100)
 
+    def test_agent_generate_timetable_endpoint(self):
+        """POST /api/v1/agents/generate-timetable returns timetable schedule."""
+        payload = {
+            "registered_class": "Physics Mechanics 101",
+            "preferred_time": "morning",
+            "max_classes_per_day": 2,
+        }
+        response = self.client.post("/api/v1/agents/generate-timetable", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["class_name"], "Physics Mechanics 101")
+        self.assertIn("schedule", data)
+        self.assertIn("optimization_summary", data)
+
+    def test_agent_execute_endpoint(self):
+        """POST /api/v1/agents/execute returns complete LangGraph workflow response with telemetry."""
+        payload = {
+            "question": "Explain kinetic energy",
+            "session_id": "test_exec_session",
+            "course_id": "Physics Mechanics 101",
+        }
+        response = self.client.post("/api/v1/agents/execute", json=payload)
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("answer", data)
+        self.assertIn("intent", data)
+        self.assertEqual(data["safety_status"], "safe")
+        self.assertIn("telemetry", data)
+        self.assertIn("total_duration_ms", data["telemetry"])
+
     def test_stream_ask_endpoint(self):
         """POST /api/v1/stream/ask returns SSE event stream or valid response."""
         payload = {
@@ -64,3 +94,4 @@ class TestAPIEndpoints(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

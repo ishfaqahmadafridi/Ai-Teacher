@@ -34,7 +34,14 @@ backend/chroma_db/
 **/chroma_db/
 
 # Local environment variables and secrets
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
 backend/.env
+backend/django_app/.env
+backend/fastapi_app/.env
 frontend/.env
 frontend/.env.local
 

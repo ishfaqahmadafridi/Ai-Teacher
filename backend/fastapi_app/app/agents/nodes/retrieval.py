@@ -5,7 +5,7 @@ Executes vector retrieval only when required by intent routing.
 """
 import logging
 from typing import Dict, Any
-from app.agents.state import ClassroomState
+from ..state import ClassroomState
 
 logger = logging.getLogger(__name__)
 

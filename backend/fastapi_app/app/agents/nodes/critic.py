@@ -5,7 +5,7 @@ Prevents infinite revision loops.
 """
 import logging
 from typing import Dict, Any
-from app.agents.state import ClassroomState
+from ..state import ClassroomState
 
 logger = logging.getLogger(__name__)
 
