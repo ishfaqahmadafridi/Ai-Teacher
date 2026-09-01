@@ -5,7 +5,7 @@ Uses fast deterministic rule checks first from shared.constants to avoid unneces
 """
 import logging
 from typing import Dict, Any
-from app.agents.state import ClassroomState
+from ..state import ClassroomState
 from shared.constants import FORBIDDEN_TERMS, SAFETY_WARNING_MESSAGE
 
 logger = logging.getLogger(__name__)

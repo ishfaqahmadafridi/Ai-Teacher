@@ -5,8 +5,8 @@ Generates structured response enriched with optional RAG context.
 """
 import logging
 from typing import Dict, Any
-from app.agents.state import ClassroomState
-from app.services.llm_service import _build_llm
+from ..state import ClassroomState
+from app.langchain import get_langchain_llm
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ async def tutor_node(state: ClassroomState) -> Dict[str, Any]:
     if context:
         context_str = "\n".join([item.get("passage", "") for item in context])
 
-    llm = _build_llm(temperature=0.7)
+    llm = get_langchain_llm(temperature=0.7)
     if llm is None:
         return {"answer": "Physics concept: Force equals mass times acceleration (F = m * a)."}
 

@@ -2,15 +2,10 @@
 
 import { memo } from 'react';
 import { Clock, Calendar, X, AlertCircle, User, MapPin } from 'lucide-react';
-import type { ScheduleItem } from '../../types/schedule.types';
-
-export interface ScheduledClassNoticeModalProps {
-  isOpen: boolean;
-  item: ScheduleItem | null;
-  onClose: () => void;
-}
+import type { ScheduledClassNoticeModalProps } from '../../types/schedule.types';
 
 export const ScheduledClassNoticeModal = memo(function ScheduledClassNoticeModal({
+
   isOpen,
   item,
   onClose,

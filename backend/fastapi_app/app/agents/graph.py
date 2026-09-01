@@ -5,9 +5,9 @@ Compiles once at module initialization to eliminate per-request compilation over
 """
 import logging
 from langgraph.graph import StateGraph, END
-from app.agents.state import ClassroomState
-from app.agents.router import route_intent, select_next_node
-from app.agents.nodes import (
+from .state import ClassroomState
+from .router import route_intent, select_next_node
+from .nodes import (
     safety_node,
     tutor_node,
     retrieval_node,

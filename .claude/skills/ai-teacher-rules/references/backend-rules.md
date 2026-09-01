@@ -212,14 +212,25 @@ PRODUCTION NOTE:
 
 ---
 
+## 11. Real Database Persistence Standard
+
+- **Every persistent domain entity MUST have an ORM Model and Database Migration.**
+- User-created or mutated data (timetable entries, assignments, user settings, registrations) must ALWAYS be persisted into the database through the service layer (`services/`).
+- Never leave persistent data in temporary static dictionaries or in-memory arrays when an ORM model is required.
+- All database mutation operations must be validated through Django REST Framework serializers and documented with OpenAPI `@extend_schema`.
+
+---
+
 ## Backend Checklist for Every Change
 
 Before submitting any Python change, verify:
 
 - [ ] `views.py` is ≤100 lines and contains no business logic
 - [ ] All business logic is in `services/`
+- [ ] All database mutations are persisted to ORM models through `services/`
 - [ ] All prompt strings >5 lines are in `prompts/`
 - [ ] No secrets or hardcoded values in `settings.py`
 - [ ] Tests written for any new service function
 - [ ] Module docstring added to any new file
 - [ ] Barrel `__init__.py` updated if a new service was added
+
