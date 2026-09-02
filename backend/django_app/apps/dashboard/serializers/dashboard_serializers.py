@@ -62,6 +62,16 @@ class LiveClassSerializer(serializers.ModelSerializer):
         read_only_fields = ["id"]
 
 
+class LiveClassCreateRequestSerializer(serializers.Serializer):
+    """Serializer validating incoming live class or timetable slot creation."""
+    title = serializers.CharField(max_length=255, required=True)
+    subject = serializers.CharField(max_length=100, required=True)
+    instructor_name = serializers.CharField(max_length=100, required=True)
+    time_formatted = serializers.CharField(max_length=100, required=True)
+    is_live = serializers.BooleanField(default=False)
+
+
+
 class ContinueLearningSerializer(serializers.Serializer):
     """Serializer for active continue learning card."""
     id = serializers.CharField(default="c1")

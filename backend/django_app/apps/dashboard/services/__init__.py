@@ -6,6 +6,7 @@ from apps.dashboard.services.dashboard_service import (
     get_registered_courses,
     create_registered_course,
     get_live_classes,
+    create_live_class,
     get_assignments,
     get_dashboard_overview,
     ensure_initial_seeds,
@@ -16,7 +17,9 @@ __all__ = [
     "get_registered_courses",
     "create_registered_course",
     "get_live_classes",
+    "create_live_class",
     "get_assignments",
     "get_dashboard_overview",
     "ensure_initial_seeds",
 ]
+

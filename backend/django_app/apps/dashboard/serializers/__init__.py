@@ -11,6 +11,7 @@ from apps.dashboard.serializers.dashboard_serializers import (
     CourseRegistrationRequestSerializer,
     AssignmentSerializer,
     LiveClassSerializer,
+    LiveClassCreateRequestSerializer,
     ContinueLearningSerializer,
     DashboardOverviewSerializer,
 )
@@ -23,6 +24,8 @@ __all__ = [
     "CourseRegistrationRequestSerializer",
     "AssignmentSerializer",
     "LiveClassSerializer",
+    "LiveClassCreateRequestSerializer",
     "ContinueLearningSerializer",
     "DashboardOverviewSerializer",
 ]
+

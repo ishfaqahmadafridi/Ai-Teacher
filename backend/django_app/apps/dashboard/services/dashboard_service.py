@@ -181,6 +181,27 @@ def get_live_classes() -> List[LiveClassModel]:
     return list(LiveClassModel.objects.all().order_by("id"))
 
 
+def create_live_class(
+    title: str,
+    subject: str,
+    instructor_name: str,
+    time_formatted: str,
+    is_live: bool = False,
+) -> LiveClassModel:
+    """Creates and persists a new live class / timetable session in the database."""
+    with transaction.atomic():
+        live_class = LiveClassModel.objects.create(
+            title=title.strip(),
+            subject=subject.strip(),
+            instructor_name=instructor_name.strip(),
+            time_formatted=time_formatted.strip(),
+            is_live=is_live,
+        )
+        logger.info(f"[DashboardService] Created LiveClassModel #{live_class.id}: '{live_class.title}'")
+        return live_class
+
+
+
 def get_assignments() -> List[AssignmentModel]:
     """Fetches all assignments and quizzes from the database."""
     ensure_initial_seeds()
