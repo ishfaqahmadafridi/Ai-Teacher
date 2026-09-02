@@ -23,8 +23,10 @@ Every agent must answer YES to every item below before starting:
 - [ ] Am I using established libraries and shared utilities instead of re-inventing existing code?
 - [ ] Did I check if an established library exists before creating manual constants or custom data lists?
 - [ ] Is all user-created or mutated data pushed and persisted to the real database (ORM models & backend APIs) instead of remaining purely static in-memory?
+- [ ] Am I writing ONLY the requested code with ZERO unnecessary bloat, dead boilerplate, or speculative abstractions?
 
 ---
+
 
 ## Part 1 — Frontend Architecture Rules
 
@@ -417,10 +419,16 @@ backend/shared/
 - **ALWAYS** push and persist created/updated data to the backend database via the Django 3-Layer Architecture (`views` → `services` → `serializers` → ORM Models).
 - Static data in `constants/` is strictly for default fallback initial seeds, not a replacement for database persistence.
 
+#### 6. No Extra / Bloated Code Rule (Lean & Focused Implementation)
+- **NEVER** write speculative features, unrequested boilerplate, extra dummy endpoints, dead wrapper files, or over-engineered abstractions.
+- **ONLY** write the exact, lean, and necessary code required to fulfill the user's specific requirement with senior-level precision.
+- Maintain minimal, clean diffs and eliminate all dead or redundant code.
+
 ---
 
 ## Full Reference
 
 See `.claude/skills/ai-teacher-rules/SKILL.md` for the complete engineering reference covering TypeScript patterns, state management, testing strategy, security, and anti-patterns.
+
 
 
