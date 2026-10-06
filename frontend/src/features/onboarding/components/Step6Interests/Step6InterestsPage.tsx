@@ -17,6 +17,7 @@ import { MobileSummaryBar } from './MobileSummaryBar';
 
 export const Step6InterestsPage = memo(function Step6InterestsPage() {
   const {
+    error,
     selectedInterests,
     searchQuery,
     customInput,
@@ -36,6 +37,7 @@ export const Step6InterestsPage = memo(function Step6InterestsPage() {
         />
       }
     >
+      {error && <p role="alert">{error}</p>}
       {/* Left Column: Subject Selection Area */}
       <div className="flex-1 space-y-8 w-full">
         <InterestsHeader />

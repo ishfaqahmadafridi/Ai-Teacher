@@ -1,49 +1,41 @@
-"""
-teacher/services/llm_service.py
-
-LLM initialisation, JSON extraction, and fallback response construction
-for the teacher (ask) feature.
-
-Separated from inference.py so each concern is independently testable.
-"""
+"""Classroom LLM initialization, JSON parsing, and fallback responses."""
 
 import os
-import re
 import json
 import logging
+import threading
+from functools import lru_cache
+
+from apps.classroom.constants import (
+    DEFAULT_TEMPERATURE, GEMINI_MODEL, LLM_MAX_RETRIES, LLM_TIMEOUT, LLM_CACHE_SIZE, FALLBACK_SPEECH,
+)
 
 logger = logging.getLogger(__name__)
 
-_llm_cache: dict = {}
+_llm_lock = threading.Lock()
 
 
-def get_llm(temperature: float = 0.7):
-    """
-    Lazily initialise the Gemini 2.5 Flash LLM (cached per temperature).
-    Returns a LangChain ChatGoogleGenerativeAI instance.
-    """
+@lru_cache(maxsize=LLM_CACHE_SIZE)
+def _create_llm(api_key: str, model: str, temperature: float):
     from langchain_google_genai import ChatGoogleGenerativeAI
-    global _llm_cache
+    return ChatGoogleGenerativeAI(
+        model=model, google_api_key=api_key, temperature=temperature,
+        max_retries=LLM_MAX_RETRIES, request_timeout=LLM_TIMEOUT,
+    )
 
-    api_key = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
+
+def get_llm(temperature: float = DEFAULT_TEMPERATURE):
+    """Initialize the configured model through a bounded standard-library cache."""
+    api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
-        logger.warning('GEMINI_API_KEY not set in environment. Returning None for offline fallback.')
+        logger.warning("Gemini API key unavailable; using offline fallback")
         return None
-
-    cache_key = (api_key, temperature)
-    if cache_key not in _llm_cache:
-        try:
-            _llm_cache[cache_key] = ChatGoogleGenerativeAI(
-                model='gemini-2.5-flash',
-                google_api_key=api_key,
-                temperature=temperature,
-                max_retries=2,
-                request_timeout=30.0,
-            )
-        except Exception as e:
-            logger.error(f"[LLM Service] Failed to initialize Gemini model: {e}")
-            return None
-    return _llm_cache.get(cache_key)
+    try:
+        with _llm_lock:
+            return _create_llm(api_key, GEMINI_MODEL, temperature)
+    except Exception:
+        logger.exception("Failed to initialize classroom LLM")
+        return None
 
 
 def extract_json(raw: str) -> dict:
@@ -53,22 +45,28 @@ def extract_json(raw: str) -> dict:
     Gemini sometimes wraps JSON in markdown fences — this strips them.
     Returns the parsed dict, or raises ValueError if parsing fails.
     """
-    cleaned = re.sub(r'```(?:json)?\s*', '', raw).replace('```', '').strip()
-
+    if not isinstance(raw, str):
+        raise ValueError("LLM response must contain text")
     try:
-        return json.loads(cleaned)
+        parsed = json.loads(raw)
     except json.JSONDecodeError:
         pass
-
-    start = cleaned.find('{')
-    end = cleaned.rfind('}')
-    if start != -1 and end != -1:
+    else:
+        if not isinstance(parsed, dict):
+            raise ValueError("LLM response must be a JSON object")
+        return parsed
+    decoder = json.JSONDecoder()
+    # raw_decode handles braces inside strings and surrounding markdown/prose.
+    for index, character in enumerate(raw):
+        if character != "{":
+            continue
         try:
-            return json.loads(cleaned[start: end + 1])
+            parsed, _ = decoder.raw_decode(raw[index:])
         except json.JSONDecodeError:
-            pass
-
-    raise ValueError(f'Could not parse JSON from Gemini response: {raw[:200]}')
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    raise ValueError("LLM response does not contain a valid JSON object")
 
 
 def fallback_chunks(question: str) -> dict:
@@ -79,10 +77,7 @@ def fallback_chunks(question: str) -> dict:
     return {
         'chunks': [
             {
-                'speak': (
-                    'I am having a little technical difficulty right now. '
-                    'Please ask your question again and I will explain it properly.'
-                ),
+                'speak': FALLBACK_SPEECH,
                 'diagram': {'action': 'none'},
             }
         ],

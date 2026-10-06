@@ -1,7 +1,7 @@
 """
-teacher/admin/__init__.py
+apps/classroom/admin/__init__.py
 
-Barrel export for the teacher admin package.
+Barrel export for the classroom admin package.
 """
 
 __all__: list[str] = []

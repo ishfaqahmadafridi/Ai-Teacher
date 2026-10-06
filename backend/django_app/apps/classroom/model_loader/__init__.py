@@ -1,5 +1,5 @@
 """
-Teacher model_loader package.
+Classroom model_loader package.
 Exposes singleton model loading and retrieval interface.
 """
 from .loader import load_model, get_model, is_model_loaded

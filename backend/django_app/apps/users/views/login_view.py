@@ -1,37 +1,25 @@
+"""Validated login user endpoint."""
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from django.contrib.auth import get_user_model
-from django.utils import timezone
-from ..serializers import UserSerializer
+from drf_spectacular.utils import extend_schema
+from apps.users.serializers import LoginSerializer, AuthResponseSerializer
+from apps.users.services import login_user
 from apps.users.utilities import generate_user_tokens
 
-User = get_user_model()
 
 class LoginView(APIView):
-    """
-    API view to authenticate an existing user.
-    """
     permission_classes = [AllowAny]
+    authentication_classes = []
 
+    def get_authenticate_header(self, request):
+        return 'Bearer realm="api"'
+
+    @extend_schema(tags=["auth"], request=LoginSerializer, responses={200: AuthResponseSerializer})
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-
-        if not email or not password:
-            return Response({'error': 'Email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
-
-        user = User.objects.filter(email__iexact=email).first()
-        if user and user.check_password(password):
-            user.last_login = timezone.now()
-            user.save(update_fields=['last_login'])
-            tokens = generate_user_tokens(user)
-            user_data = UserSerializer(user).data
-            return Response({
-                "user": user_data,
-                "access": tokens["access"],
-                "refresh": tokens["refresh"],
-            }, status=status.HTTP_200_OK)
-
-        return Response({'error': 'Invalid email or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = login_user(**serializer.validated_data)
+        data = {"user": user, **generate_user_tokens(user)}
+        return Response(AuthResponseSerializer(data).data, status=status.HTTP_200_OK)

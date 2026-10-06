@@ -19,6 +19,8 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
     setActiveTab,
     formData,
     isSaved,
+    saveError,
+    isSaving,
     showAvatarMenu,
     showAvatarPresets,
     showCoverMenu,
@@ -94,6 +96,7 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
               phone={formData.phone}
               studentId={formData.studentId}
               gradeLevel={formData.gradeLevel}
+              isVerified={formData.isVerified}
             />
           </div>
         </div>
@@ -109,8 +112,10 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
             <ProfilePreferencesTab formData={formData} onChange={handleChange} />
           )}
 
+          {saveError && <p role="alert">{saveError}</p>}
+
           {/* Action Buttons Footer Subcomponent */}
-          <ProfileModalFooter isSaved={isSaved} onClose={props.onClose} onLogout={handleLogout} />
+          <ProfileModalFooter isSaved={isSaved} isSaving={isSaving} onClose={props.onClose} onLogout={handleLogout} />
         </form>
       </div>
     </div>

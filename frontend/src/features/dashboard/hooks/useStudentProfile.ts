@@ -1,151 +1,52 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useAuthStore } from '../../auth/state/authStore';
+import { AuthService } from '../../auth/services/authService';
 import { DEFAULT_STUDENT_PROFILE } from '../constants/profileConstants';
 import { formatPhoneWithCountryCode, generateFormattedStudentId } from '../utilities';
 import type { StudentProfile } from '../types/dashboard.types';
 
 export function useStudentProfile() {
   const authUser = useAuthStore((s) => s.user);
-  const setUserInStore = useAuthStore((s) => s.setUser);
-  const token = useAuthStore((s) => s.accessToken);
-
-  const [profile, setProfile] = useState<StudentProfile>(DEFAULT_STUDENT_PROFILE);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-  // Sync profile state dynamically with live user data, onboarding selections, and restore from localStorage
-  useEffect(() => {
-    let savedProfile: Partial<StudentProfile> = {};
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('dashboard_profile');
-        if (stored) {
-          savedProfile = JSON.parse(stored);
-        }
-      } catch (e) {
-        console.error('Failed to parse dashboard_profile from localStorage', e);
-      }
-    }
-
-    let savedOnboarding: any = {};
-    if (typeof window !== 'undefined') {
-      try {
-        const storedOb = localStorage.getItem('onboarding-store');
-        if (storedOb) {
-          const parsedOb = JSON.parse(storedOb);
-          if (parsedOb?.state) {
-            savedOnboarding = parsedOb.state;
-          }
-        }
-      } catch (e) {
-        console.error('Failed to parse onboarding-store from localStorage', e);
-      }
-    }
-
-    let currentUser = authUser;
-    if (!currentUser && typeof window !== 'undefined') {
-      try {
-        const storedAuth = localStorage.getItem('auth-store');
-        if (storedAuth) {
-          const parsed = JSON.parse(storedAuth);
-          if (parsed?.state?.user) {
-            currentUser = parsed.state.user;
-          }
-        }
-      } catch (e) {
-        console.error('Failed to read auth-store from localStorage', e);
-      }
-    }
-
-    setProfile((prev) => {
-      let updated = { ...prev, ...savedProfile };
-
-      const onboardingName = savedOnboarding?.profile?.fullName;
-      const onboardingLang = savedOnboarding?.profile?.language;
-
-      const fullName =
-        savedProfile.name ||
-        onboardingName ||
-        (currentUser
-          ? [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || currentUser.username
-          : null) ||
-        'Student User';
-
-      const formattedPhone =
-        savedProfile.phone ||
-        (currentUser ? formatPhoneWithCountryCode(currentUser.mobile, currentUser.countryCode) : prev.phone);
-
-      const formattedStudentId =
-        savedProfile.studentId ||
-        (currentUser ? generateFormattedStudentId(currentUser.id ?? currentUser.username) : prev.studentId);
-
-      updated = {
-        ...updated,
-        name: fullName,
-        email: savedProfile.email || currentUser?.email || prev.email,
-        phone: formattedPhone,
-        studentId: formattedStudentId,
-        preferredLanguage: savedProfile.preferredLanguage || onboardingLang || prev.preferredLanguage,
-        avatarUrl: savedProfile.avatarUrl || currentUser?.avatarUrl || prev.avatarUrl,
-        coverUrl: savedProfile.coverUrl || (currentUser as any)?.coverUrl || prev.coverUrl,
-      };
-
-      return updated;
-    });
+  const profile = useMemo<StudentProfile>(() => {
+    if (!authUser) return DEFAULT_STUDENT_PROFILE;
+    const joined = new Date(authUser.createdAt);
+    const validJoined = !Number.isNaN(joined.getTime());
+    return {
+      ...DEFAULT_STUDENT_PROFILE,
+      name: [authUser.firstName, authUser.lastName].filter(Boolean).join(' ') || authUser.username || '',
+      email: authUser.email,
+      isVerified: authUser.isVerified,
+      phone: formatPhoneWithCountryCode(authUser.mobile, authUser.countryCode),
+      studentId: generateFormattedStudentId(authUser.id, authUser.createdAt),
+      gradeLevel: authUser.gradeLevel, bio: authUser.bio,
+      preferredLanguage: authUser.preferredLanguage,
+      avatarUrl: authUser.avatarUrl || '',
+      coverUrl: authUser.coverUrl || DEFAULT_STUDENT_PROFILE.coverUrl,
+      joinedDate: validJoined ? new Intl.DateTimeFormat(undefined, { month: 'long', year: 'numeric' }).format(joined) : '',
+      dateFormatted: new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date()),
+    };
   }, [authUser]);
 
-  const handleOpenProfile = useCallback(() => {
-    setIsProfileOpen(true);
-  }, []);
+  const handleOpenProfile = useCallback(() => setIsProfileOpen(true), []);
+  const handleCloseProfile = useCallback(() => setIsProfileOpen(false), []);
+  const handleSaveProfile = useCallback(async (updated: Partial<StudentProfile>) => {
+    const current = useAuthStore.getState();
+    if (!current.user || !current.accessToken) throw new Error('Please sign in before saving your profile.');
+    const userId = current.user.id;
+    const name = (updated.name ?? profile.name).trim().split(/\s+/);
+    const user = await AuthService.updateProfile({
+      first_name: name[0] ?? '', last_name: name.slice(1).join(' '),
+      email: updated.email, mobile: updated.phone,
+      avatar_url: updated.avatarUrl, cover_url: updated.coverUrl,
+      grade_level: updated.gradeLevel, bio: updated.bio, preferred_language: updated.preferredLanguage,
+    });
+    const latest = useAuthStore.getState();
+    if (latest.user?.id !== userId || !latest.accessToken) throw new Error('The signed-in account changed.');
+    latest.setUser(user, latest.accessToken);
+  }, [profile.name]);
 
-  const handleCloseProfile = useCallback(() => {
-    setIsProfileOpen(false);
-  }, []);
-
-  const handleSaveProfile = useCallback(
-    (updated: Partial<StudentProfile>) => {
-      setProfile((prev) => {
-        const newProfile = { ...prev, ...updated };
-
-        if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('dashboard_profile', JSON.stringify(newProfile));
-          } catch (e) {
-            console.error('Failed to save dashboard_profile to localStorage', e);
-          }
-        }
-
-        if (authUser) {
-          const nameParts = (newProfile.name || '').trim().split(' ');
-          const fName = nameParts[0] || authUser.firstName;
-          const lName = nameParts.slice(1).join(' ') || authUser.lastName;
-
-          setUserInStore(
-            {
-              ...authUser,
-              firstName: fName,
-              lastName: lName,
-              email: newProfile.email,
-              mobile: newProfile.phone,
-              avatarUrl: newProfile.avatarUrl,
-              coverUrl: newProfile.coverUrl,
-            },
-            token || ''
-          );
-        }
-
-        return newProfile;
-      });
-    },
-    [authUser, setUserInStore, token]
-  );
-
-  return {
-    profile,
-    isProfileOpen,
-    handleOpenProfile,
-    handleCloseProfile,
-    handleSaveProfile,
-  };
+  return { profile, isProfileOpen, handleOpenProfile, handleCloseProfile, handleSaveProfile };
 }

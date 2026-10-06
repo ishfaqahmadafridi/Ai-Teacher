@@ -1,11 +1,11 @@
 """
-teacher/tests/test_inference.py
+apps/classroom/tests/test_inference.py
 
 Unit tests for LLM service helpers and session service.
 No external calls — tests are fast and offline.
 """
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 
 from apps.classroom.services.llm_service import extract_json, fallback_chunks
 from apps.classroom.services.session_service import get_session, save_session, clear_session
@@ -69,7 +69,7 @@ class FallbackChunksTests(SimpleTestCase):
 
 # ── Session Service Tests ─────────────────────────────────────────────────────
 
-class SessionServiceTests(SimpleTestCase):
+class SessionServiceTests(TestCase):
     """session_service — get, save, and clear conversation history."""
 
     def setUp(self):

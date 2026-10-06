@@ -24,7 +24,16 @@ class ClassroomConfig(AppConfig):
         Start RAG background init here — safe, non-blocking.
         """
         import os
-        if os.environ.get("RUN_MAIN") != "true":
+        import sys
+        from django.conf import settings
+        # Skip management commands; initialize in production WSGI/ASGI workers too.
+        if any(command in sys.argv for command in (
+            "test", "migrate", "makemigrations", "check", "collectstatic", "embed_pdf", "spectacular",
+        )):
+            return
+        if "runserver" in sys.argv and "--noreload" not in sys.argv and os.environ.get("RUN_MAIN") != "true":
+            return
+        if not getattr(settings, "CLASSROOM_RAG_AUTOSTART", True):
             return
 
         try:

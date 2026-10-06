@@ -25,6 +25,7 @@ export interface StudentProfileData {
 }
 
 export interface OnboardingState {
+  userId: string | null;
   currentStep: number;
   profile: StudentProfileData;
   educationLevel: EducationLevel | null;

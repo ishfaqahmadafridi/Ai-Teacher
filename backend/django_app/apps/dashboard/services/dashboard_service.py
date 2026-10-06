@@ -187,7 +187,7 @@ def get_assignments() -> List[AssignmentModel]:
     return list(AssignmentModel.objects.all().order_by("id"))
 
 
-def get_dashboard_overview() -> Dict[str, Any]:
+def get_dashboard_overview(user=None) -> Dict[str, Any]:
     """
     Assembles real-time dashboard analytics, enrolled courses,
     live workshops, and active tasks from the database.
@@ -197,7 +197,7 @@ def get_dashboard_overview() -> Dict[str, Any]:
     assignments = get_assignments()
 
     return {
-        "student_name": "example",
+        "student_name": (user.get_full_name() or user.username) if user and user.is_authenticated else "",
         "streak_days": 128,
         "courses_count": len(courses),
         "weekly_progress_percent": 75,

@@ -3,7 +3,9 @@ apps/classroom/serializers/ask_serializers.py
 
 Request and response serializers for the Ask/Classroom endpoint.
 """
+import math
 from rest_framework import serializers
+from apps.classroom.constants import DEFAULT_SESSION_ID, DEFAULT_TEMPERATURE
 
 
 class AskRequestSerializer(serializers.Serializer):
@@ -19,17 +21,47 @@ class AskRequestSerializer(serializers.Serializer):
     )
     session_id = serializers.CharField(
         required=False,
-        default="default",
+        default=DEFAULT_SESSION_ID,
         max_length=128,
         help_text="Session ID for multi-turn conversation continuity.",
     )
     temperature = serializers.FloatField(
         required=False,
-        default=0.7,
+        default=DEFAULT_TEMPERATURE,
         min_value=0.1,
         max_value=1.5,
         help_text="LLM sampling temperature: 0.1 = focused, 1.5 = creative.",
     )
+
+    def validate_temperature(self, value):
+        if not math.isfinite(value):
+            raise serializers.ValidationError("Temperature must be finite.")
+        return value
+
+
+class ClearSessionRequestSerializer(serializers.Serializer):
+    session_id = serializers.CharField(default=DEFAULT_SESSION_ID, max_length=128)
+
+
+class ClearSessionResponseSerializer(serializers.Serializer):
+    status = serializers.CharField()
+    session_id = serializers.CharField()
+
+
+class AnswerChunkSerializer(serializers.Serializer):
+    speak = serializers.CharField()
+    diagram = serializers.DictField()
+    key_point = serializers.CharField(required=False, allow_blank=True)
+    teacher_position = serializers.ChoiceField(
+        choices=("left", "center", "right"), required=False
+    )
+
+
+class GeneratedAnswerSerializer(serializers.Serializer):
+    chunks = AnswerChunkSerializer(many=True, allow_empty=False)
+    topic = serializers.CharField(default="physics")
+    diagram_type = serializers.CharField(default="default")
+    language = serializers.CharField(default="en")
 
 
 class AskResponseSerializer(serializers.Serializer):
@@ -37,7 +69,7 @@ class AskResponseSerializer(serializers.Serializer):
     Documents the structured AI professor response envelope.
     """
     chunks = serializers.ListField(
-        child=serializers.DictField(),
+        child=AnswerChunkSerializer(),
         help_text="Array of spoken sentence chunks with diagram actions.",
     )
     topic = serializers.CharField(

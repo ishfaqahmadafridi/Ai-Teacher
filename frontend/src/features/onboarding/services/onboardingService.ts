@@ -1,25 +1,27 @@
-import { apiClient } from '@/lib/api';
+import { AuthService } from '../../auth/services/authService';
 import type { StudentProfileData, EducationLevel, AcademicYear } from '../types';
+import type { AuthUser } from '../../auth/types';
 
 export class OnboardingService {
-  static async submitStep3Profile(profile: StudentProfileData): Promise<{ success: boolean }> {
-    const response = await apiClient.post<{ success: boolean }>('/api/onboarding/profile/', profile);
-    return response.data;
+  static async submitStep3Profile(profile: StudentProfileData): Promise<AuthUser> {
+    const [firstName, ...lastName] = profile.fullName.trim().split(/\s+/);
+    return AuthService.updateProfile({
+      first_name: firstName, last_name: lastName.join(' '), dob: profile.dob || null,
+      country: profile.country, timezone: profile.timezone,
+      preferred_language: profile.language, avatar_url: profile.avatarUrl,
+    });
   }
 
-  static async submitStep4Education(level: EducationLevel): Promise<{ success: boolean }> {
-    const response = await apiClient.post<{ success: boolean }>('/api/onboarding/education-level/', { level });
-    return response.data;
+  static async submitStep4Education(level: EducationLevel): Promise<AuthUser> {
+    return AuthService.updateProfile({ education_level: level });
   }
 
-  static async submitStep5AcademicYear(year: AcademicYear): Promise<{ success: boolean }> {
-    const response = await apiClient.post<{ success: boolean }>('/api/onboarding/academic-year/', { year });
-    return response.data;
+  static async submitStep5AcademicYear(year: AcademicYear): Promise<AuthUser> {
+    return AuthService.updateProfile({ academic_year: year });
   }
 
-  static async submitStep6Interests(interests: string[]): Promise<{ success: boolean }> {
-    const response = await apiClient.post<{ success: boolean }>('/api/onboarding/interests/', { interests });
-    return response.data;
+  static async submitStep6Interests(interests: string[]): Promise<AuthUser> {
+    return AuthService.updateProfile({ selected_interests: interests, onboarding_completed: true });
   }
 }
 

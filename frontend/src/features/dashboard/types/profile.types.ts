@@ -4,7 +4,7 @@ export interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   profile: StudentProfile;
-  onSaveProfile: (updated: Partial<StudentProfile>) => void;
+  onSaveProfile: (updated: Partial<StudentProfile>) => Promise<void>;
 }
 
 export interface ProfileAvatarHeaderProps {
@@ -84,6 +84,7 @@ export interface ProfileCoverControlsProps {
 }
 
 export interface ProfileMetaInfoProps {
+  isVerified?: boolean;
   name: string;
   email: string;
   phone: string;
@@ -142,6 +143,7 @@ export interface ProfileModalTabNavProps {
 }
 
 export interface ProfileModalFooterProps {
+  isSaving?: boolean;
   isSaved: boolean;
   onClose: () => void;
   onLogout?: () => void;

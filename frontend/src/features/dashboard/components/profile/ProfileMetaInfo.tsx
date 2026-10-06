@@ -10,6 +10,7 @@ export const ProfileMetaInfo = memo(function ProfileMetaInfo({
   phone,
   studentId,
   gradeLevel,
+  isVerified = false,
   className = '',
 }: ProfileMetaInfoProps) {
   return (
@@ -19,7 +20,7 @@ export const ProfileMetaInfo = memo(function ProfileMetaInfo({
         <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
           {name}
         </h2>
-        <CheckCircle2 className="w-5.5 h-5.5 text-[#38BDF8] shrink-0" />
+        {isVerified && <CheckCircle2 className="w-5.5 h-5.5 text-[#38BDF8] shrink-0" />}
       </div>
 
       {/* Email & Phone Number Info Row */}

@@ -2,98 +2,68 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { apiClient, BASE_URL } from './client';
 import { useAuthStore } from '@/features/auth/state/authStore';
 
+let refreshRequest: Promise<string> | null = null;
+
 export function setupInterceptors() {
-  // ─── Request Interceptor: Attach JWT Bearer Token ───────────────────────────
-  apiClient.interceptors.request.use(
-    (config: InternalAxiosRequestConfig) => {
-      const storeToken = useAuthStore.getState().accessToken;
-      let token = storeToken;
+  apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const token = useAuthStore.getState().accessToken;
+    const publicAuth = /\/api\/auth\/(login|register|google)\//.test(config.url ?? '');
+    if (token && !publicAuth) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  });
 
-      if (!token && typeof window !== 'undefined') {
-        token = localStorage.getItem('token');
-        if (!token) {
-          try {
-            const persisted = localStorage.getItem('auth-store');
-            if (persisted) {
-              const parsed = JSON.parse(persisted);
-              token = parsed.state?.accessToken || null;
-            }
-          } catch {
-            // Ignore JSON parse errors
-          }
-        }
-      }
-
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      return config;
-    },
-    (error: AxiosError) => Promise.reject(error)
-  );
-
-  // ─── Response Interceptor: Centralized Error & Refresh Handler ───────────────
-  apiClient.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-
-      // 1. Connection Refused / Network Error
-      if (!error.response || error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED') {
-        const friendlyMessage =
-          'Unable to connect to backend server. Please verify the backend service is running on http://127.0.0.1:8000.';
-        return Promise.reject(new Error(friendlyMessage));
-      }
-
-      const { status, data } = error.response;
-
-      // 2. Refresh Token Handling on 401 Unauthorized
-      if (status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-
-        try {
-          const refreshResponse = await axios.post(`${BASE_URL}/api/auth/refresh/`, {}, { withCredentials: true });
-          const newAccessToken = refreshResponse.data.access;
-
-          if (newAccessToken) {
-            const user = useAuthStore.getState().user;
-            if (user) {
-              useAuthStore.getState().setUser(user, newAccessToken);
-            }
-            if (originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-            }
-            return apiClient(originalRequest);
-          }
-        } catch {
-          useAuthStore.getState().clearAuth();
-        }
-      }
-
-      // 3. Extract readable error message
-      let errorMessage = 'An unexpected error occurred. Please try again.';
-      if (data && typeof data === 'object') {
-        const payload = data as Record<string, unknown>;
-        if (typeof payload.detail === 'string') {
-          errorMessage = payload.detail;
-        } else if (typeof payload.message === 'string') {
-          errorMessage = payload.message;
-        } else if (typeof payload.error === 'string') {
-          errorMessage = payload.error;
-        } else {
-          const firstKey = Object.keys(payload)[0];
-          const val = payload[firstKey];
-          if (Array.isArray(val) && typeof val[0] === 'string') {
-            errorMessage = `${firstKey}: ${val[0]}`;
-          }
-        }
-      }
-
-      return Promise.reject(new Error(errorMessage));
+  apiClient.interceptors.response.use((response) => response, async (error: AxiosError) => {
+    const original = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined;
+    if (!error.response) {
+      return Promise.reject(new Error('Unable to connect to the backend server.'));
     }
-  );
+    const { status, data } = error.response;
+    const publicAuth = /\/api\/auth\/(login|register|google|refresh|logout)\//.test(original?.url ?? '');
+    if (status === 401 && original && !original._retry && !publicAuth) {
+      original._retry = true;
+      const session = useAuthStore.getState();
+      if (session.refreshToken && session.user) {
+        try {
+          if (!refreshRequest) {
+            const refreshToken = session.refreshToken;
+            const userId = session.user.id;
+            refreshRequest = axios.post<{ access: string; refresh: string }>(
+              `${BASE_URL}/api/auth/refresh/`, { refresh: refreshToken }, { timeout: 15000 }
+            ).then(({ data: tokens }) => {
+              const current = useAuthStore.getState();
+              if (!current.user || current.user.id !== userId || current.refreshToken !== refreshToken) {
+                throw new Error('The signed-in account changed.');
+              }
+              current.setUser(current.user, tokens.access, tokens.refresh);
+              return tokens.access;
+            }).finally(() => { refreshRequest = null; });
+          }
+          const access = await refreshRequest;
+          original.headers.Authorization = `Bearer ${access}`;
+          return apiClient(original);
+        } catch {
+          const current = useAuthStore.getState();
+          if (current.user?.id === session.user.id && current.refreshToken === session.refreshToken) {
+            current.clearAuth();
+          }
+        }
+      } else {
+        session.clearAuth();
+      }
+    }
+    let message = 'An unexpected error occurred. Please try again.';
+    if (data && typeof data === 'object') {
+      const payload = data as Record<string, unknown>;
+      const direct = [payload.detail, payload.message, payload.error].find((value) => typeof value === 'string');
+      if (typeof direct === 'string') message = direct;
+      else {
+        const key = Object.keys(payload)[0];
+        const value = payload[key];
+        if (Array.isArray(value) && typeof value[0] === 'string') message = `${key}: ${value[0]}`;
+      }
+    }
+    return Promise.reject(new Error(message));
+  });
 }
 
-// Initialize interceptors automatically
 setupInterceptors();

@@ -12,7 +12,7 @@ from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
 from apps.classroom.inference import generate_answer
-from apps.classroom.serializers import AskRequestSerializer
+from apps.classroom.serializers import AskRequestSerializer, AskResponseSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -36,44 +36,23 @@ class AskView(APIView):
         ),
         tags=["classroom"],
         request=AskRequestSerializer,
-        responses={
-            200: {
-                "description": "Structured AI professor response with spoken chunks.",
-                "example": {
-                    "chunks": [{"speak": "Newton's law states...", "diagram": {"action": "none"}}],
-                    "topic": "gravity",
-                    "diagram_type": "gravity",
-                    "language": "en",
-                    "tokens_used": 150,
-                    "model_info": {"architecture": "LangChain-Gemini-RAG"},
-                },
-            },
-            400: {"description": "Missing or empty 'question' field."},
-        },
+        responses={200: AskResponseSerializer},
     )
     def post(self, request):
         serializer = AskRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        validated = serializer.validated_data
-        question = validated["question"].strip()
-        session_id = validated.get("session_id", "default")
-        temperature = float(validated.get("temperature", 0.7))
-
-        logger.info(f"[AskView] session={session_id!r} question='{question[:80]}'")
 
         try:
-            result = generate_answer(
-                question=question,
-                session_id=session_id,
-                temperature=temperature,
-            )
+            result = generate_answer(**serializer.validated_data)
+            response_serializer = AskResponseSerializer(data=result)
+            response_serializer.is_valid(raise_exception=True)
         except Exception as e:
             logger.exception(f"[AskView] Unexpected error: {e}")
             return Response(
-                {"error": "An unexpected server error occurred.", "detail": str(e)},
+                {"error": "An unexpected server error occurred."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        return Response(result, status=status.HTTP_200_OK)
+        return Response(response_serializer.validated_data, status=status.HTTP_200_OK)

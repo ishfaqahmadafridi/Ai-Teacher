@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 _collection = None
 _ready = False
 _build_lock = threading.Lock()
+_thread_lock = threading.Lock()
+_init_thread = None
 
 
 def is_ready() -> bool:
@@ -19,56 +21,36 @@ def is_ready() -> bool:
 
 
 def get_collection():
-    """Get the active ChromaDB collection instance (loads/builds if needed)."""
+    """Load or build once under the initialization lock."""
     global _collection, _ready
-    if _collection is not None:
-        return _collection, get_sentence_model()
-
     with _build_lock:
-        if _collection is not None:
-            return _collection, get_sentence_model()
-
-        col = try_load_existing()
-        if col is None:
-            col = build_from_pdf()
-
-        if col is not None:
-            _collection = col
-            _ready = True
-
+        if _collection is None:
+            col = try_load_existing()
+            if col is None:
+                col = build_from_pdf()
+            if col is not None:
+                model = get_sentence_model()
+                _collection = col
+                _ready = True
+                return col, model
+        if _collection is None:
+            return None, None
         return _collection, get_sentence_model()
 
 
 def _background_init():
-    """Background thread handler for loading or building ChromaDB vector store."""
-    global _collection, _ready
-
-    with _build_lock:
-        if _ready:
-            return
-
-        logger.info("[RAG] Background init started...")
-        col = try_load_existing()
-        if col is None:
-            try:
-                col = build_from_pdf()
-            except Exception as e:
-                logger.warning(f"[RAG] Vector build skipped: {e}")
-                col = None
-
-        if col is not None:
-            _collection = col
-            _ready = True
-            logger.info("[RAG] Background init complete. RAG is now active.")
-        else:
-            logger.info("[RAG] Vector RAG unavailable. AI Teacher will use direct knowledge base.")
+    """Use the same initialization path as management commands."""
+    try:
+        get_collection()
+    except Exception:
+        logger.exception("RAG initialization failed")
 
 
 def start_background_init():
     """Launch background thread for non-blocking initialization."""
-    global _ready
-    if _ready:
-        return
-    t = threading.Thread(target=_background_init, name="rag-init", daemon=True)
-    t.start()
-    logger.info("[RAG] Background init thread started.")
+    global _init_thread
+    with _thread_lock:
+        if _ready or (_init_thread is not None and _init_thread.is_alive()):
+            return
+        _init_thread = threading.Thread(target=_background_init, name="rag-init", daemon=True)
+        _init_thread.start()

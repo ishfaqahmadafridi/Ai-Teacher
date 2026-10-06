@@ -6,6 +6,7 @@ import type { ProfileModalFooterProps } from '../../types/profile.types';
 
 export const ProfileModalFooter = memo(function ProfileModalFooter({
   isSaved,
+  isSaving = false,
   onClose,
   onLogout,
   className = '',
@@ -37,6 +38,7 @@ export const ProfileModalFooter = memo(function ProfileModalFooter({
         </button>
         <button
           type="submit"
+          disabled={isSaving}
           className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white text-sm font-semibold shadow-lg shadow-[#2563eb]/25 transition-all flex items-center gap-2 cursor-pointer"
         >
           {isSaved ? (
