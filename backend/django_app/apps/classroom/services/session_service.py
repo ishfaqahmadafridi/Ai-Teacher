@@ -1,45 +1,36 @@
-"""
-teacher/services/session_service.py
-
-In-process session store for conversation history.
-
-WHY A SEPARATE SERVICE:
-    Isolating the session store here means swapping to Redis in production
-    requires changing only this file — inference.py and views.py are untouched.
-
-PRODUCTION NOTE:
-    Replace the dict below with Django's cache framework:
-        from django.core.cache import cache
-        cache.set(f'session:{session_id}', history, timeout=3600)
-        history = cache.get(f'session:{session_id}', [])
-"""
-
-import threading
-
-# In-memory store: session_id -> list of {role, content} dicts
-# Thread-safe for single-process development. Use Redis in production.
-_sessions: dict[str, list[dict]] = {}
-_lock = threading.Lock()
-
-# Maximum message pairs to retain per session (prevents unbounded growth)
-MAX_HISTORY_LENGTH = 40
+"""Database-backed conversation history shared across Django workers."""
+from apps.classroom.constants import MAX_HISTORY_LENGTH
+from apps.classroom.models import ClassroomSession
+from django.db import transaction
 
 
 def get_session(session_id: str) -> list[dict]:
-    """Return the conversation history for the given session, creating it if absent."""
-    with _lock:
-        if session_id not in _sessions:
-            _sessions[session_id] = []
-        return _sessions[session_id]
+    """Read history without creating records for unused sessions."""
+    return ClassroomSession.objects.filter(session_id=session_id).values_list(
+        "history", flat=True
+    ).first() or []
 
 
 def save_session(session_id: str, history: list[dict]) -> None:
-    """Persist the updated history, capping it to MAX_HISTORY_LENGTH entries."""
-    with _lock:
-        _sessions[session_id] = history[-MAX_HISTORY_LENGTH:]
+    """Persist a bounded history without retaining references to caller data."""
+    if MAX_HISTORY_LENGTH <= 0:
+        raise ValueError("CLASSROOM_HISTORY_LIMIT must be positive")
+    ClassroomSession.objects.update_or_create(
+        session_id=session_id, defaults={"history": history[-MAX_HISTORY_LENGTH:]}
+    )
 
 
 def clear_session(session_id: str) -> None:
-    """Remove conversation history for the given session ID."""
-    with _lock:
-        _sessions.pop(session_id, None)
+    """Delete the stored history for a session."""
+    ClassroomSession.objects.filter(session_id=session_id).delete()
+
+
+def append_session(session_id: str, entries: list[dict]) -> None:
+    """Append a completed turn without overwriting concurrent completed turns."""
+    if MAX_HISTORY_LENGTH <= 0:
+        raise ValueError("CLASSROOM_HISTORY_LIMIT must be positive")
+    with transaction.atomic():
+        session, _ = ClassroomSession.objects.get_or_create(session_id=session_id)
+        session = ClassroomSession.objects.select_for_update().get(pk=session.pk)
+        session.history = (session.history + entries)[-MAX_HISTORY_LENGTH:]
+        session.save(update_fields=["history", "updated_at"])

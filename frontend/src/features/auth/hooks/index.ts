@@ -6,3 +6,5 @@ export { useVerifyAccount } from './useVerifyAccount';
 export { useSocialAuth } from './useSocialAuth';
 export type { UseSocialAuthReturn } from './useSocialAuth';
 export { useLoginPage } from './useLoginPage';
+
+export { useProtectedRoute } from './useProtectedRoute';

@@ -1,4 +1,5 @@
 export interface StudentProfile {
+  isVerified?: boolean;
   name: string;
   email: string;
   phone: string;

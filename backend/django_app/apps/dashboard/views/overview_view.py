@@ -32,7 +32,7 @@ class DashboardOverviewView(APIView):
     )
     def get(self, request):
         try:
-            overview_data = get_dashboard_overview()
+            overview_data = get_dashboard_overview(user=request.user)
             serializer = DashboardOverviewSerializer(overview_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:

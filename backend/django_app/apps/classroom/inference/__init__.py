@@ -1,5 +1,5 @@
 """
-Teacher inference package.
+Classroom inference package.
 Exposes key generation functions for external modules.
 """
 from .pipeline import generate_answer, clear_session

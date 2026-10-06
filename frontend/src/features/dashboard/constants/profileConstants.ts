@@ -1,20 +1,9 @@
 import type { StudentProfile } from '../types/dashboard.types';
 
 export const DEFAULT_STUDENT_PROFILE: StudentProfile = {
-  name: 'John Rivera',
-  email: 'john.rivera@neurolearn.edu',
-  phone: '+1 (555) 234-5678',
-  studentId: 'STU-2026-9842',
-  gradeLevel: 'University Physics II',
-  dateFormatted: 'Jan 24, 2024',
-  joinedDate: 'September 2025',
-  streakDays: 7,
-  weeklyProgressPercent: 75,
-  avatarUrl:
-    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  coverUrl: '/images/profile_cover.png',
-  bio: 'Passionate about quantum mechanics, astrophysics, and AI-assisted learning.',
-  preferredLanguage: 'English',
+  name: '', email: '', phone: '', studentId: '', gradeLevel: '',
+  dateFormatted: '', joinedDate: '', streakDays: 0, weeklyProgressPercent: 0,
+  avatarUrl: '', coverUrl: '/images/profile_cover.png', bio: '', preferredLanguage: '',
 };
 
 export const PRESET_AVATARS: string[] = [

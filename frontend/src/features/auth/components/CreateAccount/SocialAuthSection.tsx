@@ -33,6 +33,8 @@ export const SocialAuthSection = memo(function SocialAuthSection(props: SocialAu
             key={item.id}
             type="button"
             onClick={getClickHandler(item.provider)}
+            disabled={!getClickHandler(item.provider)}
+            title={!getClickHandler(item.provider) ? `${item.label} sign-in is not configured` : undefined}
             className="flex items-center justify-center gap-2 rounded-xl py-3 text-white text-sm font-medium transition-all duration-200 hover:scale-105 cursor-pointer"
             style={getInputStyle()}
           >

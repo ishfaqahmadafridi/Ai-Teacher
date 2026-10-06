@@ -1,7 +1,7 @@
 """
-teacher/tests/test_views.py
+apps/classroom/tests/test_views.py
 
-Tests for the teacher app API endpoints (AskView, ClearSessionView, HealthView).
+Tests for the classroom app API endpoints (AskView, ClearSessionView, HealthView).
 LLM and RAG are mocked — no external network calls are made.
 """
 

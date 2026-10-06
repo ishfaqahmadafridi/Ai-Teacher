@@ -12,7 +12,7 @@ export interface DashboardDialogsProps {
   isProfileOpen: boolean;
   onCloseProfile: () => void;
   profile: StudentProfile;
-  onSaveProfile: (updated: Partial<StudentProfile>) => void;
+  onSaveProfile: (updated: Partial<StudentProfile>) => Promise<void>;
   isSettingsOpen: boolean;
   onCloseSettings: () => void;
 }

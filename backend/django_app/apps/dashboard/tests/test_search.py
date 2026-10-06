@@ -3,7 +3,7 @@ apps/dashboard/tests/test_search.py
 
 Unit and API integration tests for Dashboard search functionality.
 """
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.core.cache import cache
 from rest_framework.test import APIClient
 
@@ -43,6 +43,7 @@ class DashboardSearchServiceTests(TestCase):
         self.assertGreaterEqual(res["totalCount"], 1)
         self.assertTrue(any("Quantum" in c["title"] for c in res["courses"]))
 
+    @override_settings(CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
     def test_caching_layer(self):
         res1 = perform_global_search("calculus")
         cache_key = "search:v1:calculus:10"

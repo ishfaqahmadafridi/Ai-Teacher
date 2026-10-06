@@ -2,7 +2,7 @@
   * Formats a phone number cleanly with default country dial code (+92).
   */
 export function formatPhoneWithCountryCode(mobile?: string, countryCode?: string): string {
-  if (!mobile) return '+92 300 1234567';
+  if (!mobile) return '';
 
   const trimmedMobile = String(mobile).trim();
   if (trimmedMobile.startsWith('+')) {
@@ -23,29 +23,10 @@ export function formatPhoneWithCountryCode(mobile?: string, countryCode?: string
   return `${prefix} ${cleanNumber}`;
 }
 
-/**
- * Generates a clean 4-digit sequential numeric Student ID (e.g. STU-2026-0001).
- */
-export function generateFormattedStudentId(idOrUsername?: unknown): string {
-  if (idOrUsername === null || idOrUsername === undefined || idOrUsername === '') {
-    return 'STU-2026-0001';
-  }
-  
-  const strVal = String(idOrUsername);
-  const digitsMatch = strVal.match(/\d+/g)?.join('');
-  let numVal = 1;
-  
-  if (digitsMatch && digitsMatch.length >= 1) {
-    numVal = parseInt(digitsMatch.slice(-4), 10) || 1;
-  } else {
-    let hash = 0;
-    for (let i = 0; i < strVal.length; i++) {
-      hash = (hash << 5) - hash + strVal.charCodeAt(i);
-      hash |= 0;
-    }
-    numVal = (Math.abs(hash) % 9999) + 1;
-  }
-
-  const paddedNum = String(numVal).padStart(4, '0');
-  return `STU-2026-${paddedNum}`;
+/** Format the actual database ID without truncation or fabricated fallback IDs. */
+export function generateFormattedStudentId(id?: string, createdAt?: string): string {
+  if (!id) return '';
+  const joined = createdAt ? new Date(createdAt) : null;
+  const year = joined && !Number.isNaN(joined.getTime()) ? `${joined.getFullYear()}-` : '';
+  return `STU-${year}${id.padStart(4, '0')}`;
 }

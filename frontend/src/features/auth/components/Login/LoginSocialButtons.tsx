@@ -63,6 +63,8 @@ export const LoginSocialButtons = memo(function LoginSocialButtons() {
           <button
             key={label}
             type="button"
+            disabled
+            title={`${label} sign-in is not configured`}
             className="flex items-center justify-center gap-2 rounded-xl py-3 text-white text-sm font-medium transition-all duration-200 hover:scale-105 cursor-pointer"
             style={{
               background: 'rgba(255,255,255,0.06)',

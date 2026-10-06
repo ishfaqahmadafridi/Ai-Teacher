@@ -1,8 +1,7 @@
+"""Generate signed access and refresh tokens using Simple JWT."""
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
 def generate_user_tokens(user):
-    """
-    Generate JWT access and refresh tokens for authenticated user.
-    """
-    return {
-        "access": f"mock_access_token_user_{user.id}",
-        "refresh": f"mock_refresh_token_user_{user.id}",
-    }
+    refresh = RefreshToken.for_user(user)
+    return {"access": str(refresh.access_token), "refresh": str(refresh)}

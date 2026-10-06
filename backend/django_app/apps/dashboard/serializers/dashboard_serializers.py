@@ -72,7 +72,7 @@ class ContinueLearningSerializer(serializers.Serializer):
 
 class DashboardOverviewSerializer(serializers.Serializer):
     """Composite serializer summarizing total student stats, active field, and enrolled courses."""
-    student_name = serializers.CharField(default="example")
+    student_name = serializers.CharField(allow_blank=True)
     streak_days = serializers.IntegerField(default=128)
     courses_count = serializers.IntegerField(default=12)
     weekly_progress_percent = serializers.IntegerField(default=75)

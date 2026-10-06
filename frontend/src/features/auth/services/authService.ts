@@ -1,5 +1,7 @@
 import { apiClient } from '@/lib/api';
-import type { RegisterFormData, LoginFormData, AuthUser } from '../types';
+import type { RegisterFormData, LoginFormData, AuthUser, ApiAuthUser, ProfileUpdateData } from '../types';
+
+import { mapAuthUser } from '../utilities/userUtils';
 
 export interface AuthTokenResponse {
   access: string;
@@ -7,12 +9,16 @@ export interface AuthTokenResponse {
   user: AuthUser;
 }
 
+interface ApiAuthTokenResponse extends Omit<AuthTokenResponse, 'user'> {
+  user: ApiAuthUser;
+}
+
 export class AuthService {
   /**
    * Creates a new user account.
    */
   static async register(data: RegisterFormData): Promise<AuthTokenResponse> {
-    const response = await apiClient.post<AuthTokenResponse>('/api/auth/register/', {
+    const response = await apiClient.post<ApiAuthTokenResponse>('/api/auth/register/', {
       first_name: data.firstName,
       last_name: data.lastName,
       username: data.username || undefined,
@@ -21,28 +27,28 @@ export class AuthService {
       email: data.email,
       password: data.password,
     });
-    return response.data;
+    return { ...response.data, user: mapAuthUser(response.data.user) };
   }
 
   /**
    * Authenticates an existing user.
    */
   static async login(data: LoginFormData): Promise<AuthTokenResponse> {
-    const response = await apiClient.post<AuthTokenResponse>('/api/auth/login/', {
+    const response = await apiClient.post<ApiAuthTokenResponse>('/api/auth/login/', {
       email: data.email,
       password: data.password,
     });
-    return response.data;
+    return { ...response.data, user: mapAuthUser(response.data.user) };
   }
 
   /**
    * Authenticates user via Google OAuth ID token.
    */
   static async loginWithGoogle(idToken: string): Promise<AuthTokenResponse> {
-    const response = await apiClient.post<AuthTokenResponse>('/api/auth/google/', {
+    const response = await apiClient.post<ApiAuthTokenResponse>('/api/auth/google/', {
       id_token: idToken,
     });
-    return response.data;
+    return { ...response.data, user: mapAuthUser(response.data.user) };
   }
 
   /**
@@ -56,8 +62,13 @@ export class AuthService {
    * Fetches the currently authenticated user profile.
    */
   static async getProfile(): Promise<AuthUser> {
-    const response = await apiClient.get<AuthUser>('/api/auth/me/');
-    return response.data;
+    const response = await apiClient.get<ApiAuthUser>('/api/auth/me/');
+    return mapAuthUser(response.data);
+  }
+
+  static async updateProfile(data: ProfileUpdateData): Promise<AuthUser> {
+    const response = await apiClient.patch<ApiAuthUser>('/api/auth/me/', data);
+    return mapAuthUser(response.data);
   }
 
   /**

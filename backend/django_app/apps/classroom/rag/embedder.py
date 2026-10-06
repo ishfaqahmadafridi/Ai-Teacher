@@ -2,10 +2,13 @@
 SentenceTransformer embedding model loader and text vector encoding utilities.
 """
 import logging
+import threading
+from apps.classroom.constants import EMBEDDING_MODEL
 
 logger = logging.getLogger(__name__)
 
 _sentence_model = None
+_model_lock = threading.Lock()
 
 
 def get_sentence_model():
@@ -13,10 +16,11 @@ def get_sentence_model():
     global _sentence_model
     if _sentence_model is not None:
         return _sentence_model
-    from sentence_transformers import SentenceTransformer
-    logger.info("[RAG] Loading sentence-transformers model (all-MiniLM-L6-v2)...")
-    _sentence_model = SentenceTransformer("all-MiniLM-L6-v2")
-    logger.info("[RAG] sentence-transformers model loaded.")
+    with _model_lock:
+        if _sentence_model is None:
+            from sentence_transformers import SentenceTransformer
+            logger.info("Loading embedding model %s", EMBEDDING_MODEL)
+            _sentence_model = SentenceTransformer(EMBEDDING_MODEL)
     return _sentence_model
 
 

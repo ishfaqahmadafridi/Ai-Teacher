@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useOnboarding } from './useOnboarding';
 
 export function useStep6Interests() {
-  const { selectedInterests, toggleInterest, submitInterests } = useOnboarding();
+  const { selectedInterests, toggleInterest, submitInterests, error } = useOnboarding();
   const [searchQuery, setSearchQuery] = useState('');
   const [customInput, setCustomInput] = useState('');
 
@@ -22,6 +22,7 @@ export function useStep6Interests() {
   );
 
   return {
+    error,
     selectedInterests,
     searchQuery,
     customInput,

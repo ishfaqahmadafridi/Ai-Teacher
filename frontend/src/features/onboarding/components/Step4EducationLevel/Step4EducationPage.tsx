@@ -7,10 +7,11 @@ import { EducationHeader } from './EducationHeader';
 import { EducationGrid } from './EducationGrid';
 
 export const Step4EducationPage = memo(function Step4EducationPage() {
-  const { educationLevel, selectEducationLevel } = useOnboarding();
+  const { educationLevel, selectEducationLevel, error } = useOnboarding();
 
   return (
     <Step4EducationLayout>
+      {error && <p role="alert">{error}</p>}
       <EducationHeader />
       <EducationGrid
         selectedLevel={educationLevel}

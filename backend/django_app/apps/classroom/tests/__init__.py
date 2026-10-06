@@ -1,3 +1,3 @@
 """
-teacher/tests/__init__.py
+apps/classroom/tests/__init__.py
 """

@@ -83,9 +83,8 @@ export function useVerifyAccount() {
     try {
       await AuthService.resendOtp(method);
       setTimer(59);
-    } catch {
-      // Graceful fallback for mock
-      setTimer(59);
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Verification code could not be sent.');
     } finally {
       setIsLoading(false);
     }
@@ -109,12 +108,9 @@ export function useVerifyAccount() {
       setTimeout(() => {
         router.push('/onboarding/step-3');
       }, 1500);
-    } catch {
-      // Mock success for design preview if API endpoint not running
-      setSuccess(true);
-      setTimeout(() => {
-        router.push('/onboarding/step-3');
-      }, 1500);
+    } catch (error: unknown) {
+      setSuccess(false);
+      setError(error instanceof Error ? error.message : 'Account verification failed.');
     } finally {
       setIsLoading(false);
     }

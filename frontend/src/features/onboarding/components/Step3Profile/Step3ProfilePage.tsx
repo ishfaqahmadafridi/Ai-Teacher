@@ -12,7 +12,7 @@ import type { StudentProfileData } from '../../types';
 
 export const Step3ProfilePage = memo(function Step3ProfilePage() {
   const router = useRouter();
-  const { profile, updateProfile, submitProfile } = useOnboarding();
+  const { profile, updateProfile, submitProfile, error } = useOnboarding();
 
   const handleFieldChange = useCallback(
     (field: keyof StudentProfileData, value: string) => {
@@ -27,6 +27,7 @@ export const Step3ProfilePage = memo(function Step3ProfilePage() {
 
   return (
     <Step3ProfileLayout>
+      {error && <p role="alert">{error}</p>}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <div className="lg:col-span-2">
           <ProfileFormContainer>

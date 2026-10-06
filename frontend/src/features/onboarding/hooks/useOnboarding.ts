@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useOnboardingStore } from '../state/onboardingStore';
 import { OnboardingService } from '../services/onboardingService';
+import { useAuthStore } from '../../auth/state/authStore';
+import type { AuthUser } from '../../auth/types';
 import type { EducationLevel, AcademicYear } from '../types';
 
 export function useOnboarding() {
@@ -27,43 +29,41 @@ export function useOnboarding() {
     }
   };
 
-  const submitProfile = async () => {
+  const persistStep = async (save: () => Promise<AuthUser>, next: () => void) => {
+    if (useOnboardingStore.getState().isLoading) return;
+    const session = useAuthStore.getState();
+    store.setLoading(true);
+    store.setError(null);
     try {
-      await OnboardingService.submitStep3Profile(store.profile);
-    } catch {
-      // Mock fallback
+      const user = await save();
+      const current = useAuthStore.getState();
+      if (!current.user || current.user.id !== session.user?.id || !current.accessToken) {
+        throw new Error('The signed-in account changed.');
+      }
+      current.setUser(user, current.accessToken);
+      next();
+    } catch (error: unknown) {
+      store.setError(error instanceof Error ? error.message : 'Your details could not be saved. Please try again.');
+    } finally {
+      store.setLoading(false);
     }
-    handleNextStep();
   };
 
-  const selectEducationLevel = async (level: EducationLevel) => {
-    store.setEducationLevel(level);
-    try {
-      await OnboardingService.submitStep4Education(level);
-    } catch {
-      // Mock fallback
-    }
-    handleNextStep();
-  };
-
-  const selectAcademicYear = async (year: AcademicYear) => {
-    store.setAcademicYear(year);
-    try {
-      await OnboardingService.submitStep5AcademicYear(year);
-    } catch {
-      // Mock fallback
-    }
-    handleNextStep();
-  };
-
-  const submitInterests = async () => {
-    try {
-      await OnboardingService.submitStep6Interests(store.selectedInterests);
-    } catch {
-      // Mock fallback
-    }
-    router.push('/dashboard');
-  };
+  const submitProfile = () => persistStep(
+    () => OnboardingService.submitStep3Profile(store.profile), handleNextStep
+  );
+  const selectEducationLevel = (level: EducationLevel) => persistStep(
+    () => OnboardingService.submitStep4Education(level),
+    () => { store.setEducationLevel(level); handleNextStep(); }
+  );
+  const selectAcademicYear = (year: AcademicYear) => persistStep(
+    () => OnboardingService.submitStep5AcademicYear(year),
+    () => { store.setAcademicYear(year); handleNextStep(); }
+  );
+  const submitInterests = () => persistStep(
+    () => OnboardingService.submitStep6Interests(store.selectedInterests),
+    () => router.push('/dashboard')
+  );
 
   return {
     ...store,

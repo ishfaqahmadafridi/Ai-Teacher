@@ -10,13 +10,15 @@ import { AcademicYearGrid } from './AcademicYearGrid';
 import { GrowthTrajectoryCard } from './GrowthTrajectoryCard';
 
 export const Step5AcademicPage = memo(function Step5AcademicPage() {
-  const { academicYear, selectAcademicYear } = useOnboarding();
+  const {
+    error, academicYear, selectAcademicYear } = useOnboarding();
   const [levelMode, setLevelMode] = useState<'high_school' | 'university'>('university');
 
   const currentYears = levelMode === 'high_school' ? highSchoolYears : universityYears;
 
   return (
     <Step5AcademicLayout>
+      {error && <p role="alert">{error}</p>}
       <AcademicHeader />
       <AcademicLevelToggle levelMode={levelMode} onToggleLevel={setLevelMode} />
       

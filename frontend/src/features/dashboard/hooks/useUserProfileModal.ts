@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { AuthService } from '../../auth/services/authService';
 import { useAuthStore } from '../../auth/state/authStore';
 import type { StudentProfile, UserProfileModalProps } from '../types';
 
@@ -17,6 +18,18 @@ export function useUserProfileModal({
   const [activeTab, setActiveTab] = useState<'personal' | 'preferences'>('personal');
   const [formData, setFormData] = useState<StudentProfile>(profile);
   const [isSaved, setIsSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [previous, setPrevious] = useState({ profile, isOpen });
+
+  if (previous.profile !== profile || previous.isOpen !== isOpen) {
+    setPrevious({ profile, isOpen });
+    setFormData(profile);
+    if (previous.isOpen !== isOpen) {
+      setIsSaved(false);
+      setSaveError(null);
+    }
+  }
 
   // Popup Picker States
   const [showAvatarMenu, setShowAvatarMenu] = useState(false);
@@ -39,10 +52,6 @@ export function useUserProfileModal({
       document.body.style.overflow = '';
     };
   }, [isOpen]);
-
-  useEffect(() => {
-    setFormData(profile);
-  }, [profile]);
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -123,39 +132,42 @@ export function useUserProfileModal({
     onClose();
   }, [onClose]);
 
-  const handleLogout = useCallback(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        localStorage.removeItem('auth-store');
-        localStorage.removeItem('dashboard_profile');
-        localStorage.removeItem('onboarding-store');
-      } catch (e) {
-        console.error('Failed to clear local storage on logout', e);
-      }
+  const handleLogout = useCallback(async () => {
+    const session = useAuthStore.getState();
+    try {
+      if (session.refreshToken) await AuthService.logout(session.refreshToken);
+    } catch (error: unknown) {
+      setSaveError(error instanceof Error ? error.message : 'Logout failed. Please try again.');
+      return;
     }
+    if (useAuthStore.getState().accessToken !== session.accessToken) return;
     clearAuth();
     onClose();
     router.push('/login');
   }, [clearAuth, onClose, router]);
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      onSaveProfile(formData);
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await onSaveProfile(formData);
       setIsSaved(true);
-      setTimeout(() => {
-        setIsSaved(false);
-        onClose();
-      }, 800);
-    },
-    [formData, onSaveProfile, onClose]
-  );
+    } catch (error: unknown) {
+      setSaveError(error instanceof Error ? error.message : 'Profile could not be saved.');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [formData, onSaveProfile, isSaving]);
 
   return {
     activeTab,
     setActiveTab,
     formData,
     isSaved,
+    saveError,
+    isSaving,
     showAvatarMenu,
     showAvatarPresets,
     showCoverMenu,
