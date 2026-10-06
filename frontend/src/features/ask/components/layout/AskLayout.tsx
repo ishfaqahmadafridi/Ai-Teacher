@@ -17,7 +17,8 @@ export const AskLayout = memo(function AskLayout() {
     input,
     setInput,
     drawerOpen,
-    setDrawerOpen,
+    handleCloseDrawer,
+    handleOpenDrawer,
     isListening,
     messagesEndRef,
     handleSend,
@@ -29,7 +30,7 @@ export const AskLayout = memo(function AskLayout() {
       {/* Sidebar Drawer */}
       <AskSidebar 
         drawerOpen={drawerOpen} 
-        onClose={() => setDrawerOpen(false)} 
+        onClose={handleCloseDrawer}
       />
 
       {/* Main Layout Area */}
@@ -37,7 +38,7 @@ export const AskLayout = memo(function AskLayout() {
         {/* Top Header */}
         <AskHeader 
           drawerOpen={drawerOpen} 
-          onOpenDrawer={() => setDrawerOpen(true)} 
+          onOpenDrawer={handleOpenDrawer}
         />
 
         {/* Message Canvas */}

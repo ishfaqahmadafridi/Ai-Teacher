@@ -2,12 +2,13 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useAuthStore } from '../../auth/state/authStore';
-import { AuthService } from '../../auth/services/authService';
+import { useUpdateProfileMutation } from '../../auth/hooks/useAuthQueries';
 import { DEFAULT_STUDENT_PROFILE } from '../constants/profileConstants';
 import { formatPhoneWithCountryCode, generateFormattedStudentId } from '../utilities';
 import type { StudentProfile } from '../types/dashboard.types';
 
 export function useStudentProfile() {
+  const { mutateAsync } = useUpdateProfileMutation();
   const authUser = useAuthStore((s) => s.user);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profile = useMemo<StudentProfile>(() => {
@@ -37,7 +38,7 @@ export function useStudentProfile() {
     if (!current.user || !current.accessToken) throw new Error('Please sign in before saving your profile.');
     const userId = current.user.id;
     const name = (updated.name ?? profile.name).trim().split(/\s+/);
-    const user = await AuthService.updateProfile({
+    const user = await mutateAsync({
       first_name: name[0] ?? '', last_name: name.slice(1).join(' '),
       email: updated.email, mobile: updated.phone,
       avatar_url: updated.avatarUrl, cover_url: updated.coverUrl,
@@ -46,7 +47,7 @@ export function useStudentProfile() {
     const latest = useAuthStore.getState();
     if (latest.user?.id !== userId || !latest.accessToken) throw new Error('The signed-in account changed.');
     latest.setUser(user, latest.accessToken);
-  }, [profile.name]);
+  }, [profile.name, mutateAsync]);
 
   return { profile, isProfileOpen, handleOpenProfile, handleCloseProfile, handleSaveProfile };
 }

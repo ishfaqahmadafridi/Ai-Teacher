@@ -8,6 +8,8 @@ import { RegisterCourseFooterActions } from './RegisterCourseFooterActions';
 import type { RegisterCourseFormProps } from '../../types/courses.types';
 
 export const RegisterCourseForm = memo(function RegisterCourseForm({
+  error,
+  isPending,
   formData,
   onChange,
   onSubmit,
@@ -35,8 +37,10 @@ export const RegisterCourseForm = memo(function RegisterCourseForm({
         onChange={onChange}
       />
 
+      {error && <p role="alert">{error}</p>}
+
       {/* Modal Actions Footer */}
-      <RegisterCourseFooterActions onClose={onClose} />
+      <RegisterCourseFooterActions onClose={onClose} isPending={isPending} />
     </form>
   );
 });

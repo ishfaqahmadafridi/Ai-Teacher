@@ -23,10 +23,6 @@ __pycache__/
 *.pyd
 .Python
 
-# GitHub Actions workflows
-.github/
-.github/workflows/
-
 # Large binaries & local models
 college-physics-2e_-_WEB.pdf
 backend/model/

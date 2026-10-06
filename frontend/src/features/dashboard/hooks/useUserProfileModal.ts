@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthService } from '../../auth/services/authService';
+import { useLogoutMutation } from '../../auth/hooks/useAuthQueries';
 import { useAuthStore } from '../../auth/state/authStore';
 import type { StudentProfile, UserProfileModalProps } from '../types';
 
@@ -12,6 +12,7 @@ export function useUserProfileModal({
   profile,
   onSaveProfile,
 }: UserProfileModalProps) {
+  const { mutateAsync: logout } = useLogoutMutation();
   const router = useRouter();
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
@@ -135,7 +136,7 @@ export function useUserProfileModal({
   const handleLogout = useCallback(async () => {
     const session = useAuthStore.getState();
     try {
-      if (session.refreshToken) await AuthService.logout(session.refreshToken);
+      if (session.refreshToken) await logout(session.refreshToken);
     } catch (error: unknown) {
       setSaveError(error instanceof Error ? error.message : 'Logout failed. Please try again.');
       return;
@@ -144,7 +145,7 @@ export function useUserProfileModal({
     clearAuth();
     onClose();
     router.push('/login');
-  }, [clearAuth, onClose, router]);
+  }, [clearAuth, onClose, router, logout]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
