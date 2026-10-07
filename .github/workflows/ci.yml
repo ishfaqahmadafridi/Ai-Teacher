@@ -71,8 +71,6 @@ jobs:
           cache-dependency-path: |
             backend/django_app/requirements/*.txt
             backend/fastapi_app/requirements.txt
-      - name: Install CPU Torch for CI
-        run: python -m pip install 'torch>=2.0.0' --index-url https://download.pytorch.org/whl/cpu
       - name: Install Django and CI dependencies
         run: python -m pip install -r backend/django_app/requirements/ci.txt
       - name: Install FastAPI dependencies
@@ -91,6 +89,10 @@ jobs:
           python manage.py check
           python manage.py makemigrations --check --dry-run
           python manage.py migrate --noinput
+      - name: Run shared vector-store tests
+        env:
+          PYTHONPATH: backend
+        run: python -m unittest discover -s backend/shared/tests -v
       - name: Run Django regression tests
         if: matrix.service == 'django'
         working-directory: backend/django_app
@@ -101,8 +103,12 @@ jobs:
         if: matrix.service == 'fastapi'
         working-directory: backend/fastapi_app
         run: python -m unittest discover -s app/tests -v
+      - name: Test audit version normalization
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - name: Audit installed Python dependencies
-        run: python -m pip_audit --strict --progress-spinner off
+        run: |
+          python .github/scripts/export_audit_requirements.py > /tmp/audit-requirements.txt
+          python -m pip_audit --strict --no-deps --disable-pip --progress-spinner off -r /tmp/audit-requirements.txt
 
   quality-gate:
     name: CI / Quality gate

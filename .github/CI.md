@@ -41,7 +41,23 @@ python manage.py makemigrations --check --dry-run --settings=config.settings.tes
 python manage.py test apps.users apps.dashboard apps.classroom --settings=config.settings.test
 ```
 
-Initial local verification found 22 existing ESLint errors and 29 production npm dependency
-vulnerabilities (17 high and 2 critical). These checks currently fail; the workflow deliberately
-reports them. Address the findings before expecting the quality gate to pass. Vulnerability counts
-can change as advisories are updated.
+The React 19 peer conflict is resolved by using Emoji Mart's native picker instead of its React wrapper.
+Shadcn is a development CLI and is declared as a dev dependency. Next.js and transitive runtime
+packages have been upgraded to clear the high/critical npm production audit gate. Low-severity
+KaTeX advisory chains remain visible in npm's report; the configured threshold is high.
+
+The Python audit exports every installed package's public PEP 440 version for advisory lookup;
+Torch's `+cpu` build label is removed, but Torch itself is retained. A regression test verifies this.
+No dependency or advisory is ignored. ChromaDB was replaced by FAISS cosine retrieval with FastEmbed
+ONNX embeddings. Django and FastAPI share the same collection, model, and atomic pickle-free snapshot.
+The default API runtime no longer installs Torch or Transformers; the optional fine-tuned model loader
+has separate requirements in `backend/django_app/requirements/local-model.txt`.
+Shared tests cover ranking, snapshot round trips, model mismatch, invalid vectors, and failed writes.
+
+To rebuild retrieval, place the publisher's College Physics 2e PDF at the configured `CLASSROOM_PDF_PATH`
+and run `python manage.py embed_pdf --rebuild` from `backend/django_app` with network access for the
+initial model download. `CLASSROOM_VECTOR_INDEX_PATH`, `CLASSROOM_EMBED_CACHE_PATH`, and
+`CLASSROOM_EMBED_THREADS` configure storage and CPU usage. PDF, model cache, and generated snapshots
+are excluded from Git. Previous Chroma files are preserved and are no longer read.
+The source is [OpenStax College Physics 2e](https://openstax.org/details/books/college-physics-2e);
+follow the publisher's current license when distributing the source or derived index.

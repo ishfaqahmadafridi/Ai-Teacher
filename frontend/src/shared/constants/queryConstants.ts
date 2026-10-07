@@ -7,3 +7,4 @@ export const queryKeys = {
   dashboard: (userId: string | undefined) => ['account', userId, 'dashboard'] as const,
   search: (userId: string | undefined, query: string) => ['account', userId, 'search', query] as const,
 };
+export const GREETING_REFRESH_INTERVAL = 60_000;

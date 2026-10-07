@@ -15,7 +15,7 @@ export const HeroGreetingContent = memo(function HeroGreetingContent({
         {greeting}, {studentName}
       </h1>
       <p className="font-['Hanken_Grotesk',sans-serif] text-base sm:text-lg text-[#E2E8F0] leading-relaxed max-w-2xl">
-        You've learned{' '}
+        You&apos;ve learned{' '}
         <span className="font-extrabold text-[#FF6B35] drop-shadow-sm whitespace-nowrap">
           {weeklyProgressPercent}% of your
         </span>{' '}

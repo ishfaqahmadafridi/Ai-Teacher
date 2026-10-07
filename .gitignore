@@ -89,3 +89,7 @@ yarn-error.log*
 
 # PEM certificates
 *.pem
+
+# FAISS textbook snapshots are rebuilt locally, not committed
+**/faiss_index/
+backend/django_app/.cache/

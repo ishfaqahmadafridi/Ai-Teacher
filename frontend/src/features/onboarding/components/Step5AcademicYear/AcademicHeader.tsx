@@ -12,7 +12,7 @@ export const AcademicHeader = memo(function AcademicHeader() {
         Where Are You in Your Learning Journey?
       </h1>
       <p className="text-[#94A3B8] text-base md:text-lg max-w-xl mx-auto">
-        We'll customize your lessons based on your current academic level.
+        We&apos;ll customize your lessons based on your current academic level.
       </p>
     </div>
   );

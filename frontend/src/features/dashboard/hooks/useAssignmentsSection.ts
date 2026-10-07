@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DEFAULT_ASSIGNMENTS_QUIZZES } from '../constants/assignmentsConstants';
 import { filterAssignments, calculateGcrStats } from '../utilities/assignmentsUtils';
 import type {
@@ -58,19 +58,18 @@ export function useAssignmentsSection(options: UseAssignmentsSectionOptions = {}
     setSelectedItem(null);
   }, []);
 
-  // Listen for notification autoOpenTask triggers
-  useEffect(() => {
-    if (!autoOpenTask) return;
-    const targetItem = items.find((i) => i.id === autoOpenTask.taskId) || items[0];
-    if (!targetItem) return;
-
-    setSelectedItem(targetItem);
-    if (autoOpenTask.modalType === 'quiz') {
-      setIsQuizModalOpen(true);
-    } else {
-      setIsSubmitModalOpen(true);
+  const [handledTask, setHandledTask] = useState<typeof autoOpenTask>(undefined);
+  if (handledTask !== autoOpenTask) {
+    setHandledTask(autoOpenTask);
+    if (autoOpenTask) {
+      const targetItem = items.find(i => i.id === autoOpenTask.taskId) || items[0];
+      if (targetItem) {
+        setSelectedItem(targetItem);
+        if (autoOpenTask.modalType === 'quiz') setIsQuizModalOpen(true);
+        else setIsSubmitModalOpen(true);
+      }
     }
-  }, [autoOpenTask, items]);
+  }
 
   const handleAssignNewWork = useCallback(
     (newWork: {

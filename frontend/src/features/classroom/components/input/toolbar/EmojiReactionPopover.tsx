@@ -1,13 +1,9 @@
 'use client';
 
 import { memo } from 'react';
-import dynamic from 'next/dynamic';
 import { Smile } from 'lucide-react';
-import data from '@emoji-mart/data';
+import { useEmojiReactionPicker } from '../../../hooks/useEmojiReactionPicker';
 import type { EmojiReactionPopoverProps } from '../../../types/input.types';
-
-// Dynamic client-only import for Emoji Mart picker to prevent SSR 500 errors
-const Picker = dynamic(() => import('@emoji-mart/react'), { ssr: false });
 
 export const EmojiReactionPopover = memo(function EmojiReactionPopover({
   showEmojiPicker,
@@ -15,6 +11,7 @@ export const EmojiReactionPopover = memo(function EmojiReactionPopover({
   onSendReaction,
   className = '',
 }: EmojiReactionPopoverProps) {
+  const pickerRef = useEmojiReactionPicker(showEmojiPicker, onSendReaction);
   return (
     <div className={`relative ${className}`}>
       <button
@@ -30,16 +27,7 @@ export const EmojiReactionPopover = memo(function EmojiReactionPopover({
       {/* Emoji Mart Library Popover Picker */}
       {showEmojiPicker && (
         <div className="absolute bottom-full left-0 mb-3 z-50 shadow-2xl animate-in fade-in zoom-in-95 duration-150 rounded-2xl overflow-hidden border border-slate-700/80">
-          <Picker
-            data={data}
-            onEmojiSelect={(emojiData: { native: string; name: string }) => {
-              onSendReaction(emojiData.native, emojiData.name || 'Reaction');
-            }}
-            theme="dark"
-            previewPosition="none"
-            skinTonePosition="none"
-            perLine={7}
-          />
+          <div ref={pickerRef} />
         </div>
       )}
     </div>

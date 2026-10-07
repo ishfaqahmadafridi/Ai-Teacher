@@ -2,8 +2,8 @@
 Django AppConfig for the Classroom feature app.
 
 On startup (ready()), launches a background thread that:
-  1. Loads sentence-transformers model (~80 MB, cached after first run)
-  2. Loads existing ChromaDB collection OR builds it from the PDF
+  1. Loads ONNX embedding model (cached after first run)
+  2. Loads existing FAISS index OR builds it from the PDF
 
 This ensures the first API request is NEVER blocked by RAG initialisation.
 """

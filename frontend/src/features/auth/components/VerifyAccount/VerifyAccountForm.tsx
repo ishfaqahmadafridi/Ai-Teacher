@@ -52,7 +52,7 @@ export function VerifyAccountForm() {
       {/* OTP Input Section */}
       <div className="flex flex-col items-center">
         <p className="text-[#c6c6cc]/80 mb-6 text-center text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
-          We've sent a 6-digit code to{' '}
+          We&apos;ve sent a 6-digit code to{' '}
           <span className="text-[#b8c3ff] font-semibold">
             {method === 'email' ? 'l***a@lumina.edu' : '+1 ••• ••• 4293'}
           </span>

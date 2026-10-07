@@ -54,7 +54,7 @@ export const AITeacherShowcase = memo(function AITeacherShowcase() {
                   </div>
                 </div>
                 <span className="mt-3 text-sm font-semibold text-white">Dr. Neuro AI Tutor</span>
-                <span className="text-xs text-cyan-300/80 font-mono">"Let's simulate projectile motion..."</span>
+                <span className="text-xs text-cyan-300/80 font-mono">&quot;Let&apos;s simulate projectile motion...&quot;</span>
               </div>
 
               <div className="flex items-center justify-between text-xs text-blue-200/60 font-mono">

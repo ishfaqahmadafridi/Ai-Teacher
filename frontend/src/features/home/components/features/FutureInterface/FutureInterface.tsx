@@ -13,7 +13,7 @@ export function FutureInterface() {
             Experience the <span className="future-title-gradient">Future Interface</span>
           </h2>
           <p className="feat-desc">
-            Our dashboard isn't just a list of courses. It's a high-tech command center designed to 
+            Our dashboard isn&apos;t just a list of courses. It&apos;s a high-tech command center designed to
             eliminate friction, optimize cognitive loading, and maximize focus.
           </p>
 

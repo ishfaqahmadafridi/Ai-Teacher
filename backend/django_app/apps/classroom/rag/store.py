@@ -1,5 +1,5 @@
 """
-ChromaDB state management and non-blocking background initialization.
+FAISS state management and non-blocking background initialization.
 """
 import logging
 import threading
@@ -16,7 +16,7 @@ _init_thread = None
 
 
 def is_ready() -> bool:
-    """Return True if ChromaDB collection is loaded and ready for search."""
+    """Return True if FAISS collection is loaded and ready for search."""
     return _ready
 
 

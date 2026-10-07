@@ -41,7 +41,7 @@ export const FieldDropdownMenu = memo(function FieldDropdownMenu({
           className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-[#38BDF8] hover:bg-[#1E293B] text-left transition-colors cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Use custom entry: "{query}"</span>
+          <span className="truncate">Use custom entry: &quot;{query}&quot;</span>
         </button>
       )}
     </div>
