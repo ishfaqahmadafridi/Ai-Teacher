@@ -1,6 +1,7 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo, useId } from 'react';
+import { useAnalyticsTrendGraph } from '../../hooks/useAnalyticsTrendGraph';
 import { TrendingUp } from 'lucide-react';
 import type { AnalyticsTrendGraphProps } from '../../types/analytics.types';
 
@@ -8,46 +9,8 @@ export const AnalyticsTrendGraph = memo(function AnalyticsTrendGraph({
   trendData,
   className = '',
 }: AnalyticsTrendGraphProps) {
-  // Dynamically calculate (x, y) SVG coordinates for data points
-  const points = useMemo(() => {
-    if (!trendData || trendData.length === 0) return [];
-    const width = 350;
-    const height = 100;
-    const step = trendData.length > 1 ? width / (trendData.length - 1) : width;
-    return trendData.map((d, i) => ({
-      day: d.day,
-      score: d.score,
-      x: i * step,
-      y: Math.max(10, Math.min(90, height - d.score)),
-    }));
-  }, [trendData]);
-
-  // Dynamically build smooth bezier curve path string (d)
-  const pathD = useMemo(() => {
-    if (points.length === 0) return '';
-    if (points.length === 1) return `M ${points[0].x},${points[0].y}`;
-    let d = `M ${points[0].x},${points[0].y}`;
-    for (let i = 0; i < points.length - 1; i++) {
-      const curr = points[i];
-      const next = points[i + 1];
-      const mx = (curr.x + next.x) / 2;
-      d += ` C ${mx},${curr.y} ${mx},${next.y} ${next.x},${next.y}`;
-    }
-    return d;
-  }, [points]);
-
-  // Dynamically build polygon points for gradient fill under the curve
-  const polygonPoints = useMemo(() => {
-    if (points.length === 0) return '';
-    const firstX = points[0].x;
-    const lastX = points[points.length - 1].x;
-    let poly = `${firstX},100 `;
-    points.forEach((p) => {
-      poly += `${p.x},${p.y} `;
-    });
-    poly += `${lastX},100`;
-    return poly;
-  }, [points]);
+  const gradientId = useId();
+  const { points, pathD, polygonPoints, peakScore } = useAnalyticsTrendGraph(trendData);
 
   return (
     <div className={`flex flex-col justify-between space-y-4 ${className}`}>
@@ -59,15 +22,20 @@ export const AnalyticsTrendGraph = memo(function AnalyticsTrendGraph({
           </span>
         </div>
         <span className="font-['JetBrains_Mono',monospace] text-xs font-bold text-[#38BDF8]">
-          Peak +95% Accuracy
+          {peakScore !== null ? `Peak ${peakScore}%` : 'No activity yet'}
         </span>
       </div>
 
       {/* SVG Dynamic Smooth Area Chart Graph */}
       <div className="w-full h-36 relative flex items-end pt-4">
+        {points.length === 0 && (
+          <p className="absolute inset-0 flex items-center justify-center text-center text-xs text-slate-400">
+            Your learning history will appear here when activity is recorded.
+          </p>
+        )}
         <svg className="w-full h-full overflow-visible" viewBox="0 0 350 100" preserveAspectRatio="none">
           <defs>
-            <linearGradient id="performanceGradient" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.4" />
               <stop offset="100%" stopColor="#2563EB" stopOpacity="0.0" />
             </linearGradient>
@@ -80,7 +48,7 @@ export const AnalyticsTrendGraph = memo(function AnalyticsTrendGraph({
 
           {/* Dynamic Gradient Fill under Curve */}
           {polygonPoints && (
-            <polygon points={polygonPoints} fill="url(#performanceGradient)" />
+            <polygon points={polygonPoints} fill={`url(#${gradientId})`} />
           )}
 
           {/* Dynamic Smooth Performance Line Curve */}

@@ -197,10 +197,12 @@ export interface UseClassScheduleSectionOptions {
   defaultViewMode?: ScheduleViewMode;
 }
 
-export type PreferredTimeOfDay = 'morning' | 'afternoon' | 'evening' | 'any';
+export type PreferredTimeOfDay = 'morning' | 'afternoon' | 'evening' | 'any' | 'custom';
 export type MaxClassesPerDay = 2 | 3 | 4;
 
 export interface StudentSchedulePreferences {
+  customStartTime?: string;
+  customEndTime?: string;
   preferredTime: PreferredTimeOfDay;
   maxClassesPerDay: MaxClassesPerDay;
   includeSaturday: boolean;

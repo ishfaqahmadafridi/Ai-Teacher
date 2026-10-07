@@ -33,7 +33,22 @@ export function generateSuggestedTimetable(
     any: ['09:00 AM - 10:30 AM', '11:00 AM - 12:30 PM', '02:00 PM - 03:30 PM'],
   };
 
-  const slots = slotsByPref[preferredTime] ?? slotsByPref.morning;
+  let slots = slotsByPref[preferredTime] ?? slotsByPref.morning;
+  if (preferredTime === 'custom') {
+    const parse = (time: string | undefined) => {
+      if (!time || !/^\d{2}:\d{2}$/.test(time)) return NaN;
+      const [hour, minute] = time.split(':').map(Number);
+      return hour < 24 && minute < 60 ? hour * 60 + minute : NaN;
+    };
+    const start = parse(preferences.customStartTime);
+    const end = parse(preferences.customEndTime);
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end - start < 90) {
+      throw new Error('Custom study hours must allow at least one 90-minute class on the same day.');
+    }
+    const format = (minutes: number) => `${String(Math.floor(minutes / 60) % 12 || 12).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')} ${minutes < 720 ? 'AM' : 'PM'}`;
+    slots = [];
+    for (let time = start; time + 90 <= end; time += 120) slots.push(`${format(time)} - ${format(time + 90)}`);
+  }
   const daysPattern: DayOfWeek[][] = [
     ['Monday', 'Wednesday', 'Friday'],
     ['Tuesday', 'Thursday', ...(includeSaturday ? ['Saturday' as DayOfWeek] : [])],
@@ -43,11 +58,12 @@ export function generateSuggestedTimetable(
 
   registeredCourses.forEach((courseTitle, courseIdx) => {
     const pattern = daysPattern[courseIdx % daysPattern.length];
-    const slot = slots[courseIdx % slots.length];
 
     pattern.forEach((day) => {
       const currentDayCount = generatedItems.filter((i) => i.dayOfWeek === day).length;
-      if (currentDayCount < maxClassesPerDay) {
+      const usedSlots = new Set(generatedItems.filter((i) => i.dayOfWeek === day).map((i) => i.timeSlot));
+      const slot = slots.find((candidate) => !usedSlots.has(candidate));
+      if (currentDayCount < maxClassesPerDay && slot) {
         generatedItems.push({
           id: `ai-gen-${day.toLowerCase().slice(0, 3)}-${courseIdx + 1}`,
           title: `Live Lecture: ${courseTitle}`,
@@ -70,4 +86,3 @@ export function generateSuggestedTimetable(
     optimizationSummary: `AI planner scheduled ${generatedItems.length} classes across the week matching your ${preferredTime} preference.`,
   };
 }
-

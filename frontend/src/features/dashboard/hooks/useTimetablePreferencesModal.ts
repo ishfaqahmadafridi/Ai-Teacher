@@ -15,6 +15,9 @@ export function useTimetablePreferencesModal(
 ) {
   const { onSubmitPreferences, initialPreferences } = options;
   const selectedInterests = useAuthStore((state) => state.user?.selectedInterests);
+  const [customStartTime, setCustomStartTime] = useState(initialPreferences?.customStartTime ?? '09:00');
+  const [customEndTime, setCustomEndTime] = useState(initialPreferences?.customEndTime ?? '12:30');
+  const [timeError, setTimeError] = useState<string | null>(null);
 
   const [preferredTime, setPreferredTime] = useState<PreferredTimeOfDay>(
     initialPreferences?.preferredTime ?? DEFAULT_STUDENT_PREFERENCES.preferredTime
@@ -29,8 +32,18 @@ export function useTimetablePreferencesModal(
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+      setTimeError(null);
+      if (preferredTime === 'custom') {
+        const minutes = (time: string) => Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
+        if (!customStartTime || !customEndTime || minutes(customEndTime) - minutes(customStartTime) < 90) {
+          setTimeError('Choose an end time at least 90 minutes after the start time on the same day.');
+          return;
+        }
+      }
       const prefs: StudentSchedulePreferences = {
         preferredTime,
+        customStartTime,
+        customEndTime,
         maxClassesPerDay,
         includeSaturday,
         registeredCourses:
@@ -41,6 +54,8 @@ export function useTimetablePreferencesModal(
     },
     [
       preferredTime,
+      customStartTime,
+      customEndTime,
       maxClassesPerDay,
       includeSaturday,
       initialPreferences?.registeredCourses,
@@ -50,6 +65,9 @@ export function useTimetablePreferencesModal(
   );
 
   const resetPreferences = useCallback(() => {
+    setCustomStartTime(initialPreferences?.customStartTime ?? '09:00');
+    setCustomEndTime(initialPreferences?.customEndTime ?? '12:30');
+    setTimeError(null);
     setPreferredTime(
       initialPreferences?.preferredTime ?? DEFAULT_STUDENT_PREFERENCES.preferredTime
     );
@@ -62,6 +80,7 @@ export function useTimetablePreferencesModal(
   }, [initialPreferences]);
 
   return {
+    customStartTime, setCustomStartTime, customEndTime, setCustomEndTime, timeError,
     preferredTime,
     setPreferredTime,
     maxClassesPerDay,

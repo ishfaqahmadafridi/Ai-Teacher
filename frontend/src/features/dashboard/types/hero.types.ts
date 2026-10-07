@@ -30,7 +30,7 @@ export interface HeroBackgroundParticlesProps {
 }
 
 export interface ContinueLearningBannerProps {
-  course: ContinueLearningCourse;
+  fieldName: string;
   onResume?: () => void;
   className?: string;
 }

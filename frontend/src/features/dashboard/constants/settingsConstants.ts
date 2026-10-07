@@ -1,3 +1,4 @@
+import ISO6391 from 'iso-639-1';
 import type { ProjectSettingsState, SettingsTabId } from '../types/settings.types';
 
 export const DEFAULT_PROJECT_SETTINGS: ProjectSettingsState = {
@@ -10,14 +11,14 @@ export const DEFAULT_PROJECT_SETTINGS: ProjectSettingsState = {
 
   themeMode: 'lumina_dark',
   interfaceLanguage: 'English',
-  timezone: '(UTC+05:00) Islamabad, Karachi',
+  timezone: 'UTC',
 
   dailyStudyGoalHours: 2,
   weeklyQuizGoal: 5,
 
-  academicLevel: 'Undergraduate',
-  primaryField: 'Computer Science & IT',
-  specialization: 'Artificial Intelligence & Systems',
+  academicLevel: '',
+  primaryField: '',
+  specialization: '',
 
   emailAssignmentAlerts: true,
   disruptionWarningsAlerts: true,
@@ -35,24 +36,9 @@ export const SETTINGS_TABS: { id: SettingsTabId; label: string; icon: string }[]
   { id: 'notifications', label: 'Security & Notifications', icon: 'ShieldCheck' },
 ];
 
-export const AVAILABLE_LANGUAGES = [
-  'English',
-  'Spanish',
-  'French',
-  'German',
-  'Urdu',
-  'Chinese (Simplified)',
-  'Arabic',
-];
+export const AVAILABLE_LANGUAGES = ISO6391.getAllNames().sort();
 
-export const AVAILABLE_TIMEZONES = [
-  '(UTC+05:00) Islamabad, Karachi',
-  '(UTC+00:00) UTC / GMT',
-  '(UTC-05:00) Eastern Time (US & Canada)',
-  '(UTC-08:00) Pacific Time (US & Canada)',
-  '(UTC+01:00) Central European Time',
-  '(UTC+08:00) Beijing, Singapore',
-];
+export const AVAILABLE_TIMEZONES = ['UTC', ...Intl.supportedValuesOf('timeZone')];
 
 export const PRESET_ACADEMIC_FIELDS = [
   'Computer Science & IT',
