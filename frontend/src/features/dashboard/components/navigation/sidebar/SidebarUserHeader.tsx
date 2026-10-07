@@ -9,8 +9,8 @@ import type { SidebarUserHeaderProps } from '../../../types/sidebar.types';
 export const SidebarUserHeader = memo(function SidebarUserHeader({
   studentName,
   studentAvatar,
-  streakDays = 128,
-  coursesCount = 12,
+  streakDays = 0,
+  coursesCount = 0,
   onOpenProfile,
   className = '',
 }: SidebarUserHeaderProps) {

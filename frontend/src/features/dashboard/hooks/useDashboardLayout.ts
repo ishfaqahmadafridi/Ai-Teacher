@@ -24,6 +24,8 @@ export function useDashboardLayout() {
     assignments,
     continueLearning,
     handleRegisterCourse,
+    isLoading: isDashboardLoading,
+    error: dashboardError,
   } = useDashboardData();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -140,6 +142,8 @@ export function useDashboardLayout() {
   );
 
   return {
+    isDashboardLoading,
+    dashboardError,
     searchQuery,
     activeTabId,
     profile,

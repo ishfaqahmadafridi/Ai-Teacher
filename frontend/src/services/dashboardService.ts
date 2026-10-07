@@ -15,7 +15,7 @@ export interface DashboardOverviewResponse {
   attendance_rate_percent: number;
   attendance_ratio: string;
   active_field: string;
-  continue_learning: ContinueLearningCourse;
+  continue_learning: ContinueLearningCourse | null;
   courses: Array<{
     id: number | string;
     title: string;

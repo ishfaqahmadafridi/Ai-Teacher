@@ -14,6 +14,7 @@ import { CategorizedSubjectsSection } from './CategorizedSubjectsSection';
 import { CustomSubjectCard } from './CustomSubjectCard';
 import { LearningSummarySidebar } from './LearningSummarySidebar';
 import { MobileSummaryBar } from './MobileSummaryBar';
+import { SkipStepButton } from '../SkipStepButton';
 
 export const Step6InterestsPage = memo(function Step6InterestsPage() {
   const {
@@ -41,6 +42,7 @@ export const Step6InterestsPage = memo(function Step6InterestsPage() {
       {/* Left Column: Subject Selection Area */}
       <div className="flex-1 space-y-8 w-full">
         <InterestsHeader />
+        <div className="flex justify-end md:hidden"><SkipStepButton step={6} /></div>
 
         <InterestsSearchBar
           searchQuery={searchQuery}

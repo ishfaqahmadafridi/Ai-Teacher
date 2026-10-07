@@ -5,6 +5,7 @@ API View for global dashboard search in the Dashboard app.
 """
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter
@@ -16,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class SearchView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     GET /api/search/?q=<query>
 
@@ -67,7 +69,7 @@ class SearchView(APIView):
         logger.info(f"[Dashboard SearchView] Executing query='{query[:80]}' limit={limit}")
 
         try:
-            raw_results = perform_global_search(query=query, limit=limit)
+            raw_results = perform_global_search(query=query, limit=limit, user=request.user)
             serializer = SearchGroupedResultsSerializer(data=raw_results)
             if serializer.is_valid():
                 response_data = serializer.data

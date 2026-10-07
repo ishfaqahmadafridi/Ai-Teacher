@@ -22,10 +22,10 @@ export const SIDEBAR_ICON_MAP: Record<string, React.ReactNode> = {
 
 export const DEFAULT_DASHBOARD_NAV_LINKS: DashboardNavLink[] = [
   { id: 'dashboard', label: 'Dashboard Overview', iconName: 'LayoutDashboard', href: '/dashboard' },
-  { id: 'registered_courses', label: 'Registered Courses', iconName: 'BookOpen', href: '/dashboard', badgeCount: 4 },
-  { id: 'schedule', label: 'Class Schedule', iconName: 'Calendar', href: '/dashboard', badgeCount: 7 },
+  { id: 'registered_courses', label: 'Registered Courses', iconName: 'BookOpen', href: '/dashboard' },
+  { id: 'schedule', label: 'Class Schedule', iconName: 'Calendar', href: '/dashboard' },
   { id: 'class_progress', label: 'Class Progress', iconName: 'LineChart', href: '/dashboard' },
-  { id: 'assignments_quizzes', label: 'Assignments & Quizzes', iconName: 'ClipboardList', href: '/dashboard', badgeCount: 5 },
+  { id: 'assignments_quizzes', label: 'Assignments & Quizzes', iconName: 'ClipboardList', href: '/dashboard' },
   { id: 'ai_chatbot', label: 'Ask Prof. Gemini', iconName: 'Bot', href: '/ask', badgeCount: 'AI' },
   { id: 'settings', label: 'Settings', iconName: 'Settings', href: '/dashboard' },
 ];

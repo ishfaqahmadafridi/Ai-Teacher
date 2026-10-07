@@ -18,7 +18,7 @@ export function useAnalyticsMetricsGrid(options: UseAnalyticsMetricsGridOptions)
     aiFocusScore,
     conceptMasteryScore,
     classBehaviorScore,
-    avgScore = 92,
+    avgScore = 0,
   } = options;
 
   const metricItems = useMemo<AnalyticsMetricCardItem[]>(() => {

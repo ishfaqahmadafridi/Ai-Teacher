@@ -39,7 +39,7 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
 
       {/* Featured Overall Performance Analytics Card */}
       <div className="w-full">
-        <ProgressAnalyticsCard />
+        {weeklyProgressPercent > 0 ? <ProgressAnalyticsCard weeklyProgressPercent={weeklyProgressPercent} streakDays={streakDays} /> : <p className="text-slate-400">No learning activity recorded yet.</p>}
       </div>
     </div>
   );

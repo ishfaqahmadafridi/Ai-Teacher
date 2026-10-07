@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { DEFAULT_ATTENDANCE_LOGS } from '../constants/progressConstants';
 import {
   getRecentAbsentLogs,
   generateAttendanceCsvContent,
@@ -10,7 +9,7 @@ import {
 import type { UseAttendanceReportOptions } from '../types/progress.types';
 
 export function useAttendanceReport(options: UseAttendanceReportOptions = {}) {
-  const { attendanceLogs = DEFAULT_ATTENDANCE_LOGS, studentName = 'Student' } = options;
+  const { attendanceLogs = [], studentName = 'Student' } = options;
 
   const recentAbsentLogs = useMemo(() => {
     return getRecentAbsentLogs(attendanceLogs, 3);

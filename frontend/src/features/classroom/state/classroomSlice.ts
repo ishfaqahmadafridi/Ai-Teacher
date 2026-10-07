@@ -22,6 +22,7 @@ const initialState: ClassroomState = {
   spokenText: '',
   isListening: false,
   voiceError: null,
+  showSubtitles: true,
 };
 
 const classroomSlice = createSlice({
@@ -91,6 +92,12 @@ const classroomSlice = createSlice({
     setVoiceError(state, action: PayloadAction<string | null>) {
       state.voiceError = action.payload;
     },
+    toggleSubtitles(state) {
+      state.showSubtitles = !state.showSubtitles;
+    },
+    setShowSubtitles(state, action: PayloadAction<boolean>) {
+      state.showSubtitles = action.payload;
+    },
     resetClassroomState(state) {
       Object.assign(state, {
         ...initialState,
@@ -123,6 +130,8 @@ export const {
   setSpokenText,
   setIsListening,
   setVoiceError,
+  toggleSubtitles,
+  setShowSubtitles,
   resetClassroomState,
 } = classroomSlice.actions;
 

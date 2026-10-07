@@ -1,12 +1,11 @@
 'use client';
 
 import { memo } from 'react';
-import { DEFAULT_LIVE_CLASSES } from '../../constants/dashboardConstants';
 import { ClassCard } from './ClassCard';
 import type { LiveClassesSectionProps } from '../../types/dashboard.types';
 
 export const LiveClassesSection = memo(function LiveClassesSection({
-  classes = DEFAULT_LIVE_CLASSES,
+  classes = [],
   onJoinClass,
   className = '',
 }: LiveClassesSectionProps) {

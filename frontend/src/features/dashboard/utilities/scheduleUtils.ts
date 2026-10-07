@@ -55,7 +55,7 @@ export function generateSuggestedTimetable(
           timeFormatted: slot,
           timeSlot: slot,
           dayOfWeek: day,
-          instructorName: 'Dr. Sarah Jenkins',
+          instructorName: 'AI Teacher',
           roomOrLink: 'Virtual Classroom #101',
           status: 'upcoming',
         });

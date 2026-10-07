@@ -18,6 +18,10 @@ function TimezoneSelectComponent({ value, onChange }: TimezoneSelectProps) {
           onChange={(e) => onChange(e.target.value)}
           className="h-12 w-full bg-black/30 border border-white/15 rounded-xl pl-10 pr-4 text-white focus:outline-none focus:border-[#b8c3ff] focus:ring-1 focus:ring-[#b8c3ff]/30 transition-all text-sm font-medium appearance-none cursor-pointer"
         >
+          <option value="" className="bg-[#0b1220] text-white">Select your timezone</option>
+          {value && !TIMEZONE_OPTIONS.some((tz) => tz.value === value) && (
+            <option value={value} className="bg-[#0b1220] text-white">{value}</option>
+          )}
           {TIMEZONE_OPTIONS.map((tz) => (
             <option key={tz.value} value={tz.value} className="bg-[#0b1220] text-white">
               {tz.label} ({tz.offset})

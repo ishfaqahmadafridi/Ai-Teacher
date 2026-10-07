@@ -6,6 +6,7 @@ API View for Dashboard Overview analytics and student summary metrics.
 
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class DashboardOverviewView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     GET /api/dashboard/overview/
 

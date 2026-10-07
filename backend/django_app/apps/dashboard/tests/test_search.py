@@ -3,6 +3,7 @@ apps/dashboard/tests/test_search.py
 
 Unit and API integration tests for Dashboard search functionality.
 """
+from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 from django.core.cache import cache
 from rest_framework.test import APIClient
@@ -17,38 +18,40 @@ class DashboardSearchServiceTests(TestCase):
 
     def setUp(self):
         cache.clear()
+        self.user = get_user_model().objects.create_user(username="search-user", email="search@example.com", password="test")
 
     def test_empty_query_returns_zero_count(self):
-        res = perform_global_search("")
+        res = perform_global_search("", user=self.user)
         self.assertEqual(res["totalCount"], 0)
         self.assertEqual(len(res["courses"]), 0)
 
     def test_spaces_only_returns_zero_count(self):
-        res = perform_global_search("   ")
+        res = perform_global_search("   ", user=self.user)
         self.assertEqual(res["totalCount"], 0)
 
     def test_valid_query_matches_courses(self):
-        res = perform_global_search("science")
+        CourseModel.objects.create(user=self.user, title="Computer Science", subject_field="Science", course_code="CS-1")
+        res = perform_global_search("science", user=self.user)
         self.assertGreater(res["totalCount"], 0)
         self.assertTrue(any("Science" in c["title"] for c in res["courses"]))
 
     def test_orm_model_search(self):
         CourseModel.objects.create(
-            title="Advanced Quantum Mechanics",
+            user=self.user, title="Advanced Quantum Mechanics",
             subject_field="Physics",
             course_code="PHYS-501",
             progress_percent=90,
         )
-        res = perform_global_search("Quantum")
+        res = perform_global_search("Quantum", user=self.user)
         self.assertGreaterEqual(res["totalCount"], 1)
         self.assertTrue(any("Quantum" in c["title"] for c in res["courses"]))
 
     @override_settings(CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}})
     def test_caching_layer(self):
-        res1 = perform_global_search("calculus")
-        cache_key = "search:v1:calculus:10"
+        res1 = perform_global_search("calculus", user=self.user)
+        cache_key = f"search:v2:{self.user.pk}:calculus:10"
         self.assertIsNotNone(cache.get(cache_key))
-        res2 = perform_global_search("calculus")
+        res2 = perform_global_search("calculus", user=self.user)
         self.assertEqual(res1["totalCount"], res2["totalCount"])
 
 
@@ -84,6 +87,8 @@ class DashboardSearchViewTests(TestCase):
     def setUp(self):
         self.client = APIClient()
         cache.clear()
+        self.user = get_user_model().objects.create_user(username="search-user", email="search@example.com", password="test")
+        self.client.force_authenticate(self.user)
 
     def test_missing_q_param_returns_400(self):
         response = self.client.get("/api/search/")

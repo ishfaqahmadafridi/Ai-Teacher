@@ -8,6 +8,7 @@ import { ProfileFormContainer } from './ProfileFormContainer';
 import { ProfileFormHeader } from './ProfileFormHeader';
 import { ProfileFormFields } from './ProfileFormFields';
 import { AIMentorBannerCard } from './AIMentorBannerCard';
+import { SkipStepButton } from '../SkipStepButton';
 import type { StudentProfileData } from '../../types';
 
 export const Step3ProfilePage = memo(function Step3ProfilePage() {
@@ -42,6 +43,9 @@ export const Step3ProfilePage = memo(function Step3ProfilePage() {
         </div>
         <div className="lg:col-span-1">
           <AIMentorBannerCard />
+          <div className="flex justify-center mt-3">
+            <SkipStepButton step={3} />
+          </div>
         </div>
       </div>
     </Step3ProfileLayout>

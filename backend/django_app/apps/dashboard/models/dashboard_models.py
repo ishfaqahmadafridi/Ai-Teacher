@@ -5,25 +5,29 @@ Database models for courses, assignments, and live classes within the Dashboard 
 """
 
 from django.db import models
+from django.conf import settings
 
 
 class CourseModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     """Domain model representing a registered course."""
     title = models.CharField(max_length=255, db_index=True)
     subject_field = models.CharField(max_length=100, db_index=True)
-    course_code = models.CharField(max_length=50, db_index=True, unique=True)
+    course_code = models.CharField(max_length=50, db_index=True)
     credit_hours = models.IntegerField(default=3)
     progress_percent = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["-created_at"]
+        constraints = [models.UniqueConstraint(fields=["user", "course_code"], name="unique_user_course_code")]
 
     def __str__(self):
         return f"{self.course_code} - {self.title}"
 
 
 class AssignmentModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     """Domain model representing an assignment or quiz."""
     ASSIGNMENT_TYPES = (
         ("assignment", "Assignment"),
@@ -44,6 +48,7 @@ class AssignmentModel(models.Model):
 
 
 class LiveClassModel(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     """Domain model representing a live or scheduled workshop."""
     title = models.CharField(max_length=255, db_index=True)
     subject = models.CharField(max_length=100, db_index=True)

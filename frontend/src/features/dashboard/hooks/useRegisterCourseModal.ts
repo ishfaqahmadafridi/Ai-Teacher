@@ -11,7 +11,7 @@ export function useRegisterCourseModal({
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
-    subjectField: 'Computer Science & IT',
+    subjectField: '',
     title: '',
     courseCode: '',
     creditHours: 3,
@@ -31,7 +31,11 @@ export function useRegisterCourseModal({
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!formData.title.trim() || isPending) return;
+      if (isPending) return;
+      if (!formData.title.trim() || !formData.subjectField || !formData.courseCode.trim()) {
+        setError('Select a field and enter the course title and code.');
+        return;
+      }
       setError(null);
       setIsPending(true);
 
@@ -39,7 +43,7 @@ export function useRegisterCourseModal({
         await onRegisterCourse({
           subjectField: formData.subjectField,
           title: formData.title,
-          courseCode: formData.courseCode || `CS-${Math.floor(100 + Math.random() * 900)}`,
+          courseCode: formData.courseCode.trim(),
           creditHours: formData.creditHours || 3,
         });
       } catch (failure: unknown) {
@@ -50,7 +54,7 @@ export function useRegisterCourseModal({
       }
 
       setFormData({
-        subjectField: 'Computer Science & IT',
+        subjectField: '',
         title: '',
         courseCode: '',
         creditHours: 3,

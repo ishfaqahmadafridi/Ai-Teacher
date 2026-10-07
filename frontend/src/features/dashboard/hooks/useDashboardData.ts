@@ -4,7 +4,6 @@ import { DashboardService } from '@/services/dashboardService';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import { queryKeys } from '@/shared/constants/queryConstants';
 import { mapDashboardOverview } from '../utilities/dashboardDataUtils';
-import { DEFAULT_CONTINUE_LEARNING } from '../constants/dashboardConstants';
 import type { RegisterCourseModalProps } from '../types/courses.types';
 
 export function useDashboardData() {
@@ -37,7 +36,7 @@ export function useDashboardData() {
     registeredCourses: overview.data?.registeredCourses ?? [],
     liveClasses: overview.data?.liveClasses ?? [],
     assignments: overview.data?.assignments ?? [],
-    continueLearning: overview.data?.continueLearning ?? DEFAULT_CONTINUE_LEARNING,
+    continueLearning: overview.data?.continueLearning ?? undefined,
     handleRegisterCourse,
     reloadDashboardData: overview.refetch,
   };

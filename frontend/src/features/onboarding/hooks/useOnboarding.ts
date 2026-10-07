@@ -1,7 +1,7 @@
 'use client';
 
 import { useProfileMutation } from '../../auth/hooks/useAuthQueries';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useOnboardingStore } from '../state/onboardingStore';
 import { OnboardingService } from '../services/onboardingService';
 import { useAuthStore } from '../../auth/state/authStore';
@@ -10,11 +10,13 @@ import type { EducationLevel, AcademicYear } from '../types';
 
 export function useOnboarding() {
   const router = useRouter();
+  const pathname = usePathname();
   const mutation = useProfileMutation();
   const store = useOnboardingStore();
+  const routeStep = Number(pathname.match(/step-(\d+)$/)?.[1]) || store.currentStep;
 
   const handleNextStep = async () => {
-    const nextStep = store.currentStep + 1;
+    const nextStep = routeStep + 1;
     if (nextStep > 6) {
       router.push('/dashboard');
     } else {
@@ -24,7 +26,7 @@ export function useOnboarding() {
   };
 
   const handlePrevStep = () => {
-    const prevStep = store.currentStep - 1;
+    const prevStep = routeStep - 1;
     if (prevStep >= 3) {
       store.setStep(prevStep);
       router.push(`/onboarding/step-${prevStep}`);
@@ -51,9 +53,15 @@ export function useOnboarding() {
     }
   };
 
-  const submitProfile = () => persistStep(
-    () => OnboardingService.submitStep3Profile(store.profile), handleNextStep
-  );
+  const submitProfile = () => {
+    if (!store.profile.timezone.trim()) {
+      store.setError('Please select your timezone before continuing, or choose Skip for now.');
+      return;
+    }
+    return persistStep(
+      () => OnboardingService.submitStep3Profile(store.profile), handleNextStep
+    );
+  };
   const selectEducationLevel = (level: EducationLevel) => persistStep(
     () => OnboardingService.submitStep4Education(level),
     () => { store.setEducationLevel(level); handleNextStep(); }
@@ -62,10 +70,29 @@ export function useOnboarding() {
     () => OnboardingService.submitStep5AcademicYear(year),
     () => { store.setAcademicYear(year); handleNextStep(); }
   );
-  const submitInterests = () => persistStep(
-    () => OnboardingService.submitStep6Interests(store.selectedInterests),
-    () => router.push('/dashboard')
-  );
+  const submitInterests = () => {
+    if (store.selectedInterests.length !== 1) {
+      store.setError('Select exactly one field of study before continuing.');
+      return;
+    }
+    return persistStep(
+      () => OnboardingService.submitStep6Interests(store.selectedInterests),
+      () => router.push('/dashboard')
+    );
+  };
+
+  const skipStep = (step: number) => {
+    if (useOnboardingStore.getState().isLoading) return;
+    if (step === 6) {
+      return persistStep(
+        () => OnboardingService.completeOnboarding(),
+        () => router.push('/dashboard')
+      );
+    }
+    store.setError(null);
+    store.setStep(step + 1);
+    router.push(`/onboarding/step-${step + 1}`);
+  };
 
   return {
     ...store,
@@ -75,5 +102,6 @@ export function useOnboarding() {
     selectEducationLevel,
     selectAcademicYear,
     submitInterests,
+    skipStep,
   };
 }

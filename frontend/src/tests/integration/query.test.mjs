@@ -128,10 +128,11 @@ test('empty backend dashboard lists stay empty and mutations never retry automat
   const { mapDashboardOverview } = load('features/dashboard/utilities/dashboardDataUtils.ts', {
     '../constants/dashboardDataConstants': load('features/dashboard/constants/dashboardDataConstants.ts'),
   });
-  const result = mapDashboardOverview({ courses: [], live_classes: [], assignments: [], continue_learning: {} });
+  const result = mapDashboardOverview({ courses: [], live_classes: [], assignments: [], continue_learning: null });
   assert.equal(result.registeredCourses.length, 0);
   assert.equal(result.liveClasses.length, 0);
   assert.equal(result.assignments.length, 0);
+  assert.equal(result.continueLearning, undefined);
   const client = createQueryClient();
   assert.equal(client.getDefaultOptions().mutations.retry, false);
   client.clear();

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { DEFAULT_STUDENT_PREFERENCES } from '../constants/scheduleConstants';
+import { useAuthStore } from '@/features/auth/state/authStore';
 import type {
   PreferredTimeOfDay,
   MaxClassesPerDay,
@@ -13,6 +14,7 @@ export function useTimetablePreferencesModal(
   options: UseTimetablePreferencesModalOptions
 ) {
   const { onSubmitPreferences, initialPreferences } = options;
+  const selectedInterests = useAuthStore((state) => state.user?.selectedInterests);
 
   const [preferredTime, setPreferredTime] = useState<PreferredTimeOfDay>(
     initialPreferences?.preferredTime ?? DEFAULT_STUDENT_PREFERENCES.preferredTime
@@ -33,7 +35,7 @@ export function useTimetablePreferencesModal(
         includeSaturday,
         registeredCourses:
           initialPreferences?.registeredCourses ??
-          DEFAULT_STUDENT_PREFERENCES.registeredCourses,
+          selectedInterests ?? [],
       };
       onSubmitPreferences(prefs);
     },
@@ -42,6 +44,7 @@ export function useTimetablePreferencesModal(
       maxClassesPerDay,
       includeSaturday,
       initialPreferences?.registeredCourses,
+      selectedInterests,
       onSubmitPreferences,
     ]
   );

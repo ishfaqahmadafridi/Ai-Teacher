@@ -8,7 +8,6 @@ import type {
   UseClassScheduleSectionOptions,
 } from '../types/schedule.types';
 import { DAYS_OF_WEEK } from '../constants/scheduleConstants';
-import { DEFAULT_SCHEDULE_ITEMS } from '../constants/dashboardContentConstants';
 import { filterScheduleItemsByDay } from '../utilities/scheduleUtils';
 import { useTimetablePlannerModal } from './useTimetablePlannerModal';
 
@@ -16,7 +15,7 @@ export function useClassScheduleSection(
   options: UseClassScheduleSectionOptions = {}
 ) {
   const {
-    scheduleItems: initialScheduleItems = DEFAULT_SCHEDULE_ITEMS,
+    scheduleItems: initialScheduleItems = [],
     defaultDay = 'Monday',
     defaultViewMode = 'timeline',
   } = options;
@@ -105,5 +104,4 @@ export function useClassScheduleSection(
     customizeSlot,
   };
 }
-
 

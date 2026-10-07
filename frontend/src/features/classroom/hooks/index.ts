@@ -26,6 +26,7 @@ export { useInputBarPlayback } from './useInputBarPlayback';
 export { useClassroomChatInbox } from './useClassroomChatInbox';
 export { useChalkboardStage } from './useChalkboardStage';
 export { useClassroomStageArea } from './useClassroomStageArea';
+export { useSubtitleBar } from './useSubtitleBar';
 
 export * from './useClassroomQueries';
 export * from './useEmojiReactionPicker';

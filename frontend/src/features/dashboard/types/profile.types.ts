@@ -161,3 +161,8 @@ export interface ProfileModalBackdropProps {
   onClick: () => void;
   className?: string;
 }
+
+export interface ProfileModalSectionProps {
+  model: ReturnType<typeof import('../hooks/useUserProfileModal').useUserProfileModal>;
+  onClose: () => void;
+}

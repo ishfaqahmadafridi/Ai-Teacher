@@ -3,6 +3,10 @@ import type { StudentProfileData, EducationLevel, AcademicYear } from '../types'
 import type { AuthUser } from '../../auth/types';
 
 export class OnboardingService {
+  static async completeOnboarding(): Promise<AuthUser> {
+    return AuthService.updateProfile({ onboarding_completed: true });
+  }
+
   static async submitStep3Profile(profile: StudentProfileData): Promise<AuthUser> {
     const [firstName, ...lastName] = profile.fullName.trim().split(/\s+/);
     return AuthService.updateProfile({

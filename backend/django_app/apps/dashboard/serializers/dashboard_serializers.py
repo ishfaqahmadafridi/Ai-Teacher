@@ -67,19 +67,19 @@ class ContinueLearningSerializer(serializers.Serializer):
     id = serializers.CharField(default="c1")
     title = serializers.CharField(default="Software Engineering & Artificial Intelligence")
     chapter = serializers.CharField(allow_blank=True, default="")
-    progress_percent = serializers.IntegerField(default=75)
+    progress_percent = serializers.IntegerField(default=0)
 
 
 class DashboardOverviewSerializer(serializers.Serializer):
     """Composite serializer summarizing total student stats, active field, and enrolled courses."""
     student_name = serializers.CharField(allow_blank=True)
-    streak_days = serializers.IntegerField(default=128)
-    courses_count = serializers.IntegerField(default=12)
-    weekly_progress_percent = serializers.IntegerField(default=75)
-    attendance_rate_percent = serializers.IntegerField(default=96)
-    attendance_ratio = serializers.CharField(default="28/29 Classes")
-    active_field = serializers.CharField(default="Software Engineering & Artificial Intelligence & Computer Science")
-    continue_learning = ContinueLearningSerializer()
+    streak_days = serializers.IntegerField(default=0)
+    courses_count = serializers.IntegerField(default=0)
+    weekly_progress_percent = serializers.IntegerField(default=0)
+    attendance_rate_percent = serializers.IntegerField(default=0)
+    attendance_ratio = serializers.CharField(default="0/0 Classes")
+    active_field = serializers.CharField(allow_blank=True, default="")
+    continue_learning = ContinueLearningSerializer(allow_null=True)
     courses = CourseModelSerializer(many=True)
     live_classes = LiveClassSerializer(many=True)
     assignments = AssignmentSerializer(many=True)
