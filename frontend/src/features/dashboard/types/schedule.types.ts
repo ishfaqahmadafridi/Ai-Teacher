@@ -299,3 +299,7 @@ export interface TimetableSuggestionReviewFooterProps {
 
 
 
+
+export interface ScheduleSlotFieldsProps {
+  model: ReturnType<typeof import('../hooks/useCreateScheduleSlotModal').useCreateScheduleSlotModal>;
+}

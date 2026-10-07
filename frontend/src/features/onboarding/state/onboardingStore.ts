@@ -74,8 +74,8 @@ export const useOnboardingStore = create<OnboardingState & OnboardingActions>()(
             (state) => {
               const exists = state.selectedInterests.includes(interest);
               const updated = exists
-                ? state.selectedInterests.filter((i) => i !== interest)
-                : [...state.selectedInterests, interest];
+                ? []
+                : [interest];
               return { selectedInterests: updated };
             },
             false,

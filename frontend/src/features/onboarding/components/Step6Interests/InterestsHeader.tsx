@@ -11,10 +11,10 @@ function InterestsHeaderComponent({ className = '' }: InterestsHeaderProps) {
 
       <div className="space-y-2">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-          What subjects or fields do you want to learn?
+          Choose your field of study
         </h1>
         <p className="text-[#94A3B8] text-sm sm:text-base max-w-xl">
-          Select your degree, major, or topics of interest to build your personalized AI curriculum roadmap.
+          Select one field for your profile. Selecting another field replaces your previous choice. You can register courses in this field from your dashboard.
         </p>
       </div>
     </div>

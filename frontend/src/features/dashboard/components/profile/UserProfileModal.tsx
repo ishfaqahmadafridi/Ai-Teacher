@@ -1,47 +1,16 @@
 'use client';
 
 import { memo } from 'react';
+import { ProfileModalHeader } from './ProfileModalHeader';
+import { ProfileModalForm } from './ProfileModalForm';
 import { useUserProfileModal } from '../../hooks/useUserProfileModal';
 import { ProfileFileInputs } from './ProfileFileInputs';
 import { ProfileModalBackdrop } from './ProfileModalBackdrop';
-import { ProfileCoverHeader } from './ProfileCoverHeader';
-import { ProfileAvatarHeader } from './ProfileAvatarHeader';
-import { ProfileMetaInfo } from './ProfileMetaInfo';
-import { ProfileModalTabNav } from './ProfileModalTabNav';
-import { ProfilePersonalTab } from './ProfilePersonalTab';
-import { ProfilePreferencesTab } from './ProfilePreferencesTab';
-import { ProfileModalFooter } from './ProfileModalFooter';
 import type { UserProfileModalProps } from '../../types/profile.types';
 
 export const UserProfileModal = memo(function UserProfileModal(props: UserProfileModalProps) {
-  const {
-    activeTab,
-    setActiveTab,
-    formData,
-    isSaved,
-    saveError,
-    isSaving,
-    showAvatarMenu,
-    showAvatarPresets,
-    showCoverMenu,
-    showCoverPresets,
-    avatarFileInputRef,
-    coverFileInputRef,
-    handleChange,
-    handleAvatarFileUpload,
-    handleSelectPresetAvatar,
-    handleCoverFileUpload,
-    handleSelectPresetCover,
-    handleToggleCoverMenu,
-    handleToggleCoverPresets,
-    handleCloseCoverMenu,
-    handleToggleAvatarMenu,
-    handleToggleAvatarPresets,
-    handleCloseAvatarMenu,
-    handleCloseAllMenus,
-    handleLogout,
-    handleSubmit,
-  } = useUserProfileModal(props);
+  const model = useUserProfileModal(props);
+  const { avatarFileInputRef, coverFileInputRef, handleAvatarFileUpload, handleCoverFileUpload, handleCloseAllMenus } = model;
 
   if (!props.isOpen) return null;
 
@@ -60,63 +29,8 @@ export const UserProfileModal = memo(function UserProfileModal(props: UserProfil
 
       {/* Modal Container */}
       <div className="relative w-full max-w-2xl bg-[#0F172A] border border-[#1E293B] rounded-3xl shadow-2xl z-10 font-['Hanken_Grotesk',sans-serif] my-8">
-        {/* Top Header Cover Banner Subcomponent */}
-        <ProfileCoverHeader
-          coverUrl={formData.coverUrl}
-          showCoverMenu={showCoverMenu}
-          showCoverPresets={showCoverPresets}
-          onToggleCoverMenu={handleToggleCoverMenu}
-          onToggleCoverPresets={handleToggleCoverPresets}
-          onCloseCoverMenu={handleCloseCoverMenu}
-          onSelectPresetCover={handleSelectPresetCover}
-          onUploadCoverClick={() => coverFileInputRef.current?.click()}
-          onCloseModal={props.onClose}
-        />
-
-        {/* Profile Avatar & Header Meta Section */}
-        <div className="px-6 sm:px-8 pb-5 relative bg-[#0F172A]">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-            {/* Avatar Header Subcomponent */}
-            <ProfileAvatarHeader
-              avatarUrl={formData.avatarUrl}
-              studentName={formData.name}
-              showAvatarMenu={showAvatarMenu}
-              showAvatarPresets={showAvatarPresets}
-              onToggleAvatarMenu={handleToggleAvatarMenu}
-              onToggleAvatarPresets={handleToggleAvatarPresets}
-              onCloseAvatarMenu={handleCloseAvatarMenu}
-              onSelectPresetAvatar={handleSelectPresetAvatar}
-              onUploadAvatarClick={() => avatarFileInputRef.current?.click()}
-            />
-
-            {/* Student Quick Meta Subcomponent */}
-            <ProfileMetaInfo
-              name={formData.name}
-              email={formData.email}
-              phone={formData.phone}
-              studentId={formData.studentId}
-              gradeLevel={formData.gradeLevel}
-              isVerified={formData.isVerified}
-            />
-          </div>
-        </div>
-
-        {/* Tab Header Navigation Subcomponent */}
-        <ProfileModalTabNav activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* Modal Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5 max-h-[55vh] overflow-y-auto">
-          {activeTab === 'personal' ? (
-            <ProfilePersonalTab formData={formData} onChange={handleChange} />
-          ) : (
-            <ProfilePreferencesTab formData={formData} onChange={handleChange} />
-          )}
-
-          {saveError && <p role="alert">{saveError}</p>}
-
-          {/* Action Buttons Footer Subcomponent */}
-          <ProfileModalFooter isSaved={isSaved} isSaving={isSaving} onClose={props.onClose} onLogout={handleLogout} />
-        </form>
+        <ProfileModalHeader model={model} onClose={props.onClose} />
+        <ProfileModalForm model={model} onClose={props.onClose} />
       </div>
     </div>
   );

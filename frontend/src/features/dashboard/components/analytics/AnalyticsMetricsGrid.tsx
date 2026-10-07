@@ -13,7 +13,7 @@ export const AnalyticsMetricsGrid = memo(function AnalyticsMetricsGrid({
   aiFocusScore,
   conceptMasteryScore,
   classBehaviorScore,
-  avgScore = 92,
+  avgScore = 0,
   className = '',
 }: AnalyticsMetricsGridProps) {
   const { metricItems } = useAnalyticsMetricsGrid({

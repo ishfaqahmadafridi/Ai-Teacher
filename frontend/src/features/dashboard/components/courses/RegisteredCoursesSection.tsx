@@ -3,18 +3,19 @@
 import { memo } from 'react';
 import { Search, GraduationCap, PlusCircle } from 'lucide-react';
 import { useRegisteredCoursesSection } from '../../hooks/useRegisteredCoursesSection';
-import { DEFAULT_REGISTERED_COURSES } from '../../constants/dashboardContentConstants';
 import { RegisteredCourseCard } from './RegisteredCourseCard';
 import type { RegisteredCoursesSectionProps } from '../../types/courses.types';
+import { useAuthStore } from '@/features/auth/state/authStore';
 
 export const RegisteredCoursesSection = memo(function RegisteredCoursesSection({
-  courses = DEFAULT_REGISTERED_COURSES,
-  fieldTitle = 'Computer Science & Information Technology (IT)',
+  courses = [],
+  fieldTitle = 'Your registered courses',
   onJoinCourse,
   onOpenRegisterModal,
   className = '',
 }: RegisteredCoursesSectionProps) {
   const { filterQuery, filteredCourses, handleFilterChange } = useRegisteredCoursesSection({ courses });
+  const interests = useAuthStore((state) => state.user?.selectedInterests);
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -64,6 +65,17 @@ export const RegisteredCoursesSection = memo(function RegisteredCoursesSection({
         />
       </div>
 
+      {filteredCourses.length === 0 && (
+        <div className="space-y-3 text-slate-400">
+          <p>{courses.length === 0 ? 'You have not registered any courses yet.' : 'No courses match your search.'}</p>
+          {courses.length === 0 && (
+            <>
+              {interests && interests.length > 0 && <p>Saved learning interests: {interests.join(', ')}.</p>}
+              <p>Learning interests are saved in your profile. To enroll, click Register New Course, choose an interest, enter the course details, and submit the registration form.</p>
+            </>
+          )}
+        </div>
+      )}
       {/* Courses Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCourses.map((course) => (

@@ -5,12 +5,12 @@ import type {
 } from '../types/progress.types';
 
 export const DEFAULT_BEHAVIOR_METRICS: StudentBehaviorMetrics = {
-  conductScore: 95,
-  disruptionWarningsCount: 2,
+  conductScore: 0,
+  disruptionWarningsCount: 0,
   maxAllowedWarnings: 3,
-  focusLevelPercent: 92,
-  interactionQualityPercent: 88,
-  lastIncidentNote: 'Warning issued on Aug 4 for asking non-topic gaming questions during live lecture. (2/3 warning chances used - 1 chance remaining before permanent account ban).',
+  focusLevelPercent: 0,
+  interactionQualityPercent: 0,
+  lastIncidentNote: '',
   bannedMessage: 'ACCOUNT & EMAIL BANNED — Exceeded maximum 3/3 disruption warnings. Misbehavior is strictly not allowed in the app. Fines or payments are NOT accepted for misbehavior.',
 };
 

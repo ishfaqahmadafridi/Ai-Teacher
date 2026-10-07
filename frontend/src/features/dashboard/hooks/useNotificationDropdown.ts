@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { DEFAULT_NOTIFICATIONS } from '../constants/notificationsConstants';
 import type { NotificationItem, UseNotificationDropdownOptions } from '../types/topbar.types';
 
 export function useNotificationDropdown(options: UseNotificationDropdownOptions = {}) {
-  const { initialNotifications = DEFAULT_NOTIFICATIONS, onNotificationClick } = options;
+  const { initialNotifications = [], onNotificationClick } = options;
 
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>(initialNotifications);

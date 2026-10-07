@@ -273,3 +273,16 @@ test('an expired request from a previous account is never replayed under the new
   await assert.rejects(onError({ response: { status: 401, data: {} }, config: { url: '/api/auth/me/', headers: {}, _accountId: 'old' } }), /account changed/);
   assert.equal(refreshCalls, 0);
 });
+
+test('skipping onboarding does not unlock learning until saved details are complete', () => {
+  const { mapAuthUser } = loadSource('features/auth/utilities/userUtils.ts');
+  const { getLearningReadiness } = loadSource('features/onboarding/utils/learningReadiness.ts');
+  const user = mapAuthUser(apiUser);
+  assert.equal(getLearningReadiness(null).isReady, false);
+  assert.equal(getLearningReadiness(user).isReady, true);
+  for (const field of ['firstName', 'country', 'timezone', 'preferredLanguage', 'educationLevel', 'academicYear']) {
+    assert.equal(getLearningReadiness({ ...user, [field]: ' ', onboardingCompleted: true }).isReady, false, field);
+  }
+  assert.equal(getLearningReadiness({ ...user, selectedInterests: [], onboardingCompleted: true }).isReady, false);
+  assert.equal(getLearningReadiness({ ...user, selectedInterests: [' '] }).isReady, false);
+});

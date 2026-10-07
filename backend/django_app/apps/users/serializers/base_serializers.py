@@ -36,7 +36,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     cover_url = serializers.CharField(required=False, allow_blank=True, max_length=2_000_000)
     mobile = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=20)
     selected_interests = serializers.ListField(
-        child=serializers.CharField(max_length=150), max_length=100, required=False
+        child=serializers.CharField(max_length=150), max_length=1, required=False
     )
 
     class Meta:

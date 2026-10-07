@@ -10,18 +10,18 @@ import { AnalyticsStreakFooter } from './AnalyticsStreakFooter';
 import type { ProgressAnalyticsCardProps } from '../../types/dashboard.types';
 
 export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
-  weeklyProgressPercent = 75,
-  streakDays = 7,
-  attendancePercent = 96,
-  classesAttended = 28,
-  totalClasses = 29,
-  classBehaviorScore = 95,
-  aiFocusScore = 98,
-  conceptMasteryScore = 88,
-  assignmentsCompleted = 14,
-  totalAssignments = 15,
-  quizzesPassed = 8,
-  totalQuizzes = 10,
+  weeklyProgressPercent = 0,
+  streakDays = 0,
+  attendancePercent = 0,
+  classesAttended = 0,
+  totalClasses = 0,
+  classBehaviorScore = 0,
+  aiFocusScore = 0,
+  conceptMasteryScore = 0,
+  assignmentsCompleted = 0,
+  totalAssignments = 0,
+  quizzesPassed = 0,
+  totalQuizzes = 0,
   className = '',
 }: ProgressAnalyticsCardProps) {
   const {

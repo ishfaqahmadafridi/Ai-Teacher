@@ -6,6 +6,7 @@ API View for listing and registering courses within the Dashboard domain.
 
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
@@ -23,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 class CourseListView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     GET /api/dashboard/courses/
     POST /api/dashboard/courses/
@@ -38,7 +40,7 @@ class CourseListView(APIView):
     )
     def get(self, request):
         try:
-            courses = get_registered_courses()
+            courses = get_registered_courses(request.user)
             serializer = CourseModelSerializer(courses, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
@@ -59,9 +61,16 @@ class CourseListView(APIView):
         serializer = CourseRegistrationRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated = serializer.validated_data
+        user = request.user
+        required = [user.first_name, user.country, user.timezone, user.preferred_language, user.education_level, user.academic_year]
+        if not all(value and value.strip() for value in required) or len(user.selected_interests) != 1:
+            return Response({"error": "Complete your learning profile before registering a course."}, status=400)
+        if validated["subject_field"] not in user.selected_interests:
+            return Response({"subject_field": ["Choose one of your saved learning interests."]}, status=400)
 
         try:
             course = create_registered_course(
+                user=request.user,
                 title=validated["title"],
                 subject_field=validated["subject_field"],
                 course_code=validated["course_code"],

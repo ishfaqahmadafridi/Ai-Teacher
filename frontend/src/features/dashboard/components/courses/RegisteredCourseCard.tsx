@@ -45,7 +45,7 @@ export const RegisteredCourseCard = memo(function RegisteredCourseCard({
           <span className="flex items-center gap-1 text-[#38BDF8] font-semibold">
             <BookOpen className="w-3.5 h-3.5" /> Active Course
           </span>
-          <span>{course.completedLessons} of {course.totalLessons} Lessons</span>
+          <span>{course.totalLessons > 0 ? `${course.completedLessons} of ${course.totalLessons} Lessons` : 'No lessons recorded'}</span>
         </div>
       </div>
 

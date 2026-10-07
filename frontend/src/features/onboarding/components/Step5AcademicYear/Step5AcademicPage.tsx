@@ -8,6 +8,7 @@ import { AcademicHeader } from './AcademicHeader';
 import { AcademicLevelToggle } from './AcademicLevelToggle';
 import { AcademicYearGrid } from './AcademicYearGrid';
 import { GrowthTrajectoryCard } from './GrowthTrajectoryCard';
+import { SkipStepButton } from '../SkipStepButton';
 
 export const Step5AcademicPage = memo(function Step5AcademicPage() {
   const {
@@ -29,6 +30,7 @@ export const Step5AcademicPage = memo(function Step5AcademicPage() {
       />
 
       <GrowthTrajectoryCard />
+      <div className="flex justify-end"><SkipStepButton step={5} /></div>
     </Step5AcademicLayout>
   );
 });

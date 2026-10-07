@@ -86,6 +86,7 @@ export interface DashboardLayoutProps {
 }
 
 export interface DashboardMainContentProps {
+  onOpenTimetable?: () => void;
   activeTabId: string;
   studentName: string;
   streakDays: number;
@@ -99,6 +100,11 @@ export interface DashboardMainContentProps {
   onResumeCourse?: (id?: string) => void;
   onOpenRegisterCourseModal?: () => void;
   className?: string;
+}
+
+export interface LearningSetupActionsProps {
+  onRegisterCourse?: () => void;
+  onOpenTimetable?: () => void;
 }
 
 // Canonical Re-exports for Feature Types

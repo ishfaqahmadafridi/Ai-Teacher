@@ -1,10 +1,6 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import {
-  DEFAULT_PERFORMANCE_TREND_DATA,
-  DEFAULT_MONTHLY_TREND_DATA,
-} from '../constants/analyticsConstants';
 import type { UseProgressAnalyticsCardOptions } from '../types/analytics.types';
 
 /**
@@ -12,7 +8,7 @@ import type { UseProgressAnalyticsCardOptions } from '../types/analytics.types';
  * Manages timeframe selection state, clamped progress calculations, and trend data.
  */
 export function useProgressAnalyticsCard(options: UseProgressAnalyticsCardOptions = {}) {
-  const { weeklyProgressPercent = 75 } = options;
+  const { weeklyProgressPercent = 0 } = options;
   const [activeTimeframe, setActiveTimeframe] = useState<'week' | 'month'>('week');
 
   const handleSelectTimeframe = useCallback((tf: 'week' | 'month') => {
@@ -24,8 +20,8 @@ export function useProgressAnalyticsCard(options: UseProgressAnalyticsCardOption
   }, [weeklyProgressPercent]);
 
   const trendData = useMemo(() => {
-    return activeTimeframe === 'week' ? DEFAULT_PERFORMANCE_TREND_DATA : DEFAULT_MONTHLY_TREND_DATA;
-  }, [activeTimeframe]);
+    return [];
+  }, []);
 
   return {
     activeTimeframe,

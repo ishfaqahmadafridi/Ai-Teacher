@@ -15,11 +15,11 @@ export const UserAvatarBadge = memo(function UserAvatarBadge({
         style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%)' }}
       >
         <div className="w-full h-full rounded-full overflow-hidden bg-[#0A0F18]">
-          <img
+          {studentAvatar?.trim() ? <img
             src={studentAvatar}
             alt={studentName}
             className="w-full h-full object-cover"
-          />
+          /> : <span className="flex h-full w-full items-center justify-center text-3xl font-semibold text-slate-200" aria-label={studentName}>{studentName?.trim().charAt(0).toUpperCase() || 'S'}</span>}
         </div>
       </div>
       {/* Online status indicator dot */}
