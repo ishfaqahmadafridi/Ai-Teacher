@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { MOCK_STUDENTS, DEFAULT_ATTENDANCE_SUMMARY } from '../constants/sidebarConstants';
+import { DEFAULT_STUDENTS, DEFAULT_ATTENDANCE_SUMMARY } from '../constants/sidebarConstants';
 
 export function useStudentsModal() {
   const [filter, setFilter] = useState<'all' | 'present' | 'absent'>('all');
@@ -12,7 +12,7 @@ export function useStudentsModal() {
   }, []);
 
   const filteredStudents = useMemo(() => {
-    return MOCK_STUDENTS.filter((student) => {
+    return DEFAULT_STUDENTS.filter((student) => {
       const matchesFilter = filter === 'all' || student.status === filter;
       const matchesSearch =
         student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -18,6 +18,7 @@ export const TimetablePreferencesModal = memo(
   }: TimetablePreferencesModalProps) {
     const {
       preferredTime,
+      customStartTime, setCustomStartTime, customEndTime, setCustomEndTime, timeError,
       setPreferredTime,
       maxClassesPerDay,
       setMaxClassesPerDay,
@@ -44,6 +45,17 @@ export const TimetablePreferencesModal = memo(
               onSelectTime={setPreferredTime}
             />
 
+            <div className="space-y-3">
+              <button type="button" aria-pressed={preferredTime === 'custom'} onClick={() => setPreferredTime('custom')} className={`w-full rounded-xl border p-3 text-left text-sm font-semibold ${preferredTime === 'custom' ? 'border-purple-500 bg-purple-600/20 text-white' : 'border-slate-700 text-slate-300'}`}>Custom study hours — choose your own time</button>
+              {preferredTime === 'custom' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="space-y-2 text-sm text-slate-300">Start time<input type="time" required value={customStartTime} onChange={(e) => setCustomStartTime(e.target.value)} className="block w-full rounded-lg border border-slate-600 bg-slate-800 p-2 text-white [color-scheme:dark]" /></label>
+                  <label className="space-y-2 text-sm text-slate-300">End time<input type="time" required value={customEndTime} onChange={(e) => setCustomEndTime(e.target.value)} className="block w-full rounded-lg border border-slate-600 bg-slate-800 p-2 text-white [color-scheme:dark]" /></label>
+                </div>
+              )}
+              {timeError && <p role="alert" className="text-sm text-red-400">{timeError}</p>}
+            </div>
+
             {/* 2. Maximum Classes per Day */}
             <TimetableMaxClassesSelector
               maxClassesPerDay={maxClassesPerDay}
@@ -69,4 +81,3 @@ export const TimetablePreferencesModal = memo(
 );
 
 TimetablePreferencesModal.displayName = 'TimetablePreferencesModal';
-

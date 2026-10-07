@@ -30,7 +30,7 @@ export const DashboardMainContent = memo(function DashboardMainContent({
   const { isReady } = getLearningReadiness(user);
   return (
     <main className="px-4 md:px-10 py-8 max-w-[1440px] mx-auto w-full pb-16 relative z-10">
-      {(activeTabId === 'dashboard' || !isReady) && (
+      {!isReady && (
         <LearningSetupActions onRegisterCourse={onOpenRegisterCourseModal} onOpenTimetable={onOpenTimetable} />
       )}
       {!isReady ? null : activeTabId === 'registered_courses' ? (

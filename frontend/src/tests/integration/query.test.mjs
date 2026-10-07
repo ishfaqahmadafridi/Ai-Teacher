@@ -208,3 +208,19 @@ test('closing the emoji picker during lazy loading does not append a detached pi
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(mounted, 0);
 });
+
+test('custom timetable respects user hours and never overlaps daily classes', () => {
+  const { generateSuggestedTimetable } = load('features/dashboard/utilities/scheduleUtils.ts');
+  const prefs = { preferredTime: 'custom', customStartTime: '13:15', customEndTime: '16:45', maxClassesPerDay: 4, includeSaturday: true, registeredCourses: ['A', 'B', 'C', 'D', 'E', 'F'] };
+  const result = generateSuggestedTimetable(prefs);
+  assert.ok(result.schedule.length > 0);
+  const occupied = new Set();
+  for (const item of result.schedule) {
+    assert.ok(['01:15 PM - 02:45 PM', '03:15 PM - 04:45 PM'].includes(item.timeSlot));
+    const key = `${item.dayOfWeek}:${item.timeSlot}`;
+    assert.equal(occupied.has(key), false);
+    occupied.add(key);
+  }
+  assert.throws(() => generateSuggestedTimetable({ ...prefs, customEndTime: '13:45' }), /90-minute/);
+  assert.throws(() => generateSuggestedTimetable({ ...prefs, customStartTime: '25:00' }), /90-minute/);
+});

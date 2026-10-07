@@ -9,21 +9,18 @@ export const UserAvatarBadge = memo(function UserAvatarBadge({
 }: UserAvatarBadgeProps) {
   return (
     <div className="relative shrink-0">
-      {/* Gradient ring */}
       <div
-        className="w-24 h-24 rounded-full p-[3.5px] shadow-xl shadow-[#7C3AED]/30"
-        style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%)' }}
+        className="w-24 h-24 rounded-full border border-violet-400/25 bg-violet-500/10 p-0.5"
       >
-        <div className="w-full h-full rounded-full overflow-hidden bg-[#0A0F18]">
+        <div className="w-full h-full rounded-full overflow-hidden bg-[#15152B]">
           {studentAvatar?.trim() ? <img
             src={studentAvatar}
             alt={studentName}
             className="w-full h-full object-cover"
-          /> : <span className="flex h-full w-full items-center justify-center text-3xl font-semibold text-slate-200" aria-label={studentName}>{studentName?.trim().charAt(0).toUpperCase() || 'S'}</span>}
+          /> : <span className="flex h-full w-full items-center justify-center text-2xl font-semibold text-violet-200" aria-label={studentName}>{studentName?.trim().charAt(0).toUpperCase() || 'S'}</span>}
         </div>
       </div>
-      {/* Online status indicator dot */}
-      <span className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-[#10B981] border-2 border-[#030712] shadow-[0_0_10px_rgba(16,185,129,0.9)]" />
+
     </div>
   );
 });
