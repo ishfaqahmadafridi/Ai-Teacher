@@ -38,10 +38,11 @@ async def lifespan(app: FastAPI):
     import asyncio
     async def _warm_rag():
         try:
-            from app.services.rag_service import _get_sentence_model, _get_chroma_collection
+            from app.services.rag_service import _get_sentence_model, _get_collection
             import asyncio as _asyncio
-            await _asyncio.to_thread(_get_sentence_model)
-            await _asyncio.to_thread(_get_chroma_collection)
+            collection = await _asyncio.to_thread(_get_collection)
+            if collection is not None:
+                await _asyncio.to_thread(_get_sentence_model)
             logger.info("[FastAPI] RAG warm-up complete.")
         except Exception as e:
             logger.warning(f"[FastAPI] RAG warm-up skipped: {e}")

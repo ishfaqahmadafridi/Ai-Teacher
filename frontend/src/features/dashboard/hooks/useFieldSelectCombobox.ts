@@ -9,9 +9,11 @@ export function useFieldSelectCombobox({ value, onChange }: UseFieldSelectCombob
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const [previousValue, setPreviousValue] = useState(value);
+  if (previousValue !== value) {
+    setPreviousValue(value);
     setQuery(value || '');
-  }, [value]);
+  }
 
   // Handle Outside Clicks
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAskSession } from './useAskSession';
 import { useVoiceInput } from '@/features/classroom/hooks/useVoiceInput';
 
@@ -23,6 +23,9 @@ export function useAskLayout() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
+  const handleCloseDrawer = useCallback(() => setDrawerOpen(false), []);
+  const handleOpenDrawer = useCallback(() => setDrawerOpen(true), []);
+
   const handleSend = () => {
     if (!input.trim() || loading) return;
     sendMessage(input.trim());
@@ -45,6 +48,8 @@ export function useAskLayout() {
     setInput,
     drawerOpen,
     setDrawerOpen,
+    handleCloseDrawer,
+    handleOpenDrawer,
     isListening,
     messagesEndRef,
     handleSend,

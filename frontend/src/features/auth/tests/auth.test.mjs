@@ -105,7 +105,7 @@ test('invalid login errors do not try token refresh or clear the current account
   let refreshCalls = 0;
   let cleared = 0;
   loadSource('lib/api/interceptors.ts', {
-    axios: { post: async () => { refreshCalls += 1; } },
+    axios: { default: { isCancel: () => false, post: async () => { refreshCalls += 1; } } },
     './client': { BASE_URL: 'http://backend', apiClient: { interceptors: {
       request: { use() {} }, response: { use(success, failure) { onError = failure; } },
     } } },
@@ -126,7 +126,7 @@ test('the displayed profile follows the signed-in database user rather than brow
     react: { useState: (initial) => [initial, () => {}], useEffect() {}, useMemo: (calculate) => calculate(), useCallback: (fn) => fn },
     'next/navigation': { useRouter: () => ({ replace() {} }) },
     '../../auth/state/authStore': { useAuthStore },
-    '../../auth/services/authService': { AuthService: {} },
+    '../../auth/hooks/useAuthQueries': { useUpdateProfileMutation: () => ({ mutateAsync() {} }) },
     '../constants/profileConstants': defaults,
     '../utilities': profileUtils,
   });
@@ -155,7 +155,7 @@ test('concurrent expired-token requests share one refresh and use the rotated cr
   const apiClient = async (request) => { retried.push(request.headers.Authorization); return { data: 'ok' }; };
   apiClient.interceptors = { request: { use() {} }, response: { use(success, failure) { onError = failure; } } };
   loadSource('lib/api/interceptors.ts', {
-    axios: { default: { post: async (url, body) => {
+    axios: { default: { isCancel: () => false, post: async (url, body) => {
       refreshCalls += 1;
       assert.equal(body.refresh, 'initial-refresh');
       await pending;
@@ -177,6 +177,7 @@ test('concurrent expired-token requests share one refresh and use the rotated cr
 function protectedRouteHarness(getProfile, initialUser = userUtils.mapAuthUser(apiUser)) {
   const values = [];
   const effects = [];
+  let profile = { isFetchedAfterMount: false, isSuccess: false, error: null };
   const redirects = [];
   let cursor = 0;
   let state = { user: initialUser, accessToken: initialUser ? 'stored-token' : null };
@@ -196,7 +197,10 @@ function protectedRouteHarness(getProfile, initialUser = userUtils.mapAuthUser(a
     },
     'next/navigation': { useRouter: () => ({ replace: (path) => redirects.push(path) }) },
     '../state/authStore': { useAuthStore: store },
-    '../services/authService': { AuthService: { getProfile } },
+    './useAuthQueries': { useProfileQuery: () => {
+      if (state.user) effects.push(() => getProfile().then(user => { profile = { isFetchedAfterMount: true, isSuccess: true, data: user }; }).catch(error => { profile = { isFetchedAfterMount: true, isSuccess: false, error }; }));
+      return profile;
+    } },
   });
   function useHarnessRender() {
     cursor = 0;
@@ -247,11 +251,25 @@ test('a rejected sign-in cannot authenticate the browser or navigate into the ap
     },
     'next/navigation': { useRouter: () => ({ push: (path) => redirects.push(path) }) },
     '../state/authStore': { useAuthStore: () => ({ setUser: () => { authenticated += 1; }, setLoading() {}, setError: (message) => errors.push(message), isLoading: false, error: null }) },
-    '../services/authService': { AuthService: { login: async () => { throw new Error('Invalid email or password.'); } } },
+    './useAuthQueries': { useLoginMutation: () => ({ isPending: false, mutateAsync: async () => { throw new Error('Invalid email or password.'); } }) },
     '../validators/auth.schema': { loginSchema: { safeParse: (data) => ({ success: true, data }) } },
   });
   await useLogin().handleSubmit({ preventDefault() {} });
   assert.equal(authenticated, 0);
   assert.deepEqual(redirects, []);
   assert.equal(errors.at(-1), 'Invalid email or password.');
+});
+
+test('an expired request from a previous account is never replayed under the new account', async () => {
+  let onError;
+  let refreshCalls = 0;
+  loadSource('lib/api/interceptors.ts', {
+    axios: { default: { isCancel: () => false, post: async () => { refreshCalls++; } } },
+    './client': { BASE_URL: 'http://backend', apiClient: { interceptors: {
+      request: { use() {} }, response: { use(success, failure) { onError = failure; } },
+    } } },
+    '@/features/auth/state/authStore': { useAuthStore: { getState: () => ({ user: { id: 'new' }, refreshToken: 'new-refresh' }) } },
+  });
+  await assert.rejects(onError({ response: { status: 401, data: {} }, config: { url: '/api/auth/me/', headers: {}, _accountId: 'old' } }), /account changed/);
+  assert.equal(refreshCalls, 0);
 });

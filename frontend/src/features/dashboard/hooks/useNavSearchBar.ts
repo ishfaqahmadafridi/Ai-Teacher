@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '@/features/auth/state/authStore';
+import { queryKeys, SEARCH_DEBOUNCE_TIME } from '@/shared/constants/queryConstants';
 import { fetchSearchResultsFromBackend } from '../services/searchService';
 import type {
   UseNavSearchBarOptions,
@@ -23,50 +26,21 @@ export function useNavSearchBar({
 }: UseNavSearchBarOptions) {
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [groupedResults, setGroupedResults] = useState<SearchGroupedResults>(EMPTY_RESULTS);
-
+  const userId = useAuthStore(state => state.user?.id);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-
-  // Debounced API search with AbortController cancellation for senior-level race condition protection
   useEffect(() => {
-    const trimmed = searchQuery.trim();
-    if (!trimmed) {
-      setGroupedResults(EMPTY_RESULTS);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-
-    const timer = setTimeout(() => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      fetchSearchResultsFromBackend(trimmed, controller.signal)
-        .then((results) => {
-          setGroupedResults(results);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          if (err.name !== 'AbortError') {
-            setIsLoading(false);
-          }
-        });
-    }, 300);
-
-    return () => {
-      clearTimeout(timer);
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim()), SEARCH_DEBOUNCE_TIME);
+    return () => clearTimeout(timer);
   }, [searchQuery]);
+  const search = useQuery({
+    queryKey: queryKeys.search(userId, debouncedQuery),
+    enabled: !!userId && !!debouncedQuery && debouncedQuery === searchQuery.trim(),
+    queryFn: ({ signal }) => fetchSearchResultsFromBackend(debouncedQuery, signal),
+  });
+  const groupedResults = debouncedQuery === searchQuery.trim() ? search.data ?? EMPTY_RESULTS : EMPTY_RESULTS;
+  const isLoading = !!searchQuery.trim() && (debouncedQuery !== searchQuery.trim() || search.isFetching);
 
   const handleFocus = useCallback(() => {
     setIsFocused(true);
@@ -90,7 +64,6 @@ export function useNavSearchBar({
   const handleClear = useCallback(() => {
     onSearchChange('');
     setIsOpen(false);
-    setGroupedResults(EMPTY_RESULTS);
     inputRef.current?.focus();
   }, [onSearchChange]);
 

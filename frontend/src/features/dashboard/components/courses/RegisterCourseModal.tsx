@@ -7,7 +7,7 @@ import { RegisterCourseForm } from './RegisterCourseForm';
 import type { RegisterCourseModalProps } from '../../types/courses.types';
 
 export const RegisterCourseModal = memo(function RegisterCourseModal(props: RegisterCourseModalProps) {
-  const { isOpen, formData, handleChange, handleSubmit } = useRegisterCourseModal(props);
+  const { isOpen, error, isPending, formData, handleChange, handleSubmit } = useRegisterCourseModal(props);
 
   if (!isOpen) return null;
 
@@ -51,6 +51,8 @@ export const RegisterCourseModal = memo(function RegisterCourseModal(props: Regi
 
         {/* Modal Body Form */}
         <RegisterCourseForm
+          error={error}
+          isPending={isPending}
           formData={formData}
           onChange={handleChange}
           onSubmit={handleSubmit}

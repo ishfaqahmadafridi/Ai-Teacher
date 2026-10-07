@@ -33,11 +33,13 @@ export interface RegisterCourseModalProps {
     title: string;
     courseCode: string;
     creditHours: number;
-  }) => void;
+  }) => Promise<void>;
   className?: string;
 }
 
 export interface RegisterCourseFormProps {
+  error: string | null;
+  isPending: boolean;
   formData: {
     subjectField: string;
     title: string;
@@ -70,6 +72,7 @@ export interface RegisterCourseCodeHoursInputsProps {
 }
 
 export interface RegisterCourseFooterActionsProps {
+  isPending: boolean;
   onClose: () => void;
   className?: string;
 }

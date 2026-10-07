@@ -1,23 +1,16 @@
 'use client';
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
+import { useClassroomQuestionMutation } from '@/features/classroom/hooks/useClassroomQueries';
+import { useConversationSession } from '@/shared/hooks/useConversationSession';
 import { v4 as uuidv4 } from 'uuid';
 import { useAskStore } from '@/features/ask/state/askStore';
 import { useAppSelector } from '@/hooks/useAppStore';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000';
-const SESSION_KEY = 'ai_teacher_session_id';
-
-function getSessionId(): string {
-  if (typeof window === 'undefined') return uuidv4();
-  let id = localStorage.getItem(SESSION_KEY);
-  if (!id) {
-    id = uuidv4();
-    localStorage.setItem(SESSION_KEY, id);
-  }
-  return id;
-}
-
 export function useAskSession() {
+  const { mutateAsync } = useClassroomQuestionMutation();
+  const getSessionId = useConversationSession();
+  const request = useRef<AbortController | null>(null);
+  useEffect(() => () => request.current?.abort(), []);
   const {
     messages,
     loading,
@@ -36,6 +29,9 @@ export function useAskSession() {
   const sendMessage = useCallback(
     async (text: string) => {
       if (!text.trim()) return;
+      request.current?.abort();
+      const controller = new AbortController();
+      request.current = controller;
 
       const userMsgId = uuidv4();
       addMessage({ id: userMsgId, role: 'user', content: text });
@@ -43,29 +39,18 @@ export function useAskSession() {
       setError(null);
 
       try {
-        const response = await fetch(`${BACKEND_URL}/api/physics-teacher/ask/`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question: text,
-            session_id: getSessionId(),
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to get response from server.');
-        }
-
-        const data = (await response.json()) as { answer: string };
+        const data = await mutateAsync({ question: text, sessionId: getSessionId(), signal: controller.signal });
+        if (controller.signal.aborted) return;
         const assistantMsgId = uuidv4();
-        addMessage({ id: assistantMsgId, role: 'assistant', content: data.answer });
+        addMessage({ id: assistantMsgId, role: 'assistant', content: data.chunks.map(chunk => chunk.speak).join("\n\n") });
       } catch (err: unknown) {
+        if (controller.signal.aborted) return;
         setError(err instanceof Error ? err.message : 'An error occurred.');
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     },
-    [addMessage, setLoading, setError]
+    [addMessage, setLoading, setError, mutateAsync, getSessionId]
   );
 
   const speakMessage = useCallback(

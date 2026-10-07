@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../state/authStore';
-import { AuthService } from '../services/authService';
+import { useLoginMutation } from './useAuthQueries';
 import { loginSchema } from '../validators/auth.schema';
 import type { LoginFormData } from '../types';
 
@@ -23,8 +23,9 @@ const initialForm: LoginFormData = {
 };
 
 export function useLogin(): UseLoginReturn {
+  const { mutateAsync, isPending } = useLoginMutation();
   const router = useRouter();
-  const { setUser, setLoading, setError, isLoading, error } = useAuthStore();
+  const { setUser, setError, error } = useAuthStore();
 
   const [form, setForm] = useState<LoginFormData>(initialForm);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
@@ -65,9 +66,8 @@ export function useLogin(): UseLoginReturn {
         return;
       }
 
-      setLoading(true);
       try {
-        const data = await AuthService.login(result.data);
+        const data = await mutateAsync(result.data);
         setUser(data.user, data.access, data.refresh);
 
         if (data.user.onboardingCompleted) {
@@ -79,18 +79,16 @@ export function useLogin(): UseLoginReturn {
         const message =
           err instanceof Error ? err.message : 'Login failed. Please check your credentials.';
         setError(message);
-      } finally {
-        setLoading(false);
       }
     },
-    [form, router, setError, setLoading, setUser]
+    [form, router, setError, setUser, mutateAsync]
   );
 
   return {
     form,
     fieldErrors,
     showPassword,
-    isLoading,
+    isLoading: isPending,
     error,
     handleChange,
     handleSubmit,

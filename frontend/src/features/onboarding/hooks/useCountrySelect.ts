@@ -13,19 +13,12 @@ export function useCountrySelect({ value, onChange }: UseCountrySelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Sync internal search query if external value changes
-  useEffect(() => {
-    if (value !== undefined && value !== query) {
-      const match = WORLD_COUNTRIES.find(
-        (c) => c.name.toLowerCase() === value.toLowerCase() || c.code.toLowerCase() === value.toLowerCase()
-      );
-      if (match) {
-        setQuery(`${match.flag} ${match.name}`);
-      } else {
-        setQuery(value);
-      }
-    }
-  }, [value]);
+  const [previousValue, setPreviousValue] = useState<string | undefined>(undefined);
+  if (previousValue !== value) {
+    setPreviousValue(value);
+    const match = WORLD_COUNTRIES.find(c => c.name.toLowerCase() === value.toLowerCase() || c.code.toLowerCase() === value.toLowerCase());
+    setQuery(match ? `${match.flag} ${match.name}` : value);
+  }
 
   // Filter countries list dynamically based on user typed query
   const filteredCountries = useMemo(() => {

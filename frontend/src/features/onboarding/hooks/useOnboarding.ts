@@ -1,5 +1,6 @@
 'use client';
 
+import { useProfileMutation } from '../../auth/hooks/useAuthQueries';
 import { useRouter } from 'next/navigation';
 import { useOnboardingStore } from '../state/onboardingStore';
 import { OnboardingService } from '../services/onboardingService';
@@ -9,6 +10,7 @@ import type { EducationLevel, AcademicYear } from '../types';
 
 export function useOnboarding() {
   const router = useRouter();
+  const mutation = useProfileMutation();
   const store = useOnboardingStore();
 
   const handleNextStep = async () => {
@@ -35,7 +37,7 @@ export function useOnboarding() {
     store.setLoading(true);
     store.setError(null);
     try {
-      const user = await save();
+      const user = await mutation.mutateAsync(save);
       const current = useAuthStore.getState();
       if (!current.user || current.user.id !== session.user?.id || !current.accessToken) {
         throw new Error('The signed-in account changed.');

@@ -5,3 +5,5 @@ export * from './sidebar.types';
 export * from './teacher.types';
 export * from './input.types';
 export * from './stage.types';
+
+export * from './api.types';
