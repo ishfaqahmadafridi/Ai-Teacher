@@ -28,7 +28,7 @@ def is_ready():
 
 
 def _sync_search(query, top_k):
-    if top_k <= 0 or not query.strip():
+    if top_k <= 0 or not query.strip() or not is_ready():
         return ""
     try:
         collection = _get_collection()
