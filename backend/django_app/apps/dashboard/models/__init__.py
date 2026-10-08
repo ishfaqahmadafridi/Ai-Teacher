@@ -10,3 +10,4 @@ __all__ = [
 ]
 
 from .timetable_models import TimetableJob, SavedTimetable
+from .timetable_models import SessionAttendance

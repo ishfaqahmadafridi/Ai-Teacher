@@ -41,7 +41,7 @@ class TimetableTests(TestCase):
         self.assertFalse(SavedTimetable.objects.exists())
         response = self.client.post(f'/api/dashboard/timetable/jobs/{job.pk}/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.client.get('/api/dashboard/timetable/').data['schedule'], job.result['schedule'])
+        self.assertEqual(self.client.get('/api/dashboard/timetable/').data['schedule'][0]['id'], job.result['schedule'][0]['id'])
         other = get_user_model().objects.create_user(username='other-planner')
         self.client.force_authenticate(other)
         self.assertEqual(self.client.get(f'/api/dashboard/timetable/jobs/{job.pk}/').status_code, 404)
@@ -137,3 +137,62 @@ class TimetableTests(TestCase):
         job.refresh_from_db()
         self.assertEqual(job.status, 'failed')
         self.assertEqual(job.result, {})
+
+    def test_join_is_time_checked_and_attendance_persists_per_occurrence(self):
+        from uuid import uuid4
+        from datetime import datetime, timezone as tz
+        from apps.dashboard.models import SessionAttendance
+        session_id = str(uuid4())
+        item = dict(id=session_id, title='Sorting', dayOfWeek='Monday', startTime='09:00', endTime='10:30', timezone='Asia/Karachi', status='upcoming', activeFrom='2026-10-11T00:00:00+00:00')
+        SavedTimetable.objects.create(user=self.user, schedule=[item])
+        route = f'/api/dashboard/timetable/sessions/{session_id}/join/'
+        at = lambda hour, minute=0: datetime(2026, 10, 12, hour, minute, tzinfo=tz.utc)
+        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(3, 59)):
+            self.assertEqual(self.client.post(route).status_code, 409)
+        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(4)):
+            self.assertEqual(self.client.post(route).status_code, 200)
+            self.assertEqual(self.client.post(route).status_code, 200)
+        self.assertEqual(SessionAttendance.objects.count(), 1)
+        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(5, 30)):
+            self.assertEqual(self.client.post(route).status_code, 409)
+        saved = SavedTimetable.objects.get(user=self.user)
+        from apps.dashboard.services.session_attendance import schedule_with_attendance
+        self.assertEqual(schedule_with_attendance(saved, self.user, at(6))[0]['attendance'], 'attended')
+        following_monday = datetime(2026, 10, 19, 6, tzinfo=tz.utc)
+        self.assertEqual(schedule_with_attendance(saved, self.user, following_monday)[0]['attendance'], 'missed')
+        missed = SessionAttendance.objects.get(user=self.user, session_id=session_id, session_date=following_monday.date())
+        self.assertEqual(missed.status, 'missed')
+        self.assertIsNone(missed.joined_at)
+        schedule_with_attendance(saved, self.user, following_monday)
+        self.assertEqual(SessionAttendance.objects.count(), 2)
+        other = get_user_model().objects.create_user(username='attendance-other')
+        self.client.force_authenticate(other)
+        self.assertEqual(self.client.post(route).status_code, 404)
+
+    def test_sessions_before_registration_are_not_marked_missed(self):
+        from uuid import uuid4
+        from datetime import datetime, timezone as tz
+        from apps.dashboard.services.session_attendance import schedule_with_attendance
+        item = dict(id=str(uuid4()), dayOfWeek='Monday', startTime='09:00', endTime='10:30', timezone='UTC', activeFrom='2026-10-13T00:00:00+00:00')
+        saved = SavedTimetable.objects.create(user=self.user, schedule=[item])
+        self.assertEqual(schedule_with_attendance(saved, self.user, datetime(2026, 10, 14, tzinfo=tz.utc))[0]['attendance'], 'unmarked')
+
+    def test_legacy_country_timezone_is_repaired_and_ended_session_is_saved_missed(self):
+        from uuid import uuid4
+        from datetime import datetime, timezone as tz
+        from apps.dashboard.services.session_attendance import schedule_with_attendance
+        from apps.dashboard.models import SessionAttendance
+        self.user.country, self.user.timezone = 'Pakistan', 'America/New_York'
+        self.user.save()
+        item = dict(id=str(uuid4()), dayOfWeek='Thursday', startTime='11:00', endTime='12:30', timezone='America/New_York', activeFrom='2026-10-01T00:00:00+00:00')
+        saved = SavedTimetable.objects.create(user=self.user, schedule=[item])
+        now = datetime(2026, 10, 8, 14, 22, tzinfo=tz.utc)
+        result = schedule_with_attendance(saved, self.user, now)[0]
+        self.assertEqual(result['timezone'], 'Asia/Karachi')
+        self.assertTrue(result['sessionEnded'])
+        self.assertEqual(result['attendance'], 'missed')
+        self.assertEqual(SessionAttendance.objects.get(user=self.user).status, 'missed')
+        self.user.refresh_from_db()
+        saved.refresh_from_db()
+        self.assertEqual(self.user.timezone, 'Asia/Karachi')
+        self.assertEqual(saved.schedule[0]['timezone'], 'Asia/Karachi')

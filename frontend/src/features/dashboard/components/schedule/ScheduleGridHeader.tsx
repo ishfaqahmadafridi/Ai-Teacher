@@ -1,5 +1,7 @@
 'use client';
 
+import { formatScheduleTimeSlot } from '../../utilities/scheduleTimeFormat';
+
 import { memo } from 'react';
 import type { ScheduleGridHeaderProps } from '../../types/schedule.types';
 
@@ -14,10 +16,10 @@ export const ScheduleGridHeader = memo(function ScheduleGridHeader({
       </div>
       {slots.map((slot) => (
         <div
-          key={slot}
+          key={formatScheduleTimeSlot(slot)}
           className="text-left px-4 font-['Hanken_Grotesk',sans-serif] text-xs font-semibold tabular-nums text-slate-300 py-2.5"
         >
-          {slot}
+          {formatScheduleTimeSlot(slot)}
         </div>
       ))}
     </div>

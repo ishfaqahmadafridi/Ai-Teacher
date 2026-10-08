@@ -1,5 +1,7 @@
 'use client';
 
+import { formatScheduleTimeSlot } from '../../utilities/scheduleTimeFormat';
+
 import { Calendar, Clock } from 'lucide-react';
 import type { ScheduleSlotFieldsProps, DayOfWeek } from '../../types/schedule.types';
 
@@ -39,7 +41,7 @@ export function ScheduleTimingFields({ model }: ScheduleSlotFieldsProps) {
                 >
                   {timeSlotOptions.map((slot) => (
                     <option key={slot} value={slot} className="bg-slate-900 text-white">
-                      {slot}
+                      {formatScheduleTimeSlot(slot)}
                     </option>
                   ))}
                 </select>

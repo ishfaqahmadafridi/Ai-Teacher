@@ -5,13 +5,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TimetableService } from '@/services/timetableService';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import type {
-  DayOfWeek,
   ScheduleItem,
   ScheduleViewMode,
   UseClassScheduleSectionOptions,
 } from '../types/schedule.types';
 import { DAYS_OF_WEEK } from '../constants/scheduleConstants';
 import { filterScheduleItemsByDay } from '../utilities/scheduleUtils';
+import { useScheduleEndSync } from './useScheduleEndSync';
+import { useScheduleSelectedDay } from './useScheduleSelectedDay';
 import { useTimetablePlannerModal } from './useTimetablePlannerModal';
 
 export function useClassScheduleSection(
@@ -19,17 +20,19 @@ export function useClassScheduleSection(
 ) {
   const {
     scheduleItems: initialScheduleItems = [],
-    defaultDay = 'Monday',
+    defaultDay,
     defaultViewMode = 'timeline',
   } = options;
 
   const queryClient = useQueryClient();
   const [saveError, setSaveError] = useState<string | null>(null);
+  const profileTimezone = useAuthStore((state) => state.user?.timezone || '');
   const userId = useAuthStore((state) => state.user?.id);
-  const saved = useQuery({ queryKey: ['saved-timetable', userId], queryFn: ({ signal }) => TimetableService.saved(signal), enabled: Boolean(userId) });
+  const saved = useQuery({ queryKey: ['saved-timetable', userId], queryFn: ({ signal }) => TimetableService.saved(signal), enabled: Boolean(userId), refetchInterval: 30000 });
   const [localItems, setScheduleItems] = useState<ScheduleItem[]>(initialScheduleItems);
   const scheduleItems = saved.data ?? localItems;
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(defaultDay);
+  useScheduleEndSync(scheduleItems, profileTimezone, userId);
+  const { selectedDay, setSelectedDay } = useScheduleSelectedDay(scheduleItems[0]?.timezone || profileTimezone, defaultDay);
   const [viewMode, setViewMode] = useState<ScheduleViewMode>(defaultViewMode);
   const [selectedNoticeItem, setSelectedNoticeItem] = useState<ScheduleItem | null>(null);
 
@@ -42,9 +45,7 @@ export function useClassScheduleSection(
     queryClient.setQueryData(['saved-timetable', userId], newItems);
   }, [queryClient, userId]);
 
-  const selectDay = useCallback((day: DayOfWeek) => {
-    setSelectedDay(day);
-  }, []);
+  const selectDay = setSelectedDay;
 
   const toggleViewMode = useCallback((mode: ScheduleViewMode) => {
     setViewMode(mode);

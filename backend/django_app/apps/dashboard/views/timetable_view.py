@@ -15,6 +15,8 @@ from apps.dashboard.serializers.timetable_serializers import TimetablePreference
 from apps.dashboard.tasks import generate_timetable
 from apps.dashboard.constants.timetable_prompts import PLANNER_VERSION
 
+from apps.dashboard.services.session_attendance import schedule_with_attendance
+
 class TimetableThrottle(UserRateThrottle):
     scope = "timetable"
     def get_rate(self):
@@ -61,14 +63,14 @@ class TimetableJobView(APIView):
             job = get_object_or_404(TimetableJob, pk=job_id, user=request.user, status="ready")
             if not set(str(course.pk) for course in CourseModel.objects.filter(user=request.user)).issuperset(item["courseId"] for item in job.result["schedule"]):
                 return Response({"detail": "Courses changed. Generate a new timetable."}, status=409)
-            saved, _ = SavedTimetable.objects.update_or_create(user=request.user, defaults={"schedule": job.result["schedule"]})
+            saved, _ = SavedTimetable.objects.update_or_create(user=request.user, defaults={"schedule": [{**item, "activeFrom": timezone.now().isoformat()} for item in job.result["schedule"]]})
         return Response({"schedule": saved.schedule})
 
 class SavedTimetableView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         saved = SavedTimetable.objects.filter(user=request.user).first()
-        return Response({"schedule": saved.schedule if saved else []})
+        return Response({"schedule": schedule_with_attendance(saved, request.user) if saved else []})
 
     def post(self, request):
         serializer = ManualSlotSerializer(data=request.data)
@@ -91,6 +93,8 @@ class SavedTimetableView(APIView):
         if not CourseModel.objects.filter(user=request.user, title=item["subject"]).exists():
             return Response({"detail": "Choose one of your registered courses."}, status=400)
         item["timeFormatted"] = item["timeSlot"]
+        item["timezone"] = request.user.timezone or "UTC"
+        item["activeFrom"] = timezone.now().isoformat()
         with transaction.atomic():
             get_user_model().objects.select_for_update().get(pk=request.user.pk)
             saved, _ = SavedTimetable.objects.get_or_create(user=request.user)

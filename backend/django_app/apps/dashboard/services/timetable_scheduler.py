@@ -42,7 +42,7 @@ def schedule_sessions(inputs, sessions):
         course = courses.get(str(session["course_id"]))
         if not course:
             raise ValueError("The learning plan references an unregistered course.")
-        result.append(dict(id=str(uuid4()), courseId=str(course["id"]), title=session["title"], subject=course["title"], dayOfWeek=day, startTime=clock(time), endTime=clock(time+duration), timeFormatted=f"{clock(time)} - {clock(time+duration)}", timeSlot=f"{clock(time)} - {clock(time+duration)}", instructorName="AI Teacher", roomOrLink="", status="upcoming"))
+        result.append(dict(id=str(uuid4()), courseId=str(course["id"]), timezone=preferences["timezone"], title=session["title"], subject=course["title"], dayOfWeek=day, startTime=clock(time), endTime=clock(time+duration), timeFormatted=f"{clock(time)} - {clock(time+duration)}", timeSlot=f"{clock(time)} - {clock(time+duration)}", instructorName="AI Teacher", roomOrLink="", status="upcoming"))
     return dict(className="Your learning timetable", schedule=result, totalWeeklyClasses=len(result), optimizationSummary="Sessions scheduled within your saved availability.", timezone=preferences["timezone"])
 
 def capacity(preferences):
