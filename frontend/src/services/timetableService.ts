@@ -4,6 +4,7 @@ import type { ScheduleItem, SuggestedTimetable, StudentSchedulePreferences } fro
 export interface TimetableJob { id: string; status: 'queued' | 'processing' | 'ready' | 'failed'; result?: SuggestedTimetable; error?: string }
 const base = '/api/dashboard/timetable/';
 export const TimetableService = {
+  async join(id: string): Promise<void> { await apiClient.post(`${base}sessions/${id}/join/`); },
   async generate(preferences: StudentSchedulePreferences, timezone: string): Promise<TimetableJob> {
     const windows = { morning: ['09:00', '12:30'], afternoon: ['14:00', '17:00'], evening: ['16:00', '19:30'], any: ['09:00', '19:30'] };
     const window = preferences.preferredTime === 'custom' ? [preferences.customStartTime, preferences.customEndTime] : windows[preferences.preferredTime];

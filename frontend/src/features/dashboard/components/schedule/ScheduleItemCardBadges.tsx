@@ -1,6 +1,9 @@
 'use client';
 
+import { formatScheduleItemTime } from '../../utilities/scheduleTimeFormat';
+
 import { memo } from 'react';
+import { ScheduleAttendanceBadge } from './ScheduleAttendanceBadge';
 import { Clock, Radio } from 'lucide-react';
 import type { ScheduleItemCardBadgesProps } from '../../types/schedule.types';
 
@@ -13,7 +16,7 @@ export const ScheduleItemCardBadges = memo(function ScheduleItemCardBadges({
       {/* Time Slot Badge */}
       <span className="text-xs font-mono font-bold px-3 py-1 rounded-xl bg-[#2563EB]/20 text-[#38BDF8] border border-[#2563EB]/40 flex items-center gap-1.5 shadow-sm">
         <Clock className="w-3.5 h-3.5 text-[#38BDF8]" />
-        {item.timeSlot || item.timeFormatted}
+        {formatScheduleItemTime(item)}
       </span>
 
       {/* Subject Badge */}
@@ -21,6 +24,7 @@ export const ScheduleItemCardBadges = memo(function ScheduleItemCardBadges({
         {item.subject}
       </span>
 
+      {!item.sessionEnded && <ScheduleAttendanceBadge item={item} />}
       {/* Live Status Badge */}
       {isLive && (
         <span className="text-[11px] font-extrabold px-3 py-1 rounded-xl bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40 flex items-center gap-1.5 animate-pulse">

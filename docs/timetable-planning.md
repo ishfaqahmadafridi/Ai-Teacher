@@ -51,3 +51,28 @@ Use PostgreSQL for production, a durable Redis deployment and monitored workers.
 Timetable preferences require whole-minute local times; timezone validation uses
 Python's `zoneinfo` database. Acceptance and manual additions both lock the user
 record to serialize writes to the saved timetable.
+
+## Session access and attendance
+
+`POST /api/dashboard/timetable/sessions/<session-id>/join/` checks ownership and
+server time in the session timezone before recording a join. The allowed interval
+includes the start and excludes the end. Repeated joins are idempotent per student,
+session UUID, and local session date. Attendance means a successful join, not full
+class completion or a duration measurement.
+
+Reading a saved timetable reconciles ended occurrences in the current local week:
+eligible sessions without a join get a persisted `missed` record. Sessions before
+the tracking activation date remain unmarked; the UI shows “No attendance record”.
+Reconciliation currently happens on timetable reads, not on a periodic worker, so
+unvisited weeks are not backfilled automatically.
+
+The UI selects today in the timetable timezone, allows manual day selection, and
+resets that selection after midnight. A shared clock drives the five-minute reminder
+and end-time cache refresh. These reminders require the schedule to be open; no
+browser push notification is sent. Times display AM/PM while saved values stay in
+24-hour form.
+
+Country timezone defaults come from the installed IANA `tzdata` package. Countries
+with exactly one timezone use that timezone on country updates; timetable reads
+also repair legacy mismatches and persist the corrected profile and saved schedule.
+Countries with multiple timezones keep the explicitly selected timezone.

@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { ScheduleAttendanceBadge } from './ScheduleAttendanceBadge';
 import { Video } from 'lucide-react';
 import { useScheduleGridCell } from '../../hooks/useScheduleGridCell';
 import { ScheduleItemCardNoticePopover } from './ScheduleItemCardNoticePopover';
@@ -12,7 +13,7 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
   onSelectNoticeItem,
   className = '',
 }: ScheduleGridCellProps) {
-  const { isLive, showNotice, handleClick, handleCloseNotice } =
+  const { isLive, isEnded, showNotice, handleClick, handleCloseNotice } =
     useScheduleGridCell({
       item,
       onJoinClass,
@@ -52,13 +53,14 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
           <span className="text-[11px] font-medium text-sky-400 block truncate mb-1">
             {item.subject}
           </span>
+          {!item.sessionEnded && <ScheduleAttendanceBadge item={item} />}
           <h5 title={item.title} className="font-['Hanken_Grotesk',sans-serif] text-xs font-medium text-slate-100 line-clamp-2 leading-snug group-hover:text-[#38BDF8] transition-colors">
             {item.title}
           </h5>
         </div>
 
         <div className="flex shrink-0 items-center">
-          <button
+          {isEnded ? <ScheduleAttendanceBadge item={{ ...item, sessionEnded: true }} /> : <button
             type="button"
             onClick={handleClick}
             className={`px-2.5 py-1.5 rounded-md text-white font-medium text-xs flex items-center gap-1 transition-colors shrink-0 cursor-pointer ${
@@ -70,7 +72,7 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
           >
             <Video className="w-3 h-3" />
             <span>Join</span>
-          </button>
+          </button>}
         </div>
       </div>
     </div>

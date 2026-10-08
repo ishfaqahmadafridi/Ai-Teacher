@@ -59,6 +59,14 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This mobile number is already registered.")
         return value
 
+    def validate(self, attrs):
+        from apps.users.services.timezone_service import country_default_timezone
+        if "country" in attrs:
+            zone = country_default_timezone(attrs["country"])
+            if zone:
+                attrs["timezone"] = zone
+        return attrs
+
     def validate_timezone(self, value):
         if value:
             try:

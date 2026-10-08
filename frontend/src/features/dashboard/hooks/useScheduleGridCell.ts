@@ -1,13 +1,20 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useAuthStore } from '@/features/auth/state/authStore';
+import { getScheduleAccess } from '../utilities/scheduleAccess';
+import { useScheduleClock } from './useScheduleClock';
 import type { UseScheduleGridCellOptions } from '../types/schedule.types';
 
 export function useScheduleGridCell(options: UseScheduleGridCellOptions) {
   const { item, onJoinClass, onSelectNoticeItem } = options;
   const [showNotice, setShowNotice] = useState(false);
 
-  const isLive = item?.status === 'live';
+  const timezone = useAuthStore((state) => state.user?.timezone || '');
+  const now = useScheduleClock();
+  const access = item && now ? getScheduleAccess(item, timezone, new Date(now)) : null;
+  const isLive = Boolean(access?.canJoin);
+  const isEnded = Boolean(access?.ended);
 
   useEffect(() => {
     if (showNotice) {
@@ -19,16 +26,21 @@ export function useScheduleGridCell(options: UseScheduleGridCellOptions) {
   const handleClick = useCallback(
     (e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
-      if (!item) return;
+      if (!item || item.sessionEnded) return;
 
-      if (isLive) {
+      const current = getScheduleAccess(item, timezone);
+      if (current.ended) return;
+      if (current.canJoin) {
         onJoinClass?.(item.id);
       } else {
-        setShowNotice((prev) => !prev);
-        onSelectNoticeItem?.(item);
+        if (onSelectNoticeItem) {
+          onSelectNoticeItem(item);
+        } else {
+          setShowNotice((prev) => !prev);
+        }
       }
     },
-    [isLive, item, onJoinClass, onSelectNoticeItem]
+    [timezone, item, onJoinClass, onSelectNoticeItem]
   );
 
   const handleCloseNotice = useCallback(() => {
@@ -37,6 +49,7 @@ export function useScheduleGridCell(options: UseScheduleGridCellOptions) {
 
   return {
     isLive,
+    isEnded,
     showNotice,
     handleClick,
     handleCloseNotice,

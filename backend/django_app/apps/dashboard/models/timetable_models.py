@@ -19,3 +19,13 @@ class SavedTimetable(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     schedule = models.JSONField(default=list)
     updated_at = models.DateTimeField(auto_now=True)
+
+class SessionAttendance(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    session_id = models.UUIDField()
+    session_date = models.DateField()
+    status = models.CharField(max_length=16, choices=[("attended", "Attended"), ("missed", "Missed")], default="attended")
+    joined_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "session_id", "session_date"], name="unique_session_attendance")]

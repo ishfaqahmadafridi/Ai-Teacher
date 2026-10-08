@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --incremental false",
-    "test:regressions": "node --test src/features/auth/tests/auth.test.mjs src/tests/integration/query.test.mjs"
+    "test:regressions": "node --test src/features/auth/tests/auth.test.mjs src/tests/integration/*.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
