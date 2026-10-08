@@ -37,12 +37,12 @@ export interface CreateScheduleSlotFormValues {
 export interface CreateScheduleSlotModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddScheduleSlot: (item: ScheduleItem) => void;
+  onAddScheduleSlot: (item: ScheduleItem) => void | Promise<void>;
 }
 
 export interface UseCreateScheduleSlotModalOptions {
   onClose: () => void;
-  onAddScheduleSlot: (item: ScheduleItem) => void;
+  onAddScheduleSlot: (item: ScheduleItem) => void | Promise<void>;
 }
 
 export interface CreateScheduleSlotHeaderProps {
@@ -116,7 +116,7 @@ export interface ScheduleTimelineViewProps {
 }
 
 export interface ScheduleGridHeaderProps {
-  weekdays: DayOfWeek[];
+  slots: string[];
   className?: string;
 }
 
@@ -142,8 +142,8 @@ export interface ScheduledClassNoticeModalProps {
 
 
 export interface ScheduleGridRowProps {
-  slot: string;
-  weekdays: DayOfWeek[];
+  day: DayOfWeek;
+  slots: string[];
   scheduleItems: ScheduleItem[];
   onJoinClass?: (id: string) => void;
   onSelectNoticeItem?: (item: ScheduleItem) => void;
@@ -217,6 +217,7 @@ export interface SuggestedTimetable {
 }
 
 export interface TimetablePreferencesModalProps {
+  error?: string | null;
   isOpen: boolean;
   onClose: () => void;
   onSubmitPreferences: (preferences: StudentSchedulePreferences) => void;
@@ -258,6 +259,7 @@ export interface TimetablePreferencesModalFooterProps {
 }
 
 export interface TimetableSuggestionReviewModalProps {
+  error?: string | null;
   isOpen: boolean;
   suggestion: SuggestedTimetable | null;
   onClose: () => void;

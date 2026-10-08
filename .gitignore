@@ -93,3 +93,6 @@ yarn-error.log*
 # FAISS textbook snapshots are rebuilt locally, not committed
 **/faiss_index/
 backend/django_app/.cache/
+
+# Local queue binaries and persistence
+.runtime/

@@ -16,6 +16,8 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
 ) {
   const { onJoinClass, className = '', ...options } = props;
   const {
+    error,
+    jobStatus,
     days,
     selectedDay,
     setSelectedDay,
@@ -51,6 +53,8 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
         onOpenManualCreate={openManualCreate}
       />
 
+      {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
+      {isLoading && <p role="status" className="text-sm text-slate-400">Timetable {jobStatus || 'queued'}…</p>}
       {/* Main Schedule Content View */}
       {viewMode === 'timeline' ? (
         <ScheduleTimelineView
@@ -85,6 +89,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
 
       {/* Step 1: AI Timetable Preferences Modal */}
       <TimetablePreferencesModal
+        error={error}
         isOpen={isPreferencesOpen}
         onClose={closePreferences}
         onSubmitPreferences={submitPreferences}
@@ -93,6 +98,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
 
       {/* Step 2: AI Suggested Timetable Review Modal */}
       <TimetableSuggestionReviewModal
+        error={error}
         isOpen={isReviewOpen}
         suggestion={suggestedTimetable}
         onClose={closeReview}

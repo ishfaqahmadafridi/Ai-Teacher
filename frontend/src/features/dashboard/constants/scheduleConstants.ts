@@ -56,9 +56,9 @@ export const TIME_PREFERENCE_OPTIONS = [
 ] as const;
 
 export const MAX_CLASSES_OPTIONS = [
-  { id: 2, label: 'Max 2 Classes / Day', desc: 'Recommended: Prevents cognitive fatigue' },
-  { id: 3, label: 'Max 3 Classes / Day', desc: 'Intensive: Faster course completion' },
-  { id: 4, label: 'Up to 4 Classes / Day', desc: 'Accelerated study roadmap' },
+  { id: 2, label: '2 Classes / Day', desc: 'Recommended: Prevents cognitive fatigue' },
+  { id: 3, label: '3 Classes / Day', desc: 'Intensive: Faster course completion' },
+  { id: 4, label: '4 Classes / Day', desc: 'Accelerated study roadmap' },
 ] as const;
 
 export const STUDY_DAYS_OPTIONS = [

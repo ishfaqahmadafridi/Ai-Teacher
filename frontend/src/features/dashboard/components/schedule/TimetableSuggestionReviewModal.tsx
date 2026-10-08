@@ -10,6 +10,7 @@ import type { TimetableSuggestionReviewModalProps } from '../../types/schedule.t
 
 export const TimetableSuggestionReviewModal = memo(
   function TimetableSuggestionReviewModal({
+    error,
     isOpen,
     suggestion,
     onClose,
@@ -28,6 +29,7 @@ export const TimetableSuggestionReviewModal = memo(
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
         <div className="relative w-full max-w-2xl p-6 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+          {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
           {/* Header */}
           <TimetableSuggestionReviewHeader
             optimizationSummary={suggestion.optimizationSummary}

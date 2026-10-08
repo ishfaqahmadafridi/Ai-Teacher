@@ -8,3 +8,5 @@ __all__ = [
     "AssignmentModel",
     "LiveClassModel",
 ]
+
+from .timetable_models import TimetableJob, SavedTimetable

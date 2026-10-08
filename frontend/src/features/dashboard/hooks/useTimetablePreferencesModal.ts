@@ -3,6 +3,8 @@
 import { useState, useCallback } from 'react';
 import { DEFAULT_STUDENT_PREFERENCES } from '../constants/scheduleConstants';
 import { useAuthStore } from '@/features/auth/state/authStore';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardService } from '@/services/dashboardService';
 import type {
   PreferredTimeOfDay,
   MaxClassesPerDay,
@@ -14,7 +16,9 @@ export function useTimetablePreferencesModal(
   options: UseTimetablePreferencesModalOptions
 ) {
   const { onSubmitPreferences, initialPreferences } = options;
-  const selectedInterests = useAuthStore((state) => state.user?.selectedInterests);
+  const userId = useAuthStore((state) => state.user?.id);
+  const courses = useQuery({ queryKey: ['timetable-courses', userId], queryFn: () => DashboardService.getCourses(), enabled: Boolean(userId) });
+  const registeredCourses = courses.data?.map((course) => course.title);
   const [customStartTime, setCustomStartTime] = useState(initialPreferences?.customStartTime ?? '09:00');
   const [customEndTime, setCustomEndTime] = useState(initialPreferences?.customEndTime ?? '12:30');
   const [timeError, setTimeError] = useState<string | null>(null);
@@ -48,7 +52,7 @@ export function useTimetablePreferencesModal(
         includeSaturday,
         registeredCourses:
           initialPreferences?.registeredCourses ??
-          selectedInterests ?? [],
+          registeredCourses ?? [],
       };
       onSubmitPreferences(prefs);
     },
@@ -59,7 +63,7 @@ export function useTimetablePreferencesModal(
       maxClassesPerDay,
       includeSaturday,
       initialPreferences?.registeredCourses,
-      selectedInterests,
+      registeredCourses,
       onSubmitPreferences,
     ]
   );
