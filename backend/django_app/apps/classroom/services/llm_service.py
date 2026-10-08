@@ -24,7 +24,7 @@ def _create_llm(api_key: str, model: str, temperature: float):
     )
 
 
-def get_llm(temperature: float = DEFAULT_TEMPERATURE):
+def get_llm(temperature: float = DEFAULT_TEMPERATURE, model: str = GEMINI_MODEL):
     """Initialize the configured model through a bounded standard-library cache."""
     api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
     if not api_key:
@@ -32,7 +32,7 @@ def get_llm(temperature: float = DEFAULT_TEMPERATURE):
         return None
     try:
         with _llm_lock:
-            return _create_llm(api_key, GEMINI_MODEL, temperature)
+            return _create_llm(api_key, model, temperature)
     except Exception:
         logger.exception("Failed to initialize classroom LLM")
         return None

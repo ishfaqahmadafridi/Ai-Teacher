@@ -21,7 +21,7 @@ export const TimetableSuggestionReviewFooter = memo(
           className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors flex items-center gap-1.5"
         >
           <Edit3 className="w-3.5 h-3.5" />
-          <span>Customize Slots</span>
+          <span>Change Preferences</span>
         </button>
 
         <div className="flex items-center gap-2.5">

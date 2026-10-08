@@ -209,18 +209,31 @@ test('closing the emoji picker during lazy loading does not append a detached pi
   assert.equal(mounted, 0);
 });
 
-test('custom timetable respects user hours and never overlaps daily classes', () => {
-  const { generateSuggestedTimetable } = load('features/dashboard/utilities/scheduleUtils.ts');
-  const prefs = { preferredTime: 'custom', customStartTime: '13:15', customEndTime: '16:45', maxClassesPerDay: 4, includeSaturday: true, registeredCourses: ['A', 'B', 'C', 'D', 'E', 'F'] };
-  const result = generateSuggestedTimetable(prefs);
-  assert.ok(result.schedule.length > 0);
-  const occupied = new Set();
-  for (const item of result.schedule) {
-    assert.ok(['01:15 PM - 02:45 PM', '03:15 PM - 04:45 PM'].includes(item.timeSlot));
-    const key = `${item.dayOfWeek}:${item.timeSlot}`;
-    assert.equal(occupied.has(key), false);
-    occupied.add(key);
-  }
-  assert.throws(() => generateSuggestedTimetable({ ...prefs, customEndTime: '13:45' }), /90-minute/);
-  assert.throws(() => generateSuggestedTimetable({ ...prefs, customStartTime: '25:00' }), /90-minute/);
+test('timetable requests send custom availability and leave registered course ownership to the backend', async () => {
+  let payload;
+  const { TimetableService } = load('services/timetableService.ts', {
+    axios: { isAxiosError: () => false },
+    '@/lib/api': { apiClient: { post: async (url, data) => { payload = { url, data }; return { data: { id: 'job', status: 'queued' } }; } } },
+  });
+  const result = await TimetableService.generate({ preferredTime: 'custom', customStartTime: '13:15', customEndTime: '16:45', maxClassesPerDay: 2, includeSaturday: true, registeredCourses: ['Untrusted course'] }, 'Asia/Karachi');
+  assert.equal(result.status, 'queued');
+  assert.equal(payload.url, '/api/dashboard/timetable/generate/');
+  assert.equal(payload.data.start_time, '13:15');
+  assert.equal(payload.data.end_time, '16:45');
+  assert.equal(payload.data.timezone, 'Asia/Karachi');
+  assert.ok(payload.data.days.includes('Saturday'));
+  assert.equal('registeredCourses' in payload.data, false);
+});
+
+test('weekly matrix uses actual persisted slots including custom evening times', () => {
+  const { getScheduleTimeSlots, findScheduleItemBySlotAndDay } = load('features/dashboard/utilities/scheduleUtils.ts');
+  const items = [
+    { id: 'evening', dayOfWeek: 'Sunday', startTime: '19:00', timeSlot: '19:00 - 20:30', timeFormatted: '19:00 - 20:30' },
+    { id: 'morning', dayOfWeek: 'Monday', startTime: '09:00', timeSlot: '09:00 - 10:30', timeFormatted: '09:00 - 10:30' },
+    { id: 'repeat', dayOfWeek: 'Tuesday', startTime: '09:00', timeSlot: '09:00 - 10:30' },
+  ];
+  const slots = getScheduleTimeSlots(items);
+  assert.equal(slots.join('|'), '09:00 - 10:30|19:00 - 20:30');
+  assert.equal(findScheduleItemBySlotAndDay(items, slots[1], 'Sunday').id, 'evening');
+  assert.equal(getScheduleTimeSlots([]).length, 0);
 });

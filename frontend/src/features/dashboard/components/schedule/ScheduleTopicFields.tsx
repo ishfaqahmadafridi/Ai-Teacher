@@ -34,6 +34,7 @@ export function ScheduleTopicFields({ model }: ScheduleSlotFieldsProps) {
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/80 text-white text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
               >
+                <option value="">Choose a registered course</option>
                 {subjectOptions.map((subj) => (
                   <option key={subj} value={subj} className="bg-slate-900 text-white">
                     {subj}
