@@ -1,3 +1,4 @@
+"""Validated availability, manual slots and timetable API response contracts."""
 from calendar import day_name
 
 from rest_framework import serializers
@@ -43,3 +44,14 @@ class ManualSlotSerializer(serializers.Serializer):
     instructorName = serializers.CharField(max_length=100, allow_blank=True)
     roomOrLink = serializers.CharField(max_length=500, allow_blank=True)
     status = serializers.ChoiceField(choices=["upcoming", "live", "completed"])
+
+
+class TimetableJobResponseSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    status = serializers.ChoiceField(choices=["queued", "processing", "ready", "failed"])
+    result = serializers.JSONField(required=False)
+    error = serializers.CharField(required=False, allow_blank=True)
+
+
+class SavedTimetableResponseSerializer(serializers.Serializer):
+    schedule = serializers.ListField(child=serializers.DictField())

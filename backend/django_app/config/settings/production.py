@@ -49,3 +49,6 @@ X_FRAME_OPTIONS = 'DENY'
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+
+# Admission is shared across workers; set this to the provider/project quota.
+TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE = int(os.getenv("TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE", "10"))

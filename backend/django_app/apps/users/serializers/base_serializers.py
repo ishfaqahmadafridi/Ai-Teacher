@@ -61,7 +61,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         from apps.users.services.timezone_service import country_default_timezone
-        if "country" in attrs:
+        if "country" in attrs and "timezone" not in attrs:
             zone = country_default_timezone(attrs["country"])
             if zone:
                 attrs["timezone"] = zone

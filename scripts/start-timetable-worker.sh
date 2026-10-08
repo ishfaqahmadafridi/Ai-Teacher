@@ -19,4 +19,4 @@ except Exception:
     raise SystemExit('Redis is unavailable. Start Redis first (macOS: brew services start redis).')
 print('Redis is ready. Starting the timetable worker.')
 PY
-exec .venv/bin/celery -A config worker --pool=threads --concurrency="${TIMETABLE_WORKER_CONCURRENCY:-2}" --loglevel=info
+exec .venv/bin/celery -A config worker --hostname="planning@%h" -Q planning --pool=threads --concurrency="${TIMETABLE_WORKER_CONCURRENCY:-2}" --loglevel=info

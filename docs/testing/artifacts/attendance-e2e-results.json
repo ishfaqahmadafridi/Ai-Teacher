@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": [
+    "Real browser sign-in and profile verification passed.",
+    "Early Join blocked with scheduled time shown in AM/PM.",
+    "Valid Join persisted through the real backend.",
+    "Real Celery worker finalized missed attendance; database totals are 1 attended / 1 missed / 50%.",
+    "Attendance totals persisted after browser reload.",
+    "CSV download contains both persisted attendance statuses."
+  ],
+  "pageErrors": []
+}

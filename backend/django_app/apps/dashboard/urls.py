@@ -16,9 +16,13 @@ from .views.timetable_view import TimetableGenerateView, TimetableJobView, Saved
 
 from .views.session_attendance_view import SessionJoinView
 
+from .views.attendance_report_view import AttendanceReportView, AttendanceExportView
+
 app_name = "dashboard"
 
 urlpatterns = [
+    path("dashboard/attendance/export/", AttendanceExportView.as_view()),
+    path("dashboard/attendance/", AttendanceReportView.as_view()),
     path("dashboard/timetable/sessions/<uuid:session_id>/join/", SessionJoinView.as_view()),
     path("dashboard/timetable/generate/", TimetableGenerateView.as_view()),
     path("dashboard/timetable/jobs/<uuid:job_id>/", TimetableJobView.as_view()),

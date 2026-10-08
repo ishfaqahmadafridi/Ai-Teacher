@@ -18,7 +18,7 @@ class TimetableTests(TestCase):
         self.inputs = dict(courses=[dict(id=self.course.pk, title=self.course.title)], preferences=self.preferences)
 
     def test_generation_deduplicates_and_queues_after_commit(self):
-        with patch('apps.dashboard.views.timetable_view.generate_timetable.delay') as enqueue:
+        with patch('apps.dashboard.services.timetable_request_service.generate_timetable.delay') as enqueue:
             with self.captureOnCommitCallbacks(execute=True):
                 first = self.client.post('/api/dashboard/timetable/generate/', self.preferences, format='json')
             second = self.client.post('/api/dashboard/timetable/generate/', self.preferences, format='json')
@@ -67,10 +67,10 @@ class TimetableTests(TestCase):
         self.assertFalse(SavedTimetable.objects.exists())
 
     def test_broker_failure_is_visible(self):
-        with patch('apps.dashboard.views.timetable_view.generate_timetable.delay', side_effect=RuntimeError('unavailable')):
+        with patch('apps.dashboard.services.timetable_request_service.generate_timetable.delay', side_effect=RuntimeError('unavailable')):
             with self.captureOnCommitCallbacks(execute=True):
                 response = self.client.post('/api/dashboard/timetable/generate/', self.preferences, format='json')
-        self.assertEqual(self.client.get(f"/api/dashboard/timetable/jobs/{response.data['id']}/").data['status'], 'failed')
+        self.assertEqual(self.client.get(f"/api/dashboard/timetable/jobs/{response.data['id']}/").data['status'], 'queued')
 
     def test_manual_slots_persist_and_reject_conflicts(self):
         from uuid import uuid4
@@ -147,18 +147,20 @@ class TimetableTests(TestCase):
         SavedTimetable.objects.create(user=self.user, schedule=[item])
         route = f'/api/dashboard/timetable/sessions/{session_id}/join/'
         at = lambda hour, minute=0: datetime(2026, 10, 12, hour, minute, tzinfo=tz.utc)
-        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(3, 59)):
+        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(3, 59)):
             self.assertEqual(self.client.post(route).status_code, 409)
-        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(4)):
+        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(4)):
             self.assertEqual(self.client.post(route).status_code, 200)
             self.assertEqual(self.client.post(route).status_code, 200)
         self.assertEqual(SessionAttendance.objects.count(), 1)
-        with patch('apps.dashboard.views.session_attendance_view.timezone.now', return_value=at(5, 30)):
+        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(5, 30)):
             self.assertEqual(self.client.post(route).status_code, 409)
         saved = SavedTimetable.objects.get(user=self.user)
         from apps.dashboard.services.session_attendance import schedule_with_attendance
         self.assertEqual(schedule_with_attendance(saved, self.user, at(6))[0]['attendance'], 'attended')
         following_monday = datetime(2026, 10, 19, 6, tzinfo=tz.utc)
+        from apps.dashboard.services.attendance_reconciliation import reconcile_timetable
+        reconcile_timetable(saved.pk, following_monday)
         self.assertEqual(schedule_with_attendance(saved, self.user, following_monday)[0]['attendance'], 'missed')
         missed = SessionAttendance.objects.get(user=self.user, session_id=session_id, session_date=following_monday.date())
         self.assertEqual(missed.status, 'missed')
@@ -177,7 +179,7 @@ class TimetableTests(TestCase):
         saved = SavedTimetable.objects.create(user=self.user, schedule=[item])
         self.assertEqual(schedule_with_attendance(saved, self.user, datetime(2026, 10, 14, tzinfo=tz.utc))[0]['attendance'], 'unmarked')
 
-    def test_legacy_country_timezone_is_repaired_and_ended_session_is_saved_missed(self):
+    def test_reads_preserve_explicit_timezone_and_do_not_write_attendance(self):
         from uuid import uuid4
         from datetime import datetime, timezone as tz
         from apps.dashboard.services.session_attendance import schedule_with_attendance
@@ -186,13 +188,120 @@ class TimetableTests(TestCase):
         self.user.save()
         item = dict(id=str(uuid4()), dayOfWeek='Thursday', startTime='11:00', endTime='12:30', timezone='America/New_York', activeFrom='2026-10-01T00:00:00+00:00')
         saved = SavedTimetable.objects.create(user=self.user, schedule=[item])
-        now = datetime(2026, 10, 8, 14, 22, tzinfo=tz.utc)
-        result = schedule_with_attendance(saved, self.user, now)[0]
-        self.assertEqual(result['timezone'], 'Asia/Karachi')
-        self.assertTrue(result['sessionEnded'])
-        self.assertEqual(result['attendance'], 'missed')
-        self.assertEqual(SessionAttendance.objects.get(user=self.user).status, 'missed')
+        result = schedule_with_attendance(saved, self.user, datetime(2026, 10, 8, 14, 22, tzinfo=tz.utc))[0]
+        self.assertEqual(result['timezone'], 'America/New_York')
+        self.assertFalse(result['sessionEnded'])
+        self.assertEqual(SessionAttendance.objects.count(), 0)
         self.user.refresh_from_db()
-        saved.refresh_from_db()
-        self.assertEqual(self.user.timezone, 'Asia/Karachi')
-        self.assertEqual(saved.schedule[0]['timezone'], 'Asia/Karachi')
+        self.assertEqual(self.user.timezone, 'America/New_York')
+
+    def test_background_backfill_and_report_survive_replacement(self):
+        from uuid import uuid4
+        from datetime import datetime, timezone as tz
+        from apps.dashboard.models import SessionAttendance, SessionOccurrence
+        from apps.dashboard.services.attendance_reconciliation import reconcile_timetable
+        item = dict(id=str(uuid4()), title='Sorting', subject='Algorithms', dayOfWeek='Monday', startTime='09:00', endTime='10:00', timezone='Asia/Karachi', activeFrom='2026-10-01T00:00:00+00:00')
+        saved = SavedTimetable.objects.create(user=self.user, schedule=[item])
+        now = datetime(2026, 10, 20, tzinfo=tz.utc)
+        reconcile_timetable(saved.pk, now)
+        reconcile_timetable(saved.pk, now)
+        self.assertEqual(SessionAttendance.objects.count(), 3)
+        self.assertEqual(SessionOccurrence.objects.count(), 3)
+        saved.schedule = []
+        saved.save()
+        with patch('apps.dashboard.services.attendance_report_service.timezone.now', return_value=now):
+            response = self.client.get('/api/dashboard/attendance/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['attendanceLogs']), 3)
+        self.assertEqual(response.data['attendanceLogs'][0]['status'], 'absent')
+        other = get_user_model().objects.create_user(username='report-other')
+        self.client.force_authenticate(other)
+        self.assertEqual(self.client.get('/api/dashboard/attendance/').data['attendanceLogs'], [])
+
+    def test_transient_failure_is_bounded_and_backed_off(self):
+        job = TimetableJob.objects.create(user=self.user, fingerprint='retry', inputs=self.inputs)
+        with patch('apps.dashboard.tasks.plan_sessions', side_effect=TimeoutError()):
+            generate_timetable(str(job.pk))
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'queued')
+        self.assertEqual(job.attempts, 1)
+        self.assertIsNotNone(job.next_attempt_at)
+        with patch('apps.dashboard.tasks.plan_sessions') as planner:
+            generate_timetable(str(job.pk))
+        planner.assert_not_called()
+
+    def test_dispatch_recovers_unpublished_jobs(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        from apps.dashboard.tasks import dispatch_timetable_jobs
+        job = TimetableJob.objects.create(user=self.user, fingerprint='outbox', inputs=self.inputs)
+        TimetableJob.objects.filter(pk=job.pk).update(updated_at=timezone.now() - timedelta(minutes=1))
+        with patch('apps.dashboard.tasks.generate_timetable.delay') as enqueue:
+            dispatch_timetable_jobs()
+        enqueue.assert_called_once_with(str(job.pk))
+
+    def test_old_run_cannot_overwrite_new_run(self):
+        from uuid import uuid4
+        job = TimetableJob.objects.create(user=self.user, fingerprint='lease', inputs=self.inputs)
+        def replace_run(inputs):
+            TimetableJob.objects.filter(pk=job.pk).update(run_token=uuid4())
+            raise RuntimeError('old run failed')
+        with patch('apps.dashboard.tasks.plan_sessions', side_effect=replace_run):
+            generate_timetable(str(job.pk))
+        job.refresh_from_db()
+        self.assertEqual(job.status, 'processing')
+        self.assertEqual(job.error, '')
+
+    def test_report_export_escapes_formulas_and_counts_completed_classes(self):
+        from uuid import uuid4
+        from datetime import datetime, timedelta, timezone as tz
+        from apps.dashboard.models import SessionAttendance, SessionOccurrence
+        now = datetime.now(tz.utc)
+        session_id = uuid4()
+        SessionOccurrence.objects.create(user=self.user, session_id=session_id, session_date=now.date(), starts_at=now-timedelta(hours=2), ends_at=now-timedelta(hours=1), timezone='UTC', title='=1+1', subject='Algorithms')
+        SessionAttendance.objects.create(user=self.user, session_id=session_id, session_date=now.date(), status='attended', joined_at=now-timedelta(hours=2))
+        report = self.client.get('/api/dashboard/attendance/').data
+        self.assertEqual(report['summary'], dict(total=1, attended=1, missed=0, rate=100))
+        export = self.client.get('/api/dashboard/attendance/export/')
+        csv = b''.join(export.streaming_content).decode()
+        self.assertIn("'=1+1", csv)
+
+    def test_empty_report_has_no_invented_percentage(self):
+        self.assertEqual(self.client.get('/api/dashboard/attendance/').data['summary']['rate'], None)
+
+    def test_background_worker_skips_timetables_until_the_next_class_ends(self):
+        from datetime import timedelta
+        from django.utils import timezone
+        from apps.dashboard.tasks import reconcile_attendance
+        SavedTimetable.objects.create(user=self.user, schedule=[{'id': 'unused'}], next_reconciliation_at=timezone.now() + timedelta(hours=1))
+        with patch('apps.dashboard.services.attendance_reconciliation.reconcile_timetable') as reconcile:
+            reconcile_attendance()
+        reconcile.assert_not_called()
+
+    def test_manual_slot_cannot_reuse_a_session_identifier(self):
+        from uuid import uuid4
+        item = dict(id=str(uuid4()), title='Sorting', subject=self.course.title, dayOfWeek='Monday', timeSlot='09:00 AM - 10:30 AM', instructorName='AI Teacher', roomOrLink='', status='upcoming')
+        self.assertEqual(self.client.post('/api/dashboard/timetable/', item, format='json').status_code, 201)
+        item['dayOfWeek'] = 'Tuesday'
+        self.assertEqual(self.client.post('/api/dashboard/timetable/', item, format='json').status_code, 400)
+
+    def test_summary_and_recent_missed_are_not_limited_by_history_page(self):
+        from uuid import uuid4
+        from datetime import timedelta
+        from django.utils import timezone
+        from django.test import override_settings
+        from apps.dashboard.models import SessionAttendance, SessionOccurrence
+        now = timezone.now()
+        occurrences, records = [], []
+        for index in range(5):
+            start = now - timedelta(days=index+1)
+            session_id = uuid4()
+            occurrences.append(SessionOccurrence(user=self.user, session_id=session_id, session_date=start.date(), starts_at=start, ends_at=start+timedelta(hours=1), timezone='UTC', title='Saved lesson', subject='Algorithms'))
+            records.append(SessionAttendance(user=self.user, session_id=session_id, session_date=start.date(), status='attended' if index<2 else 'missed'))
+        SessionOccurrence.objects.bulk_create(occurrences)
+        SessionAttendance.objects.bulk_create(records)
+        with override_settings(ATTENDANCE_HISTORY_PAGE_SIZE=2):
+            report = self.client.get('/api/dashboard/attendance/').data
+        self.assertEqual(len(report['attendanceLogs']), 2)
+        self.assertEqual(len(report['recentMissed']), 3)
+        self.assertEqual(report['summary'], dict(total=5, attended=2, missed=3, rate=40))
