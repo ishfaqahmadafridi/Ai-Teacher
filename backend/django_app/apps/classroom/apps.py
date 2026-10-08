@@ -28,7 +28,7 @@ class ClassroomConfig(AppConfig):
         from django.conf import settings
         # Skip management commands; initialize in production WSGI/ASGI workers too.
         if any(command in sys.argv for command in (
-            "test", "migrate", "makemigrations", "check", "collectstatic", "embed_pdf", "spectacular",
+            "test", "migrate", "makemigrations", "check", "collectstatic", "embed_pdf", "spectacular", "worker", "beat", "shell",
         )):
             return
         if "runserver" in sys.argv and "--noreload" not in sys.argv and os.environ.get("RUN_MAIN") != "true":

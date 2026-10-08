@@ -17,6 +17,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',  # noqa: F405
+        'OPTIONS': {
+            'transaction_mode': 'IMMEDIATE',
+            'timeout': float(os.getenv('SQLITE_BUSY_TIMEOUT_SECONDS', '20')),
+        },
     }
 }
 

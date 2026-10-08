@@ -60,11 +60,21 @@ includes the start and excludes the end. Repeated joins are idempotent per stude
 session UUID, and local session date. Attendance means a successful join, not full
 class completion or a duration measurement.
 
-Reading a saved timetable reconciles ended occurrences in the current local week:
-eligible sessions without a join get a persisted `missed` record. Sessions before
-the tracking activation date remain unmarked; the UI shows “No attendance record”.
-Reconciliation currently happens on timetable reads, not on a periodic worker, so
-unvisited weeks are not backfilled automatically.
+Saved timetable reads are read-only. Celery beat runs attendance reconciliation every
+`ATTENDANCE_RECONCILE_SECONDS` (default 30 seconds). It backfills elapsed weeks from
+the tracking activation date, uses a persisted cursor and indexed next-due time,
+and never overwrites attended
+records. Dated `SessionOccurrence` snapshots preserve titles, subjects, timestamps,
+and timezone after replacement. No records are invented before activation.
+Run exactly one beat scheduler per deployment: `./scripts/start-timetable-beat.sh`.
+Run Redis and planning workers using the existing startup scripts. Run the
+maintenance worker with `./scripts/start-timetable-maintenance.sh`; its separate
+queue keeps attendance and job recovery independent of long LLM job backlogs.
+
+`GET /api/dashboard/attendance/` returns a bounded history page, recent missed
+classes and database aggregate totals. Only ended occurrences count. Empty history
+has a null rate. `GET /api/dashboard/attendance/export/` streams the full CSV and
+escapes spreadsheet formula cells. Both endpoints scope records to the signed-in user.
 
 The UI selects today in the timetable timezone, allows manual day selection, and
 resets that selection after midnight. A shared clock drives the five-minute reminder
@@ -73,6 +83,37 @@ browser push notification is sent. Times display AM/PM while saved values stay i
 24-hour form.
 
 Country timezone defaults come from the installed IANA `tzdata` package. Countries
-with exactly one timezone use that timezone on country updates; timetable reads
-also repair legacy mismatches and persist the corrected profile and saved schedule.
-Countries with multiple timezones keep the explicitly selected timezone.
+with exactly one timezone suggest that timezone when country is saved without an
+explicit timezone. Explicit selections and historical session timezones are preserved.
+Timetable reads never change profile or schedule data.
+
+
+## Durable jobs and production limits
+
+Queued database jobs are the durable dispatch source. Beat republishes unclaimed
+jobs after broker outages, and duplicate deliveries are guarded by row locks.
+Every processing attempt has a run token; stale workers cannot overwrite later
+attempts. Transient network/provider failures retry with bounded exponential delay
+and jitter; validation failures fail immediately. Expired processing jobs become
+failed, allowing an explicit user retry. Planner SDK retries are disabled so the
+worker owns retry policy and admission accounting.
+
+Production enables a Redis-wide admission limit using Redis server time:
+`TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE` defaults to 10; configure it for the actual
+provider/project quota. Development disables this gate unless explicitly configured.
+`TIMETABLE_MAX_ATTEMPTS`, `TIMETABLE_RETRY_BASE_SECONDS` and
+`TIMETABLE_DISPATCH_SECONDS` configure recovery behavior. Redis admission failures
+leave jobs queued instead of bypassing the quota.
+
+Attendance, scheduling and reporting use no LLM tokens. Generating new lesson topics
+still uses the configured LLM; existing identical per-user requests reuse saved results.
+Cross-user curriculum reuse needs explicit syllabus/version ownership rules and is
+not enabled by this change. Attendance measures a valid join, not time spent in class.
+
+Before production launch, run PostgreSQL concurrency/load tests, supervise Redis,
+workers and beat, monitor queue age and provider errors, and verify database backup
+restoration. Local SQLite tests do not demonstrate capacity for thousands of users.
+
+Local SQLite uses IMMEDIATE transactions and a configurable busy timeout to avoid
+read-to-write lock upgrades. This supports development; production still requires
+PostgreSQL concurrency testing. Maintenance defaults to one worker thread locally.

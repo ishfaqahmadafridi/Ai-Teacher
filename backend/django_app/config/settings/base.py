@@ -196,3 +196,31 @@ CELERY_TASK_PUBLISH_RETRY_POLICY = {"max_retries": 1, "interval_start": 0, "inte
 
 # Includes queue wait time and provider execution.
 TIMETABLE_JOB_TIMEOUT_SECONDS = int(os.getenv("TIMETABLE_JOB_TIMEOUT_SECONDS", "300"))
+
+
+# Run Celery beat alongside workers; attendance never depends on a dashboard visit.
+CELERY_BEAT_SCHEDULE = {
+    "finalize-session-attendance": {
+        "task": "apps.dashboard.tasks.reconcile_attendance",
+        "schedule": float(os.getenv("ATTENDANCE_RECONCILE_SECONDS", "30")),
+    },
+}
+
+ATTENDANCE_HISTORY_PAGE_SIZE = int(os.getenv("ATTENDANCE_HISTORY_PAGE_SIZE", "100"))
+
+TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE = int(os.getenv("TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE", "0"))
+TIMETABLE_MAX_ATTEMPTS = int(os.getenv("TIMETABLE_MAX_ATTEMPTS", "3"))
+TIMETABLE_DISPATCH_SECONDS = float(os.getenv("TIMETABLE_DISPATCH_SECONDS", "15"))
+CELERY_BEAT_SCHEDULE["recover-timetable-jobs"] = {
+    "task": "apps.dashboard.tasks.dispatch_timetable_jobs",
+    "schedule": TIMETABLE_DISPATCH_SECONDS,
+}
+
+TIMETABLE_RETRY_BASE_SECONDS = float(os.getenv("TIMETABLE_RETRY_BASE_SECONDS", "15"))
+
+# Keep attendance and recovery responsive during long LLM queues.
+CELERY_TASK_ROUTES = {
+    "apps.dashboard.tasks.generate_timetable": {"queue": "planning"},
+    "apps.dashboard.tasks.reconcile_attendance": {"queue": "maintenance"},
+    "apps.dashboard.tasks.dispatch_timetable_jobs": {"queue": "maintenance"},
+}

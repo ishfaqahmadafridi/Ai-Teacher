@@ -11,7 +11,7 @@ class LearningSession(BaseModel):
     title: str = Field(min_length=1, max_length=255)
 
 def plan_sessions(inputs):
-    llm = get_llm(model=settings.TIMETABLE_MODEL)
+    llm = get_llm(model=settings.TIMETABLE_MODEL, max_retries=0)
     if llm is None:
         raise ValueError("AI planning is unavailable. Please try again later.")
     # Reuse the existing provider integration; keep student identity out of the prompt.

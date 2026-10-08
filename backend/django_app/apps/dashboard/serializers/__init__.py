@@ -25,4 +25,8 @@ __all__ = [
     "LiveClassSerializer",
     "ContinueLearningSerializer",
     "DashboardOverviewSerializer",
+    "AttendanceReportSerializer",
+    "SessionJoinSerializer",
 ]
+
+from .attendance_serializers import AttendanceReportSerializer, SessionJoinSerializer

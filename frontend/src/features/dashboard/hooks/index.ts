@@ -37,3 +37,7 @@ export * from './useCreateScheduleSlotModal';
 
 
 
+
+export * from './useAttendanceHistory';
+
+export * from './useClassBehaviorCard';
