@@ -1,30 +1,92 @@
-version: '3.8'
+name: ai-teacher-local
+
+x-backend: &backend
+  build:
+    context: ../backend
+    dockerfile: docker/Dockerfile
+  image: ai-teacher-backend:local
+  init: true
+  env_file:
+    - path: ../backend/.env
+      required: false
+    - path: ../backend/django_app/.env
+      required: false
+  environment:
+    DJANGO_SETTINGS_MODULE: config.settings.local
+    DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app
+    CELERY_BROKER_URL: redis://redis:6379/0
+    REDIS_URL: redis://redis:6379/0
+    BACKEND_CORS_ORIGINS: '["http://localhost:3001","http://127.0.0.1:3001"]'
+  volumes:
+    - ../backend/django_app:/workspace/backend/django_app
+    - ../backend/fastapi_app:/workspace/backend/fastapi_app
+    - ../backend/shared:/workspace/backend/shared:ro
+    - model_cache:/home/app/.cache
+  stop_grace_period: 30s
+
+x-ready: &ready
+  redis:
+    condition: service_healthy
+  migrate:
+    condition: service_completed_successfully
 
 services:
-  django_app:
-    build:
-      context: ../backend/django_app
-    command: python manage.py runserver 0.0.0.0:8000
+  redis:
+    image: redis:7-alpine
+    command: [redis-server, --appendonly, 'yes']
     volumes:
-      - ../backend/django_app:/app
+      - queue_data:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    <<: *backend
+    command: [python, manage.py, migrate, --noinput]
+
+  django_app:
+    <<: *backend
+    command: [python, manage.py, runserver, '0.0.0.0:8000']
     ports:
-      - "8000:8000"
+      - '127.0.0.1:${DJANGO_PORT:-8000}:8000'
+    depends_on: *ready
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/docs/', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  planning_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, --hostname=planning@%h, -Q, planning, --pool=threads, '--concurrency=2', --loglevel=info]
+    depends_on: *ready
+
+  maintenance_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, --hostname=maintenance@%h, -Q, maintenance, --pool=threads, '--concurrency=1', --loglevel=info]
+    depends_on: *ready
+
+  beat:
+    <<: *backend
+    command: [celery, -A, config, beat, --loglevel=info, --schedule=/home/app/celerybeat-schedule, --pidfile=]
+    depends_on: *ready
 
   fastapi_app:
-    build:
-      context: ../backend/fastapi_app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
-    volumes:
-      - ../backend/fastapi_app:/app
+    <<: *backend
+    working_dir: /workspace/backend/fastapi_app
+    command: [uvicorn, app.main:app, --host, '0.0.0.0', --port, '8001', --reload]
     ports:
-      - "8001:8001"
+      - '127.0.0.1:${FASTAPI_PORT:-8001}:8001'
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/api/v1/health/', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    ports:
-      - "8080:80"
-    depends_on:
-      - django_app
-      - fastapi_app
+volumes:
+  queue_data:
+  model_cache:
