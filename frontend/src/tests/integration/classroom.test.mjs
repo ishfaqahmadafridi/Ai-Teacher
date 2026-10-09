@@ -136,3 +136,13 @@ test('canceled speech does not skip to another answer step', () => {
   h.spoken[0].onerror({ error: 'canceled' });
   assert.equal(h.spoken.length, 1);
 });
+
+test('rendered classroom stage invokes the playback-owning layout hook', () => {
+  let calls = 0;
+  const result = { chunks: [{ speak: 'Voltage equals current times resistance.' }], isPlaying: true };
+  const { useClassroomStageArea } = load('features/classroom/hooks/useClassroomStageArea.ts', {
+    './useClassroomLayout': { useClassroomLayout: () => { calls += 1; return result; } },
+  });
+  assert.equal(useClassroomStageArea(), result);
+  assert.equal(calls, 1);
+});

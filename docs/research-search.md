@@ -56,3 +56,28 @@ References:
 - https://docs.searxng.org/dev/search_api.html
 - https://docs.searxng.org/dev/engines/online/duckduckgo.html
 - https://help.openalex.org/api/authentication/
+
+## Implemented backend research workflow
+
+`POST /api/ask/` now accepts an optional boolean `research` (default false).
+For example, send `{"question":"Explain conservation of momentum with examples",
+"session_id":"your-conversation-id","research":true}` through the existing API.
+The normal classroom frontend does not enable research yet.
+
+LangGraph calls Tavily and OpenAlex with bounded parallel requests, validates
+URLs/evidence, deduplicates links, and adds numbered excerpts to the existing
+teacher prompt. Sources appear in `model_info.sources`; provider failures appear
+as provider names in `model_info.research_unavailable`. No exception URLs or keys
+are returned. Paper metadata alone is not treated as evidence for paper findings.
+No arbitrary result URL is fetched. This is evidence grounding, not automated
+verification that every generated claim is true.
+
+Successful evidence is cached for one hour through Django's configured cache.
+Local settings use per-process memory, not shared Redis caching. This first phase
+is synchronous and is not a 1,000-user production implementation. Queued research,
+shared cache coordination, durable evidence records, authenticated quotas, and
+frontend source presentation remain subsequent work. Existing conversation
+history continues to use its database persistence.
+
+Tests cover cache reuse, duplicate sources, provider failures and opt-in request
+validation. Live provider calls were not tested, so stored keys remain unverified.

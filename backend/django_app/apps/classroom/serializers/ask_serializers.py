@@ -13,6 +13,8 @@ class AskRequestSerializer(serializers.Serializer):
     Validates student question request payload.
     Only fields actually consumed by the LLM pipeline are included.
     """
+    research = serializers.BooleanField(required=False, default=False)
+
     question = serializers.CharField(
         required=True,
         min_length=2,

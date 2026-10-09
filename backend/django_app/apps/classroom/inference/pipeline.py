@@ -18,6 +18,7 @@ def generate_answer(
     question: str,
     session_id: str = DEFAULT_SESSION_ID,
     temperature: float = DEFAULT_TEMPERATURE,
+    research: bool = False,
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
@@ -37,6 +38,11 @@ def generate_answer(
         system_prompt = SYSTEM_PROMPT
         if rag_context:
             system_prompt += RAG_CONTEXT_SUFFIX.format(rag_context=rag_context)
+        if research:
+            from apps.classroom.services.research_context import build_research_context
+            context, research_metadata = build_research_context(question)
+            metadata.update(research_metadata)
+            system_prompt += context
         history = get_session(session_id)
         messages = [SystemMessage(content=system_prompt)]
         for entry in history:
