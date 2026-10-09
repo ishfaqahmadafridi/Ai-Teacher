@@ -2,7 +2,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
-import { useAppDispatch } from '@/hooks/useAppStore';
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import {
   setLoading,
   setLoadingStatus,
@@ -17,6 +17,7 @@ import type { ExtendedChunk, DiagramType } from '@/types';
 
 export function useClassroomApi() {
   const dispatch = useAppDispatch();
+  const topic = useAppSelector((s) => s.classroom.topic);
   const esRef = useRef<AbortController | null>(null);
   const { mutateAsync } = useClassroomQuestionMutation();
   const getSessionId = useConversationSession();
@@ -60,7 +61,7 @@ export function useClassroomApi() {
                 chunks[0]?.speak.slice(0, 80) ?? question,
               ];
 
-        dispatch(setTopic(data.topic ?? question));
+        dispatch(setTopic(topic || data.topic || question));
         dispatch(setDiagramType(diagType));
         dispatch(setChunks(chunks));
         dispatch(setChalkboardPoints(finalPoints));
@@ -73,7 +74,7 @@ export function useClassroomApi() {
         dispatch(setLoadingStatus(''));
       }
     },
-    [dispatch, mutateAsync, getSessionId]
+    [dispatch, mutateAsync, getSessionId, topic]
   );
 
   const cancelStream = useCallback(() => {

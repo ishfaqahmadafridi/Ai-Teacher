@@ -12,6 +12,8 @@ import { DynamicEmojiReactionPopover } from '@/features/classroom/utilities/lazy
 
 export const InputBarDockContainer = memo(function InputBarDockContainer() {
   const {
+    topic,
+    questionNotice,
     inputText,
     loading,
     isPlaying,
@@ -28,10 +30,12 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
   } = useInputBarDockContainer();
 
   return (
+    <>
+    <p role="status" className="px-2 text-xs text-slate-400">{questionNotice}</p>
     <div className="flex items-center justify-between gap-4 bg-[#0A0E1A]/95 border border-slate-800/90 rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
       {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
       <div className="flex items-center gap-2 shrink-0">
-        <VoiceMicButton isListening={isListening} onMicClick={handleMicClick} />
+        <VoiceMicButton disabled={(loading || isPlaying) && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
         <DynamicEmojiReactionPopover
           showEmojiPicker={showEmojiPicker}
@@ -44,6 +48,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
       {/* 2. Center Section: Prominent Integrated Ask AI Input Box */}
       <div className="flex-1 max-w-2xl bg-[#060913] border border-slate-800 focus-within:border-violet-500/80 focus-within:ring-2 focus-within:ring-violet-500/20 rounded-xl px-3 py-1.5 flex items-center gap-2 transition-all">
         <QuestionTextInput
+          topic={topic}
           inputText={inputText}
           onChange={updateInputText}
           onKeyDown={handleKeyDown}
@@ -61,6 +66,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
         <LeaveClassButton />
       </div>
     </div>
+    </>
   );
 });
 

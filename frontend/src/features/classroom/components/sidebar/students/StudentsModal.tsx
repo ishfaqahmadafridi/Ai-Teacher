@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { useClassroomDismiss } from '../../../hooks/useClassroomDismiss';
 import { useStudentsModal } from '../../../hooks/useStudentsModal';
 import { StudentsModalHeader } from './StudentsModalHeader';
 import { StudentsModalStatsBar } from './StudentsModalStatsBar';
@@ -21,6 +22,8 @@ export const StudentsModal = memo(function StudentsModal({
     filteredStudents,
   } = useStudentsModal();
 
+  const surfaceRef = useClassroomDismiss(isOpen, onClose);
+
   if (!isOpen) return null;
 
   return (
@@ -29,7 +32,7 @@ export const StudentsModal = memo(function StudentsModal({
       role="dialog"
       aria-modal="true"
     >
-      <div className="relative w-full max-w-2xl max-h-[85vh] bg-[#1a1c22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div ref={surfaceRef} className="relative w-full max-w-2xl max-h-[85vh] bg-[#1a1c22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
         {/* Modal Header */}
         <StudentsModalHeader onClose={onClose} />
 

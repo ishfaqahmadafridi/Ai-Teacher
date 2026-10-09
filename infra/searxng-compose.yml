@@ -1,0 +1,13 @@
+name: ai-teacher-research-local
+services:
+  searxng:
+    image: ${SEARXNG_IMAGE:-searxng/searxng:latest}
+    ports:
+      - '127.0.0.1:${SEARXNG_PORT:-8888}:8080'
+    environment:
+      SEARXNG_SECRET: ${SEARXNG_SECRET:?Set a random SEARXNG_SECRET before starting}
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - search_cache:/var/cache/searxng
+volumes:
+  search_cache:

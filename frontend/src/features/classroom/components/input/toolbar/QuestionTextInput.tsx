@@ -4,6 +4,7 @@ import { memo } from 'react';
 import type { QuestionTextInputProps } from '../../../types/input.types';
 
 export const QuestionTextInput = memo(function QuestionTextInput({
+  topic,
   inputText,
   onChange,
   onKeyDown,
@@ -15,7 +16,8 @@ export const QuestionTextInput = memo(function QuestionTextInput({
       <textarea
         id="question-input"
         rows={1}
-        placeholder="Ask anything about physics..."
+        placeholder={`Ask a question about ${topic || 'this topic'}…`}
+        aria-label="Question for the AI teacher"
         value={inputText}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
