@@ -63,6 +63,7 @@ function dismissalHarness(open = true) {
   const { useClassroomDismiss } = load('features/classroom/hooks/useClassroomDismiss.ts', {
     react: { useRef: () => ({ current: surface }), useEffect: fn => { effect = fn; } },
   }, { document });
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- test harness intentionally invokes hook directly
   useClassroomDismiss(open, () => { closed += 1; });
   return { surface, listeners, cleanup: effect(), closed: () => closed };
 }
@@ -104,6 +105,7 @@ function playbackHarness() {
     window: { speechSynthesis: { cancel() {}, speak: utterance => spoken.push(utterance), getVoices: () => [] } },
     SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
   });
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- test harness intentionally invokes hook directly
   const player = useChunkPlayer();
   effects.forEach(fn => fn());
   return { player, spoken, dispatched };
