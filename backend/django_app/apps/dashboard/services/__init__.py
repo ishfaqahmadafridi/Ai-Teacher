@@ -8,7 +8,6 @@ from apps.dashboard.services.dashboard_service import (
     get_live_classes,
     get_assignments,
     get_dashboard_overview,
-    ensure_initial_seeds,
 )
 
 __all__ = [
@@ -18,5 +17,12 @@ __all__ = [
     "get_live_classes",
     "get_assignments",
     "get_dashboard_overview",
-    "ensure_initial_seeds",
+    "attendance_report",
+    "attendance_csv",
+    "join_session",
+    "add_timetable_slot",
 ]
+
+from .attendance_report_service import attendance_report, attendance_csv
+from .session_join_service import join_session
+from .manual_timetable_service import add_timetable_slot

@@ -12,9 +12,21 @@ from apps.dashboard.views import (
     AssignmentListView,
 )
 
+from .views.timetable_view import TimetableGenerateView, TimetableJobView, SavedTimetableView
+
+from .views.session_attendance_view import SessionJoinView
+
+from .views.attendance_report_view import AttendanceReportView, AttendanceExportView
+
 app_name = "dashboard"
 
 urlpatterns = [
+    path("dashboard/attendance/export/", AttendanceExportView.as_view()),
+    path("dashboard/attendance/", AttendanceReportView.as_view()),
+    path("dashboard/timetable/sessions/<uuid:session_id>/join/", SessionJoinView.as_view()),
+    path("dashboard/timetable/generate/", TimetableGenerateView.as_view()),
+    path("dashboard/timetable/jobs/<uuid:job_id>/", TimetableJobView.as_view()),
+    path("dashboard/timetable/", SavedTimetableView.as_view()),
     # ── Global Search Endpoint ────────────────────────────────────────────────
     path("search/", SearchView.as_view(), name="dashboard-search"),
 

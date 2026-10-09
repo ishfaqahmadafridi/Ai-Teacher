@@ -40,6 +40,7 @@ export interface EmojiReactionPopoverProps {
 }
 
 export interface QuestionTextInputProps {
+  topic?: string;
   inputText: string;
   onChange: (text: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
@@ -48,6 +49,7 @@ export interface QuestionTextInputProps {
 }
 
 export interface VoiceMicButtonProps {
+  disabled?: boolean;
   isListening: boolean;
   onMicClick: () => void;
   className?: string;
@@ -107,4 +109,10 @@ export interface ChatInboxTriggerButtonProps {
   messageCount: number;
   onToggle: () => void;
   className?: string;
+}
+
+export interface ChatInboxDrawerProps extends ChatInputBarProps {
+  isOpen: boolean;
+  messages: ChatMessage[];
+  onClose: () => void;
 }

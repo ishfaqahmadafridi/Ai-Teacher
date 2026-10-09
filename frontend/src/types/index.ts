@@ -127,7 +127,9 @@ export interface ClassroomState {
   spokenText: string;
   isListening: boolean;
   voiceError: string | null;
+  showSubtitles: boolean;
 }
+
 
 // ─── API Types ─────────────────────────────────────────────────────────────────
 

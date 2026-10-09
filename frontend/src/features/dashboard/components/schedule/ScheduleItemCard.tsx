@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { ScheduleAttendanceBadge } from './ScheduleAttendanceBadge';
 import { useScheduleItemCard } from '../../hooks/useScheduleItemCard';
 import { ScheduleItemCardNoticePopover } from './ScheduleItemCardNoticePopover';
 import { ScheduleItemCardBadges } from './ScheduleItemCardBadges';
@@ -11,7 +12,7 @@ export const ScheduleItemCard = memo(function ScheduleItemCard(
   props: ScheduleItemCardProps
 ) {
   const { item, className = '' } = props;
-  const { isLive, showNotice, handleClick, handleCloseNotice } =
+  const { isLive, isEnded, showNotice, handleClick, handleCloseNotice } =
     useScheduleItemCard(props);
 
   return (
@@ -49,7 +50,7 @@ export const ScheduleItemCard = memo(function ScheduleItemCard(
         </div>
 
         {/* Action Button */}
-        <ScheduleItemCardActionButton isLive={isLive} onClick={handleClick} />
+        {isEnded ? <ScheduleAttendanceBadge item={{ ...item, sessionEnded: true }} /> : <ScheduleItemCardActionButton isLive={isLive} onClick={handleClick} />}
       </div>
     </div>
   );

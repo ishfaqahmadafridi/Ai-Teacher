@@ -7,4 +7,13 @@ __all__ = [
     "CourseModel",
     "AssignmentModel",
     "LiveClassModel",
+    "TimetableJob",
+    "SavedTimetable",
+    "SessionAttendance",
+    "SessionOccurrence",
 ]
+
+from .timetable_models import TimetableJob, SavedTimetable
+from .timetable_models import SessionAttendance
+
+from .timetable_models import SessionOccurrence

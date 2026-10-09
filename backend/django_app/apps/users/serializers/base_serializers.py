@@ -36,7 +36,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     cover_url = serializers.CharField(required=False, allow_blank=True, max_length=2_000_000)
     mobile = serializers.CharField(required=False, allow_blank=True, allow_null=True, max_length=20)
     selected_interests = serializers.ListField(
-        child=serializers.CharField(max_length=150), max_length=100, required=False
+        child=serializers.CharField(max_length=150), max_length=1, required=False
     )
 
     class Meta:
@@ -58,6 +58,14 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         if value and identity_exists("mobile", value, self.instance):
             raise serializers.ValidationError("This mobile number is already registered.")
         return value
+
+    def validate(self, attrs):
+        from apps.users.services.timezone_service import country_default_timezone
+        if "country" in attrs and "timezone" not in attrs:
+            zone = country_default_timezone(attrs["country"])
+            if zone:
+                attrs["timezone"] = zone
+        return attrs
 
     def validate_timezone(self, value):
         if value:

@@ -6,6 +6,7 @@ API View for listing assignments, quizzes, and practice sets.
 
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class AssignmentListView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     GET /api/dashboard/assignments/
 
@@ -31,7 +33,7 @@ class AssignmentListView(APIView):
     )
     def get(self, request):
         try:
-            assignments = get_assignments()
+            assignments = get_assignments(request.user)
             serializer = AssignmentSerializer(assignments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:

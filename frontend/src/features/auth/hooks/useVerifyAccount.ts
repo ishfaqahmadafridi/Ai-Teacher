@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
 import { AuthService } from '../services/authService';
 import { verifyOtpSchema } from '../validators/auth.schema';
 import type { VerificationMethod } from '../types';
 
 export function useVerifyAccount() {
   const router = useRouter();
+  const { mutateAsync: resend } = useMutation({ mutationFn: AuthService.resendOtp });
+  const { mutateAsync: verify } = useMutation({ mutationFn: (input: { method: string; code: string }) => AuthService.verifyOtp(input.method, input.code) });
 
   const [method, setMethod] = useState<VerificationMethod>('email');
   const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
@@ -81,14 +84,14 @@ export function useVerifyAccount() {
     setIsLoading(true);
     setError(null);
     try {
-      await AuthService.resendOtp(method);
+      await resend(method);
       setTimer(59);
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'Verification code could not be sent.');
     } finally {
       setIsLoading(false);
     }
-  }, [method, timer]);
+  }, [method, timer, resend]);
 
   const handleSubmit = async () => {
     const code = otp.join('');
@@ -103,7 +106,7 @@ export function useVerifyAccount() {
     setError(null);
 
     try {
-      await AuthService.verifyOtp(method, code);
+      await verify({ method, code });
       setSuccess(true);
       setTimeout(() => {
         router.push('/onboarding/step-3');

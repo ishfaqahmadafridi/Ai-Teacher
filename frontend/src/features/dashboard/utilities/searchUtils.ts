@@ -83,31 +83,7 @@ export function searchDashboardItems(
       },
     }));
 
-  // 4. Default Topics & Modules matching query
-  const mockTopicsList = [
-    { title: 'Neural Networks & Deep Learning', code: 'AI-MOD-01', subject: 'Artificial Intelligence' },
-    { title: 'Data Structures: Hash Tables & Trees', code: 'CS-MOD-04', subject: 'Computer Science' },
-    { title: 'Relational Database Schema Design', code: 'IT-MOD-02', subject: 'Information Technology' },
-    { title: 'Algorithm Complexity & Big-O Notation', code: 'CS-MOD-02', subject: 'Computer Science' },
-  ];
-
-  const topicResults: SearchResultItem[] = mockTopicsList
-    .filter(
-      (t) =>
-        t.title.toLowerCase().includes(query) ||
-        t.subject.toLowerCase().includes(query) ||
-        t.code.toLowerCase().includes(query)
-    )
-    .map((t, idx) => ({
-      id: `topic_${idx}`,
-      type: 'topic' as const,
-      title: t.title,
-      subtitle: `${t.code} • ${t.subject}`,
-      badgeText: 'Topic',
-      actionPayload: {
-        targetTab: 'dashboard',
-      },
-    }));
+  const topicResults: SearchResultItem[] = [];
 
   const totalCount =
     courseResults.length +

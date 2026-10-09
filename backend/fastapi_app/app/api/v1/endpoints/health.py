@@ -21,12 +21,12 @@ router = APIRouter()
 async def health_check() -> HealthResponse:
     """
     Returns the health status of the FastAPI inference engine.
-    Also reports whether the ChromaDB RAG vector store is available.
+    Also reports whether the FAISS RAG vector store is available.
     """
     rag_ready = False
     try:
-        from app.services.rag_service import _get_chroma_collection
-        rag_ready = _get_chroma_collection() is not None
+        from app.services.rag_service import is_ready
+        rag_ready = is_ready()
     except Exception:
         pass
 

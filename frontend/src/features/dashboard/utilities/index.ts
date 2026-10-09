@@ -8,3 +8,5 @@ export * from './searchUtils';
 export * from './classUtils';
 
 
+
+export * from './dashboardDataUtils';

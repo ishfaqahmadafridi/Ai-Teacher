@@ -61,8 +61,8 @@ export class AuthService {
   /**
    * Fetches the currently authenticated user profile.
    */
-  static async getProfile(): Promise<AuthUser> {
-    const response = await apiClient.get<ApiAuthUser>('/api/auth/me/');
+  static async getProfile(signal?: AbortSignal): Promise<AuthUser> {
+    const response = await apiClient.get<ApiAuthUser>('/api/auth/me/', { signal });
     return mapAuthUser(response.data);
   }
 

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../state/authStore';
-import { AuthService } from '../services/authService';
+import { useRegisterMutation } from './useAuthQueries';
 import { registerSchema } from '../validators/auth.schema';
 import { DEFAULT_COUNTRY_CODE } from '../constants';
 import type { RegisterFormData } from '../types';
@@ -32,8 +32,9 @@ const initialForm: RegisterFormData = {
 };
 
 export function useRegister(): UseRegisterReturn {
+  const { mutateAsync, isPending } = useRegisterMutation();
   const router = useRouter();
-  const { setUser, setLoading, setError, isLoading, error } = useAuthStore();
+  const { setUser, setError, error } = useAuthStore();
 
   const [form, setForm] = useState<RegisterFormData>(initialForm);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof RegisterFormData, string>>>({});
@@ -81,9 +82,8 @@ export function useRegister(): UseRegisterReturn {
         return;
       }
 
-      setLoading(true);
       try {
-        const data = await AuthService.register(result.data);
+        const data = await mutateAsync(result.data);
         setUser(data.user, data.access, data.refresh);
 
         router.push('/onboarding/step-3');
@@ -91,18 +91,16 @@ export function useRegister(): UseRegisterReturn {
         const message =
           err instanceof Error ? err.message : 'Registration failed. Please try again.';
         setError(message);
-      } finally {
-        setLoading(false);
       }
     },
-    [form, router, setError, setLoading, setUser]
+    [form, router, setError, setUser, mutateAsync]
   );
 
   return {
     form,
     fieldErrors,
     showPassword,
-    isLoading,
+    isLoading: isPending,
     error,
     handleChange,
     handleConsentChange,

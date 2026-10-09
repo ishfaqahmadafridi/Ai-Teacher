@@ -7,6 +7,9 @@ import { ClassScheduleSection } from '../schedule';
 import { ClassProgressSection } from '../progress';
 import { AssignmentsSection } from '../assignments';
 import { DashboardOverviewGrid } from '../overview';
+import { useAuthStore } from '@/features/auth/state/authStore';
+import { getLearningReadiness } from '@/features/onboarding/utils/learningReadiness';
+import { LearningSetupActions } from '../overview/LearningSetupActions';
 
 export const DashboardMainContent = memo(function DashboardMainContent({
   activeTabId,
@@ -21,10 +24,16 @@ export const DashboardMainContent = memo(function DashboardMainContent({
   onJoinClass,
   onResumeCourse,
   onOpenRegisterCourseModal,
+  onOpenTimetable,
 }: DashboardMainContentProps) {
+  const user = useAuthStore((state) => state.user);
+  const { isReady } = getLearningReadiness(user);
   return (
     <main className="px-4 md:px-10 py-8 max-w-[1440px] mx-auto w-full pb-16 relative z-10">
-      {activeTabId === 'registered_courses' ? (
+      {!isReady && (
+        <LearningSetupActions onRegisterCourse={onOpenRegisterCourseModal} onOpenTimetable={onOpenTimetable} />
+      )}
+      {!isReady ? null : activeTabId === 'registered_courses' ? (
         <RegisteredCoursesSection
           courses={registeredCourses}
           onJoinCourse={onJoinClass}

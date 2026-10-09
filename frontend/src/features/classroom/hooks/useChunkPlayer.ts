@@ -21,6 +21,7 @@ export function useChunkPlayer() {
   const isPaused = useAppSelector((s) => s.classroom.isPaused);
 
   const indexRef = useRef(0);
+  const playbackRunRef = useRef(0);
   // Store isPaused in a ref so callbacks always see the latest value without
   // needing it in the dependency array (avoids stale closure issues).
   const pausedRef = useRef(isPaused);
@@ -42,6 +43,7 @@ export function useChunkPlayer() {
         return;
       }
 
+      const run = playbackRunRef.current;
       const chunk = chunks[index];
       dispatch(setCurrentChunkIndex(index));
       dispatch(setSpokenText(chunk.speak));
@@ -76,6 +78,7 @@ export function useChunkPlayer() {
       utterance.pitch = 1.05;
 
       utterance.onend = () => {
+        if (run !== playbackRunRef.current) return;
         if (!pausedRef.current) {
           indexRef.current = index + 1;
           // Use the ref so we always call the latest version
@@ -83,7 +86,8 @@ export function useChunkPlayer() {
         }
       };
 
-      utterance.onerror = () => {
+      utterance.onerror = (event) => {
+        if (run !== playbackRunRef.current || event.error === 'canceled' || event.error === 'interrupted') return;
         indexRef.current = index + 1;
         speakChunkRef.current(indexRef.current);
       };
@@ -99,6 +103,8 @@ export function useChunkPlayer() {
   }, [speakChunk]);
 
   const play = useCallback(() => {
+    playbackRunRef.current += 1;
+    pausedRef.current = false;
     dispatch(setIsPlaying(true));
     dispatch(setIsPaused(false));
     indexRef.current = 0;
@@ -119,6 +125,7 @@ export function useChunkPlayer() {
   }, [dispatch, speakChunk]);
 
   const stop = useCallback(() => {
+    playbackRunRef.current += 1;
     dispatch(setIsPlaying(false));
     dispatch(setIsPaused(false));
     dispatch(setCurrentChunkIndex(-1));
@@ -129,6 +136,7 @@ export function useChunkPlayer() {
 
   useEffect(() => {
     return () => {
+      playbackRunRef.current += 1;
       window.speechSynthesis.cancel();
     };
   }, []);

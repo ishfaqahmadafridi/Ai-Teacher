@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { TimetableCustomHoursFields } from './TimetableCustomHoursFields';
 import { useTimetablePreferencesModal } from '../../hooks/useTimetablePreferencesModal';
 import { TimetablePreferencesModalHeader } from './TimetablePreferencesModalHeader';
 import { TimetableTimePreferenceSelector } from './TimetableTimePreferenceSelector';
@@ -11,6 +12,7 @@ import type { TimetablePreferencesModalProps } from '../../types/schedule.types'
 
 export const TimetablePreferencesModal = memo(
   function TimetablePreferencesModal({
+    error,
     isOpen,
     onClose,
     onSubmitPreferences,
@@ -18,6 +20,7 @@ export const TimetablePreferencesModal = memo(
   }: TimetablePreferencesModalProps) {
     const {
       preferredTime,
+      customStartTime, setCustomStartTime, customEndTime, setCustomEndTime, timeError,
       setPreferredTime,
       maxClassesPerDay,
       setMaxClassesPerDay,
@@ -34,6 +37,7 @@ export const TimetablePreferencesModal = memo(
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
         <div className="relative w-full max-w-xl p-6 bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl space-y-6">
           {/* Header */}
+          {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
           <TimetablePreferencesModalHeader onClose={onClose} />
 
           {/* Form */}
@@ -42,6 +46,16 @@ export const TimetablePreferencesModal = memo(
             <TimetableTimePreferenceSelector
               preferredTime={preferredTime}
               onSelectTime={setPreferredTime}
+            />
+
+            <TimetableCustomHoursFields
+              preferredTime={preferredTime}
+              onSelectTime={setPreferredTime}
+              startTime={customStartTime}
+              onStartTimeChange={setCustomStartTime}
+              endTime={customEndTime}
+              onEndTimeChange={setCustomEndTime}
+              error={timeError}
             />
 
             {/* 2. Maximum Classes per Day */}
@@ -69,4 +83,3 @@ export const TimetablePreferencesModal = memo(
 );
 
 TimetablePreferencesModal.displayName = 'TimetablePreferencesModal';
-

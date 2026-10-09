@@ -25,7 +25,7 @@ function MobileSummaryBarComponent({ selectedCount, onSubmit }: MobileSummaryBar
           className="h-12 px-6 rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#004AC6] text-white font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-[#2563eb]/40 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
         >
           <CheckCircle2 className="w-4 h-4" />
-          <span>Launch Roadmap</span>
+          <span>Save & continue</span>
         </Button>
       </div>
     </div>

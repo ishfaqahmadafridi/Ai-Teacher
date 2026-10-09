@@ -1,5 +1,7 @@
 'use client';
 
+import { formatScheduleItemTime } from '../../utilities/scheduleTimeFormat';
+
 import { memo } from 'react';
 import { Clock, X } from 'lucide-react';
 import type { ScheduleItemCardNoticePopoverProps } from '../../types/schedule.types';
@@ -22,7 +24,7 @@ export const ScheduleItemCardNoticePopover = memo(function ScheduleItemCardNotic
           Class Not Active Right Now
         </span>
         <span className="text-[#E2E8F0] font-mono text-[10px]">
-          Scheduled: <strong className="text-white">{item.dayOfWeek}</strong> @ <strong className="text-[#38BDF8]">{item.timeSlot || item.timeFormatted}</strong>
+          Scheduled: <strong className="text-white">{item.dayOfWeek}</strong> @ <strong className="text-[#38BDF8]">{formatScheduleItemTime(item)}</strong>
         </span>
       </div>
 

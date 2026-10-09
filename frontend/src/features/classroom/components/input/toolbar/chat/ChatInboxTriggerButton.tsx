@@ -2,15 +2,15 @@
 
 import { memo } from 'react';
 import { MessageSquare } from 'lucide-react';
-import { useChatInboxTrigger } from '../../../../hooks/useChatInboxTrigger';
+import type { ChatInboxTriggerButtonProps } from '../../../../types/input.types';
 
-export const ChatInboxTriggerButton = memo(function ChatInboxTriggerButton() {
-  const { messageCount, toggleOpen } = useChatInboxTrigger();
+export const ChatInboxTriggerButton = memo(function ChatInboxTriggerButton({ isOpen, messageCount, onToggle }: ChatInboxTriggerButtonProps) {
 
   return (
     <button
       type="button"
-      onClick={toggleOpen}
+      onClick={onToggle}
+      aria-expanded={isOpen}
       className="px-3 py-2 rounded-xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shrink-0 active:scale-95 shadow-sm relative"
       title="Classroom Chat & Messages Inbox"
     >

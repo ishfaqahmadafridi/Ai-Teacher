@@ -8,8 +8,8 @@ import { HeroStudyIllustration } from './HeroStudyIllustration';
 import type { DashboardHeroSectionProps } from '../../types';
 
 export const DashboardHeroSection = memo(function DashboardHeroSection({
-  studentName = 'John',
-  weeklyProgressPercent = 75,
+  studentName = 'Student',
+  weeklyProgressPercent = 0,
   greeting: customGreeting,
   className = '',
 }: DashboardHeroSectionProps) {

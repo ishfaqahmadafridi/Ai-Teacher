@@ -1,6 +1,8 @@
 'use client';
 
 import { memo } from 'react';
+import { useScheduleAttendance } from '../../hooks/useScheduleAttendance';
+import { ScheduleStartReminder } from './ScheduleStartReminder';
 import { useClassScheduleSection } from '../../hooks/useClassScheduleSection';
 import { ScheduleHeaderBanner } from './ScheduleHeaderBanner';
 import { ScheduleTimelineView } from './ScheduleTimelineView';
@@ -15,7 +17,10 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
   props: ClassScheduleSectionProps
 ) {
   const { onJoinClass, className = '', ...options } = props;
+  const { join, error: joinError } = useScheduleAttendance(onJoinClass);
   const {
+    error,
+    jobStatus,
     days,
     selectedDay,
     setSelectedDay,
@@ -51,6 +56,9 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
         onOpenManualCreate={openManualCreate}
       />
 
+      {(error || joinError) && <p role="alert" className="text-sm text-red-400">{error || joinError}</p>}
+      {isLoading && <p role="status" className="text-sm text-slate-400">Timetable {jobStatus || 'queued'}…</p>}
+      <ScheduleStartReminder items={scheduleItems} />
       {/* Main Schedule Content View */}
       {viewMode === 'timeline' ? (
         <ScheduleTimelineView
@@ -58,13 +66,13 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
           selectedDay={selectedDay}
           onSelectDay={setSelectedDay}
           scheduleItems={scheduleItems}
-          onJoinClass={onJoinClass}
+          onJoinClass={join}
           onSelectNoticeItem={setSelectedNoticeItem}
         />
       ) : (
         <ScheduleWeeklyGrid
           scheduleItems={scheduleItems}
-          onJoinClass={onJoinClass}
+          onJoinClass={join}
           onSelectNoticeItem={setSelectedNoticeItem}
         />
       )}
@@ -72,7 +80,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
       {/* Scheduled Class Time Notice Modal */}
       <ScheduledClassNoticeModal
         isOpen={Boolean(selectedNoticeItem)}
-        item={selectedNoticeItem}
+        item={scheduleItems.find((item) => item.id === selectedNoticeItem?.id) || selectedNoticeItem}
         onClose={handleCloseNotice}
       />
 
@@ -85,6 +93,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
 
       {/* Step 1: AI Timetable Preferences Modal */}
       <TimetablePreferencesModal
+        error={error}
         isOpen={isPreferencesOpen}
         onClose={closePreferences}
         onSubmitPreferences={submitPreferences}
@@ -93,6 +102,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
 
       {/* Step 2: AI Suggested Timetable Review Modal */}
       <TimetableSuggestionReviewModal
+        error={error}
         isOpen={isReviewOpen}
         suggestion={suggestedTimetable}
         onClose={closeReview}

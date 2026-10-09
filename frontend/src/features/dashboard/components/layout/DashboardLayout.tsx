@@ -9,6 +9,8 @@ import { DashboardDialogs } from '../modals';
 
 export const DashboardLayout = memo(function DashboardLayout() {
   const {
+    isDashboardLoading,
+    dashboardError,
     searchQuery,
     activeTabId,
     profile,
@@ -48,6 +50,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
         studentName={profile.name}
         dateFormatted={profile.dateFormatted}
         studentAvatar={profile.avatarUrl}
+        coursesCount={registeredCourses.length}
+        streakDays={profile.streakDays}
         onJoinTodayClass={handleJoinClass}
         onOpenProfile={handleOpenProfile}
         onOpenSettings={handleOpenSettings}
@@ -67,7 +71,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
         />
 
         {/* Main Workspace Area */}
-        <DashboardMainContent
+        {dashboardError && <p role="alert" className="px-4 md:px-10 pt-6 text-red-400">Unable to load or save dashboard data: {dashboardError}</p>}
+        {isDashboardLoading ? <p role="status" className="px-4 md:px-10 py-8 text-slate-300">Loading your dashboard…</p> : <DashboardMainContent
           activeTabId={activeTabId}
           studentName={profile.name}
           streakDays={profile.streakDays}
@@ -80,7 +85,8 @@ export const DashboardLayout = memo(function DashboardLayout() {
           onJoinClass={handleJoinClass}
           onResumeCourse={handleResumeCourse}
           onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
-        />
+          onOpenTimetable={() => handleSelectTab('schedule')}
+        />}
       </div>
 
       {/* Dashboard Dialog Modals Container */}

@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Card } from '@/components/ui/card';
 import { useLearningSummarySidebar } from '../../hooks';
 import type { LearningSummarySidebarProps } from '../../types';
+import { SkipStepButton } from '../SkipStepButton';
 import {
   SidebarHeader,
   StudyModeToggle,
@@ -66,6 +67,9 @@ export const LearningSummarySidebar = memo(function LearningSummarySidebar({
           onSubmit={onSubmit}
         />
       </Card>
+      <div className="flex justify-center mt-3">
+        <SkipStepButton step={6} />
+      </div>
     </aside>
   );
 });

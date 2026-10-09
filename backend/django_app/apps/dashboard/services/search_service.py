@@ -8,36 +8,30 @@ from typing import Any, Dict, List
 from django.core.cache import cache
 from django.db.models import Q
 
-from apps.dashboard.constants import (
-    DEFAULT_SEARCH_COURSES,
-    DEFAULT_SEARCH_ASSIGNMENTS,
-    DEFAULT_SEARCH_LIVE_CLASSES,
-    DEFAULT_SEARCH_TOPICS,
-    SEARCH_CACHE_TTL_SECONDS,
-)
+from apps.dashboard.constants import SEARCH_CACHE_TTL_SECONDS
 from apps.dashboard.models import CourseModel, AssignmentModel, LiveClassModel
 
 logger = logging.getLogger(__name__)
 
 
-def perform_global_search(query: str, limit: int = 10) -> Dict[str, Any]:
+def perform_global_search(query: str, limit: int = 10, user=None) -> Dict[str, Any]:
     """
     Executes high-performance global search with ORM queries and Redis/Memory Caching.
     """
     clean_query = query.strip()
-    if not clean_query:
+    if not clean_query or not user or not user.is_authenticated:
         return _build_empty_response(query)
 
-    cache_key = f"search:v1:{clean_query.lower()}:{limit}"
+    cache_key = f"search:v2:{user.pk}:{clean_query.lower()}:{limit}"
     cached_result = cache.get(cache_key)
     if cached_result:
         logger.debug(f"[dashboard.search_service] Cache hit for key '{cache_key}'")
         return cached_result
 
-    courses = _search_courses(clean_query, limit)
-    assignments = _search_assignments(clean_query, limit)
-    live_classes = _search_live_classes(clean_query, limit)
-    topics = _search_topics(clean_query, limit)
+    courses = _search_courses(clean_query, limit, user)
+    assignments = _search_assignments(clean_query, limit, user)
+    live_classes = _search_live_classes(clean_query, limit, user)
+    topics = []
 
     total_count = len(courses) + len(assignments) + len(live_classes) + len(topics)
 
@@ -65,10 +59,10 @@ def _build_empty_response(query: str) -> Dict[str, Any]:
     }
 
 
-def _search_courses(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_courses(query: str, limit: int, user) -> List[Dict[str, Any]]:
     q_lower = query.lower()
     try:
-        qs = CourseModel.objects.filter(
+        qs = CourseModel.objects.filter(user=user).filter(
             Q(title__icontains=query)
             | Q(subject_field__icontains=query)
             | Q(course_code__icontains=query)
@@ -89,16 +83,13 @@ def _search_courses(query: str, limit: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.debug(f"[dashboard.search_service] Course ORM query fallback: {e}")
 
-    return [
-        c for c in DEFAULT_SEARCH_COURSES
-        if q_lower in c["title"].lower() or q_lower in c["subjectField"].lower() or q_lower in c["courseCode"].lower()
-    ][:limit]
+    return []
 
 
-def _search_assignments(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_assignments(query: str, limit: int, user) -> List[Dict[str, Any]]:
     q_lower = query.lower()
     try:
-        qs = AssignmentModel.objects.filter(
+        qs = AssignmentModel.objects.filter(user=user).filter(
             Q(title__icontains=query)
             | Q(subject__icontains=query)
             | Q(assignment_type__icontains=query)
@@ -119,16 +110,13 @@ def _search_assignments(query: str, limit: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.debug(f"[dashboard.search_service] Assignment ORM query fallback: {e}")
 
-    return [
-        a for a in DEFAULT_SEARCH_ASSIGNMENTS
-        if q_lower in a["title"].lower() or q_lower in a["subject"].lower() or q_lower in a["badgeText"].lower()
-    ][:limit]
+    return []
 
 
-def _search_live_classes(query: str, limit: int) -> List[Dict[str, Any]]:
+def _search_live_classes(query: str, limit: int, user) -> List[Dict[str, Any]]:
     q_lower = query.lower()
     try:
-        qs = LiveClassModel.objects.filter(
+        qs = LiveClassModel.objects.filter(user=user).filter(
             Q(title__icontains=query)
             | Q(subject__icontains=query)
             | Q(instructor_name__icontains=query)
@@ -149,15 +137,4 @@ def _search_live_classes(query: str, limit: int) -> List[Dict[str, Any]]:
     except Exception as e:
         logger.debug(f"[dashboard.search_service] LiveClass ORM query fallback: {e}")
 
-    return [
-        lc for lc in DEFAULT_SEARCH_LIVE_CLASSES
-        if q_lower in lc["title"].lower() or q_lower in lc["subject"].lower() or q_lower in lc["instructor"].lower()
-    ][:limit]
-
-
-def _search_topics(query: str, limit: int) -> List[Dict[str, Any]]:
-    q_lower = query.lower()
-    return [
-        t for t in DEFAULT_SEARCH_TOPICS
-        if q_lower in t["title"].lower() or q_lower in t["subject"].lower()
-    ][:limit]
+    return []

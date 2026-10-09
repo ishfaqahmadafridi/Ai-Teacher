@@ -8,3 +8,5 @@ export type { UseSocialAuthReturn } from './useSocialAuth';
 export { useLoginPage } from './useLoginPage';
 
 export { useProtectedRoute } from './useProtectedRoute';
+
+export * from './useAuthQueries';

@@ -25,7 +25,7 @@ export const LearningStreakCard = memo(function LearningStreakCard({
         {/* Live Course Info */}
         <div>
           <h4 className="font-['Hanken_Grotesk',sans-serif] text-sm font-bold text-[#0F172A] group-hover:text-[#2563eb] transition-colors leading-snug">
-            Physics 101: Newton's Second Law
+            Physics 101: Newton&apos;s Second Law
           </h4>
           <p className="font-['Hanken_Grotesk',sans-serif] text-xs text-[#737686]">
             Instructor: Dr. Evelyn Vance

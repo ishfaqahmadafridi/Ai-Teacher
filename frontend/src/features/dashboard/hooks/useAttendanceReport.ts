@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { DEFAULT_ATTENDANCE_LOGS } from '../constants/progressConstants';
 import {
   getRecentAbsentLogs,
   generateAttendanceCsvContent,
@@ -10,19 +9,21 @@ import {
 import type { UseAttendanceReportOptions } from '../types/progress.types';
 
 export function useAttendanceReport(options: UseAttendanceReportOptions = {}) {
-  const { attendanceLogs = DEFAULT_ATTENDANCE_LOGS, studentName = 'Student' } = options;
+  const { attendanceLogs = [], studentName = 'Student', summary, recentMissed } = options;
 
-  const recentAbsentLogs = useMemo(() => {
+  const localAbsentLogs = useMemo(() => {
     return getRecentAbsentLogs(attendanceLogs, 3);
   }, [attendanceLogs]);
 
-  const totalLogs = attendanceLogs.length;
-  const absentCount = useMemo(() => {
+  const totalLogs = summary?.total ?? attendanceLogs.length;
+  const localAbsentCount = useMemo(() => {
     return attendanceLogs.filter((l) => l.status === 'absent').length;
   }, [attendanceLogs]);
 
-  const presentCount = totalLogs - absentCount;
-  const attendanceRatePercent = totalLogs > 0 ? Math.round((presentCount / totalLogs) * 100) : 100;
+  const recentAbsentLogs = recentMissed ?? localAbsentLogs;
+  const absentCount = summary?.missed ?? localAbsentCount;
+  const presentCount = summary?.attended ?? totalLogs - absentCount;
+  const attendanceRatePercent = summary ? summary.rate : totalLogs > 0 ? Math.round((presentCount / totalLogs) * 100) : null;
 
   const handleDownloadReport = useCallback(() => {
     const csvContent = generateAttendanceCsvContent(attendanceLogs, studentName);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import { setInputText, setError } from '@/features/classroom/state/classroomSlice';
 import { useVoiceInput } from './useVoiceInput';
@@ -25,11 +25,19 @@ export function useInputBar() {
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [reactionToast, setReactionToast] = useState<string | null>(null);
 
+  const submittingRef = useRef(false);
+
   const handleSubmit = useCallback(async () => {
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || loading || isPlaying || submittingRef.current) return;
+    submittingRef.current = true;
+    stopListening();
     setLocalError(null);
-    await sendQuestion(inputText.trim());
-  }, [inputText, sendQuestion]);
+    try {
+      await sendQuestion(inputText.trim());
+    } finally {
+      submittingRef.current = false;
+    }
+  }, [inputText, loading, isPlaying, sendQuestion, stopListening]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -43,8 +51,8 @@ export function useInputBar() {
 
   const handleMicClick = useCallback(() => {
     if (isListening) stopListening();
-    else startListening();
-  }, [isListening, startListening, stopListening]);
+    else if (!loading && !isPlaying) startListening();
+  }, [isListening, loading, isPlaying, startListening, stopListening]);
 
   const handleToggleHand = useCallback(() => {
     setHandRaised((prev) => {

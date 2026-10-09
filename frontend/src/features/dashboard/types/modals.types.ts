@@ -8,7 +8,7 @@ export interface DashboardDialogsProps {
     title: string;
     courseCode: string;
     creditHours: number;
-  }) => void;
+  }) => Promise<void>;
   isProfileOpen: boolean;
   onCloseProfile: () => void;
   profile: StudentProfile;

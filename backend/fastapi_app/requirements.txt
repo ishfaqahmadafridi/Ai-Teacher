@@ -2,25 +2,27 @@
 # Install with: pip install -r requirements.txt
 
 # ── FastAPI Core ──────────────────────────────────────────────────────────────
-fastapi==0.115.6
+fastapi==0.142.2
 uvicorn[standard]==0.32.1
 pydantic==2.13.4
 pydantic-settings>=2.10.1
-python-multipart==0.0.20
+PyJWT==2.15.1
+python-multipart==0.0.31
 
 # ── CORS & Async ─────────────────────────────────────────────────────────────
 httpx==0.28.1
 anyio>=4.8.0
 
 # ── LLM & AI (shared with Django backend) ────────────────────────────────────
-langchain==1.3.4
-langchain-core==1.4.1
-langchain-google-genai==4.2.4
+langchain==1.4.3
+langchain-core==1.6.7
+langchain-google-genai==4.4.0
+langsmith==0.8.18
 python-dotenv==1.2.2
 
-# ── RAG (shared ChromaDB vector store) ───────────────────────────────────────
-chromadb>=0.4.0
-sentence-transformers>=2.2.0
+# ── RAG (shared FAISS vector store) ───────────────────────────────────────
+faiss-cpu==1.15.1
+fastembed==0.8.1
 
 # ── WebSocket ────────────────────────────────────────────────────────────────
-websockets==14.1
+websockets==16.1.1

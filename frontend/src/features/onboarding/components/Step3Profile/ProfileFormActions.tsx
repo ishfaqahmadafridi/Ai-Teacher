@@ -11,7 +11,7 @@ function ProfileFormActionsComponent({
   isSubmitDisabled = false,
 }: ProfileFormActionsProps) {
   return (
-    <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/10">
+    <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-white/10">
       <Button
         type="button"
         variant="ghost"

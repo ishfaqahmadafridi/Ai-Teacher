@@ -7,7 +7,7 @@ import { RegisterCourseForm } from './RegisterCourseForm';
 import type { RegisterCourseModalProps } from '../../types/courses.types';
 
 export const RegisterCourseModal = memo(function RegisterCourseModal(props: RegisterCourseModalProps) {
-  const { isOpen, formData, handleChange, handleSubmit } = useRegisterCourseModal(props);
+  const { isOpen, error, isPending, formData, handleChange, handleSubmit } = useRegisterCourseModal(props);
 
   if (!isOpen) return null;
 
@@ -34,7 +34,7 @@ export const RegisterCourseModal = memo(function RegisterCourseModal(props: Regi
                 <Sparkles className="w-4 h-4 text-[#38BDF8]" />
               </div>
               <p className="text-xs text-[#94A3B8] mt-0.5">
-                Select your field name, enter course details, and enroll into physics curriculum.
+                Select your field name, enter course details, and register your course.
               </p>
             </div>
           </div>
@@ -51,6 +51,8 @@ export const RegisterCourseModal = memo(function RegisterCourseModal(props: Regi
 
         {/* Modal Body Form */}
         <RegisterCourseForm
+          error={error}
+          isPending={isPending}
           formData={formData}
           onChange={handleChange}
           onSubmit={handleSubmit}

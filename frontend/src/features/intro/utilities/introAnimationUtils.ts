@@ -21,7 +21,7 @@ export function updateParticle(p: Particle, width: number, height: number): Part
   if (nextY < 0) nextY = height;
   if (nextY > height) nextY = 0;
 
-  let nextAlpha = p.alpha + p.alphaDir;
+  const nextAlpha = p.alpha + p.alphaDir;
   let nextAlphaDir = p.alphaDir;
 
   if (nextAlpha >= 0.7 || nextAlpha <= 0.1) {

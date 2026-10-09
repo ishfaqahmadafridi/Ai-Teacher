@@ -6,6 +6,7 @@ API View for listing scheduled and live class sessions.
 
 import logging
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class LiveClassListView(APIView):
+    permission_classes = [IsAuthenticated]
     """
     GET /api/dashboard/live-classes/
 
@@ -31,7 +33,7 @@ class LiveClassListView(APIView):
     )
     def get(self, request):
         try:
-            live_classes = get_live_classes()
+            live_classes = get_live_classes(request.user)
             serializer = LiveClassSerializer(live_classes, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:

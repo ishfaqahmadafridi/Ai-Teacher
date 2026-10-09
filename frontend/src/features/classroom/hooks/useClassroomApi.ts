@@ -1,7 +1,8 @@
 'use client';
-import { useCallback, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { useAppDispatch } from '@/hooks/useAppStore';
+import { useCallback, useRef, useEffect } from 'react';
+import { useClassroomQuestionMutation } from './useClassroomQueries';
+import { useConversationSession } from '@/shared/hooks/useConversationSession';
+import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import {
   setLoading,
   setLoadingStatus,
@@ -12,101 +13,75 @@ import {
   setChalkboardPoints,
   resetClassroomState,
 } from '@/features/classroom/state/classroomSlice';
-import type { TeachingResponse, ExtendedChunk, DiagramType } from '@/types';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8000';
-const SESSION_KEY = 'ai_teacher_session_id';
-
-function getSessionId(): string {
-  if (typeof window === 'undefined') return uuidv4();
-  let id = localStorage.getItem(SESSION_KEY);
-  if (!id) {
-    id = uuidv4();
-    localStorage.setItem(SESSION_KEY, id);
-  }
-  return id;
-}
+import type { ExtendedChunk, DiagramType } from '@/types';
 
 export function useClassroomApi() {
   const dispatch = useAppDispatch();
-  const esRef = useRef<EventSource | null>(null);
+  const topic = useAppSelector((s) => s.classroom.topic);
+  const esRef = useRef<AbortController | null>(null);
+  const { mutateAsync } = useClassroomQuestionMutation();
+  const getSessionId = useConversationSession();
+  useEffect(() => () => esRef.current?.abort(), []);
 
   const sendQuestion = useCallback(
     async (question: string) => {
       // Cancel any in-flight stream
-      esRef.current?.close();
+      esRef.current?.abort();
+      const controller = new AbortController();
+      esRef.current = controller;
 
       dispatch(resetClassroomState());
       dispatch(setLoading(true));
       dispatch(setLoadingStatus('Connecting to AI Tutor…'));
 
       const sessionId = getSessionId();
-      const url = `${BACKEND_URL}/api/physics-teacher/explain/?question=${encodeURIComponent(question)}&session_id=${encodeURIComponent(sessionId)}`;
 
-      const es = new EventSource(url, { withCredentials: true });
-      esRef.current = es;
+      try {
+        const data = await mutateAsync({ question, sessionId, signal: controller.signal });
+        if (controller.signal.aborted) return;
+        const diagType = (data.diagram_type ?? 'default') as DiagramType;
+        const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
+          speak: c.speak ?? '',
+          key_point: c.key_point ?? c.speak ?? null,
+          diagram: c.diagram,
+          teacher_position: c.teacher_position ?? 'left',
+        }));
 
-      let buffer = '';
+        const points: string[] = chunks
+          .map((c) => c.key_point)
+          .filter(Boolean) as string[];
 
-      es.onmessage = (event: MessageEvent) => {
-        try {
-          const parsed = JSON.parse(event.data as string) as Record<string, unknown>;
+        // If no explicit points, extract concise short points
+        const finalPoints =
+          points.length > 0
+            ? points
+            : [
+                question,
+                data.topic ? `Topic: ${data.topic}` : 'Core Principles & Dynamics',
+                chunks[0]?.speak.slice(0, 80) ?? question,
+              ];
 
-          if (parsed.status === 'thinking') {
-            dispatch(setLoadingStatus(String(parsed.message ?? 'Thinking…')));
-          } else if (parsed.status === 'result') {
-            const teaching = parsed.data as TeachingResponse;
-            const diagType = (teaching.diagram_type ?? 'default') as DiagramType;
-            const chunks: ExtendedChunk[] = teaching.phases.map((p) => ({
-              speak: p.speak,
-              key_point: p.key_point ?? null,
-              diagram: p.diagram_action
-                ? {
-                    action: p.diagram_action as ExtendedChunk['diagram'] extends undefined
-                      ? never
-                      : NonNullable<ExtendedChunk['diagram']>['action'],
-                    target: p.diagram_target,
-                    animate: p.animate,
-                    annotation: p.annotation,
-                    annotation_position: p.annotation_position,
-                  }
-                : undefined,
-              teacher_position: p.teacher_position ?? 'left',
-            }));
-
-            const points = chunks
-              .map((c) => c.key_point)
-              .filter(Boolean) as string[];
-
-            dispatch(setTopic(teaching.topic));
-            dispatch(setDiagramType(diagType));
-            dispatch(setChunks(chunks));
-            dispatch(setChalkboardPoints(points));
-            dispatch(setLoading(false));
-            dispatch(setLoadingStatus(''));
-            es.close();
-          } else if (parsed.status === 'stream') {
-            buffer += String(parsed.token ?? '');
-            dispatch(setLoadingStatus(buffer.slice(-60)));
-          }
-        } catch {
-          // Ignore non-JSON messages
-        }
-      };
-
-      es.onerror = () => {
-        dispatch(setError('Connection error. Please check the backend is running.'));
+        dispatch(setTopic(topic || data.topic || question));
+        dispatch(setDiagramType(diagType));
+        dispatch(setChunks(chunks));
+        dispatch(setChalkboardPoints(finalPoints));
         dispatch(setLoading(false));
-        es.close();
-      };
+        dispatch(setLoadingStatus(''));
+      } catch (err) {
+        if (controller.signal.aborted) return;
+        dispatch(setError(err instanceof Error ? err.message : 'Unable to get a response.'));
+        dispatch(setLoading(false));
+        dispatch(setLoadingStatus(''));
+      }
     },
-    [dispatch]
+    [dispatch, mutateAsync, getSessionId, topic]
   );
 
   const cancelStream = useCallback(() => {
-    esRef.current?.close();
+    esRef.current?.abort();
     dispatch(setLoading(false));
   }, [dispatch]);
 
   return { sendQuestion, cancelStream };
 }
+

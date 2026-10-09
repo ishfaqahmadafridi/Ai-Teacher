@@ -8,6 +8,9 @@ from datetime import timedelta
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+# Shared backend services are importable for all Django entry points.
+if str(BASE_DIR.parent) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR.parent))
 load_dotenv(BASE_DIR.parent / '.env')
 load_dotenv(BASE_DIR / '.env')
 
@@ -174,3 +177,50 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID", "")
+
+# Background timetable jobs; database records are the authoritative job results.
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/0")
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_TASK_SOFT_TIME_LIMIT = 120
+CELERY_TASK_TIME_LIMIT = 150
+TIMETABLE_MODEL = os.getenv("TIMETABLE_MODEL", "gemini-2.5-flash-lite")
+
+TIMETABLE_REQUEST_RATE = os.getenv("TIMETABLE_REQUEST_RATE", "3/min")
+TIMETABLE_WORKER_RATE = os.getenv("TIMETABLE_WORKER_RATE", "10/m")
+
+# Fail promptly when the broker is down; report failure through the job record.
+CELERY_BROKER_CONNECTION_TIMEOUT = 3
+CELERY_BROKER_TRANSPORT_OPTIONS = {"socket_connect_timeout": 3, "socket_timeout": 3}
+CELERY_TASK_PUBLISH_RETRY_POLICY = {"max_retries": 1, "interval_start": 0, "interval_step": 0, "interval_max": 0}
+
+# Includes queue wait time and provider execution.
+TIMETABLE_JOB_TIMEOUT_SECONDS = int(os.getenv("TIMETABLE_JOB_TIMEOUT_SECONDS", "300"))
+
+
+# Run Celery beat alongside workers; attendance never depends on a dashboard visit.
+CELERY_BEAT_SCHEDULE = {
+    "finalize-session-attendance": {
+        "task": "apps.dashboard.tasks.reconcile_attendance",
+        "schedule": float(os.getenv("ATTENDANCE_RECONCILE_SECONDS", "30")),
+    },
+}
+
+ATTENDANCE_HISTORY_PAGE_SIZE = int(os.getenv("ATTENDANCE_HISTORY_PAGE_SIZE", "100"))
+
+TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE = int(os.getenv("TIMETABLE_GLOBAL_REQUESTS_PER_MINUTE", "0"))
+TIMETABLE_MAX_ATTEMPTS = int(os.getenv("TIMETABLE_MAX_ATTEMPTS", "3"))
+TIMETABLE_DISPATCH_SECONDS = float(os.getenv("TIMETABLE_DISPATCH_SECONDS", "15"))
+CELERY_BEAT_SCHEDULE["recover-timetable-jobs"] = {
+    "task": "apps.dashboard.tasks.dispatch_timetable_jobs",
+    "schedule": TIMETABLE_DISPATCH_SECONDS,
+}
+
+TIMETABLE_RETRY_BASE_SECONDS = float(os.getenv("TIMETABLE_RETRY_BASE_SECONDS", "15"))
+
+# Keep attendance and recovery responsive during long LLM queues.
+CELERY_TASK_ROUTES = {
+    "apps.dashboard.tasks.generate_timetable": {"queue": "planning"},
+    "apps.dashboard.tasks.reconcile_attendance": {"queue": "maintenance"},
+    "apps.dashboard.tasks.dispatch_timetable_jobs": {"queue": "maintenance"},
+}

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useProfileMedia } from './useProfileMedia';
 import { useRouter } from 'next/navigation';
-import { AuthService } from '../../auth/services/authService';
+import { useLogoutMutation } from '../../auth/hooks/useAuthQueries';
 import { useAuthStore } from '../../auth/state/authStore';
 import type { StudentProfile, UserProfileModalProps } from '../types';
 
@@ -12,6 +13,7 @@ export function useUserProfileModal({
   profile,
   onSaveProfile,
 }: UserProfileModalProps) {
+  const { mutateAsync: logout } = useLogoutMutation();
   const router = useRouter();
   const clearAuth = useAuthStore((s) => s.clearAuth);
 
@@ -31,15 +33,7 @@ export function useUserProfileModal({
     }
   }
 
-  // Popup Picker States
-  const [showAvatarMenu, setShowAvatarMenu] = useState(false);
-  const [showAvatarPresets, setShowAvatarPresets] = useState(true);
-  const [showCoverMenu, setShowCoverMenu] = useState(false);
-  const [showCoverPresets, setShowCoverPresets] = useState(true);
-
-  // File Input References
-  const avatarFileInputRef = useRef<HTMLInputElement>(null);
-  const coverFileInputRef = useRef<HTMLInputElement>(null);
+  const media = useProfileMedia(setFormData, setIsSaved, onClose);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -62,80 +56,10 @@ export function useUserProfileModal({
     []
   );
 
-  const handleAvatarFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, avatarUrl: reader.result as string }));
-        setIsSaved(false);
-        setShowAvatarMenu(false);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, []);
-
-  const handleSelectPresetAvatar = useCallback((url: string) => {
-    setFormData((prev) => ({ ...prev, avatarUrl: url }));
-    setIsSaved(false);
-    setShowAvatarMenu(false);
-  }, []);
-
-  const handleCoverFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, coverUrl: reader.result as string }));
-        setIsSaved(false);
-        setShowCoverMenu(false);
-      };
-      reader.readAsDataURL(file);
-    }
-  }, []);
-
-  const handleSelectPresetCover = useCallback((url: string) => {
-    setFormData((prev) => ({ ...prev, coverUrl: url }));
-    setIsSaved(false);
-    setShowCoverMenu(false);
-  }, []);
-
-  const handleToggleCoverMenu = useCallback(() => {
-    setShowCoverMenu((p) => !p);
-    setShowAvatarMenu(false);
-  }, []);
-
-  const handleToggleCoverPresets = useCallback(() => {
-    setShowCoverPresets((p) => !p);
-  }, []);
-
-  const handleCloseCoverMenu = useCallback(() => {
-    setShowCoverMenu(false);
-  }, []);
-
-  const handleToggleAvatarMenu = useCallback(() => {
-    setShowAvatarMenu((p) => !p);
-    setShowCoverMenu(false);
-  }, []);
-
-  const handleToggleAvatarPresets = useCallback(() => {
-    setShowAvatarPresets((p) => !p);
-  }, []);
-
-  const handleCloseAvatarMenu = useCallback(() => {
-    setShowAvatarMenu(false);
-  }, []);
-
-  const handleCloseAllMenus = useCallback(() => {
-    setShowAvatarMenu(false);
-    setShowCoverMenu(false);
-    onClose();
-  }, [onClose]);
-
   const handleLogout = useCallback(async () => {
     const session = useAuthStore.getState();
     try {
-      if (session.refreshToken) await AuthService.logout(session.refreshToken);
+      if (session.refreshToken) await logout(session.refreshToken);
     } catch (error: unknown) {
       setSaveError(error instanceof Error ? error.message : 'Logout failed. Please try again.');
       return;
@@ -144,7 +68,7 @@ export function useUserProfileModal({
     clearAuth();
     onClose();
     router.push('/login');
-  }, [clearAuth, onClose, router]);
+  }, [clearAuth, onClose, router, logout]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -162,30 +86,14 @@ export function useUserProfileModal({
   }, [formData, onSaveProfile, isSaving]);
 
   return {
+    ...media,
     activeTab,
     setActiveTab,
     formData,
     isSaved,
     saveError,
     isSaving,
-    showAvatarMenu,
-    showAvatarPresets,
-    showCoverMenu,
-    showCoverPresets,
-    avatarFileInputRef,
-    coverFileInputRef,
     handleChange,
-    handleAvatarFileUpload,
-    handleSelectPresetAvatar,
-    handleCoverFileUpload,
-    handleSelectPresetCover,
-    handleToggleCoverMenu,
-    handleToggleCoverPresets,
-    handleCloseCoverMenu,
-    handleToggleAvatarMenu,
-    handleToggleAvatarPresets,
-    handleCloseAvatarMenu,
-    handleCloseAllMenus,
     handleLogout,
     handleSubmit,
   };

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import {
   setIsListening,
@@ -36,6 +36,18 @@ export function useVoiceInput() {
   const isListening = useAppSelector((s) => s.classroom.isListening);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
+  useEffect(() => () => {
+    const recognition = recognitionRef.current;
+    if (recognition) {
+      recognition.onresult = null;
+      recognition.onend = null;
+      recognition.onerror = null;
+      recognition.onstart = null;
+      recognition.stop();
+    }
+    dispatch(setIsListening(false));
+  }, [dispatch]);
+
   const startListening = useCallback(() => {
     const SpeechRecognitionAPI =
       window.SpeechRecognition ?? window.webkitSpeechRecognition;
@@ -45,6 +57,8 @@ export function useVoiceInput() {
       return;
     }
 
+    recognitionRef.current?.stop();
+    dispatch(setVoiceError(null));
     const recognition = new SpeechRecognitionAPI();
     recognition.lang = 'en-US';
     recognition.interimResults = false;
@@ -62,7 +76,12 @@ export function useVoiceInput() {
       dispatch(setInputText(transcript));
     };
 
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      dispatch(setIsListening(false));
+      dispatch(setVoiceError('Unable to start the microphone. Check browser permissions and try again.'));
+    }
   }, [dispatch]);
 
   const stopListening = useCallback(() => {

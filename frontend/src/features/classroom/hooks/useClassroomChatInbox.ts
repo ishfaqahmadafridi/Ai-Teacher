@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useClassroomDismiss } from './useClassroomDismiss';
 import { DEFAULT_CHAT_MESSAGES } from '../constants/sidebarConstants';
 import type { ChatMessage } from '../types/input.types';
 
@@ -12,6 +13,9 @@ export function useClassroomChatInbox() {
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
+
+  const close = useCallback(() => setIsOpen(false), []);
+  const surfaceRef = useClassroomDismiss(isOpen, close);
 
   const handleSendMessage = useCallback(() => {
     if (!inputMsg.trim()) return;
@@ -28,6 +32,8 @@ export function useClassroomChatInbox() {
 
   return {
     isOpen,
+    surfaceRef,
+    close,
     messages,
     inputMsg,
     toggleOpen,

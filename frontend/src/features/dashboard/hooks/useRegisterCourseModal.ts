@@ -8,8 +8,10 @@ export function useRegisterCourseModal({
   onClose,
   onRegisterCourse,
 }: RegisterCourseModalProps) {
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
-    subjectField: 'Computer Science & IT',
+    subjectField: '',
     title: '',
     courseCode: '',
     creditHours: 3,
@@ -27,30 +29,45 @@ export function useRegisterCourseModal({
   );
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!formData.title.trim()) return;
+      if (isPending) return;
+      if (!formData.title.trim() || !formData.subjectField || !formData.courseCode.trim()) {
+        setError('Select a field and enter the course title and code.');
+        return;
+      }
+      setError(null);
+      setIsPending(true);
 
-      onRegisterCourse({
-        subjectField: formData.subjectField,
-        title: formData.title,
-        courseCode: formData.courseCode || `CS-${Math.floor(100 + Math.random() * 900)}`,
-        creditHours: formData.creditHours || 3,
-      });
+      try {
+        await onRegisterCourse({
+          subjectField: formData.subjectField,
+          title: formData.title,
+          courseCode: formData.courseCode.trim(),
+          creditHours: formData.creditHours || 3,
+        });
+      } catch (failure: unknown) {
+        setError(failure instanceof Error ? failure.message : 'Course could not be registered.');
+        return;
+      } finally {
+        setIsPending(false);
+      }
 
       setFormData({
-        subjectField: 'Computer Science & IT',
+        subjectField: '',
         title: '',
         courseCode: '',
         creditHours: 3,
       });
       onClose();
     },
-    [formData, onRegisterCourse, onClose]
+    [formData, onRegisterCourse, onClose, isPending]
   );
 
   return {
     isOpen,
+    error,
+    isPending,
     formData,
     handleChange,
     handleSubmit,

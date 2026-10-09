@@ -1,3 +1,18 @@
+import type { checkBanStatus } from '../utilities/progressUtils';
+
+export interface AttendanceSummary {
+  total: number;
+  attended: number;
+  missed: number;
+  rate: number | null;
+}
+
+export interface AttendanceHistory {
+  attendanceLogs: AttendanceLogRecord[];
+  recentMissed: AttendanceLogRecord[];
+  summary: AttendanceSummary;
+}
+
 export interface StudentBehaviorMetrics {
   conductScore: number;
   disruptionWarningsCount: number;
@@ -51,6 +66,8 @@ export interface AttendanceLogItemProps {
 }
 
 export interface AttendanceReportCardProps {
+  summary?: AttendanceSummary;
+  recentMissed?: AttendanceLogRecord[];
   attendanceLogs: AttendanceLogRecord[];
   studentName: string;
   onDownloadReport?: () => void;
@@ -66,6 +83,8 @@ export interface ClassProgressSectionProps {
 }
 
 export interface UseAttendanceReportOptions {
+  summary?: AttendanceSummary;
+  recentMissed?: AttendanceLogRecord[];
   attendanceLogs?: AttendanceLogRecord[];
   studentName?: string;
 }
@@ -75,4 +94,28 @@ export interface UseClassProgressSectionOptions {
   behaviorMetrics?: StudentBehaviorMetrics;
   questionsList?: StudentQuestionItem[];
   attendanceLogs?: AttendanceLogRecord[];
+}
+
+
+export interface AttendanceReportHeaderProps {
+  onDownloadClick: () => void;
+}
+
+export interface AttendanceReportStatsProps {
+  attendanceRatePercent: number | null;
+  presentCount: number;
+  absentCount: number;
+}
+
+export interface AttendanceRecentMissedProps {
+  totalLogs: number;
+  recentAbsentLogs: AttendanceLogRecord[];
+  absentCount: number;
+}
+
+
+export interface ClassBehaviorSectionProps {
+  metrics: StudentBehaviorMetrics;
+  banStatus: ReturnType<typeof checkBanStatus>;
+  handleFineClick: () => void;
 }

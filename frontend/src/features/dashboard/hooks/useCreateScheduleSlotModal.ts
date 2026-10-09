@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { DashboardService } from '@/services/dashboardService';
+import { useAuthStore } from '@/features/auth/state/authStore';
 import {
   DEFAULT_CREATE_SCHEDULE_SLOT_FORM,
-  AVAILABLE_SUBJECT_OPTIONS,
   DAYS_OF_WEEK,
   SCHEDULE_TIME_SLOTS,
 } from '../constants/scheduleConstants';
@@ -18,6 +20,8 @@ export function useCreateScheduleSlotModal(
 ) {
   const { onClose, onAddScheduleSlot } = options;
 
+  const userId = useAuthStore((state) => state.user?.id);
+  const courses = useQuery({ queryKey: ['timetable-courses', userId], queryFn: () => DashboardService.getCourses(), enabled: Boolean(userId) });
   const [title, setTitle] = useState(DEFAULT_CREATE_SCHEDULE_SLOT_FORM.title);
   const [subject, setSubject] = useState(DEFAULT_CREATE_SCHEDULE_SLOT_FORM.subject);
   const [dayOfWeek, setDayOfWeek] = useState<DayOfWeek>(
@@ -49,7 +53,7 @@ export function useCreateScheduleSlotModal(
   }, []);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
       if (!title.trim()) {
         setError('Please enter a valid class topic or session title.');
@@ -61,7 +65,7 @@ export function useCreateScheduleSlotModal(
       }
 
       const newItem: ScheduleItem = {
-        id: `custom-slot-${Date.now()}`,
+        id: crypto.randomUUID(),
         title: title.trim(),
         subject,
         dayOfWeek,
@@ -72,9 +76,11 @@ export function useCreateScheduleSlotModal(
         status,
       };
 
-      onAddScheduleSlot(newItem);
-      resetForm();
-      onClose();
+      try {
+        await onAddScheduleSlot(newItem);
+        resetForm();
+        onClose();
+      } catch { setError('Unable to save the slot. Check the course and time range.'); }
     },
     [
       title,
@@ -108,7 +114,7 @@ export function useCreateScheduleSlotModal(
     error,
     handleSubmit,
     resetForm,
-    subjectOptions: AVAILABLE_SUBJECT_OPTIONS,
+    subjectOptions: courses.data?.map((course) => course.title) ?? [],
     dayOptions: DAYS_OF_WEEK,
     timeSlotOptions: SCHEDULE_TIME_SLOTS,
   };

@@ -23,10 +23,6 @@ __pycache__/
 *.pyd
 .Python
 
-# GitHub Actions workflows
-.github/
-.github/workflows/
-
 # Large binaries & local models
 college-physics-2e_-_WEB.pdf
 backend/model/
@@ -93,3 +89,10 @@ yarn-error.log*
 
 # PEM certificates
 *.pem
+
+# FAISS textbook snapshots are rebuilt locally, not committed
+**/faiss_index/
+backend/django_app/.cache/
+
+# Local queue binaries and persistence
+.runtime/

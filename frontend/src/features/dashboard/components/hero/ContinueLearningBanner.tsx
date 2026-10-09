@@ -5,8 +5,7 @@ import { GraduationCap } from 'lucide-react';
 import type { ContinueLearningBannerProps } from '../../types/dashboard.types';
 
 export const ContinueLearningBanner = memo(function ContinueLearningBanner({
-  course,
-  onResume,
+  fieldName,
   className = '',
 }: ContinueLearningBannerProps) {
   return (
@@ -23,7 +22,7 @@ export const ContinueLearningBanner = memo(function ContinueLearningBanner({
             Active Learning Field
           </span>
           <h3 className="font-['Hanken_Grotesk',sans-serif] text-base sm:text-lg font-bold text-white truncate">
-            {course.title}
+            {fieldName}
           </h3>
         </div>
       </div>

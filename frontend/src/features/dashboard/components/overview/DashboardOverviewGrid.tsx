@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { useAuthStore } from '@/features/auth/state/authStore';
 import { useDashboardOverviewGrid } from '../../hooks';
 import { DashboardHeroSection, ContinueLearningBanner } from '../hero';
 import { ProgressAnalyticsCard } from '../analytics';
@@ -10,11 +11,10 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
   studentName,
   streakDays,
   weeklyProgressPercent,
-  continueLearning,
   onJoinClass,
-  onResumeCourse,
   className = '',
 }: DashboardOverviewGridProps) {
+  const fieldName = useAuthStore((state) => state.user?.selectedInterests[0]?.trim());
   const { handleJoinClass } = useDashboardOverviewGrid({
     onJoinClass,
   });
@@ -30,16 +30,11 @@ export const DashboardOverviewGrid = memo(function DashboardOverviewGrid({
       />
 
       {/* Active Field Action Banner */}
-      {continueLearning && (
-        <ContinueLearningBanner
-          course={continueLearning}
-          onResume={() => onResumeCourse?.(continueLearning.id)}
-        />
-      )}
+      {fieldName && <ContinueLearningBanner fieldName={fieldName} />}
 
       {/* Featured Overall Performance Analytics Card */}
       <div className="w-full">
-        <ProgressAnalyticsCard />
+        <ProgressAnalyticsCard weeklyProgressPercent={weeklyProgressPercent} streakDays={streakDays} />
       </div>
     </div>
   );
