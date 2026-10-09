@@ -6,12 +6,12 @@ import vm from 'node:vm';
 const require = createRequire(import.meta.url);
 const ts = require('typescript');
 const root = resolve(import.meta.dirname, '../../..');
-export function load(path, mocks = {}) {
+export function load(path, mocks = {}, globals = {}) {
   const source = ts.transpileModule(readFileSync(resolve(root, path), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   const testModule = { exports: {} };
-  vm.runInNewContext(source, { module: testModule, exports: testModule.exports, console,
+  vm.runInNewContext(source, { ...globals, module: testModule, exports: testModule.exports, console,
     require: name => name in mocks ? mocks[name] : require(name),
   });
   return testModule.exports;

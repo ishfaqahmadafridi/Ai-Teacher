@@ -30,3 +30,5 @@ export { useSubtitleBar } from './useSubtitleBar';
 
 export * from './useClassroomQueries';
 export * from './useEmojiReactionPicker';
+
+export * from './useClassroomDismiss';

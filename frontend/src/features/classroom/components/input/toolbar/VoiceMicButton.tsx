@@ -5,6 +5,7 @@ import { Mic, MicOff } from 'lucide-react';
 import type { VoiceMicButtonProps } from '../../../types/input.types';
 
 export const VoiceMicButton = memo(function VoiceMicButton({
+  disabled = false,
   isListening,
   onMicClick,
   className = '',
@@ -14,6 +15,8 @@ export const VoiceMicButton = memo(function VoiceMicButton({
       id="mic-btn"
       type="button"
       onClick={onMicClick}
+      disabled={disabled}
+      aria-pressed={isListening}
       title={isListening ? 'Mute Microphone' : 'Unmute Microphone'}
       className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shrink-0 active:scale-95 shadow-sm ${
         isListening
