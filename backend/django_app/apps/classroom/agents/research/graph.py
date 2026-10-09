@@ -39,18 +39,19 @@ _graph = _build_graph()
 
 
 def research_evidence(question):
-    key = 'research:v1:' + hashlib.sha256(question.strip().casefold().encode()).hexdigest()
+    key = 'research:v2:' + hashlib.sha256(question.strip().casefold().encode()).hexdigest()
     try:
         cached = cache.get(key)
     except Exception:
         cached = None
     if cached is not None:
-        return cached
+        return {**cached, 'question': question}
     result = _graph.invoke({'question': question, 'evidence': [], 'errors': []},
                            config={'recursion_limit': 4})
     if result['evidence']:
         try:
-            cache.set(key, result, timeout=CACHE_SECONDS)
+            cache.set(key, {'evidence': result['evidence'], 'errors': result['errors']},
+                      timeout=CACHE_SECONDS)
         except Exception:
             pass  # Evidence remains usable when cache infrastructure is unavailable.
     return result

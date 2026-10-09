@@ -73,6 +73,13 @@ No arbitrary result URL is fetched. This is evidence grounding, not automated
 verification that every generated claim is true.
 
 Successful evidence is cached for one hour through Django's configured cache.
+The cache stores evidence and provider names, not the original question. Each
+request retains its own question even when it reuses normalized cached evidence.
+Research budgets are validated at startup: result limits must be 1–10, HTTP
+timeouts greater than zero and at most 30 seconds, response budgets 1–5,000,000
+bytes, and cache duration 1–86,400 seconds. Invalid values fail with a configuration
+error that does not expose the configured value. Malformed individual provider
+records are skipped without discarding other valid sources.
 Local settings use per-process memory, not shared Redis caching. This first phase
 is synchronous and is not a 1,000-user production implementation. Queued research,
 shared cache coordination, durable evidence records, authenticated quotas, and

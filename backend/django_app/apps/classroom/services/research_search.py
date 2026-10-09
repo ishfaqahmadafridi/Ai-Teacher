@@ -6,7 +6,10 @@ from urllib.request import Request, urlopen
 from apps.classroom.agents.research.state import Evidence
 
 
-from apps.classroom.constants.research import MAX_RESPONSE_BYTES, HTTP_TIMEOUT, PROVIDER_RESULT_LIMIT
+from apps.classroom.constants.research import (
+    MAX_RESPONSE_BYTES, HTTP_TIMEOUT, PROVIDER_RESULT_LIMIT,
+    TAVILY_SEARCH_URL, OPENALEX_WORKS_URL, EVIDENCE_TITLE_LIMIT, EVIDENCE_EXCERPT_LIMIT,
+)
 
 
 def _request(url, *, payload=None, headers=None):
@@ -27,7 +30,7 @@ def search_provider(provider, question):
         key = os.getenv('TAVILY_API_KEY')
         if not key:
             return []
-        data = _request('https://api.tavily.com/search',
+        data = _request(TAVILY_SEARCH_URL,
                         headers={'Authorization': f'Bearer {key}'},
                         payload={'query': question, 'search_depth': 'basic', 'max_results': PROVIDER_RESULT_LIMIT,
                                  'include_answer': False, 'include_raw_content': False})
@@ -39,16 +42,22 @@ def search_provider(provider, question):
             return []
         query = urlencode({'search': question, 'per-page': PROVIDER_RESULT_LIMIT,
                            'select': 'id,display_name,doi', 'api_key': key})
-        data = _request(f'https://api.openalex.org/works?{query}')
+        data = _request(f'{OPENALEX_WORKS_URL}?{query}')
         records = [{'title': r.get('display_name', ''), 'url': r.get('doi') or r.get('id'),
                     'excerpt': ''} for r in data.get('results', [])[:PROVIDER_RESULT_LIMIT] if isinstance(r, dict)]
     else:
         raise ValueError('Unknown research provider')
     evidence = []
     for record in records:
+        if not isinstance(record['title'], str) or not record['title'].strip():
+            continue
+        if record['excerpt'] is None:
+            record['excerpt'] = ''
+        if not isinstance(record['excerpt'], str):
+            continue
         try:
-            evidence.append(Evidence(**{**record, 'title': record['title'][:500],
-                                        'excerpt': record['excerpt'][:2000],
+            evidence.append(Evidence(**{**record, 'title': record['title'][:EVIDENCE_TITLE_LIMIT],
+                                        'excerpt': record['excerpt'][:EVIDENCE_EXCERPT_LIMIT],
                                         'provider': provider}).model_dump(mode='json'))
         except (ValueError, TypeError):
             continue
