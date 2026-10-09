@@ -7,7 +7,7 @@ PyJWT==2.15.1
 google-auth==2.56.3
 drf-spectacular==0.30.0
 sqlparse==0.6.0
-tzdata==2026.2
+tzdata==2026.5
 python-dotenv==1.2.2
 
 langchain==1.4.3
