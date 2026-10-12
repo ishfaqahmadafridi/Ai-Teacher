@@ -9,10 +9,10 @@ import type { DiagramCanvasProps } from '../../../types/board.types';
 
 export const DiagramCanvas = memo(function DiagramCanvas({ diagramType, command }: DiagramCanvasProps) {
   return (
-    <Canvas
+    <Canvas data-lecture-diagram
       camera={{ position: CLASSROOM_LAYOUT.camera.position, fov: CLASSROOM_LAYOUT.camera.fov }}
       style={{ background: 'transparent' }}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
     >
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} />

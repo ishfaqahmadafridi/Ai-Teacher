@@ -1,5 +1,6 @@
 import type { ExtendedChunk, DiagramType } from '@/types';
 export interface ClassroomAnswer {
+  model_info?: { note_id?: string };
   chunks: ExtendedChunk[];
   topic: string;
   diagram_type: DiagramType;

@@ -35,6 +35,7 @@ export type ValidatedPhase = z.infer<typeof phaseSchema>;
 export type ValidatedDiagramCommand = z.infer<typeof diagramCommandSchema>;
 
 export const classroomAnswerSchema = z.object({
+  model_info: z.object({ note_id: z.uuid().optional() }).optional(),
   chunks: z.array(z.object({
     speak: z.string(),
     key_point: z.string().nullable().optional(),

@@ -32,3 +32,9 @@ export * from './useClassroomQueries';
 export * from './useEmojiReactionPicker';
 
 export * from './useClassroomDismiss';
+
+export * from './useLectureFigureCapture';
+
+export * from './useNoteFigurePreview';
+
+export * from './useNoteLanguageSelector';

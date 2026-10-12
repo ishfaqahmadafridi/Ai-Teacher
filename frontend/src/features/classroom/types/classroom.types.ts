@@ -75,6 +75,7 @@ export interface SerializedVoice {
 }
 
 export interface ClassroomState {
+  noteId: string | null;
   inputText: string;
   loading: boolean;
   loadingStatus: string;
@@ -95,4 +96,5 @@ export interface ClassroomState {
   spokenText: string;
   isListening: boolean;
   voiceError: string | null;
+  showSubtitles: boolean;
 }

@@ -1,96 +1,82 @@
 'use client';
-
 import { useState, useCallback } from 'react';
-import type { LectureNoteItem } from '../types/sidebar.types';
-import { downloadNoteAsPdf, downloadNoteAsDocx } from '../utilities/downloadNotesUtils';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthStore } from '@/features/auth/state/authStore';
+import ISO6391 from 'iso-639-1';
+import { lectureNotesService } from '../services/lectureNotesService';
+import { downloadBlob, printLectureNotes, blobAsDataUrl } from '../utilities/downloadNotesUtils';
+import type { SavedLectureNote } from '../types/notes.types';
+import { noteErrorMessage } from '../utilities/noteErrors';
+import { NOTE_LANGUAGE_CODES } from '../constants/notesConstants';
 
-export interface UseLectureNotesPanelProps {
-  notes: LectureNoteItem[];
-  activeTopicId: string;
-}
+export function useLectureNotesPanel() {
+  const userId = useAuthStore(state => state.user?.id);
+  const query = useQuery({ queryKey: ['lecture-notes', userId], enabled: !!userId,
+    queryFn: ({ signal }) => lectureNotesService.list(signal) });
+  const [selectedId, setSelectedId] = useState('');
+  const [translated, setTranslated] = useState<SavedLectureNote | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState('Original');
+  const [customLangInput, setCustomLangInput] = useState('');
+  const [savedCustomLang, setSavedCustomLang] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const source = query.data?.find(note => note.id === selectedId) ?? query.data?.[0];
+  const currentNote = translated?.id === source?.id ? translated : source;
+  const activeLangLabel = ISO6391.getNativeName(currentNote?.language ?? '') || currentNote?.language || 'Original';
 
-export function useLectureNotesPanel({ notes, activeTopicId }: UseLectureNotesPanelProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('English');
-  const [customLangInput, setCustomLangInput] = useState<string>('');
-  const [savedCustomLang, setSavedCustomLang] = useState<string>('');
-  const [showCustomInput, setShowCustomInput] = useState<boolean>(false);
-
-  const currentNote =
-    notes.find((note) => note.id === activeTopicId) ||
-    notes.find((note) => note.id === 'core-formulae') ||
-    notes[0];
-
-  const handleSaveCustomLang = useCallback((e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (customLangInput.trim()) {
-      setSavedCustomLang(customLangInput.trim());
-      setShowCustomInput(false);
-    }
-  }, [customLangInput]);
-
-  const handlePillClick = useCallback((id: string) => {
-    setSelectedLanguage(id);
-    if (id === 'Custom') {
-      setShowCustomInput((prev) => !prev);
-    } else {
-      setShowCustomInput(false);
-      setSavedCustomLang('');
-    }
+  const handlePillClick = useCallback((language: string) => {
+    setSelectedLanguage(language);
+    setShowCustomInput(language === 'Custom');
+    setTranslated(null);
+    setError('');
   }, []);
-
-  const activeLangLabel =
-    selectedLanguage === 'Custom'
-      ? savedCustomLang.trim() || customLangInput.trim() || 'Custom'
-      : selectedLanguage;
-
-  const getNoteText = useCallback(() => {
-    if (!currentNote) return '';
-    const langLower = activeLangLabel.toLowerCase();
-    if (langLower.includes('urdu')) {
-      return `موضوع: ${currentNote.title}\nخلاصہ: کسی جسم کا اسقاط (acceleration) اس پر لگنے والی کل قوت کے براہ راست متناسب اور اس کے کمیت (mass) کے بالواسطہ متناسب ہوتا ہے۔\nفارمولا: ${currentNote.formula || 'F = m · a'}`;
-    }
-    if (langLower.includes('hinglish')) {
-      return `Topic: ${currentNote.title}\nSummary: Kisi object ka acceleration us par lagne wali net force ke directly proportional hota hai aur uske mass ke inversely proportional hota hai.\nFormula: ${currentNote.formula || 'F_net = m · a'}`;
-    }
-    if (langLower.includes('german') || langLower.includes('deutsch')) {
-      return `Thema: ${currentNote.title}\nZusammenfassung: Die Beschleunigung eines Objekts ist direkt proportional zur Nettokraft und umgekehrt proportional zu seiner Masse.\nFormel: ${currentNote.formula || 'F_net = m · a'}`;
-    }
-    return `Topic: ${currentNote.title}\nSummary: ${currentNote.content}\nFormula: ${currentNote.formula || 'F_net = m · a'}`;
-  }, [activeLangLabel, currentNote]);
-
-  const handleDownloadPdf = useCallback(() => {
-    if (currentNote) {
-      downloadNoteAsPdf(
-        currentNote.title,
-        getNoteText(),
-        currentNote.formula,
-        activeLangLabel
-      );
-    }
-  }, [currentNote, getNoteText, activeLangLabel]);
-
-  const handleDownloadDocx = useCallback(() => {
-    if (currentNote) {
-      downloadNoteAsDocx(
-        currentNote.title,
-        getNoteText(),
-        currentNote.formula,
-        activeLangLabel
-      );
-    }
-  }, [currentNote, getNoteText, activeLangLabel]);
-
-  return {
-    currentNote,
-    selectedLanguage,
-    customLangInput,
-    savedCustomLang,
-    showCustomInput,
-    activeLangLabel,
-    setCustomLangInput,
-    handleSaveCustomLang,
-    handlePillClick,
-    handleDownloadPdf,
-    handleDownloadDocx,
-  };
+  const handleSaveCustomLang = useCallback((event?: React.FormEvent) => {
+    event?.preventDefault();
+    setSavedCustomLang(customLangInput.trim());
+    setShowCustomInput(false);
+  }, [customLangInput]);
+  const translate = useCallback(async () => {
+    if (!source || busy) return;
+    const language = NOTE_LANGUAGE_CODES[selectedLanguage] ||
+      (ISO6391.validate(savedCustomLang.toLowerCase()) ? savedCustomLang.toLowerCase() : ISO6391.getCode(savedCustomLang));
+    if (!language) { setError('Enter a supported language name or ISO code, such as German or de.'); return; }
+    setBusy(true); setError('');
+    const account = useAuthStore.getState().user?.id;
+    try {
+      const result = await lectureNotesService.translate(source.id, language);
+      if (account === useAuthStore.getState().user?.id) setTranslated(result);
+    } catch (error) { setError(noteErrorMessage(error, 'Translation could not finish. Original notes remain available; retry shortly.')); }
+    finally { setBusy(false); }
+  }, [source, busy, selectedLanguage, savedCustomLang]);
+  const handleDownloadDocx = useCallback(async () => {
+    if (!currentNote || busy) return;
+    setBusy(true); setError('');
+    const account = useAuthStore.getState().user?.id;
+    try {
+      const blob = await lectureNotesService.document(currentNote.id, currentNote.language);
+      if (account === useAuthStore.getState().user?.id) downloadBlob(blob, `lecture-notes-${currentNote.language}.docx`);
+    } catch { setError('The document could not be downloaded. Please retry.'); }
+    finally { setBusy(false); }
+  }, [currentNote, busy]);
+  const handleDownloadPdf = useCallback(async () => {
+    if (!currentNote || busy) return;
+    const popup = window.open('', '_blank');
+    if (!popup) { setError('Allow a print window to save your notes as PDF.'); return; }
+    popup.opener = null;
+    setBusy(true); setError('');
+    const account = useAuthStore.getState().user?.id;
+    try {
+      const figures = Object.fromEntries(await Promise.all(currentNote.figure_indices.map(async index =>
+        [index, await blobAsDataUrl(await lectureNotesService.figure(currentNote.id, index))] as const)));
+      if (account === useAuthStore.getState().user?.id) await printLectureNotes(currentNote, figures, popup);
+      else popup.close();
+    } catch { popup.close(); setError('The printable notes could not be opened. Please retry.'); }
+    finally { setBusy(false); }
+  }, [currentNote, busy]);
+  const selectNote = useCallback((id: string) => { setSelectedId(id); setTranslated(null); setSelectedLanguage('Original'); }, []);
+  return { isSignedIn: !!userId, currentNote, notes: query.data ?? [], selectedId: source?.id ?? '', selectNote,
+    selectedLanguage, customLangInput, savedCustomLang, showCustomInput, activeLangLabel,
+    setCustomLangInput, handleSaveCustomLang, handlePillClick, handleDownloadPdf, handleDownloadDocx,
+    translate, busy, error: error || (query.isError ? 'Notes could not be loaded.' : ''), loading: query.isLoading };
 }

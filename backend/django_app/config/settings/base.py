@@ -90,6 +90,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Private note assets are served through authenticated APIs, never a public media route.
+MEDIA_ROOT = Path(os.getenv('CLASSROOM_MEDIA_ROOT', str(BASE_DIR / 'private-media')))
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
