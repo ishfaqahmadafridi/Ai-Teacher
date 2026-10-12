@@ -1,14 +1,16 @@
 'use client';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import { queryKeys } from '@/shared/constants/queryConstants';
 import { ClassroomService } from '../services/classroomService';
 import type { ClassroomQuestion } from '../types/api.types';
 export function useClassroomQuestionMutation() {
+  const queryClient = useQueryClient();
   return useMutation({ mutationFn: async (question: ClassroomQuestion) => {
     const account = useAuthStore.getState().user?.id;
     const answer = await ClassroomService.askQuestion(question);
     if (question.signal?.aborted || useAuthStore.getState().user?.id !== account) throw new Error('The signed-in account changed.');
+    await queryClient.invalidateQueries({ queryKey: ['lecture-notes', account] });
     return answer;
   } });
 }

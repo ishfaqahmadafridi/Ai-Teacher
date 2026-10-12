@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
+from apps.classroom.services.lecture_notes import save_lecture_note, account_session_id
 from apps.classroom.inference import generate_answer
 from apps.classroom.serializers import AskRequestSerializer, AskResponseSerializer
 
@@ -45,7 +46,8 @@ class AskView(APIView):
 
 
         try:
-            result = generate_answer(**serializer.validated_data)
+            result = generate_answer(**{**serializer.validated_data,
+                'session_id': account_session_id(request.user, serializer.validated_data['session_id'])})
             response_serializer = AskResponseSerializer(data=result)
             response_serializer.is_valid(raise_exception=True)
         except Exception as e:
@@ -55,4 +57,7 @@ class AskView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+        if request.user.is_authenticated and result.get('topic') != 'unknown':
+            note = save_lecture_note(request.user, serializer.validated_data['session_id'], result)
+            response_serializer.validated_data['model_info']['note_id'] = str(note.id)
         return Response(response_serializer.validated_data, status=status.HTTP_200_OK)

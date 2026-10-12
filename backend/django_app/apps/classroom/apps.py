@@ -23,6 +23,10 @@ class ClassroomConfig(AppConfig):
         Called by Django once all apps are loaded.
         Start RAG background init here — safe, non-blocking.
         """
+        from django.db.models.signals import post_delete
+        from apps.classroom.models.lecture_notes import NoteFigure
+        from apps.classroom.services.note_figures import remove_figure_file
+        post_delete.connect(remove_figure_file, sender=NoteFigure, dispatch_uid='classroom.note_figure_cleanup')
         import os
         import sys
         from django.conf import settings

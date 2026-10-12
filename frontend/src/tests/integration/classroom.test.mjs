@@ -143,6 +143,7 @@ test('rendered classroom stage invokes the playback-owning layout hook', () => {
   let calls = 0;
   const result = { chunks: [{ speak: 'Voltage equals current times resistance.' }], isPlaying: true };
   const { useClassroomStageArea } = load('features/classroom/hooks/useClassroomStageArea.ts', {
+    './useLectureFigureCapture': { useLectureFigureCapture: () => {} },
     './useClassroomLayout': { useClassroomLayout: () => { calls += 1; return result; } },
   });
   assert.equal(useClassroomStageArea(), result);

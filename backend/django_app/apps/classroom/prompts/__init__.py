@@ -9,3 +9,5 @@ __all__ = [
     'SYSTEM_PROMPT',
     'RAG_CONTEXT_SUFFIX',
 ]
+
+from .note_translation import NOTE_TRANSLATION_PROMPT

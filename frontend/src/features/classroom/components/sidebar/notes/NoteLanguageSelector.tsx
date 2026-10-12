@@ -1,8 +1,8 @@
 'use client';
 
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { Globe } from 'lucide-react';
-import ISO6391 from 'iso-639-1';
+import { useNoteLanguageSelector } from '../../../hooks/useNoteLanguageSelector';
 import type { NoteLanguageSelectorProps } from '../../../types/sidebar.types';
 
 export const NoteLanguageSelector = memo(function NoteLanguageSelector({
@@ -12,17 +12,7 @@ export const NoteLanguageSelector = memo(function NoteLanguageSelector({
   onPillClick,
   className = '',
 }: NoteLanguageSelectorProps) {
-  const options = useMemo(() => {
-    return [
-      { id: 'English', label: ISO6391.getNativeName('en') || 'English' },
-      { id: 'Urdu', label: ISO6391.getNativeName('ur') || 'اردو' },
-      { id: 'Hinglish', label: 'Hinglish' },
-      {
-        id: 'Custom',
-        label: savedCustomLang.trim() ? savedCustomLang.trim() : 'Custom',
-      },
-    ];
-  }, [savedCustomLang]);
+  const options = useNoteLanguageSelector(savedCustomLang);
 
   return (
     <div className={`space-y-1.5 ${className}`}>
@@ -37,7 +27,7 @@ export const NoteLanguageSelector = memo(function NoteLanguageSelector({
       </div>
 
       {/* 4 Pills Grid */}
-      <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-[#060A12] border border-slate-800">
+      <div className="grid grid-cols-5 gap-1 p-1 rounded-xl bg-[#060A12] border border-slate-800">
         {options.map((item) => (
           <button
             key={item.id}

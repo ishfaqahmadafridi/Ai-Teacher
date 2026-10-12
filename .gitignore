@@ -96,3 +96,6 @@ backend/django_app/.cache/
 
 # Local queue binaries and persistence
 .runtime/
+
+# Private uploaded lecture snapshots
+backend/django_app/private-media/

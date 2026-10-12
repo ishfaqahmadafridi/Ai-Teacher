@@ -7,3 +7,5 @@ from .session_view import ClearSessionView
 from .health_view import HealthView
 
 __all__ = ['AskView', 'ClearSessionView', 'HealthView']
+
+from .note_views import NotesView, NoteTranslationView, NoteDocumentView, NoteFigureView

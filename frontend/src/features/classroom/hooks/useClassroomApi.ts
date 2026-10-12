@@ -8,6 +8,7 @@ import {
   setLoadingStatus,
   setError,
   setChunks,
+  setNoteId,
   setDiagramType,
   setTopic,
   setChalkboardPoints,
@@ -63,6 +64,7 @@ export function useClassroomApi() {
 
         dispatch(setTopic(topic || data.topic || question));
         dispatch(setDiagramType(diagType));
+        dispatch(setNoteId(data.model_info?.note_id ?? null));
         dispatch(setChunks(chunks));
         dispatch(setChalkboardPoints(finalPoints));
         dispatch(setLoading(false));

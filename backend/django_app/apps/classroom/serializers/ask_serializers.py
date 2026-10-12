@@ -5,6 +5,7 @@ Request and response serializers for the Ask/Classroom endpoint.
 """
 import math
 from rest_framework import serializers
+from .session_fields import PublicSessionIdField
 from apps.classroom.constants import DEFAULT_SESSION_ID, DEFAULT_TEMPERATURE
 
 
@@ -21,7 +22,7 @@ class AskRequestSerializer(serializers.Serializer):
         max_length=2000,
         help_text="The student's question for the AI professor.",
     )
-    session_id = serializers.CharField(
+    session_id = PublicSessionIdField(
         required=False,
         default=DEFAULT_SESSION_ID,
         max_length=128,
@@ -42,12 +43,12 @@ class AskRequestSerializer(serializers.Serializer):
 
 
 class ClearSessionRequestSerializer(serializers.Serializer):
-    session_id = serializers.CharField(default=DEFAULT_SESSION_ID, max_length=128)
+    session_id = PublicSessionIdField(default=DEFAULT_SESSION_ID, max_length=128)
 
 
 class ClearSessionResponseSerializer(serializers.Serializer):
     status = serializers.CharField()
-    session_id = serializers.CharField()
+    session_id = PublicSessionIdField()
 
 
 class AnswerChunkSerializer(serializers.Serializer):
