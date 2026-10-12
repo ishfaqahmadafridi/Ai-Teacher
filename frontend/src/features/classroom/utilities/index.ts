@@ -9,3 +9,5 @@ export * from './lazyComponents';
 export * from './lectureFigureCapture';
 
 export * from './noteErrors';
+
+export * from './speechVoiceSelection';

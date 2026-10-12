@@ -8,7 +8,8 @@ const ts = require('typescript');
 const root = resolve(import.meta.dirname, '../../..');
 export function load(path, mocks = {}, globals = {}) {
   const source = ts.transpileModule(readFileSync(resolve(root, path), 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    fileName: path,
+    compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
   }).outputText;
   const testModule = { exports: {} };
   vm.runInNewContext(source, { ...globals, module: testModule, exports: testModule.exports, console,

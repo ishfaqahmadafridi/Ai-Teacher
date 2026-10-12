@@ -18,6 +18,7 @@ export const Sidebar = memo(function Sidebar({
     expandedSections,
     activeTopicId,
     activeTopicTitle,
+    topics,
     toggleSection,
     handleSelectTopic,
   } = useClassroomSidebar();
@@ -33,12 +34,13 @@ export const Sidebar = memo(function Sidebar({
         <SidebarAccordionSection
           id="outline"
           title="Today's Outline"
-          badge="5 Topics"
+          badge={`${topics.length} Steps`}
           icon={ListTree}
           isExpanded={expandedSections.outline}
           onToggle={toggleSection}
         >
           <TodayOutlinePanel
+            topics={topics}
             activeTopicId={activeTopicId}
             onSelectTopic={handleSelectTopic}
           />

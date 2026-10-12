@@ -12,7 +12,10 @@ Flow:
 
 This enables true real-time live classroom experience.
 """
+import asyncio
 import json
+from app.core.security import access_identity, private_session
+from app.core.config import settings
 import logging
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
@@ -51,6 +54,16 @@ async def websocket_classroom(websocket: WebSocket, session_id: str):
     ```
     """
     await websocket.accept()
+    # Browser clients authenticate in the first frame; tokens never enter URLs.
+    try:
+        authentication = await asyncio.wait_for(websocket.receive_json(), timeout=settings.WEBSOCKET_AUTH_TIMEOUT_SECONDS)
+        identity = access_identity(authentication.get('token', '')) if isinstance(authentication, dict) else None
+    except (TimeoutError, ValueError, WebSocketDisconnect):
+        identity = None
+    if identity is None:
+        await websocket.close(code=1008)
+        return
+    session_id = private_session(identity, session_id)
     logger.info(f"[WS] Client connected | session='{session_id}'")
 
     try:
@@ -95,16 +108,16 @@ async def websocket_classroom(websocket: WebSocket, session_id: str):
                 }))
 
             except Exception as e:
-                logger.error(f"[WS] Streaming error | session='{session_id}': {e}")
+                logger.error("WebSocket stream failed: %s", type(e).__name__)
                 await websocket.send_text(json.dumps({
-                    "error": str(e),
+                    "error": "The teaching service is unavailable. Please retry.",
                     "done": True,
                 }))
 
     except WebSocketDisconnect:
         logger.info(f"[WS] Client disconnected | session='{session_id}'")
     except Exception as e:
-        logger.error(f"[WS] Unexpected error | session='{session_id}': {e}")
+        logger.error("WebSocket failed: %s", type(e).__name__)
         try:
             await websocket.close(code=1011)
         except Exception:

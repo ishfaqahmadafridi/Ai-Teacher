@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 import { useInputBarToasts } from '../../../hooks/useInputBarToasts';
 
 export const InputBarToasts = memo(function InputBarToasts() {
-  const { voiceError, localError, reactionToast, clearErrors } = useInputBarToasts();
+  const { voiceError, localError, reactionToast, clearErrors, retryAudio, audioStatus, testAudio } = useInputBarToasts();
 
   return (
     <>
@@ -13,6 +13,8 @@ export const InputBarToasts = memo(function InputBarToasts() {
       {(voiceError || localError) && (
         <div className="text-red-300 text-xs bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2.5 flex items-center justify-between shadow-lg backdrop-blur-md">
           <span className="font-medium">{voiceError ?? localError}</span>
+          {voiceError && <button type="button" onClick={testAudio} className="shrink-0 underline px-2">Test audio</button>}
+          {voiceError && <button type="button" onClick={retryAudio} className="shrink-0 underline px-2">Retry audio</button>}
           <button
             type="button"
             className="text-red-400 hover:text-white transition-colors cursor-pointer"
@@ -22,6 +24,8 @@ export const InputBarToasts = memo(function InputBarToasts() {
           </button>
         </div>
       )}
+
+      {audioStatus && <p role="status" className="text-xs text-slate-300">{audioStatus}</p>}
 
       {/* Floating Reaction Toast Notification */}
       {reactionToast && (

@@ -38,3 +38,11 @@ export * from './useLectureFigureCapture';
 export * from './useNoteFigurePreview';
 
 export * from './useNoteLanguageSelector';
+
+export * from './useLessonRecovery';
+
+export * from './useSpeechDiagnostic';
+
+export * from './useLessonAudioPlayer';
+
+export * from './useLessonOutline';

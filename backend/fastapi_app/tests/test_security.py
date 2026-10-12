@@ -30,3 +30,40 @@ class SecurityTests(unittest.TestCase):
         token = jwt.encode({'sub': 'test-user'}, secrets.token_urlsafe(32), algorithm='HS256')
         with patch('app.core.security.settings.SECRET_KEY', secrets.token_urlsafe(32)):
             self.assertIsNone(verify_token(token))
+
+
+    def test_refresh_token_is_not_an_access_identity(self):
+        from app.core.security import access_identity
+        with patch('app.core.security.verify_token', return_value={'token_type': 'refresh', 'exp': 9999999999, 'user_id': 1}):
+            self.assertIsNone(access_identity('token'))
+
+    def test_missing_expiry_is_rejected(self):
+        from app.core.security import access_identity
+        with patch('app.core.security.verify_token', return_value={'token_type': 'access', 'user_id': 1}):
+            self.assertIsNone(access_identity('token'))
+
+    def test_session_identity_is_account_scoped(self):
+        from app.core.security import private_session
+        self.assertNotEqual(private_session('1', 'shared'), private_session('2', 'shared'))
+
+    def test_http_authentication_fails_before_streaming(self):
+        from fastapi import FastAPI, Depends
+        from fastapi.testclient import TestClient
+        from app.core.security import require_access_token
+        app = FastAPI()
+        @app.get('/protected', dependencies=[Depends(require_access_token)])
+        def protected():
+            return {'ok': True}
+        self.assertEqual(TestClient(app).get('/protected').status_code, 401)
+
+
+    def test_database_credentials_are_url_encoded(self):
+        from urllib.parse import urlsplit, unquote
+        settings = Settings(DB_USER='test@user', DB_PASSWORD='not-a-secret@:/')
+        parsed = urlsplit(settings.ASYNC_DATABASE_URL)
+        self.assertEqual(unquote(parsed.username), settings.DB_USER)
+        self.assertEqual(unquote(parsed.password), settings.DB_PASSWORD)
+
+    def test_default_cors_is_not_wildcard(self):
+        with patch.dict('os.environ', {}, clear=True):
+            self.assertNotIn('*', Settings().BACKEND_CORS_ORIGINS)

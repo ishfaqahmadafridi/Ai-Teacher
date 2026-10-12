@@ -1,12 +1,14 @@
 'use client';
 
 import { memo } from 'react';
+import { ClassroomPlaybackProvider } from './ClassroomPlaybackProvider';
 import { Sidebar, MobileSidebar } from './sidebar';
 import { ClassroomStageArea } from './stage/ClassroomStageArea';
 import { InputBar } from './input/InputBar';
 
 export const ClassroomLayout = memo(function ClassroomLayout() {
   return (
+    <ClassroomPlaybackProvider>
     <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-white font-sans">
       {/* Sidebar */}
       <Sidebar />
@@ -25,6 +27,7 @@ export const ClassroomLayout = memo(function ClassroomLayout() {
         </div>
       </div>
     </div>
+    </ClassroomPlaybackProvider>
   );
 });
 

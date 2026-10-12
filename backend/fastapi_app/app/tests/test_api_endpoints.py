@@ -3,6 +3,10 @@ fastapi_app/app/tests/test_api_endpoints.py
 End-to-end HTTP API integration tests for FastAPI endpoints.
 """
 import unittest
+import secrets
+import time
+from unittest.mock import patch
+import jwt
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -13,6 +17,23 @@ class TestAPIEndpoints(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.client = TestClient(app)
+
+    def setUp(self):
+        key = secrets.token_urlsafe(32)
+        self.signing_key = patch('app.core.security.settings.SECRET_KEY', key)
+        self.signing_key.start()
+        self.addCleanup(self.signing_key.stop)
+        token = jwt.encode({'user_id': 42, 'token_type': 'access', 'exp': int(time.time()) + 60}, key, algorithm='HS256')
+        self.client.headers['Authorization'] = f'Bearer {token}'
+        self.addCleanup(lambda: self.client.headers.pop('Authorization', None))
+
+    def test_inference_requires_access_token(self):
+        response = self.client.post('/api/v1/stream/ask', json={'question': 'What is mass?'}, headers={'Authorization': ''})
+        self.assertEqual(response.status_code, 401)
+
+    def test_invalid_token_cannot_execute_agent(self):
+        response = self.client.post('/api/v1/agents/execute', json={'question': 'Explain mass'}, headers={'Authorization': 'Bearer invalid'})
+        self.assertEqual(response.status_code, 401)
 
     def test_health_check_endpoint(self):
         """GET /api/v1/health/ should return HTTP 200 with status ok."""
@@ -56,6 +77,7 @@ class TestAPIEndpoints(unittest.TestCase):
         """POST /api/v1/agents/generate-timetable returns timetable schedule."""
         payload = {
             "registered_class": "Physics Mechanics 101",
+            "registered_courses": ["Physics Mechanics 101"],
             "preferred_time": "morning",
             "max_classes_per_day": 2,
         }

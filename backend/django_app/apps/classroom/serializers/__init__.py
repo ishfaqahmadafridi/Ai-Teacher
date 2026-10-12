@@ -15,3 +15,5 @@ __all__ = [
 ]
 
 from .note_serializers import NotesQuerySerializer, NoteLanguageSerializer, NoteContentSerializer, NoteResponseSerializer, NoteFigureSerializer
+
+from .lesson_audio_serializers import LessonAudioRequestSerializer

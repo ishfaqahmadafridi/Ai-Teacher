@@ -52,6 +52,8 @@ class ClearSessionResponseSerializer(serializers.Serializer):
 
 
 class AnswerChunkSerializer(serializers.Serializer):
+    question = serializers.CharField(required=False, max_length=2000)
+    expected_concepts = serializers.ListField(child=serializers.CharField(max_length=500), required=False, max_length=10)
     speak = serializers.CharField()
     diagram = serializers.DictField()
     key_point = serializers.CharField(required=False, allow_blank=True)
@@ -61,6 +63,12 @@ class AnswerChunkSerializer(serializers.Serializer):
 
 
 class GeneratedAnswerSerializer(serializers.Serializer):
+    def validate_chunks(self, chunks):
+        for index, chunk in enumerate(chunks):
+            if chunk.get('question') and (index != len(chunks) - 1 or not chunk.get('expected_concepts')):
+                raise serializers.ValidationError('Understanding checks require expected concepts and must finish the response.')
+        return chunks
+
     chunks = AnswerChunkSerializer(many=True, allow_empty=False)
     topic = serializers.CharField(default="physics")
     diagram_type = serializers.CharField(default="default")

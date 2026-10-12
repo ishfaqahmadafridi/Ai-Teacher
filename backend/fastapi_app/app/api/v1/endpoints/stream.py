@@ -14,7 +14,8 @@ real-time classroom usage.
 """
 import json
 import logging
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.core.security import require_access_token, private_session
 from fastapi.responses import StreamingResponse
 
 from app.schemas import AskRequest
@@ -68,9 +69,9 @@ async def _token_event_generator(request: AskRequest):
         yield f"data: {final}\n\n"
 
     except Exception as e:
-        logger.error(f"[SSE] Stream error for session='{request.session_id}': {e}")
+        logger.error("SSE stream failed: %s", type(e).__name__)
         error_payload = json.dumps({
-            "token": f"[Error: {str(e)}]",
+            "token": "The teaching service is unavailable. Please retry.",
             "done": True,
             "session_id": request.session_id,
         })
@@ -83,7 +84,7 @@ async def _token_event_generator(request: AskRequest):
     tags=["classroom"],
     response_description="Server-Sent Events stream of AI response tokens",
 )
-async def stream_ask(request: AskRequest) -> StreamingResponse:
+async def stream_ask(request: AskRequest, identity: str = Depends(require_access_token)) -> StreamingResponse:
     """
     **Streaming AI Response** via Server-Sent Events (SSE).
 
@@ -100,6 +101,7 @@ async def stream_ask(request: AskRequest) -> StreamingResponse:
     };
     ```
     """
+    request = request.model_copy(update={"session_id": private_session(identity, request.session_id)})
     return StreamingResponse(
         _token_event_generator(request),
         media_type="text/event-stream",

@@ -9,3 +9,5 @@ export * from './stage.types';
 export * from './api.types';
 
 export * from './notes.types';
+
+export * from './playback.types';

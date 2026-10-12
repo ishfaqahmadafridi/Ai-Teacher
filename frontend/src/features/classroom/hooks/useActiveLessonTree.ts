@@ -26,13 +26,14 @@ export function useActiveLessonTree(options: UseActiveLessonTreeOptions = {}) {
     setIsExpanded((prev) => !prev);
   }, []);
 
+  const onSelectTopic = options.onSelectTopic;
   const handleSelectTopic = useCallback(
     (id: string) => {
-      if (options.onSelectTopic) {
-        options.onSelectTopic(id);
+      if (onSelectTopic) {
+        onSelectTopic(id);
       }
     },
-    [options.onSelectTopic]
+    [onSelectTopic]
   );
 
   return {

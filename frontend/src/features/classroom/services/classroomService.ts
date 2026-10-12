@@ -22,13 +22,7 @@ export class ClassroomService {
    * Leverages the classroom Zod schema validation rules.
    */
   static validateExplanation(data: unknown): ValidatedTeachingResponse {
-    const parseResult = teachingResponseSchema.safeParse(data);
-    if (!parseResult.success) {
-      console.warn('[ClassroomService] Validation warning, trying fallback logic:', parseResult.error.format());
-      // Return parsed data anyway if validation is soft, or throw hard error
-      return data as ValidatedTeachingResponse;
-    }
-    return parseResult.data;
+    return teachingResponseSchema.parse(data);
   }
 }
 

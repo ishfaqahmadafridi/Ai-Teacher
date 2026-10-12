@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
+import { useAppSelector } from '@/hooks/useAppStore';
+import { useLessonOutline } from './useLessonOutline';
 import { useBrowserStorage } from '@/shared/hooks/useBrowserStorage';
 import type { ClassroomSidebarTabId, UseClassroomSidebarOptions } from '../types/sidebar.types';
 import { DEFAULT_ACTIVE_TOPIC_ID, DEFAULT_LESSON_TOPICS, DEFAULT_LECTURE_TITLE } from '../constants/sidebarConstants';
@@ -8,6 +10,8 @@ import { DEFAULT_ACTIVE_TOPIC_ID, DEFAULT_LESSON_TOPICS, DEFAULT_LECTURE_TITLE }
 const STORAGE_KEY = 'classroom_sidebar_expanded_sections';
 
 export function useClassroomSidebar(options: UseClassroomSidebarOptions = {}) {
+  const lessonTopic = useAppSelector(state => state.classroom.topic);
+  const topics = useLessonOutline();
   const stored = useBrowserStorage(STORAGE_KEY);
   const [overrides, setExpandedSections] = useState<Record<ClassroomSidebarTabId, boolean> | null>(null);
   const expandedSections = useMemo(() => {
@@ -47,7 +51,8 @@ export function useClassroomSidebar(options: UseClassroomSidebarOptions = {}) {
   return {
     expandedSections,
     activeTopicId,
-    activeTopicTitle,
+    activeTopicTitle: lessonTopic || activeTopicTitle,
+    topics,
     toggleSection,
     handleSelectTopic,
   };

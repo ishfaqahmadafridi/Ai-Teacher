@@ -93,22 +93,28 @@ test('closed classroom surfaces install no dismissal listeners', () => {
   assert.equal(h.cleanup, undefined);
 });
 
-function playbackHarness() {
-  const state = { chunks: [{ speak: 'First step' }, { speak: 'Second step' }], voices: [], selectedVoice: '', isPaused: false };
-  const dispatched = [], spoken = [], effects = [];
+function playbackHarness(question, availableVoices = [{ voiceURI: 'test-local', lang: 'en-US', localService: true, default: true }], noteId = null) {
+  const state = { noteId, chunks: [{ speak: 'First step', key_point: 'First point', question }, { speak: 'Second step' }], voices: [], selectedVoice: '', isPaused: false };
+  const dispatched = [], spoken = [], effects = [], timers = [], files = [];
   const actions = new Proxy({}, { get: (_, name) => value => ({ type: name, payload: value }) });
-  const { useChunkPlayer } = load('features/classroom/hooks/useChunkPlayer.ts', {
+  const { useChunkPlaybackOwner: useChunkPlayer } = load('features/classroom/hooks/useChunkPlaybackOwner.ts', {
     react: { useCallback: fn => fn, useRef: value => ({ current: value }), useEffect: fn => effects.push(fn) },
+    './useLessonAudioPlayer': { useLessonAudioPlayer: () => ({ playAudio: (...args) => files.push(args), stopAudio() {}, pauseAudio() {}, resumeAudio() {} }) },
     '@/hooks/useAppStore': { useAppDispatch: () => action => dispatched.push(action), useAppSelector: fn => fn({ classroom: state }) },
     '@/features/classroom/state/classroomSlice': actions,
+    '../constants/playbackConstants': load('features/classroom/constants/playbackConstants.ts'),
+    '../utilities/speechVoiceSelection': load('features/classroom/utilities/speechVoiceSelection.ts'),
   }, {
-    window: { speechSynthesis: { cancel() {}, speak: utterance => spoken.push(utterance), getVoices: () => [] } },
+    window: { speechSynthesis: { cancel() {}, resume() {}, speak: utterance => spoken.push(utterance), getVoices: () => availableVoices } },
+    document: { documentElement: { lang: 'en' } },
+    navigator: { language: 'en-US', userActivation: { hasBeenActive: true } },
+    setTimeout: callback => { timers.push(callback); return timers.length; }, clearTimeout() {},
     SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
   });
   // eslint-disable-next-line react-hooks/rules-of-hooks -- test harness intentionally invokes hook directly
   const player = useChunkPlayer();
   effects.forEach(fn => fn());
-  return { player, spoken, dispatched };
+  return { player, spoken, dispatched, timers, files };
 }
 
 test('AI answers play sequential steps and finish after the final step', () => {
@@ -148,4 +154,167 @@ test('rendered classroom stage invokes the playback-owning layout hook', () => {
   });
   assert.equal(useClassroomStageArea(), result);
   assert.equal(calls, 1);
+});
+
+
+test('speech failure stops playback and reports the reason without skipping steps', () => {
+  const h = playbackHarness();
+  h.player.play();
+  h.spoken[0].onerror({ error: 'not-allowed' });
+  assert.equal(h.spoken.length, 1);
+  assert.equal(h.dispatched.at(-1).type, 'setVoiceError');
+  assert.match(h.dispatched.at(-1).payload, /not-allowed/);
+  assert.ok(h.dispatched.some(action => action.type === 'setIsPlaying' && action.payload === false));
+});
+
+test('board points appear only when narration starts', () => {
+  const h = playbackHarness();
+  h.player.play();
+  assert.equal(h.dispatched.filter(action => action.type === 'addChalkboardPoint').length, 0);
+  h.spoken[0].onstart();
+  assert.equal(h.dispatched.filter(action => action.type === 'addChalkboardPoint').length, 1);
+});
+
+
+test('understanding checks stop playback and preserve the pending question', () => {
+  const h = playbackHarness('What happens next?');
+  h.player.play();
+  h.spoken[0].onend();
+  assert.equal(h.spoken.length, 1);
+  const pending = h.dispatched.find(action => action.type === 'setPendingQuestion');
+  assert.equal(pending.payload.sectionIndex, 0);
+  assert.equal(pending.payload.question, 'What happens next?');
+  assert.equal(h.dispatched.at(-1).payload, false);
+});
+
+
+test('playback consumers share the provider controls', () => {
+  const controls = { play() {}, pause() {}, resume() {}, stop() {} };
+  const { useChunkPlayer } = load('features/classroom/hooks/useChunkPlayer.ts', {
+    react: { useContext: () => controls },
+    '../context/ClassroomPlaybackContext': { ClassroomPlaybackContext: {} },
+  });
+  assert.equal(useChunkPlayer(), controls);
+  assert.equal(useChunkPlayer(), controls);
+});
+
+
+test('mounted classroom stage connects the actual playback lifecycle', () => {
+  let calls = 0;
+  const component = () => null;
+  const { ClassroomStageArea } = load('features/classroom/components/stage/ClassroomStageArea.tsx', {
+    react: { memo: fn => fn },
+    '../../hooks/useClassroomStageArea': { useClassroomStageArea: () => { calls += 1; } },
+    './ClassroomStageGrid': { ClassroomStageGrid: component },
+    './StageOverlayGroup': { StageOverlayGroup: component },
+    './SubtitleBar': { SubtitleBar: component },
+  });
+  ClassroomStageArea();
+  assert.equal(calls, 1);
+});
+
+
+test('silent speech startup times out and reveals the explanation without skipping', () => {
+  const h = playbackHarness();
+  h.player.play();
+  h.timers[0]();
+  assert.equal(h.spoken.length, 1);
+  assert.equal(h.dispatched.at(-1).type, 'setVoiceError');
+  assert.match(h.dispatched.at(-1).payload, /did not start/);
+  assert.ok(h.dispatched.some(action => action.type === 'addChalkboardPoint' && action.payload === 'First step'));
+  h.spoken[0].onend();
+  assert.equal(h.spoken.length, 1);
+});
+
+
+test('speech explicitly uses an installed local voice and full volume', () => {
+  const h = playbackHarness();
+  h.player.play();
+  assert.equal(h.spoken[0].voice.voiceURI, 'test-local');
+  assert.equal(h.spoken[0].lang, 'en-US');
+  assert.equal(h.spoken[0].volume, 1);
+});
+
+test('missing system voices produce an actionable error instead of an indefinite wait', () => {
+  const h = playbackHarness(undefined, []);
+  h.player.play();
+  assert.equal(h.spoken.length, 0);
+  assert.match(h.dispatched.at(-1).payload, /No speech voices/);
+});
+
+
+test('voice selection excludes a stalled voice and preserves the requested language', () => {
+  const { selectSpeechVoice } = load('features/classroom/utilities/speechVoiceSelection.ts');
+  const broken = { voiceURI: 'broken', lang: 'en-GB', default: true, localService: true };
+  const working = { voiceURI: 'working', lang: 'en-US', default: false, localService: true };
+  assert.equal(selectSpeechVoice([broken, working], 'broken', new Set(['broken']), 'en'), working);
+});
+
+
+test('retry after a stalled voice lets the browser choose its default speech voice', () => {
+  const h = playbackHarness();
+  h.player.play();
+  h.timers[0]();
+  h.player.play();
+  assert.equal(h.spoken.length, 2);
+  assert.equal(h.spoken[1].voice, undefined);
+});
+
+
+function speechDiagnosticHarness() {
+  const spoken = [], statuses = [], timers = [];
+  const { useSpeechDiagnostic } = load('features/classroom/hooks/useSpeechDiagnostic.ts', {
+    react: { useCallback: fn => fn, useRef: value => ({ current: value }), useState: () => [null, value => statuses.push(value)], useEffect() {} },
+    './useChunkPlayer': { useChunkPlayer: () => ({ stop() {} }) },
+    '../constants/playbackConstants': load('features/classroom/constants/playbackConstants.ts'),
+  }, {
+    window: { speechSynthesis: { resume() {}, cancel() {}, speak: utterance => spoken.push(utterance), speaking: false, pending: true, paused: false } },
+    SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
+    setTimeout: fn => { timers.push(fn); return timers.length; }, clearTimeout() {},
+  });
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- invokes the hook in a controlled test harness
+  return { diagnostic: useSpeechDiagnostic(), spoken, statuses, timers };
+}
+
+test('isolated audio test speaks directly with no named voice or API dependency', () => {
+  const h = speechDiagnosticHarness();
+  h.diagnostic.testAudio();
+  assert.equal(h.spoken.length, 1);
+  assert.equal(h.spoken[0].voice, undefined);
+  h.spoken[0].onstart();
+  assert.match(h.statuses.at(-1), /Speech started/);
+});
+
+test('isolated speech timeout reports the actual queue state', () => {
+  const h = speechDiagnosticHarness();
+  h.diagnostic.testAudio();
+  h.timers[0]();
+  assert.match(h.statuses.at(-1), /pending=true/);
+  h.spoken[0].onend();
+  assert.match(h.statuses.at(-1), /stalled/);
+});
+
+
+test('stalled browser speech switches to private saved audio and continues sequentially', () => {
+  const h = playbackHarness(undefined, undefined, 'saved-note');
+  h.player.play();
+  h.timers[0]();
+  assert.equal(h.files.length, 1);
+  assert.equal(h.files[0][0], 'saved-note');
+  assert.equal(h.files[0][1], 0);
+  assert.equal(h.files[0][2], 'First step');
+  h.files[0][3].onStart();
+  assert.equal(h.dispatched.at(-3).type, 'addChalkboardPoint');
+  h.files[0][3].onEnd();
+  assert.equal(h.files.length, 2);
+  assert.equal(h.files[1][1], 1);
+});
+
+
+test('classroom service rejects malformed explanations instead of casting them', () => {
+  const schemas = load('features/classroom/validators/classroom.schema.ts');
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: {} }, '../validators/classroom.schema': schemas,
+  });
+  assert.throws(() => ClassroomService.validateExplanation({ topic: 'Broken', phases: 'invalid' }));
 });

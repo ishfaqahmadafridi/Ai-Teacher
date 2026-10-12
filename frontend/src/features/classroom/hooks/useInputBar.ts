@@ -2,13 +2,16 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setInputText, setError } from '@/features/classroom/state/classroomSlice';
+import { setInputText, setError, setChunks, setPendingQuestion, setChalkboardPoints } from '@/features/classroom/state/classroomSlice';
 import { useVoiceInput } from './useVoiceInput';
 import { useChunkPlayer } from './useChunkPlayer';
 import { useClassroomApi } from './useClassroomApi';
+import { lectureNotesService } from '../services/lectureNotesService';
 
 export function useInputBar() {
   const dispatch = useAppDispatch();
+  const pendingQuestion = useAppSelector((s) => s.classroom.pendingQuestion);
+  const noteId = useAppSelector((s) => s.classroom.noteId);
   const inputText = useAppSelector((s) => s.classroom.inputText);
   const loading = useAppSelector((s) => s.classroom.loading);
   const isPlaying = useAppSelector((s) => s.classroom.isPlaying);
@@ -26,18 +29,34 @@ export function useInputBar() {
   const [reactionToast, setReactionToast] = useState<string | null>(null);
 
   const submittingRef = useRef(false);
+  const answerRequestRef = useRef<{ key: string; id: string } | null>(null);
 
   const handleSubmit = useCallback(async () => {
-    if (!inputText.trim() || loading || isPlaying || submittingRef.current) return;
+    if (!inputText.trim() || loading || submittingRef.current) return;
     submittingRef.current = true;
+    stop();
     stopListening();
     setLocalError(null);
     try {
-      await sendQuestion(inputText.trim());
+      const answer = inputText.trim();
+      if (pendingQuestion && noteId) {
+        const key = JSON.stringify([noteId, pendingQuestion.sectionIndex, answer]);
+        if (answerRequestRef.current?.key !== key) answerRequestRef.current = { key, id: crypto.randomUUID() };
+        const attempt = await lectureNotesService.answer(noteId, pendingQuestion.sectionIndex, answer, answerRequestRef.current.id);
+        const evaluation = await lectureNotesService.evaluate(noteId, attempt.id);
+        dispatch(setPendingQuestion(null));
+        dispatch(setChalkboardPoints([]));
+        dispatch(setChunks([{ speak: evaluation.feedback, key_point: evaluation.missing_concepts.join('; ') || null }]));
+        answerRequestRef.current = null;
+      } else {
+        await sendQuestion(answer);
+      }
+    } catch (error) {
+      setLocalError(error instanceof Error ? error.message : 'Unable to save your answer. Please retry.');
     } finally {
       submittingRef.current = false;
     }
-  }, [inputText, loading, isPlaying, sendQuestion, stopListening]);
+  }, [inputText, loading, sendQuestion, stopListening, pendingQuestion, noteId, stop, dispatch]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -51,8 +70,8 @@ export function useInputBar() {
 
   const handleMicClick = useCallback(() => {
     if (isListening) stopListening();
-    else if (!loading && !isPlaying) startListening();
-  }, [isListening, loading, isPlaying, startListening, stopListening]);
+    else if (!loading) { pause(); startListening(); }
+  }, [isListening, loading, startListening, stopListening, pause]);
 
   const handleToggleHand = useCallback(() => {
     setHandRaised((prev) => {

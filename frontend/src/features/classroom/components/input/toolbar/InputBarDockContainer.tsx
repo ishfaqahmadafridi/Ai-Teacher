@@ -16,7 +16,6 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
     questionNotice,
     inputText,
     loading,
-    isPlaying,
     isListening,
     handRaised,
     showEmojiPicker,
@@ -35,7 +34,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
     <div className="flex items-center justify-between gap-4 bg-[#0A0E1A]/95 border border-slate-800/90 rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
       {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
       <div className="flex items-center gap-2 shrink-0">
-        <VoiceMicButton disabled={(loading || isPlaying) && !isListening} isListening={isListening} onMicClick={handleMicClick} />
+        <VoiceMicButton disabled={loading && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
         <DynamicEmojiReactionPopover
           showEmojiPicker={showEmojiPicker}
@@ -52,11 +51,11 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
           inputText={inputText}
           onChange={updateInputText}
           onKeyDown={handleKeyDown}
-          disabled={loading || isPlaying}
+          disabled={loading}
         />
         <SubmitAskButton
           loading={loading}
-          disabled={loading || isPlaying || !inputText.trim()}
+          disabled={loading || !inputText.trim()}
           onSubmit={handleSubmit}
         />
       </div>

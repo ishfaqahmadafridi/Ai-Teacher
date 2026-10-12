@@ -43,30 +43,18 @@ export function useClassroomApi() {
         const diagType = (data.diagram_type ?? 'default') as DiagramType;
         const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
           speak: c.speak ?? '',
+          question: c.question,
+          expected_concepts: c.expected_concepts,
           key_point: c.key_point ?? c.speak ?? null,
           diagram: c.diagram,
           teacher_position: c.teacher_position ?? 'left',
         }));
 
-        const points: string[] = chunks
-          .map((c) => c.key_point)
-          .filter(Boolean) as string[];
-
-        // If no explicit points, extract concise short points
-        const finalPoints =
-          points.length > 0
-            ? points
-            : [
-                question,
-                data.topic ? `Topic: ${data.topic}` : 'Core Principles & Dynamics',
-                chunks[0]?.speak.slice(0, 80) ?? question,
-              ];
-
         dispatch(setTopic(topic || data.topic || question));
         dispatch(setDiagramType(diagType));
         dispatch(setNoteId(data.model_info?.note_id ?? null));
         dispatch(setChunks(chunks));
-        dispatch(setChalkboardPoints(finalPoints));
+        dispatch(setChalkboardPoints([]));
         dispatch(setLoading(false));
         dispatch(setLoadingStatus(''));
       } catch (err) {

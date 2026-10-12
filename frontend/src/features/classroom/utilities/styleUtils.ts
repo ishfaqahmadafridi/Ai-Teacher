@@ -1,4 +1,3 @@
-import React from 'react';
 
 /**
  * Computes class names for sidebar topic item rows.

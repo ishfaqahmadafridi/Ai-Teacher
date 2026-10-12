@@ -30,8 +30,8 @@ class GradeAssignmentResponse(BaseModel):
 
 
 class TimetableRequest(BaseModel):
-    registered_class: str = Field(default="Physics Mechanics 101", description="Primary course title")
-    registered_courses: List[str] = Field(default_factory=lambda: ["Physics Mechanics 101", "Calculus II", "Intro to CS"], description="List of registered courses")
+    registered_class: str = Field(default="", description="Primary course title")
+    registered_courses: List[str] = Field(..., min_length=1, description="Actual registered course titles; no synthetic defaults")
     preferred_time: str = Field(default="morning", description="Preferred time of day: morning, afternoon, evening, any")
     max_classes_per_day: int = Field(default=2, ge=1, le=4, description="Maximum number of classes per day")
     include_saturday: bool = Field(default=True, description="Whether to include Saturday for labs and workshops")
@@ -49,7 +49,7 @@ class TimetableResponse(BaseModel):
 class AgentWorkflowRequest(BaseModel):
     question: str = Field(..., description="Student question or task prompt")
     session_id: str = Field(default="default", description="Active session ID")
-    course_id: Optional[str] = Field(default="Physics Mechanics 101", description="Associated course ID")
+    course_id: Optional[str] = Field(default=None, description="Associated course ID")
     metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Optional extra metadata context")
 
 

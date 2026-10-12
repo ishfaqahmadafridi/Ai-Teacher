@@ -19,14 +19,7 @@ export class AskService {
       session_id: sessionId,
     });
 
-    // Validate response payload from server
-    const responseValidation = askResponseSchema.safeParse(response.data);
-    if (!responseValidation.success) {
-      console.warn('[AskService] Response validation mismatch:', responseValidation.error.format());
-      return response.data as ValidatedAskResponse;
-    }
-
-    return responseValidation.data;
+    return askResponseSchema.parse(response.data);
   }
 }
 
