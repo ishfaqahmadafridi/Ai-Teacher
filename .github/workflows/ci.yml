@@ -102,7 +102,9 @@ jobs:
       - name: Run FastAPI tests without cloud credentials or model downloads
         if: matrix.service == 'fastapi'
         working-directory: backend/fastapi_app
-        run: python -m unittest discover -s app/tests -v
+        run: |
+          python -m unittest discover -s app/tests -v
+          python -m unittest discover -s tests -v
       - name: Test audit version normalization
         run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
       - name: Audit installed Python dependencies
