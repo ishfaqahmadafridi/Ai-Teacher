@@ -62,6 +62,8 @@ export interface Chunk {
 }
 
 export interface ExtendedChunk extends Chunk {
+  question?: string;
+  expected_concepts?: string[];
   teacher_position?: 'left' | 'right' | 'center';
 }
 
@@ -75,6 +77,7 @@ export interface SerializedVoice {
 }
 
 export interface ClassroomState {
+  pendingQuestion: { sectionIndex: number; question: string } | null;
   noteId: string | null;
   inputText: string;
   loading: boolean;

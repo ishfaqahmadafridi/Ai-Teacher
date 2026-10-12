@@ -33,7 +33,7 @@ export const ChalkboardWelcomeSlate = memo(function ChalkboardWelcomeSlate({
 
       {/* 3. Class Name Subheading */}
       <p className="text-sm sm:text-base font-mono text-emerald-400/90 tracking-wider uppercase font-bold">
-        Physics Mechanics Class
+        Your learning classroom
       </p>
     </div>
   );

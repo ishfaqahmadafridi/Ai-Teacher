@@ -28,11 +28,9 @@ async def planner_node(state: ClassroomState) -> Dict[str, Any]:
     include_sat = metadata.get("include_saturday", True)
     max_classes_per_day = int(metadata.get("max_classes_per_day", 2))
 
-    registered_courses = metadata.get("registered_courses") or [
-        "Physics Mechanics 101",
-        "Calculus II & Linear Algebra",
-        "Intro to Computer Science",
-    ]
+    registered_courses = metadata.get("registered_courses") or []
+    if not registered_courses:
+        return {"answer": "Register courses before creating a timetable.", "structured_data": {"schedule": [], "total_weekly_classes": 0}}
 
     slots = TIME_SLOT_MAP.get(preferred_time, TIME_SLOT_MAP["morning"])
     schedule_items: List[Dict[str, Any]] = []
@@ -45,7 +43,6 @@ async def planner_node(state: ClassroomState) -> Dict[str, Any]:
 
     for idx, course_title in enumerate(registered_courses):
         pattern = day_patterns[idx % len(day_patterns)]
-        slot = slots[idx % len(slots)]
 
         for day in pattern:
             # Enforce max classes per day limit
@@ -53,6 +50,10 @@ async def planner_node(state: ClassroomState) -> Dict[str, Any]:
             if current_day_count >= max_classes_per_day:
                 continue
 
+            used_slots = {item["timeSlot"] for item in schedule_items if item["dayOfWeek"] == day}
+            slot = next((candidate for candidate in slots if candidate not in used_slots), None)
+            if slot is None:
+                continue
             item_id = f"sch-{day.lower()[:3]}-{idx + 1}"
             schedule_items.append({
                 "id": item_id,
@@ -61,8 +62,8 @@ async def planner_node(state: ClassroomState) -> Dict[str, Any]:
                 "timeFormatted": slot,
                 "timeSlot": slot,
                 "dayOfWeek": day,
-                "instructorName": "Dr. Sarah Jenkins",
-                "roomOrLink": "Room 304 / Zoom #402",
+                "instructorName": metadata.get("instructor_name", ""),
+                "roomOrLink": metadata.get("room_or_link", ""),
                 "status": "upcoming",
             })
 
@@ -74,11 +75,11 @@ async def planner_node(state: ClassroomState) -> Dict[str, Any]:
         "class_name": registered_courses[0] if registered_courses else "Academic Term",
         "schedule": schedule_items,
         "total_weekly_classes": len(schedule_items),
-        "optimization_summary": f"Generated {len(schedule_items)} balanced class sessions adhering to {preferred_time} preference (max {max_classes_per_day}/day).",
+        "optimization_summary": f"Generated {len(schedule_items)} preview class sessions adhering to {preferred_time} preference (max {max_classes_per_day}/day).",
     }
 
     return {
-        "answer": f"Timetable generated with {len(schedule_items)} balanced classes across the week.",
+        "answer": f"Timetable generated with {len(schedule_items)} preview classes across the week.",
         "structured_data": structured_data,
     }
 

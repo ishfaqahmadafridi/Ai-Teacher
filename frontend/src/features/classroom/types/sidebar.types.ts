@@ -3,13 +3,6 @@ export interface LessonNavigatorHeaderProps {
   moduleSubtitle?: string;
 }
 
-export interface LessonTopicItem {
-  id: string;
-  title: string;
-  isLive?: boolean;
-  isDisabled?: boolean;
-}
-
 export interface ActiveLessonTreeProps {
   moduleTitle?: string;
   topics?: LessonTopicItem[];

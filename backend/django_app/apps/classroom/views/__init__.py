@@ -9,3 +9,5 @@ from .health_view import HealthView
 __all__ = ['AskView', 'ClearSessionView', 'HealthView']
 
 from .note_views import NotesView, NoteTranslationView, NoteDocumentView, NoteFigureView
+
+from .lesson_audio_view import LessonAudioView

@@ -2,7 +2,8 @@
 fastapi_app/app/api/v1/endpoints/agents.py
 FastAPI async endpoints for real-time safety guardrails and assignment evaluation.
 """
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
+from app.core.security import require_access_token, private_session
 from app.schemas.agent_schemas import (
     ChatSafetyRequest,
     ChatSafetyResponse,
@@ -29,12 +30,12 @@ router = APIRouter()
     status_code=status.HTTP_200_OK,
     summary="Execute full LangGraph agent workflow with performance telemetry",
 )
-async def execute_agent(payload: AgentWorkflowRequest):
+async def execute_agent(payload: AgentWorkflowRequest, identity: str = Depends(require_access_token)):
     """Executes the optimal state node path through the compiled classroom graph."""
     res = await execute_langgraph_workflow(
         question=payload.question,
-        session_id=payload.session_id,
-        course_id=payload.course_id or "Physics Mechanics 101",
+        session_id=private_session(identity, payload.session_id),
+        course_id=payload.course_id or "",
         metadata=payload.metadata,
     )
     return AgentWorkflowResponse(

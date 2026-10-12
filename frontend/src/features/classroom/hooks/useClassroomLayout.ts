@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useLessonRecovery } from './useLessonRecovery';
 import { useAppSelector } from '@/hooks/useAppStore';
 import { useClassroomApi } from './useClassroomApi';
 import { useChunkPlayer } from './useChunkPlayer';
 
 export function useClassroomLayout() {
+  useLessonRecovery();
   const loading = useAppSelector((s) => s.classroom.loading);
   const isPlaying = useAppSelector((s) => s.classroom.isPlaying);
   const chunks = useAppSelector((s) => s.classroom.chunks);

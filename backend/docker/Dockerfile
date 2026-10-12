@@ -1,5 +1,6 @@
 FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
+RUN apt-get update && apt-get install -y --no-install-recommends espeak-ng && rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace/backend
 COPY django_app/requirements/base.txt /tmp/django-requirements.txt
 COPY fastapi_app/requirements.txt /tmp/fastapi-requirements.txt

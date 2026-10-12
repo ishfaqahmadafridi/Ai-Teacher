@@ -37,6 +37,8 @@ export type ValidatedDiagramCommand = z.infer<typeof diagramCommandSchema>;
 export const classroomAnswerSchema = z.object({
   model_info: z.object({ note_id: z.uuid().optional() }).optional(),
   chunks: z.array(z.object({
+    question: z.string().min(1).max(2000).optional(),
+    expected_concepts: z.array(z.string()).max(10).optional(),
     speak: z.string(),
     key_point: z.string().nullable().optional(),
     teacher_position: z.enum(['left', 'center', 'right']).optional(),

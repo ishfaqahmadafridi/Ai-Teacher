@@ -8,7 +8,8 @@ Routes registered:
   POST /api/v1/stream/ask           → SSE streaming AI response
   WS   /api/v1/ws/classroom/{id}   → WebSocket live classroom session
 """
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.core.security import require_access_token
 from app.api.v1.endpoints import health, stream, websocket, agents
 
 api_router = APIRouter()
@@ -21,6 +22,7 @@ api_router.include_router(
 
 api_router.include_router(
     stream.router,
+    dependencies=[Depends(require_access_token)],
     prefix="/stream",
     tags=["classroom"],
 )
@@ -33,6 +35,7 @@ api_router.include_router(
 
 api_router.include_router(
     agents.router,
+    dependencies=[Depends(require_access_token)],
     prefix="/agents",
     tags=["agents"],
 )

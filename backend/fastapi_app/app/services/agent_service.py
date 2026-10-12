@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 async def execute_langgraph_workflow(
     question: str,
     session_id: str = "default",
-    course_id: str = "Physics Mechanics 101",
+    course_id: str = "",
     metadata: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
@@ -70,7 +70,7 @@ async def async_grade_assignment(student_answer: str, question_prompt: str, max_
 
 
 async def async_generate_timetable(
-    registered_class: str = "Physics Mechanics 101",
+    registered_class: str = "",
     registered_courses: Optional[List[str]] = None,
     preferred_time: str = "morning",
     max_classes_per_day: int = 2,

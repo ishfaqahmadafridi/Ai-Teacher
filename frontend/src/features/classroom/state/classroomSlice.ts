@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ClassroomState, ExtendedChunk, DiagramCommand, DiagramType, SerializedVoice } from '@/types';
 
 const initialState: ClassroomState = {
+  pendingQuestion: null,
   noteId: null,
   inputText: '',
   loading: false,
@@ -30,6 +31,7 @@ const classroomSlice = createSlice({
   name: 'classroom',
   initialState,
   reducers: {
+    setPendingQuestion(state, action: PayloadAction<ClassroomState["pendingQuestion"]>) { state.pendingQuestion = action.payload; },
     setNoteId(state, action: PayloadAction<string | null>) { state.noteId = action.payload; },
     setInputText(state, action: PayloadAction<string>) {
       state.inputText = action.payload;
@@ -111,6 +113,7 @@ const classroomSlice = createSlice({
 });
 
 export const {
+  setPendingQuestion,
   setNoteId,
   setInputText,
   setLoading,
