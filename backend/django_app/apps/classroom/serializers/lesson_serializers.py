@@ -40,8 +40,8 @@ class LessonEvaluationSerializer(serializers.Serializer):
     missing_concepts = serializers.ListField(child=serializers.CharField(max_length=500), max_length=10)
     next_action = serializers.ChoiceField(choices=['continue', 'reteach', 'clarify'])
 
-    def validate(self, data):
+    def validate(self, attrs):
         expected = {'understood': 'continue', 'misconception': 'reteach', 'unclear': 'clarify'}
-        if data['next_action'] != expected[data['outcome']]:
+        if attrs['next_action'] != expected[attrs['outcome']]:
             raise serializers.ValidationError('Outcome and next action disagree.')
-        return data
+        return attrs

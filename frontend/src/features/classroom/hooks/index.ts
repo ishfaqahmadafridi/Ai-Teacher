@@ -46,3 +46,5 @@ export * from './useSpeechDiagnostic';
 export * from './useLessonAudioPlayer';
 
 export * from './useLessonOutline';
+
+export * from './useCircuitLesson';

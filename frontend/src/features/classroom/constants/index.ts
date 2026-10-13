@@ -5,3 +5,5 @@ export * from './sidebarConstants';
 export * from './notesConstants';
 
 export * from './playbackConstants';
+
+export * from './circuitConstants';

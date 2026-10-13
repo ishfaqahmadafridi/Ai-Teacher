@@ -318,3 +318,21 @@ test('classroom service rejects malformed explanations instead of casting them',
   });
   assert.throws(() => ClassroomService.validateExplanation({ topic: 'Broken', phases: 'invalid' }));
 });
+
+
+test('formulas remain visible without a specialized 3D scene', () => {
+  const { useStageDiagramGrid } = load('features/classroom/hooks/useStageDiagramGrid.ts', {
+    '@/hooks/useAppStore': { useAppSelector: fn => fn({ classroom: { diagramType: 'default', currentCommand: { action: 'show_formula' }, currentFormula: 'F = ma' } }) },
+    '@/utils/imageUtils': { isImageUrl: () => false },
+  });
+  assert.equal(useStageDiagramGrid().hasVisual, true);
+});
+
+
+test('circuit visual parameters are retained and zero resistance is rejected', () => {
+  const { classroomAnswerSchema } = load('features/classroom/validators/classroom.schema.ts');
+  const answer = { topic: 'Ohms law', language: 'en', diagram_type: 'circuit', chunks: [{ speak: 'Example', diagram: { action: 'show_initial', parameters: { voltage: 12, resistance: 4 } } }] };
+  assert.equal(classroomAnswerSchema.parse(answer).chunks[0].diagram.parameters.voltage, 12);
+  answer.chunks[0].diagram.parameters.resistance = 0;
+  assert.equal(classroomAnswerSchema.safeParse(answer).success, false);
+});

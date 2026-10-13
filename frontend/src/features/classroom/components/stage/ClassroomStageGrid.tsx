@@ -8,11 +8,10 @@ import { ChalkboardNotesView } from '../board/ChalkboardNotesView';
 import { DynamicDiagramStage } from '../../utilities/lazyComponents';
 
 export const ClassroomStageGrid = memo(function ClassroomStageGrid() {
-  const { diagramType, currentCommand, currentFormula } = useStageDiagramGrid();
+  const { diagramType, currentCommand, currentFormula, hasVisual } = useStageDiagramGrid();
   const { points, isWriting, showGrid } = useChalkboardStage();
 
   const hasContent = points.length > 0;
-  const hasVisual = diagramType !== 'default';
 
   return (
     <div className="absolute top-6 left-6 right-6 bottom-6 flex flex-col font-sans select-none">

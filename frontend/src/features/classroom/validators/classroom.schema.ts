@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CIRCUIT_LIMITS } from '../constants/circuitConstants';
 
 export const diagramCommandSchema = z.object({
   action: z.enum(['show_initial', 'rotate', 'highlight', 'pause_and_explain', 'show_formula', 'none']),
@@ -43,6 +44,7 @@ export const classroomAnswerSchema = z.object({
     key_point: z.string().nullable().optional(),
     teacher_position: z.enum(['left', 'center', 'right']).optional(),
     diagram: z.object({
+      parameters: z.object({ voltage: z.number().finite().min(CIRCUIT_LIMITS.voltage.min).max(CIRCUIT_LIMITS.voltage.max), resistance: z.number().finite().min(CIRCUIT_LIMITS.resistance.min).max(CIRCUIT_LIMITS.resistance.max) }).optional(),
       action: z.enum(['none', 'highlight', 'rotate', 'zoom', 'zoom_in', 'zoom_out', 'show_formula', 'show_formula_stepwise', 'show_initial', 'add_arrow', 'add_label', 'pause_and_highlight', 'pause_and_explain']),
       target: z.string().optional(), speed: z.enum(['slow', 'fast']).optional(), formula: z.string().optional(),
       animate: z.object({ object: z.string(), move: z.string(), speed: z.string() }).optional(),

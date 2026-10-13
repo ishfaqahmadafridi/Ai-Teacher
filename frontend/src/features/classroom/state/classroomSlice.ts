@@ -52,7 +52,9 @@ const classroomSlice = createSlice({
       state.diagramType = action.payload;
     },
     setCurrentCommand(state, action: PayloadAction<DiagramCommand | null>) {
-      state.currentCommand = action.payload;
+      const command = action.payload;
+      state.currentCommand = command && state.diagramType === 'circuit' && !command.parameters && state.currentCommand?.parameters
+        ? { ...command, parameters: state.currentCommand.parameters } : command;
     },
     setCurrentFormula(state, action: PayloadAction<string | null>) {
       state.currentFormula = action.payload;

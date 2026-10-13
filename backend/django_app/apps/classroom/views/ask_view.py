@@ -5,6 +5,7 @@ API View for student questions — blocking (non-streaming) mode.
 For real-time token-by-token streaming, use the FastAPI endpoint:
   POST http://localhost:8001/api/v1/stream/ask
 """
+from apps.classroom.utilities.serializer_data import validated_mapping
 import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -45,9 +46,10 @@ class AskView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+        request_data = validated_mapping(serializer.validated_data)
         try:
-            result = generate_answer(**{**serializer.validated_data,
-                'session_id': account_session_id(request.user, serializer.validated_data['session_id'])})
+            result = generate_answer(**{**request_data,
+                'session_id': account_session_id(request.user, request_data['session_id'])})
             response_serializer = AskResponseSerializer(data=result)
             response_serializer.is_valid(raise_exception=True)
         except Exception as e:
@@ -57,7 +59,8 @@ class AskView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+        response_data = validated_mapping(response_serializer.validated_data)
         if request.user.is_authenticated and result.get('topic') != 'unknown':
-            note = save_lecture_note(request.user, serializer.validated_data['session_id'], result)
-            response_serializer.validated_data['model_info']['note_id'] = str(note.id)
-        return Response(response_serializer.validated_data, status=status.HTTP_200_OK)
+            note = save_lecture_note(request.user, request_data['session_id'], result)
+            response_data['model_info']['note_id'] = str(note.id)
+        return Response(response_data, status=status.HTTP_200_OK)

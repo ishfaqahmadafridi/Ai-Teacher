@@ -1,4 +1,5 @@
 """Orchestrate retrieval, validated LLM responses, and persistent history."""
+from apps.classroom.utilities.serializer_data import validated_mapping
 import json
 import logging
 
@@ -22,7 +23,7 @@ def generate_answer(
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
-    from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
+    from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
     from apps.classroom.rag import search as rag_search
 
     metadata = {
@@ -35,7 +36,8 @@ def generate_answer(
             return {**fallback_chunks(question), "tokens_used": 0, "model_info": metadata}
         rag_context = rag_search(question, top_k=RAG_TOP_K)
         metadata["rag_used"] = bool(rag_context)
-        system_prompt = SYSTEM_PROMPT
+        from apps.classroom.services.lesson_visuals import visual_catalog_prompt, resolve_lesson_visuals
+        system_prompt = SYSTEM_PROMPT + visual_catalog_prompt()
         if rag_context:
             system_prompt += RAG_CONTEXT_SUFFIX.format(rag_context=rag_context)
         if research:
@@ -44,7 +46,7 @@ def generate_answer(
             metadata.update(research_metadata)
             system_prompt += context
         history = get_session(session_id)
-        messages = [SystemMessage(content=system_prompt)]
+        messages: list[BaseMessage] = [SystemMessage(content=system_prompt)]
         for entry in history:
             message_type = HumanMessage if entry["role"] == "user" else AIMessage
             messages.append(message_type(content=entry["content"]))
@@ -54,7 +56,7 @@ def generate_answer(
         raw_answer = response.text
         serializer = GeneratedAnswerSerializer(data=extract_json(raw_answer))
         serializer.is_valid(raise_exception=True)
-        parsed = dict(serializer.validated_data)
+        parsed = resolve_lesson_visuals(validated_mapping(serializer.validated_data))
         append_session(session_id, [
             {"role": "user", "content": question},
             {"role": "assistant", "content": json.dumps(parsed)},
