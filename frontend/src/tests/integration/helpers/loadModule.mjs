@@ -13,7 +13,18 @@ export function load(path, mocks = {}, globals = {}) {
   }).outputText;
   const testModule = { exports: {} };
   vm.runInNewContext(source, { ...globals, module: testModule, exports: testModule.exports, console,
-    require: name => name in mocks ? mocks[name] : require(name),
+    require: name => {
+      if (name in mocks) return mocks[name];
+      if (name.startsWith('.')) {
+        const target = resolve(root, path, '..', name);
+        for (const suffix of ['.ts', '.tsx']) {
+          try { return load(target + suffix, mocks, globals); } catch (error) {
+            if (error.code !== 'ENOENT') throw error;
+          }
+        }
+      }
+      return require(name);
+    },
   });
   return testModule.exports;
 }

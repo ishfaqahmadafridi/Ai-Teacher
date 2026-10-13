@@ -1,4 +1,7 @@
+import type { CircuitParameters } from './circuit.types';
+
 export interface DiagramCommand {
+  parameters?: CircuitParameters;
   action:
     | 'none'
     | 'highlight'

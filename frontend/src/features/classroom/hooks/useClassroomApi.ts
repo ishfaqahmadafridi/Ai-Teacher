@@ -2,7 +2,7 @@
 import { useCallback, useRef, useEffect } from 'react';
 import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
+import { useAppDispatch } from '@/hooks/useAppStore';
 import {
   setLoading,
   setLoadingStatus,
@@ -18,7 +18,6 @@ import type { ExtendedChunk, DiagramType } from '@/types';
 
 export function useClassroomApi() {
   const dispatch = useAppDispatch();
-  const topic = useAppSelector((s) => s.classroom.topic);
   const esRef = useRef<AbortController | null>(null);
   const { mutateAsync } = useClassroomQuestionMutation();
   const getSessionId = useConversationSession();
@@ -50,7 +49,7 @@ export function useClassroomApi() {
           teacher_position: c.teacher_position ?? 'left',
         }));
 
-        dispatch(setTopic(topic || data.topic || question));
+        dispatch(setTopic(data.topic || question));
         dispatch(setDiagramType(diagType));
         dispatch(setNoteId(data.model_info?.note_id ?? null));
         dispatch(setChunks(chunks));
@@ -64,7 +63,7 @@ export function useClassroomApi() {
         dispatch(setLoadingStatus(''));
       }
     },
-    [dispatch, mutateAsync, getSessionId, topic]
+    [dispatch, mutateAsync, getSessionId]
   );
 
   const cancelStream = useCallback(() => {

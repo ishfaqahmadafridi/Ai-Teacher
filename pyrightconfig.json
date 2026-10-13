@@ -14,6 +14,7 @@
       "root": "backend/fastapi_app",
       "extraPaths": [
         "backend/fastapi_app",
+        "backend/django_app",
         "backend"
       ]
     },

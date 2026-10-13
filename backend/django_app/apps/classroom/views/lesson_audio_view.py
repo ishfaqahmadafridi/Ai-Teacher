@@ -1,4 +1,5 @@
 """Private zero-inference WAV export for saved lesson chunks."""
+from apps.classroom.utilities.serializer_data import validated_mapping
 from django.http import HttpResponse
 from rest_framework.exceptions import ValidationError
 from apps.classroom.serializers.lesson_audio_serializers import LessonAudioRequestSerializer
@@ -28,6 +29,6 @@ class LessonAudioView(PrivateNotesView):
         data.is_valid(raise_exception=True)
         note = get_lecture_note(request.user, note_id)
         chunks = note.answer['chunks']
-        if section_index >= len(chunks) or chunks[section_index]['speak'] != data.validated_data['speak']:
+        if section_index >= len(chunks) or chunks[section_index]['speak'] != validated_mapping(data.validated_data)['speak']:
             raise ValidationError('This audio segment does not match the saved lesson.')
         return HttpResponse(lesson_audio(note, section_index), content_type='audio/wav')

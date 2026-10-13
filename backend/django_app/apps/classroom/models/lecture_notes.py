@@ -5,6 +5,7 @@ from django.db import models
 
 
 class LectureNote(models.Model):
+    objects = models.Manager()
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     session_id = models.CharField(max_length=128)

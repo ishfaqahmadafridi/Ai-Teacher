@@ -3,9 +3,11 @@ apps/classroom/serializers/ask_serializers.py
 
 Request and response serializers for the Ask/Classroom endpoint.
 """
+from apps.classroom.utilities.serializer_data import validated_mapping
 import math
 from rest_framework import serializers
 from .session_fields import PublicSessionIdField
+from .visual_serializers import CircuitParametersSerializer
 from apps.classroom.constants import DEFAULT_SESSION_ID, DEFAULT_TEMPERATURE
 
 
@@ -52,6 +54,16 @@ class ClearSessionResponseSerializer(serializers.Serializer):
 
 
 class AnswerChunkSerializer(serializers.Serializer):
+    def validate_diagram(self, diagram):
+        from apps.classroom.constants.visual_assets import VISUAL_ASSETS
+        if 'asset_id' in diagram and (not isinstance(diagram['asset_id'], str) or diagram['asset_id'] not in VISUAL_ASSETS):
+            raise serializers.ValidationError('Unknown educational image asset.')
+        if 'parameters' in diagram:
+            parameters = CircuitParametersSerializer(data=diagram['parameters'])
+            parameters.is_valid(raise_exception=True)
+            diagram = {**diagram, 'parameters': validated_mapping(parameters.validated_data)}
+        return diagram
+
     question = serializers.CharField(required=False, max_length=2000)
     expected_concepts = serializers.ListField(child=serializers.CharField(max_length=500), required=False, max_length=10)
     speak = serializers.CharField()

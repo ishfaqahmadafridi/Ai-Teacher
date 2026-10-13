@@ -1,4 +1,5 @@
 """Reuse validated answers as durable notes without generating or summarizing again."""
+from apps.classroom.utilities.serializer_data import validated_mapping
 import hashlib
 import json
 import mimetypes
@@ -17,7 +18,7 @@ from apps.classroom.serializers.note_serializers import NoteSourceSerializer
 def save_lecture_note(user, session_id, answer):
     serializer = GeneratedAnswerSerializer(data=answer)
     serializer.is_valid(raise_exception=True)
-    snapshot = dict(serializer.validated_data)
+    snapshot = validated_mapping(serializer.validated_data)
     raw_language = snapshot['language'].strip()
     try:
         snapshot['language'] = get_supported_language_variant(raw_language.lower().replace('_', '-'))
@@ -25,7 +26,7 @@ def save_lecture_note(user, session_id, answer):
         snapshot['language'] = next((code for code, info in LANG_INFO.items()
                                      if info.get('name', '').casefold() == raw_language.casefold()), raw_language)
     sources = NoteSourceSerializer(data=answer.get('model_info', {}).get('sources', []), many=True)
-    snapshot['sources'] = list(sources.validated_data) if sources.is_valid() else []
+    snapshot['sources'] = list(sources.data) if sources.is_valid() else []
     version = hashlib.sha256(json.dumps(snapshot, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     note, _ = LectureNote.objects.get_or_create(user=user, session_id=session_id, version=version,
                                               defaults={'answer': snapshot})

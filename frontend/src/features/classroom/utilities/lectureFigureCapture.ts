@@ -20,3 +20,38 @@ export function captureLectureCanvas(canvas: HTMLCanvasElement): string | null {
   context.fillRect(0, 0, snapshot.width, snapshot.height);
   return snapshot.toDataURL('image/png').split(',')[1];
 }
+
+
+/** Render our inline SVG into PNG so exports reuse the demonstrated circuit. */
+export async function captureLectureSvg(svg: SVGSVGElement): Promise<string | null> {
+  const serialized = new XMLSerializer().serializeToString(svg);
+  const url = URL.createObjectURL(new Blob([serialized], { type: 'image/svg+xml' }));
+  try {
+    const image = new Image();
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () => reject(new Error('Diagram snapshot unavailable'));
+      image.src = url;
+    });
+    const canvas = document.createElement('canvas');
+    canvas.width = svg.viewBox.baseVal.width;
+    canvas.height = svg.viewBox.baseVal.height;
+    const context = canvas.getContext('2d');
+    if (!context) return null;
+    context.drawImage(image, 0, 0);
+    return captureLectureCanvas(canvas);
+  } finally { URL.revokeObjectURL(url); }
+}
+
+/** Capture same-origin educational images for the private lecture notes. */
+export async function captureLectureImage(image: HTMLImageElement): Promise<string | null> {
+  await image.decode();
+  const canvas = document.createElement('canvas');
+  const scale = Math.min(1, LECTURE_FIGURE_MAX_DIMENSION / Math.max(image.naturalWidth, image.naturalHeight));
+  canvas.width = Math.round(image.naturalWidth * scale);
+  canvas.height = Math.round(image.naturalHeight * scale);
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return captureLectureCanvas(canvas);
+}
