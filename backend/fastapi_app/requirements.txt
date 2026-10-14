@@ -22,7 +22,7 @@ python-dotenv==1.2.2
 
 # ── RAG (shared FAISS vector store) ───────────────────────────────────────
 faiss-cpu==1.15.1
-fastembed==0.8.1
+fastembed==0.9.0
 
 # ── WebSocket ────────────────────────────────────────────────────────────────
 websockets==16.1.1
