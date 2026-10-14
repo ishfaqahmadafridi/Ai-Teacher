@@ -226,3 +226,36 @@ CELERY_TASK_ROUTES = {
     "apps.dashboard.tasks.reconcile_attendance": {"queue": "maintenance"},
     "apps.dashboard.tasks.dispatch_timetable_jobs": {"queue": "maintenance"},
 }
+
+# Lesson preparation admission is independent from API worker concurrency.
+CLASSROOM_MAX_PENDING_JOBS = int(os.getenv('CLASSROOM_MAX_PENDING_JOBS', '200'))
+CLASSROOM_USER_PENDING_JOBS = int(os.getenv('CLASSROOM_USER_PENDING_JOBS', '2'))
+CLASSROOM_MAX_RUNNING_JOBS = int(os.getenv('CLASSROOM_MAX_RUNNING_JOBS', '2'))
+CLASSROOM_REQUESTS_PER_MINUTE = int(os.getenv('CLASSROOM_REQUESTS_PER_MINUTE', '10'))
+CLASSROOM_SUBMISSION_RATE = os.getenv('CLASSROOM_SUBMISSION_RATE', '6/min')
+CLASSROOM_JOB_TIMEOUT_SECONDS = int(os.getenv('CLASSROOM_JOB_TIMEOUT_SECONDS', '600'))
+CLASSROOM_DISPATCH_BATCH = int(os.getenv('CLASSROOM_DISPATCH_BATCH', '20'))
+CELERY_TASK_ROUTES['apps.classroom.tasks.prepare_lesson'] = {'queue': 'lessons'}
+CELERY_TASK_ROUTES['apps.classroom.tasks.recover_lesson_jobs'] = {'queue': 'maintenance'}
+CELERY_BEAT_SCHEDULE['recover-lesson-jobs'] = {'task': 'apps.classroom.tasks.recover_lesson_jobs', 'schedule': 10.0}
+
+CLASSROOM_BREAKER_FAILURES = int(os.getenv('CLASSROOM_BREAKER_FAILURES', '3'))
+CLASSROOM_BREAKER_SECONDS = int(os.getenv('CLASSROOM_BREAKER_SECONDS', '30'))
+CLASSROOM_REQUIRE_QUEUE = False
+
+CLASSROOM_JOB_MAX_ATTEMPTS = int(os.getenv('CLASSROOM_JOB_MAX_ATTEMPTS', '3'))
+CLASSROOM_RETRY_SECONDS = int(os.getenv('CLASSROOM_RETRY_SECONDS', '15'))
+
+# Misconfigured admission must fail at startup rather than accept unbounded work.
+from django.core.exceptions import ImproperlyConfigured
+for _budget_name in (
+    'CLASSROOM_MAX_PENDING_JOBS', 'CLASSROOM_USER_PENDING_JOBS',
+    'CLASSROOM_MAX_RUNNING_JOBS', 'CLASSROOM_REQUESTS_PER_MINUTE',
+    'CLASSROOM_JOB_TIMEOUT_SECONDS', 'CLASSROOM_DISPATCH_BATCH',
+    'CLASSROOM_BREAKER_FAILURES', 'CLASSROOM_BREAKER_SECONDS',
+    'CLASSROOM_JOB_MAX_ATTEMPTS', 'CLASSROOM_RETRY_SECONDS',
+):
+    if globals()[_budget_name] <= 0:
+        raise ImproperlyConfigured(f'{_budget_name} must be positive')
+if CLASSROOM_MAX_RUNNING_JOBS > CLASSROOM_MAX_PENDING_JOBS:
+    raise ImproperlyConfigured('Running lesson capacity must not exceed total pending capacity')

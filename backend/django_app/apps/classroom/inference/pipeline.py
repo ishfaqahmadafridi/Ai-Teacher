@@ -20,6 +20,7 @@ def generate_answer(
     session_id: str = DEFAULT_SESSION_ID,
     temperature: float = DEFAULT_TEMPERATURE,
     research: bool = False,
+    persist_history: bool = True,
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
@@ -36,15 +37,18 @@ def generate_answer(
             return {**fallback_chunks(question), "tokens_used": 0, "model_info": metadata}
         rag_context = rag_search(question, top_k=RAG_TOP_K)
         metadata["rag_used"] = bool(rag_context)
-        from apps.classroom.services.lesson_visuals import visual_catalog_prompt, resolve_lesson_visuals
-        system_prompt = SYSTEM_PROMPT + visual_catalog_prompt()
+        from apps.classroom.services.lesson_visuals import resolve_lesson_visuals, image_catalog_prompt
+        system_prompt = SYSTEM_PROMPT
         if rag_context:
             system_prompt += RAG_CONTEXT_SUFFIX.format(rag_context=rag_context)
+        images = []
         if research:
             from apps.classroom.services.research_context import build_research_context
             context, research_metadata = build_research_context(question)
             metadata.update(research_metadata)
+            images = research_metadata.get("images", [])
             system_prompt += context
+        system_prompt += image_catalog_prompt(images)
         history = get_session(session_id)
         messages: list[BaseMessage] = [SystemMessage(content=system_prompt)]
         for entry in history:
@@ -56,14 +60,20 @@ def generate_answer(
         raw_answer = response.text
         serializer = GeneratedAnswerSerializer(data=extract_json(raw_answer))
         serializer.is_valid(raise_exception=True)
-        parsed = resolve_lesson_visuals(validated_mapping(serializer.validated_data))
-        append_session(session_id, [
+        parsed = validated_mapping(serializer.validated_data)
+        metadata["visual_planning_tokens"] = 0
+        parsed = resolve_lesson_visuals(parsed, images)
+        metadata["visual_selection_tokens"] = parsed.pop("visual_selection_tokens", 0)
+        parsed.setdefault("topic", question)
+        metadata["image_status"] = "selected" if any(chunk["diagram"].get("target") for chunk in parsed["chunks"]) else "no_matching_image"
+        if persist_history:
+            append_session(session_id, [
             {"role": "user", "content": question},
             {"role": "assistant", "content": json.dumps(parsed)},
-        ])
+            ])
         usage = response.usage_metadata or {}
         return {
-            **parsed, "tokens_used": usage.get("total_tokens", 0),
+            **parsed, "tokens_used": usage.get("total_tokens", 0) + metadata["visual_selection_tokens"] + metadata["visual_planning_tokens"],
             "model_info": metadata,
         }
     except Exception:

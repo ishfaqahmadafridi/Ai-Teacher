@@ -9,6 +9,9 @@ from apps.classroom.agents.research import research_evidence
 class ResearchGraphTests(SimpleTestCase):
     def setUp(self):
         cache.clear()
+        images = patch('apps.classroom.services.research_images.search_lesson_images', return_value=[])
+        images.start()
+        self.addCleanup(images.stop)
 
     @patch('apps.classroom.services.research_search.search_provider')
     def test_deduplicates_and_reuses_evidence(self, search):
@@ -29,7 +32,7 @@ class ResearchGraphTests(SimpleTestCase):
         self.assertEqual(result['question'], ' momentum ')
         self.assertEqual(search.call_count, 2)
         import hashlib
-        key = 'research:v2:' + hashlib.sha256(b'momentum').hexdigest()
+        key = 'research:v4:' + hashlib.sha256(b'momentum').hexdigest()
         self.assertNotIn('question', cache.get(key))
 
 

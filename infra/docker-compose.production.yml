@@ -1,0 +1,55 @@
+# Deployment template: external PostgreSQL, Redis, TLS ingress and CDN required.
+name: ai-teacher-production
+x-backend: &backend
+  build:
+    context: ../backend
+    dockerfile: docker/Dockerfile
+    args:
+      BACKEND_REQUIREMENTS: /tmp/production-requirements.txt
+  image: ${BACKEND_IMAGE:?Set a versioned backend image name}
+  init: true
+  env_file: ${PRODUCTION_ENV_FILE:?Set the private production environment file}
+  environment:
+    DJANGO_SETTINGS_MODULE: config.settings.production
+    CLASSROOM_MEDIA_ROOT: /home/app/private-media
+  volumes:
+    - classroom_media:/home/app/private-media
+  restart: unless-stopped
+  stop_grace_period: 180s
+  mem_limit: 2g
+
+services:
+  django_app:
+    <<: *backend
+    command: [gunicorn, config.wsgi:application, --bind, '0.0.0.0:8000', --workers, '4', --threads, '4', --timeout, '30']
+    healthcheck:
+      test: [CMD, python, -c, "import os, urllib.request; req=urllib.request.Request('http://127.0.0.1:8000/api/health/', headers={'Host': os.environ['DJANGO_ALLOWED_HOSTS'].split(',')[0], 'X-Forwarded-Proto': 'https'}); urllib.request.urlopen(req, timeout=5)"]
+      start_period: 30s
+      interval: 15s
+      timeout: 5s
+      retries: 3
+  lesson_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, -Q, lessons, --pool=prefork, '--concurrency=2', --loglevel=info]
+  maintenance_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, -Q, maintenance, --pool=prefork, '--concurrency=1', --loglevel=info]
+  planning_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, -Q, planning, --pool=prefork, '--concurrency=2', --loglevel=info]
+  beat:
+    <<: *backend
+    command: [celery, -A, config, beat, --loglevel=info, --schedule=/home/app/celerybeat-schedule, --pidfile=]
+  gateway:
+    image: ${NGINX_IMAGE:?Set a pinned nginx image with digest}
+    volumes:
+      - ./docker/nginx-production.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - '127.0.0.1:8080:8080'
+    depends_on:
+      django_app:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  classroom_media:

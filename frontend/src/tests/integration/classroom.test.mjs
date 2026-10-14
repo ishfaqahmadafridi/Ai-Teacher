@@ -336,3 +336,73 @@ test('circuit visual parameters are retained and zero resistance is rejected', (
   answer.chunks[0].diagram.parameters.resistance = 0;
   assert.equal(classroomAnswerSchema.safeParse(answer).success, false);
 });
+
+test('classroom questions explicitly enable the research tools', async () => {
+  let payload;
+  const schemas = load('features/classroom/validators/classroom.schema.ts');
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: { post: async (_url, body) => {
+      payload = body;
+      return { data: { id: '00000000-0000-4000-8000-000000000001', status: 'ready', error: '', result: { chunks: [{ speak: 'Explanation', diagram: { action: 'none' } }], topic: 'Heart', language: 'en', diagram_type: 'default' } } };
+    } } }, '../validators/classroom.schema': schemas,
+  }, { crypto: { randomUUID: () => '00000000-0000-4000-8000-000000000002' } });
+  await ClassroomService.askQuestion({ question: 'Explain the heart', sessionId: 'session' });
+  assert.equal(payload.research, true);
+});
+
+test('queued lesson polling updates status and returns the prepared response', async () => {
+  const statuses = [];
+  const schemas = load('features/classroom/validators/classroom.schema.ts');
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: {
+      post: async () => ({ data: { id: '00000000-0000-4000-8000-000000000001', status: 'queued', error: '', result: {} } }),
+      get: async () => ({ data: { id: '00000000-0000-4000-8000-000000000001', status: 'ready', error: '', result: { chunks: [{ speak: 'Prepared explanation' }], topic: 'Heart', language: 'en', diagram_type: 'default' } } }),
+    } },
+    '../validators/classroom.schema': schemas,
+    '../utilities/waitForLessonJob': { waitForLessonJob: async () => {} },
+  }, { crypto: { randomUUID: () => '00000000-0000-4000-8000-000000000002' } });
+  const answer = await ClassroomService.askQuestion({ question: 'Heart', sessionId: 'session', onStatus: status => statuses.push(status) });
+  assert.equal(answer.topic, 'Heart');
+  assert.match(statuses[0], /queued/);
+});
+
+test('pending lesson recovery reuses the owned job instead of submitting again', async () => {
+  let submissions = 0;
+  const records = new Map([['classroom_pending_lesson:session', JSON.stringify({ id: '00000000-0000-4000-8000-000000000001', question: 'Heart' })]]);
+  const schemas = load('features/classroom/validators/classroom.schema.ts');
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: {
+      post: async () => { submissions++; throw new Error('Unexpected new request'); },
+      get: async () => ({ data: { id: '00000000-0000-4000-8000-000000000001', status: 'ready', error: '', result: { chunks: [{ speak: 'Prepared' }], topic: 'Heart', language: 'en', diagram_type: 'default' } } }),
+    } }, '../validators/classroom.schema': schemas,
+  }, { sessionStorage: { getItem: key => records.get(key), setItem: (key, value) => records.set(key, value), removeItem: key => records.delete(key) } });
+  const answer = await ClassroomService.askQuestion({ question: 'Heart', sessionId: 'session' });
+  assert.equal(answer.topic, 'Heart');
+  assert.equal(submissions, 0);
+  assert.equal(records.size, 0);
+});
+
+test('deleted pending jobs are replaced instead of trapping recovery', async () => {
+  let submissions = 0;
+  const records = new Map([['classroom_pending_lesson:session', JSON.stringify({ id: '00000000-0000-4000-8000-000000000001', question: 'Heart' })]]);
+  const schemas = load('features/classroom/validators/classroom.schema.ts');
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: {
+      get: async () => { throw { isAxiosError: true, response: { status: 404 } }; },
+      post: async () => { submissions++; return { data: { id: '00000000-0000-4000-8000-000000000002', status: 'ready', error: '', result: { chunks: [{ speak: 'Prepared' }], topic: 'Heart', language: 'en', diagram_type: 'default' } } }; },
+    } }, '../validators/classroom.schema': schemas,
+  }, { crypto: { randomUUID: () => '00000000-0000-4000-8000-000000000003' }, sessionStorage: { getItem: key => records.get(key), setItem: (key, value) => records.set(key, value), removeItem: key => records.delete(key) } });
+  const answer = await ClassroomService.askQuestion({ question: 'Heart', sessionId: 'session' });
+  assert.equal(answer.topic, 'Heart');
+  assert.equal(submissions, 1);
+  assert.equal(records.size, 0);
+});
+
+test('polynomial visual samples the actual equation and places the zero axis correctly', () => {
+  const { visualGeometry } = load('features/classroom/utilities/structuredVisual.ts');
+  const graph = visualGeometry({ kind: 'polynomial', coefficients: [0, 0, 1], x_min: -3, x_max: 3 });
+  assert.equal(graph.axisX, 300);
+  assert.match(graph.path, /^M40,40 /);
+  assert.ok(graph.path.includes('L300,340'));
+  assert.equal(visualGeometry({ kind: 'polynomial', coefficients: [0, 1], x_min: 1, x_max: 3 }).axisX, null);
+});

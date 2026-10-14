@@ -43,6 +43,12 @@ def save_note_figure(note, section_index, image):
 
 def note_figures(note):
     images = {}
+    from apps.classroom.services.visual_assets import stored_note_asset_paths
+    for index, path in stored_note_asset_paths(note).items():
+        try:
+            images[index] = path.read_bytes()
+        except FileNotFoundError:
+            pass
     for figure in note.figures.all():
         if figure.image:
             with figure.image.open('rb') as image:
@@ -58,6 +64,10 @@ def remove_figure_file(sender, instance, **kwargs):
 
 
 def read_note_figure(note, section_index):
+    from apps.classroom.services.visual_assets import stored_note_asset_paths
+    path = stored_note_asset_paths(note).get(section_index)
+    if path and not note.figures.filter(section_index=section_index).exists():
+        return path.read_bytes()
     from django.shortcuts import get_object_or_404
     figure = get_object_or_404(NoteFigure, note=note, section_index=section_index)
     with figure.image.open('rb') as image:

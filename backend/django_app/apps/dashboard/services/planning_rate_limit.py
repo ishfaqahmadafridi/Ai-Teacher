@@ -2,17 +2,7 @@
 from django.conf import settings
 from redis import Redis
 
-_SCRIPT = """
-local now = redis.call('TIME')
-local seconds = tonumber(now[1])
-local bucket = math.floor(seconds / 60)
-local key = KEYS[1] .. ':' .. bucket
-local count = tonumber(redis.call('GET', key) or '0')
-if count >= tonumber(ARGV[1]) then return 60 - (seconds % 60) end
-redis.call('INCR', key)
-redis.call('EXPIRE', key, 120)
-return 0
-"""
+from shared.redis_admission import PROVIDER_ADMISSION_SCRIPT as _SCRIPT
 
 
 def planning_delay():

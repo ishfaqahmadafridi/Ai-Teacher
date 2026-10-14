@@ -88,3 +88,8 @@ history continues to use its database persistence.
 
 Tests cover cache reuse, duplicate sources, provider failures and opt-in request
 validation. Live provider calls were not tested, so stored keys remain unverified.
+
+## Classroom image discovery
+Classroom asks now explicitly request research. The bounded LangGraph collection step runs Tavily, OpenAlex and Wikimedia Commons concurrently and caches evidence plus image metadata. Commons results must have an allowed image type, Wikimedia upload URL, source page, author and supported Creative Commons licence. Titles/descriptions are untrusted data. The existing teaching generation selects a numbered image reference only when relevant; backend code resolves it to the supplied URL and attribution. No extra LLM call is used for image selection. Invalid or missing image references do not invent URLs.
+
+The frontend displays Commons images alongside narration and attempts to capture them for saved notes; remote capture depends on image CORS access. Network failures yield no image and do not stop the explanation. Image discovery is not anatomical accuracy verification, and these remain static images. Search/API quotas still apply. Previously prepared notes are unchanged.

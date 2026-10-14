@@ -29,3 +29,10 @@ celery[redis]==5.6.3
 # Genuine lecture note exports
 python-docx==1.2.0
 Pillow==12.3.0
+
+# Production HTTP worker server
+gunicorn==26.2.0
+
+# Shared research cache and provider admission
+django-redis==7.0.0
+redis==6.4.0
