@@ -1,4 +1,5 @@
 'use client';
+import { readPendingLessonJob } from '../utilities/pendingLessonJob';
 import { useCallback, useRef, useEffect } from 'react';
 import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
@@ -37,7 +38,7 @@ export function useClassroomApi() {
       const sessionId = getSessionId();
 
       try {
-        const data = await mutateAsync({ question, sessionId, signal: controller.signal });
+        const data = await mutateAsync({ question, sessionId, signal: controller.signal, onStatus: status => { if (!controller.signal.aborted) dispatch(setLoadingStatus(status)); } });
         if (controller.signal.aborted) return;
         const diagType = (data.diagram_type ?? 'default') as DiagramType;
         const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
@@ -65,6 +66,16 @@ export function useClassroomApi() {
     },
     [dispatch, mutateAsync, getSessionId]
   );
+
+  const recoveryStarted = useRef(false);
+  useEffect(() => {
+    if (recoveryStarted.current) return;
+    recoveryStarted.current = true;
+    const pending = readPendingLessonJob(getSessionId());
+    if (pending) {
+      void sendQuestion(pending.question);
+    }
+  }, [getSessionId, sendQuestion]);
 
   const cancelStream = useCallback(() => {
     esRef.current?.abort();

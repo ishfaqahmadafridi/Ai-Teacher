@@ -1,16 +1,11 @@
-# Visual teaching: single-resistor lesson
+# Dynamic concept visuals
 
-The circuit renderer is an inline SVG with voltage/resistance controls and deterministic I = V/R calculation. It depicts one ideal ohmic resistor at constant temperature, not a general circuit solver. No LLM is needed to update values or draw it.
+New lessons do not use a fixed topic/image catalog. The teaching generation emits a focused `diagram.image_query` for each concept requiring an illustration. Backend code searches that query through Wikimedia, falling back to Openverse. Searches are bounded to six distinct concepts per lesson, with three concurrent searches, request timeouts and metadata-size limits. Successful discovery is cached; cached content is retrieved content, not a predefined topic default.
 
-For an Ohm's Law example, the teacher returns diagram_type circuit and diagram.parameters containing voltage (0–48 V) and resistance (1–100 ohms). Backend serializers and frontend Zod validate finite numbers and matching limits. Later chunks retain the circuit values when their command omits parameters. New parameter pairs reset the exploratory controls through React keys. Without supplied parameters, the UI explicitly labels its 12 V / 4 ohm example as illustrative.
+One additional small LLM selection call chooses relevant numbered candidates for the lesson. Unknown indices and unrelated/unselected candidates are not displayed. Selection token usage is included in the response. Matching titles/descriptions does not verify the scientific accuracy of an image. Each selected image is assigned only to the requesting teaching step; it does not carry over automatically. Authors, licence and source remain attached to saved notes. Old saved lessons and their local images remain readable.
 
-The existing rendered-figure capture now supports this SVG as well as WebGL canvases. It converts the current diagram to PNG for private saved notes and DOCX reuse. A failed snapshot must not interrupt speech. Exported figures are snapshots; interactive controls are not embedded in Word. If a student adjusts values before capture, the snapshot reflects those displayed values.
+Queries with no selected image receive one batched LLM refinement and one additional search/selection attempt. There is no unbounded retry loop. Repair tokens are counted with visual selection tokens. This improves recall but cannot guarantee provider availability or coverage.
 
-Speech and formulas must describe the actual supplied example. These schema checks do not establish that all narrated mathematics are correct. The current model must not claim support for multi-component circuits, anatomy models, molecular animations or arbitrary simulations.
+The frontend supports Wikimedia and Openverse thumbnails and shows a visual-unavailable message when retrieval fails. General anatomy 3D and diagram generation are not implemented. No claim of universal topic coverage is made. Live subject checks on 2026-10-14 retrieved two brain images after repair; binary-search-tree and parabola searches still returned no selected images. Wikimedia connections were reset by the peer. Physics produced a calculated circuit without needing an external picture.
 
-Topic titles now update from the new answer. Formula/image-only content can appear with diagram_type default. Automatic external image retrieval, reviewed biology/medical assets, general process diagrams and full browser visual testing remain outstanding.
-
-## Reviewed anatomy images
-The backend supplies a small reviewed OpenStax image catalog to the existing generation call. The teacher selects an asset ID for relevant anatomical chunks; unknown IDs fail validation. The backend resolves the ID to a same-origin illustration, preserving source and CC BY credit in annotations. The frontend displays the full labelled image alongside the current explanation and captures it into private notes for DOCX reuse. No extra LLM call generates the images. See frontend/public/classroom-assets/README.md for provenance.
-
-These are static diagrams, not organ animations or diagnostic tools. New lessons use these instructions; previously saved lesson versions remain unchanged. Source accuracy and depth still need lesson-level review; prompt instructions alone do not guarantee every organ is covered.
+See [verified visual delivery](visual-delivery.md) for the newer stored-image path, structured renderers, repair command and verification results.

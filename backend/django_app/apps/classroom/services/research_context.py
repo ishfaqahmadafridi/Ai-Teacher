@@ -13,6 +13,7 @@ def build_research_context(question):
     sources = [{**item, 'number': i + 1} for i, item in enumerate(result['evidence'])]
     return RESEARCH_CONTEXT.format(evidence=json.dumps(sources)), {
         'sources': sources,
+        'images': result.get('images', []),
         'research_unavailable': result['errors'],
         'research_status': 'available' if sources else 'unavailable',
     }

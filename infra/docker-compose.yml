@@ -16,6 +16,7 @@ x-backend: &backend
     DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app
     CELERY_BROKER_URL: redis://redis:6379/0
     REDIS_URL: redis://redis:6379/0
+    CLASSROOM_SHARED_CACHE: 'true'
     BACKEND_CORS_ORIGINS: '["http://localhost:3001","http://127.0.0.1:3001"]'
   volumes:
     - ../backend/django_app:/workspace/backend/django_app
@@ -62,6 +63,11 @@ services:
   planning_worker:
     <<: *backend
     command: [celery, -A, config, worker, --hostname=planning@%h, -Q, planning, --pool=threads, '--concurrency=2', --loglevel=info]
+    depends_on: *ready
+
+  lesson_worker:
+    <<: *backend
+    command: [celery, -A, config, worker, --hostname=lessons@%h, -Q, lessons, --pool=prefork, '--concurrency=2', --loglevel=info]
     depends_on: *ready
 
   maintenance_worker:

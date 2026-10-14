@@ -49,9 +49,10 @@ def note_content(note):
 
 
 def note_response(note, content=None, tokens=0):
+    from apps.classroom.services.visual_assets import stored_note_asset_paths
     content = content or note_content(note)
     return {**content, 'id': note.id, 'version': note.version, 'created_at': note.created_at,
-            'figure_indices': [figure.section_index for figure in note.figures.all() if figure.image],
+            'figure_indices': sorted(set(stored_note_asset_paths(note)) | {figure.section_index for figure in note.figures.all() if figure.image}),
             'source_language': note.answer['language'], 'extra_llm_tokens': tokens,
             'direction': 'rtl' if LANG_INFO.get(content['language'], {}).get('bidi', False) else 'ltr'}
 
@@ -71,6 +72,8 @@ def account_session_id(user, session_id):
 
 
 def diagram_image_source(diagram_type, target):
+    if isinstance(target, str) and target.startswith('/api/visual-assets/'):
+        return target
     if not isinstance(target, str):
         return ''
     try:

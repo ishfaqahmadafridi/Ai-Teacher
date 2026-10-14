@@ -7,6 +7,7 @@ For real-time token-by-token streaming, use the FastAPI endpoint:
 """
 from apps.classroom.utilities.serializer_data import validated_mapping
 import logging
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -41,6 +42,8 @@ class AskView(APIView):
         responses={200: AskResponseSerializer},
     )
     def post(self, request):
+        if settings.CLASSROOM_REQUIRE_QUEUE:
+            return Response({"error": "Submit lesson preparation through /api/lesson-jobs/."}, status=410)
         serializer = AskRequestSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

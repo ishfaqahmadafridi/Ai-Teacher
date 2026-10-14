@@ -55,13 +55,39 @@ class ClearSessionResponseSerializer(serializers.Serializer):
 
 class AnswerChunkSerializer(serializers.Serializer):
     def validate_diagram(self, diagram):
-        from apps.classroom.constants.visual_assets import VISUAL_ASSETS
-        if 'asset_id' in diagram and (not isinstance(diagram['asset_id'], str) or diagram['asset_id'] not in VISUAL_ASSETS):
-            raise serializers.ValidationError('Unknown educational image asset.')
+        # Optional malformed display text must not discard valid narration.
+        diagram = dict(diagram)
+        if 'visual_priority' in diagram:
+            diagram['visual_priority'] = serializers.FloatField(min_value=0, max_value=1).run_validation(diagram['visual_priority'])
+            if not math.isfinite(diagram['visual_priority']):
+                raise serializers.ValidationError('Visual priority must be finite.')
+        if diagram.get('kind') in ('tree', 'polynomial') and 'visual' not in diagram:
+            fields = ('kind', 'nodes', 'coefficients', 'x_min', 'x_max')
+            diagram['visual'] = {field: diagram.pop(field) for field in fields if field in diagram}
+        if 'visual' in diagram:
+            from .structured_visual_serializers import StructuredVisualSerializer
+            visual = StructuredVisualSerializer(data=diagram['visual'])
+            if visual.is_valid():
+                diagram['visual'] = validated_mapping(visual.validated_data)
+            else:
+                diagram.pop('visual')
+        for field in ("annotation", "annotation_position", "target", "formula"):
+            if field in diagram and not isinstance(diagram[field], str):
+                diagram.pop(field)
+        from apps.classroom.constants.research import IMAGE_RESULT_LIMIT
+        diagram.pop('asset_id', None)
+        if 'image_query' in diagram:
+            diagram['image_query'] = serializers.CharField(max_length=150, min_length=2).run_validation(diagram['image_query'])
+        if 'image_ref' in diagram:
+            reference = diagram['image_ref']
+            if isinstance(reference, bool) or not isinstance(reference, int) or not 1 <= reference <= IMAGE_RESULT_LIMIT:
+                raise serializers.ValidationError('Invalid image reference.')
         if 'parameters' in diagram:
             parameters = CircuitParametersSerializer(data=diagram['parameters'])
             parameters.is_valid(raise_exception=True)
             diagram = {**diagram, 'parameters': validated_mapping(parameters.validated_data)}
+        if diagram.get('visual') or diagram.get('parameters'):
+            diagram.pop('image_query', None)
         return diagram
 
     question = serializers.CharField(required=False, max_length=2000)
@@ -75,6 +101,10 @@ class AnswerChunkSerializer(serializers.Serializer):
 
 
 class GeneratedAnswerSerializer(serializers.Serializer):
+    def validate(self, attrs):
+        if any(chunk['diagram'].get('parameters') for chunk in attrs['chunks']):
+            attrs['diagram_type'] = 'circuit'
+        return attrs
     def validate_chunks(self, chunks):
         for index, chunk in enumerate(chunks):
             if chunk.get('question') and (index != len(chunks) - 1 or not chunk.get('expected_concepts')):
@@ -82,7 +112,7 @@ class GeneratedAnswerSerializer(serializers.Serializer):
         return chunks
 
     chunks = AnswerChunkSerializer(many=True, allow_empty=False)
-    topic = serializers.CharField(default="physics")
+    topic = serializers.CharField(required=False)
     diagram_type = serializers.CharField(default="default")
     language = serializers.CharField(default="en")
 

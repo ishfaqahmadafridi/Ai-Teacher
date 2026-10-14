@@ -1,6 +1,2 @@
 -r base.txt
-gunicorn
-psycopg2-binary
-django-redis
-redis
-sentry-sdk
+psycopg2-binary==2.9.12

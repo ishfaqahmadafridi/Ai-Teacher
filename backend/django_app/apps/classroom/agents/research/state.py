@@ -15,3 +15,4 @@ class ResearchState(TypedDict):
     question: str
     evidence: list[dict]
     errors: list[str]
+    images: list[dict]

@@ -9,7 +9,7 @@ export function useStageDiagramGrid() {
   const currentFormula = useAppSelector((s) => s.classroom.currentFormula);
 
   return {
-    hasVisual: diagramType !== 'default' || Boolean(currentFormula || currentCommand?.formula) || Boolean(currentCommand?.target && isImageUrl(currentCommand.target)),
+    hasVisual: Boolean(currentCommand?.visual) || currentCommand?.visual_status === 'unavailable' || diagramType !== 'default' || Boolean(currentFormula || currentCommand?.formula) || Boolean(currentCommand?.target?.startsWith('/api/visual-assets/') || currentCommand?.target && isImageUrl(currentCommand.target)),
     diagramType,
     currentCommand,
     currentFormula,

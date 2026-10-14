@@ -11,3 +11,7 @@ export * from './lectureFigureCapture';
 export * from './noteErrors';
 
 export * from './speechVoiceSelection';
+
+export * from './waitForLessonJob';
+
+export * from './pendingLessonJob';

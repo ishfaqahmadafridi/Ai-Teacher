@@ -1,6 +1,10 @@
 import type { CircuitParameters } from './circuit.types';
 
 export interface DiagramCommand {
+  visual_reason?: string;
+  visual?: { kind: 'tree'; nodes: { id: string; label: string; parent?: string | null }[] } | { kind: 'polynomial'; coefficients: number[]; x_min: number; x_max: number };
+  image_query?: string;
+  visual_status?: 'retrieved' | 'unavailable';
   parameters?: CircuitParameters;
   action:
     | 'none'

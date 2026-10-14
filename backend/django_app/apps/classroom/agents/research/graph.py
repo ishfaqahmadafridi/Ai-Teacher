@@ -9,7 +9,7 @@ from apps.classroom.constants.research import PROVIDERS, CACHE_SECONDS, PROVIDER
 
 def _collect(state):
     from apps.classroom.services.research_search import search_provider
-    evidence, errors = [], []
+    evidence, errors, images = [], [], []
     with ThreadPoolExecutor(max_workers=len(PROVIDERS)) as executor:
         jobs = {name: executor.submit(search_provider, name, state['question'])
                 for name in PROVIDERS}
@@ -24,7 +24,7 @@ def _collect(state):
         if item['url'] not in seen:
             seen.add(item['url'])
             unique.append(item)
-    return {'evidence': unique[:len(PROVIDERS) * PROVIDER_RESULT_LIMIT], 'errors': errors}
+    return {'evidence': unique[:len(PROVIDERS) * PROVIDER_RESULT_LIMIT], 'errors': errors, 'images': images}
 
 
 def _build_graph():
@@ -39,7 +39,7 @@ _graph = _build_graph()
 
 
 def research_evidence(question):
-    key = 'research:v2:' + hashlib.sha256(question.strip().casefold().encode()).hexdigest()
+    key = 'research:v4:' + hashlib.sha256(question.strip().casefold().encode()).hexdigest()
     try:
         cached = cache.get(key)
     except Exception:
@@ -48,9 +48,9 @@ def research_evidence(question):
         return {**cached, 'question': question}
     result = _graph.invoke({'question': question, 'evidence': [], 'errors': []},
                            config={'recursion_limit': 4})
-    if result['evidence']:
+    if result['evidence'] or result['images']:
         try:
-            cache.set(key, {'evidence': result['evidence'], 'errors': result['errors']},
+            cache.set(key, {'evidence': result['evidence'], 'errors': result['errors'], 'images': result['images']},
                       timeout=CACHE_SECONDS)
         except Exception:
             pass  # Evidence remains usable when cache infrastructure is unavailable.

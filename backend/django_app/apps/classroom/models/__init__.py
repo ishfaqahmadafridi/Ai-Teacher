@@ -10,3 +10,6 @@ __all__.append('LessonAttempt')
 
 from .lesson_attempt import LessonProgress
 __all__.append('LessonProgress')
+
+from .lesson_job import LessonJob, LessonQueueGate, LessonJobSubmission
+__all__.extend(['LessonJob', 'LessonQueueGate', 'LessonJobSubmission'])

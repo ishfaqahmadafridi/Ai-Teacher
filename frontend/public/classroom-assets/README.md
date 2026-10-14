@@ -8,3 +8,7 @@ https://creativecommons.org/licenses/by/3.0/
 
 These are labelled educational anatomical illustrations, not interactive simulations.
 Attribution is supplied by the backend alongside each displayed image and retained in saved note annotations and DOCX captions.
+
+- anatomy/heart.jpg: https://commons.wikimedia.org/wiki/File:2008_Internal_Anatomy_of_the_HeartN.jpg
+
+These files are retained for previously saved lessons. New visual selection does not use this fixed catalog.
