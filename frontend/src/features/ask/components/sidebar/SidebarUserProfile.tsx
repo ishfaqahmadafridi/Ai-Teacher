@@ -27,6 +27,8 @@ export const SidebarUserProfile = memo(function SidebarUserProfile({
         <Button 
           type="button"
           onClick={onClose}
+          variant="ghost"
+          aria-label="Close sidebar"
           className="text-dashboard-muted hover:text-dashboard-text p-1 bg-transparent border-none cursor-pointer outline-none"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

@@ -21,7 +21,7 @@ export const NavTabButtonRow = memo(function NavTabButtonRow({
       aria-current={isActive ? 'page' : undefined}
       className={`w-full flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer group ${
         isActive
-          ? 'bg-[#1b2559] border-[#b8c3ff] text-white shadow-lg shadow-[#1b2559]/30'
+          ? 'bg-[#1b2559] border-[#b8c3ff] text-dashboard-text shadow-lg shadow-[#1b2559]/30'
           : 'bg-white/[0.02] hover:bg-white/[0.06] border-white/5 text-[#c4c5d9]'
       } ${className}`}
     >
@@ -29,12 +29,12 @@ export const NavTabButtonRow = memo(function NavTabButtonRow({
         <NavTabIcon
           iconName={tab.iconName}
           className={`w-4 h-4 shrink-0 transition-colors ${
-            isActive ? 'text-[#b8c3ff]' : 'text-[#c4c5d9] group-hover:text-white'
+            isActive ? 'text-[#b8c3ff]' : 'text-[#c4c5d9] group-hover:text-dashboard-primary'
           }`}
         />
         <span
           className={`font-['Hanken_Grotesk',sans-serif] text-xs transition-colors truncate ${
-            isActive ? 'font-bold text-white' : 'font-medium text-[#c4c5d9] group-hover:text-[#e2e2e8]'
+            isActive ? 'font-bold text-dashboard-text' : 'font-medium text-[#c4c5d9] group-hover:text-[#e2e2e8]'
           }`}
         >
           {tab.label}

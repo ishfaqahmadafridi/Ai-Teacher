@@ -11,7 +11,7 @@ export const KeyPointsPanel = memo(function KeyPointsPanel({ isPlaying }: KeyPoi
 
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">
+      <p className="text-xs text-dashboard-muted font-medium uppercase tracking-wider mb-1">
         📋 Key Points
       </p>
       <ul className="flex flex-col gap-1">
@@ -21,10 +21,10 @@ export const KeyPointsPanel = memo(function KeyPointsPanel({ isPlaying }: KeyPoi
             className={`text-sm px-3 py-2 rounded-lg border transition-all duration-300 ${
               isPlaying && i === points.length - 1
                 ? 'border-violet-500/60 bg-violet-500/10 text-violet-200'
-                : 'border-slate-700 bg-slate-800/50 text-slate-300'
+                : 'border-dashboard-border bg-dashboard-subtle/50 text-dashboard-muted'
             }`}
           >
-            <span className="text-violet-400 mr-2">•</span>
+            <span className="text-dashboard-primary mr-2">•</span>
             {pt}
           </li>
         ))}

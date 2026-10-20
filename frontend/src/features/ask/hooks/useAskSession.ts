@@ -1,22 +1,26 @@
 'use client';
 import { useCallback, useRef, useEffect } from 'react';
-import { useClassroomQuestionMutation } from '@/features/classroom/hooks/useClassroomQueries';
+import { AskService } from '../services/askService';
+import { useAuthStore } from '@/features/auth/state/authStore';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
 import { v4 as uuidv4 } from 'uuid';
 import { useAskStore } from '@/features/ask/state/askStore';
 import { useAppSelector } from '@/hooks/useAppStore';
 
 export function useAskSession() {
-  const { mutateAsync } = useClassroomQuestionMutation();
   const getSessionId = useConversationSession();
   const request = useRef<AbortController | null>(null);
-  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => () => {
+    request.current?.abort();
+    useAskStore.getState().setLoading(false);
+  }, []);
   const {
     messages,
     loading,
     error,
     speakingId,
     addMessage,
+    updateMessage,
     setLoading,
     setError,
     setSpeakingId,
@@ -39,10 +43,27 @@ export function useAskSession() {
       setError(null);
 
       try {
-        const data = await mutateAsync({ question: text, sessionId: getSessionId(), signal: controller.signal });
-        if (controller.signal.aborted) return;
+        const account = useAuthStore.getState();
         const assistantMsgId = uuidv4();
-        addMessage({ id: assistantMsgId, role: 'assistant', content: data.chunks.map(chunk => chunk.speak).join("\n\n") });
+        let content = '';
+        await AskService.streamQuestion({
+          question: text, sessionId: getSessionId(), accessToken: account.accessToken || '', signal: controller.signal,
+          onToken: (token) => {
+            if (controller.signal.aborted) return;
+            if (useAuthStore.getState().user?.id !== account.user?.id) {
+              controller.abort();
+              setLoading(false);
+              return;
+            }
+            if (!content) {
+              content = token;
+              addMessage({ id: assistantMsgId, role: 'assistant', content });
+            } else {
+              content += token;
+              updateMessage(assistantMsgId, content);
+            }
+          },
+        });
       } catch (err: unknown) {
         if (controller.signal.aborted) return;
         setError(err instanceof Error ? err.message : 'An error occurred.');
@@ -50,7 +71,7 @@ export function useAskSession() {
         if (!controller.signal.aborted) setLoading(false);
       }
     },
-    [addMessage, setLoading, setError, mutateAsync, getSessionId]
+    [addMessage, setLoading, setError, updateMessage, getSessionId]
   );
 
   const speakMessage = useCallback(

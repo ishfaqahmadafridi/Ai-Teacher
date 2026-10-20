@@ -5,6 +5,7 @@ import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
 import { useAppDispatch } from '@/hooks/useAppStore';
 import {
+  setInputText,
   setLoading,
   setLoadingStatus,
   setError,
@@ -16,13 +17,20 @@ import {
   resetClassroomState,
 } from '@/features/classroom/state/classroomSlice';
 import type { ExtendedChunk, DiagramType } from '@/types';
+import type { UseClassroomApiOptions } from '../types/api.types';
 
-export function useClassroomApi() {
+export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptions = {}) {
   const dispatch = useAppDispatch();
   const esRef = useRef<AbortController | null>(null);
   const { mutateAsync } = useClassroomQuestionMutation();
   const getSessionId = useConversationSession();
-  useEffect(() => () => esRef.current?.abort(), []);
+  useEffect(() => () => {
+    if (esRef.current && !esRef.current.signal.aborted) {
+      esRef.current.abort();
+      dispatch(setLoading(false));
+      dispatch(setLoadingStatus(''));
+    }
+  }, [dispatch]);
 
   const sendQuestion = useCallback(
     async (question: string) => {
@@ -32,6 +40,7 @@ export function useClassroomApi() {
       esRef.current = controller;
 
       dispatch(resetClassroomState());
+      dispatch(setInputText(question));
       dispatch(setLoading(true));
       dispatch(setLoadingStatus('Connecting to AI Tutor…'));
 
@@ -67,15 +76,13 @@ export function useClassroomApi() {
     [dispatch, mutateAsync, getSessionId]
   );
 
-  const recoveryStarted = useRef(false);
   useEffect(() => {
-    if (recoveryStarted.current) return;
-    recoveryStarted.current = true;
+    if (!recoverPending) return;
     const pending = readPendingLessonJob(getSessionId());
     if (pending) {
       void sendQuestion(pending.question);
     }
-  }, [getSessionId, sendQuestion]);
+  }, [recoverPending, getSessionId, sendQuestion]);
 
   const cancelStream = useCallback(() => {
     esRef.current?.abort();

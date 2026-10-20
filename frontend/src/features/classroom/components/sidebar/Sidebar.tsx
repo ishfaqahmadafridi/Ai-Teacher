@@ -24,7 +24,7 @@ export const Sidebar = memo(function Sidebar({
   } = useClassroomSidebar();
 
   return (
-    <aside className="hidden lg:flex flex-col w-80 shrink-0 bg-[#060A12]/95 backdrop-blur border-r border-slate-800/90 overflow-y-auto font-sans">
+    <aside className="hidden lg:flex flex-col w-80 shrink-0 bg-dashboard-panel backdrop-blur border-r border-dashboard-border overflow-y-auto font-sans">
       {/* Top Header — Dynamic Active Topic Name */}
       <LectureHeader lectureTitle={activeTopicTitle} />
 

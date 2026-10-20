@@ -10,3 +10,5 @@ export * from './classUtils';
 
 
 export * from './dashboardDataUtils';
+
+export * from './heroAppearance';

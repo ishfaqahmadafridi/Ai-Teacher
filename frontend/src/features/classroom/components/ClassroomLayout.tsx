@@ -9,7 +9,7 @@ import { InputBar } from './input/InputBar';
 export const ClassroomLayout = memo(function ClassroomLayout() {
   return (
     <ClassroomPlaybackProvider>
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-950 text-white font-sans">
+    <div className="flex h-dvh w-full overflow-hidden bg-slate-950 text-white font-sans">
       {/* Sidebar */}
       <Sidebar />
 
@@ -22,7 +22,7 @@ export const ClassroomLayout = memo(function ClassroomLayout() {
         <ClassroomStageArea />
 
         {/* Bottom Input Toolbar Area */}
-        <div className="shrink-0 border-t border-slate-800 bg-slate-900/80 backdrop-blur px-5 py-4">
+        <div className="shrink-0 border-t border-dashboard-border bg-dashboard-bg px-5 py-4">
           <InputBar />
         </div>
       </div>

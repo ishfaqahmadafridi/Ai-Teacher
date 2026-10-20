@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const askRequestSchema = z.object({
-  question: z.string().min(1, 'Question cannot be empty'),
+  question: z.string().min(1, 'Question cannot be empty').max(2000, 'Please keep your question under 2,000 characters'),
   session_id: z.string().uuid('Session ID must be a valid UUID'),
 });
 
@@ -11,3 +11,9 @@ export const askResponseSchema = z.object({
 
 export type ValidatedAskRequest = z.infer<typeof askRequestSchema>;
 export type ValidatedAskResponse = z.infer<typeof askResponseSchema>;
+
+export const chatStreamEventSchema = z.object({
+  token: z.string().default(''),
+  done: z.boolean(),
+  error: z.string().optional(),
+});

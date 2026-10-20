@@ -18,7 +18,7 @@ export const StudentsModalStatsBar = memo(function StudentsModalStatsBar({
           Total Enrolled
         </span>
         <div className="flex items-baseline gap-2 mt-1">
-          <span className="font-['Hanken_Grotesk',sans-serif] text-xl font-bold text-white">
+          <span className="font-['Hanken_Grotesk',sans-serif] text-xl font-bold text-dashboard-text">
             {total}
           </span>
           <span className="text-[10px] text-[#c4c5d9]">Students</span>

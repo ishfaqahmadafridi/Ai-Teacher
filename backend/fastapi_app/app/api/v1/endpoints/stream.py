@@ -20,7 +20,7 @@ from fastapi.responses import StreamingResponse
 
 from app.schemas import AskRequest
 from app.services.llm_service import stream_answer
-from app.services.rag_service import search as rag_search
+from app.services.stream_context import get_stream_context
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -43,7 +43,7 @@ async def _token_event_generator(request: AskRequest):
     )
 
     # Step 1: Async RAG search (non-blocking)
-    rag_context = await rag_search(request.question, top_k=3)
+    rag_context = await get_stream_context(request.question)
 
     # Step 2: Stream Gemini tokens
     try:
@@ -71,7 +71,8 @@ async def _token_event_generator(request: AskRequest):
     except Exception as e:
         logger.error("SSE stream failed: %s", type(e).__name__)
         error_payload = json.dumps({
-            "token": "The teaching service is unavailable. Please retry.",
+            "token": "",
+            "error": "The teaching service is unavailable. Please retry.",
             "done": True,
             "session_id": request.session_id,
         })

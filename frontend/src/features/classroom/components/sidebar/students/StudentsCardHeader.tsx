@@ -30,9 +30,9 @@ export const StudentsCardHeader = memo(function StudentsCardHeader({
           {presentCount}/{totalCount}
         </span>
         {isExpanded ? (
-          <ChevronUp className="w-4 h-4 text-[#c4c5d9] group-hover:text-white transition-colors" aria-hidden="true" />
+          <ChevronUp className="w-4 h-4 text-[#c4c5d9] group-hover:text-dashboard-primary transition-colors" aria-hidden="true" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-[#c4c5d9] group-hover:text-white transition-colors" aria-hidden="true" />
+          <ChevronDown className="w-4 h-4 text-[#c4c5d9] group-hover:text-dashboard-primary transition-colors" aria-hidden="true" />
         )}
       </div>
     </button>

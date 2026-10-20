@@ -18,10 +18,10 @@ export const VoiceMicButton = memo(function VoiceMicButton({
       disabled={disabled}
       aria-pressed={isListening}
       title={isListening ? 'Mute Microphone' : 'Unmute Microphone'}
-      className={`px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shrink-0 active:scale-95 shadow-sm ${
+      className={`min-h-11 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashboard-primary transition-all cursor-pointer shrink-0 active:scale-95 shadow-sm ${
         isListening
-          ? 'bg-red-500/20 text-red-300 border border-red-500/40 animate-pulse'
-          : 'bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 hover:text-white'
+          ? 'bg-red-500/20 text-dashboard-danger border border-red-500/40 animate-pulse'
+          : 'bg-dashboard-subtle hover:bg-dashboard-selected text-dashboard-text border border-dashboard-border hover:text-dashboard-primary'
       } ${className}`}
     >
       {isListening ? (
@@ -31,7 +31,7 @@ export const VoiceMicButton = memo(function VoiceMicButton({
         </>
       ) : (
         <>
-          <MicOff className="w-4 h-4 text-slate-400" />
+          <MicOff className="w-4 h-4 text-dashboard-muted" />
           <span>Mic</span>
         </>
       )}

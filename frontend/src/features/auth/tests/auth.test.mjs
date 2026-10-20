@@ -17,7 +17,11 @@ function loadSource(path, mocks = {}) {
   const testModule = { exports: {} };
   vm.runInNewContext(javascript, {
     module: testModule, exports: testModule.exports,
-    require: (name) => name in mocks ? mocks[name] : require(name),
+    require: (name) => {
+      if (name in mocks) return mocks[name];
+      if (name.startsWith('.')) return loadSource(resolve(file, '..', `${name}.ts`), mocks);
+      return require(name);
+    },
     console, Error, window: {}, localStorage: { removeItem() {} },
   }, { filename: file });
   return testModule.exports;

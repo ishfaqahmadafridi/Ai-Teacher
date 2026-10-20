@@ -15,7 +15,7 @@ export const TopicItemTitle = memo(function TopicItemTitle({
     <span
       className={`font-['Hanken_Grotesk',sans-serif] text-xs transition-colors flex-1 truncate text-left ${
         isHighlight
-          ? 'font-bold text-[#b8c3ff] group-hover:text-white'
+          ? 'font-bold text-[#b8c3ff] group-hover:text-dashboard-primary'
           : 'font-normal text-[#c4c5d9] group-hover:text-[#e2e2e8]'
       } ${className}`}
     >

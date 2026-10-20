@@ -1,3 +1,4 @@
+import type { RegisteredCourseItem } from '@/features/dashboard/types/courses.types';
 import type { RefObject, KeyboardEvent, ChangeEvent } from 'react';
 
 export type AskRole = 'user' | 'assistant';
@@ -16,7 +17,14 @@ export interface AskHeaderProps {
 }
 
 // ─── Sidebar Props ────────────────────────────────────────────────────────────
+export type AskView = 'active' | 'history' | 'paths';
+
 export interface AskSidebarProps {
+  activeView: AskView;
+  onNavigate: (id: string) => void;
+  onOpenSettings: () => void;
+  userName: string;
+  userInitials: string;
   drawerOpen: boolean;
   onClose: () => void;
   className?: string;
@@ -134,4 +142,28 @@ export interface UseAskInputFooterReturn {
   handleSendWithAttachment: () => void;
   triggerImageUpload: () => void;
   triggerDocUpload: () => void;
+}
+
+export interface SidebarNavListProps {
+  activeView: AskView;
+  onNavigate: (id: string) => void;
+}
+
+export interface AskHistoryViewProps {
+  messages: AskMessage[];
+  onReturnToChat: () => void;
+}
+
+export interface AskLearningPathsViewProps {
+  courses: RegisteredCourseItem[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface AskStreamOptions {
+  question: string;
+  sessionId: string;
+  accessToken: string;
+  signal: AbortSignal;
+  onToken: (token: string) => void;
 }

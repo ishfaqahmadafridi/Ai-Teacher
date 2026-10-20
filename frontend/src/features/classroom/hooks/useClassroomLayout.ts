@@ -17,7 +17,7 @@ export function useClassroomLayout() {
   const currentCommand = useAppSelector((s) => s.classroom.currentCommand);
   const currentFormula = useAppSelector((s) => s.classroom.currentFormula);
 
-  const { sendQuestion } = useClassroomApi();
+  const { sendQuestion } = useClassroomApi({ recoverPending: true });
   const { play } = useChunkPlayer();
 
   // Auto-play lecture chunks when they arrive

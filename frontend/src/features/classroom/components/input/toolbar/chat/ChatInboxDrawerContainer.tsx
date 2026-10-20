@@ -13,7 +13,7 @@ export const ChatInboxDrawerContainer = memo(function ChatInboxDrawerContainer({
   }
 
   return (
-    <div className="absolute bottom-full left-0 mb-3 z-50 w-80 sm:w-96 bg-[#0B132B]/95 border border-slate-700/80 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[420px] animate-in fade-in zoom-in-95 duration-150 font-sans">
+    <div className="absolute bottom-full left-0 mb-3 z-50 w-80 sm:w-96 bg-dashboard-panel border border-dashboard-border backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[420px] animate-in fade-in zoom-in-95 duration-150 font-sans">
       <ChatInboxHeader onClose={onClose} />
       <ChatMessageList messages={messages} />
       <ChatInputBar inputMsg={inputMsg} onChange={onChange} onSend={onSend} />

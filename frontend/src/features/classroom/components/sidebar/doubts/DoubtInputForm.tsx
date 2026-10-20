@@ -19,7 +19,7 @@ export const DoubtInputForm = memo(function DoubtInputForm({
         onChange={(e) => onQueryChange(e.target.value)}
         placeholder="Ask AI Teacher a doubt..."
         disabled={loading}
-        className="flex-1 bg-[#060A12] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 transition-colors font-sans"
+        className="flex-1 bg-dashboard-subtle border border-dashboard-border rounded-xl px-3 py-2 text-xs text-dashboard-text placeholder-slate-500 focus:outline-none focus:border-cyan-500/60 transition-colors font-sans"
       />
       <button
         type="submit"

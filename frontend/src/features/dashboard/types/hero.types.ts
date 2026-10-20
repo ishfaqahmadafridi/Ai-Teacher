@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import type { ContinueLearningCourse } from './dashboard.types';
 
 export interface DashboardHeroSectionProps {
@@ -22,6 +23,9 @@ export interface HeroGreetingContentProps {
 }
 
 export interface HeroStudyIllustrationProps {
+  sceneStyle: CSSProperties & Record<`--hero-${string}`, string | number>;
+  imageSrc: string;
+  imageAlt: string;
   className?: string;
 }
 
