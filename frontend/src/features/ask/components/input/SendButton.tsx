@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { ArrowUp } from 'lucide-react';
 import { Button } from '../ui';
 import type { SendButtonProps } from '../../types/ask.types';
 
@@ -15,12 +16,9 @@ export const SendButton = memo(function SendButton({
       aria-label="Send message"
       onClick={onClick}
       disabled={disabled}
-      className={`p-2.5 rounded-full bg-dashboard-primary hover:bg-dashboard-primary-hover disabled:opacity-40 disabled:hover:bg-dashboard-primary disabled:cursor-not-allowed text-white shrink-0 border-none cursor-pointer transition-all flex items-center justify-center ${className}`}
+      className={`size-10 p-0 rounded-full bg-dashboard-primary hover:bg-dashboard-primary-hover disabled:opacity-40 disabled:hover:bg-dashboard-primary disabled:cursor-not-allowed text-white shrink-0 border-none cursor-pointer transition-all flex items-center justify-center ${className}`}
     >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m22 2-7 20-4-9-9-4Z"/>
-        <path d="M22 2 11 13"/>
-      </svg>
+      <ArrowUp aria-hidden="true" className="size-5" strokeWidth={1.75} />
     </Button>
   );
 });

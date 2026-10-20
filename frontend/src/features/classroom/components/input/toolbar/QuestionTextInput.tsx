@@ -22,7 +22,7 @@ export const QuestionTextInput = memo(function QuestionTextInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         disabled={disabled}
-        className="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 resize-none focus:outline-none disabled:opacity-50 font-sans leading-relaxed pt-0.5"
+        className="w-full bg-transparent text-sm text-dashboard-text placeholder:text-dashboard-muted border-0 rounded-none shadow-none resize-none focus:outline-none focus-visible:outline-none focus-visible:ring-0 focus-visible:border-0 disabled:opacity-70 font-sans leading-relaxed pt-0.5"
       />
     </div>
   );

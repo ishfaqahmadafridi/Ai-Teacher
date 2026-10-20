@@ -1,6 +1,8 @@
 'use client';
 
-import { useTimeGreeting } from './useTimeGreeting';
+import { useAuthStore } from '@/features/auth/state/authStore';
+import { useScheduleClock } from './useScheduleClock';
+import { getHeroAppearance } from '../utilities/heroAppearance';
 import type { UseDashboardHeroSectionOptions } from '../types/hero.types';
 
 /**
@@ -9,11 +11,16 @@ import type { UseDashboardHeroSectionOptions } from '../types/hero.types';
  */
 export function useDashboardHeroSection(options: UseDashboardHeroSectionOptions = {}) {
   const { greeting: customGreeting } = options;
-  const timeGreeting = useTimeGreeting();
+  const timezone = useAuthStore((state) => state.user?.timezone);
+  const now = useScheduleClock();
+  const appearance = getHeroAppearance(new Date(now || 0), now ? timezone : 'UTC');
 
-  const greeting = customGreeting || timeGreeting;
+  const greeting = customGreeting || appearance.greeting;
 
   return {
     greeting,
+    imageSrc: appearance.imageSrc,
+    imageAlt: appearance.imageAlt,
+    sceneStyle: appearance.sceneStyle,
   };
 }

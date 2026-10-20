@@ -1,0 +1,56 @@
+/* A fixed transparent-window foreground, with a real-time sky underneath. */
+.hero-scene { isolation: isolate; }
+.hero-sky, .hero-stars, .hero-room-night, .hero-room-sunset, .hero-lamp {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.hero-sky, .hero-stars, .hero-sun, .hero-moon, .hero-scene-foreground,
+.hero-room-night, .hero-room-sunset, .hero-lamp {
+  transition: opacity 2s linear, left 2s linear, top 2s linear, filter 2s linear;
+}
+.hero-sky-day { background: linear-gradient(var(--color-hero-day-top), var(--color-hero-day-bottom)); }
+.hero-sky-sunset {
+  background: linear-gradient(var(--color-hero-sunset-top), var(--color-hero-sunset-bottom) 60%);
+  opacity: var(--hero-sunset);
+}
+.hero-sky-night {
+  background: linear-gradient(var(--color-hero-night-top), var(--color-hero-night-bottom));
+  opacity: var(--hero-night);
+}
+.hero-stars {
+  background-image: radial-gradient(circle at 53% 8%, white 0.6px, transparent 1px), radial-gradient(circle at 66% 22%, white 0.7px, transparent 1px), radial-gradient(circle at 84% 12%, white 0.6px, transparent 1px);
+  background-size: 37px 31px, 47px 43px, 59px 37px;
+  opacity: var(--hero-night);
+}
+.hero-sun, .hero-moon {
+  position: absolute; width: 7%; aspect-ratio: 1; border-radius: 50%;
+  transform: translate(-50%, -50%); pointer-events: none;
+}
+.hero-sun {
+  left: var(--hero-sun-x); top: var(--hero-sun-y);
+  background: var(--color-hero-sun);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--color-hero-sun) 65%, transparent);
+  opacity: calc(1 - var(--hero-night));
+}
+.hero-moon {
+  left: var(--hero-moon-x); top: var(--hero-moon-y);
+  background: var(--color-hero-moon);
+  mask-image: radial-gradient(circle at 30% 30%, transparent 54%, black 56%);
+  opacity: var(--hero-night);
+}
+.hero-scene-foreground { filter: brightness(calc(1 - var(--hero-night) * 0.35)); }
+.hero-room-night {
+  background: var(--color-hero-night-tint); mix-blend-mode: multiply;
+  opacity: calc(var(--hero-night) * 0.35);
+}
+.hero-room-sunset {
+  background: var(--color-hero-sunset-tint); mix-blend-mode: soft-light;
+  opacity: calc(var(--hero-sunset) * 0.35);
+}
+.hero-lamp {
+  background: var(--color-hero-sun); mix-blend-mode: soft-light;
+  clip-path: polygon(36% 30%, 51% 70%, 18% 70%);
+  opacity: calc(var(--hero-night) * 0.32 + var(--hero-sunset) * 0.12);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-scene * { transition: none; }
+}

@@ -1,1 +1,1 @@
-export { apiClient, BASE_URL, createSSEStream, askQuestion, explainTopic } from './api/index';
+export { apiClient, BASE_URL, refreshAccessToken, createSSEStream, askQuestion, explainTopic } from './api/index';

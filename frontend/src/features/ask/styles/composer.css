@@ -1,0 +1,14 @@
+/* Focus belongs to the complete composer, rather than a nested input box. */
+.ask-composer textarea,
+.ask-composer textarea:focus,
+.ask-composer textarea:focus-visible {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+.ask-composer textarea { field-sizing: content; }
+.ask-composer > button:focus-visible {
+  outline: 2px solid var(--color-dashboard-primary);
+  outline-offset: 2px;
+}

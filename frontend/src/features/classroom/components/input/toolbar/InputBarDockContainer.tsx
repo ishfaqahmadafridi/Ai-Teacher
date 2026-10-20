@@ -30,10 +30,10 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
 
   return (
     <>
-    <p role="status" className="px-2 text-xs text-slate-400">{questionNotice}</p>
-    <div className="flex items-center justify-between gap-4 bg-[#0A0E1A]/95 border border-slate-800/90 rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
+    <p role="status" className="px-2 text-xs text-dashboard-muted">{questionNotice}</p>
+    <div className="flex flex-wrap items-center justify-between gap-3 bg-dashboard-panel border border-dashboard-border rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
       {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex flex-wrap items-center gap-2 min-w-0">
         <VoiceMicButton disabled={loading && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
         <DynamicEmojiReactionPopover
@@ -45,7 +45,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
       </div>
 
       {/* 2. Center Section: Prominent Integrated Ask AI Input Box */}
-      <div className="flex-1 max-w-2xl bg-[#060913] border border-slate-800 focus-within:border-violet-500/80 focus-within:ring-2 focus-within:ring-violet-500/20 rounded-xl px-3 py-1.5 flex items-center gap-2 transition-all">
+      <div className="min-w-0 basis-full xl:basis-auto xl:flex-1 order-first xl:order-none bg-dashboard-subtle border border-dashboard-border focus-within:border-blue-400/80 focus-within:ring-2 focus-within:ring-blue-400/20 rounded-xl px-3 py-1.5 flex items-center gap-2 transition-all">
         <QuestionTextInput
           topic={topic}
           inputText={inputText}

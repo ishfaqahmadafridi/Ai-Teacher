@@ -21,7 +21,7 @@ export const SidebarTabs = memo(function SidebarTabs({
 
   return (
     <div
-      className={`bg-[#060A12]/90 p-1.5 rounded-2xl border border-slate-800/80 shadow-inner flex items-center gap-1.5 font-['Hanken_Grotesk',sans-serif] ${className}`}
+      className={`bg-dashboard-subtle/90 p-1.5 rounded-2xl border border-dashboard-border shadow-inner flex items-center gap-1.5 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {tabs.map((tab) => {
         const Icon = tab.icon;
@@ -33,11 +33,11 @@ export const SidebarTabs = memo(function SidebarTabs({
             onClick={() => onTabChange(tab.id)}
             className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-300 cursor-pointer ${
               isActive
-                ? 'bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 text-white shadow-lg shadow-indigo-600/35 border border-white/20 scale-[1.02]'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800/60 font-semibold'
+                ? 'bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-600 text-dashboard-text shadow-lg shadow-indigo-600/35 border border-white/20 scale-[1.02]'
+                : 'text-dashboard-muted hover:text-dashboard-primary hover:bg-dashboard-selected/60 font-semibold'
             }`}
           >
-            <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+            <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-dashboard-text' : 'text-dashboard-muted'}`} />
             <span>{tab.label}</span>
           </button>
         );

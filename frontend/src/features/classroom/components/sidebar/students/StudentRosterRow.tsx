@@ -19,7 +19,7 @@ export const StudentRosterRow = memo(function StudentRosterRow({
     >
       <div className="flex items-center gap-3 min-w-0 pr-2">
         <div
-          className={`w-9 h-9 rounded-full ${student.avatarBg} flex items-center justify-center text-xs font-bold text-white shrink-0 shadow-inner`}
+          className={`w-9 h-9 rounded-full ${student.avatarBg} flex items-center justify-center text-xs font-bold text-dashboard-text shrink-0 shadow-inner`}
         >
           {initials}
         </div>

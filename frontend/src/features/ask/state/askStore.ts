@@ -12,6 +12,7 @@ interface AskState {
   speakingId: string | null;
 
   addMessage: (msg: AskMessage) => void;
+  updateMessage: (id: string, content: string) => void;
   setMessages: (msgs: AskMessage[]) => void;
   setLoading: (v: boolean) => void;
   setError: (err: string | null) => void;
@@ -26,6 +27,7 @@ export const useAskStore = create<AskState>((set) => ({
   speakingId: null,
 
   addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
+  updateMessage: (id, content) => set((s) => ({ messages: s.messages.map((msg) => msg.id === id ? { ...msg, content } : msg) })),
   setMessages: (messages) => set({ messages }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),

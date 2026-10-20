@@ -46,7 +46,7 @@ export const MobileSidebar = memo(function MobileSidebar({
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 left-0 h-full w-80 z-50 bg-slate-900 border-r border-slate-800 flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 left-0 h-full w-80 z-50 bg-dashboard-subtle border-r border-dashboard-border flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -57,7 +57,7 @@ export const MobileSidebar = memo(function MobileSidebar({
             id="mobile-sidebar-close"
             type="button"
             onClick={() => setMobileSidebarOpen(false)}
-            className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+            className="absolute top-3 right-3 p-1.5 rounded-lg text-dashboard-muted hover:text-dashboard-primary hover:bg-dashboard-selected transition-all cursor-pointer"
             aria-label="Close sidebar"
           >
             ✕

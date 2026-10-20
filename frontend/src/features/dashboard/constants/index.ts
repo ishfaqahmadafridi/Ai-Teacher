@@ -14,3 +14,5 @@ export * from './dashboardDataConstants';
 
 export * from './attendanceConstants';
 export * from './scheduleAccessConstants';
+
+export * from './heroAppearanceConstants';

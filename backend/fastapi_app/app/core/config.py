@@ -1,4 +1,5 @@
 """Environment-backed inference configuration; credentials have no built-in defaults."""
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from typing import List
 from urllib.parse import quote
@@ -26,5 +27,13 @@ class Settings(BaseSettings):
 
     class Config:
         case_sensitive = True
+        # Environment variables win; shared backend settings have the same priority
+        # as Django's load_dotenv(shared), then load_dotenv(service) startup.
+        env_file = (
+            Path(__file__).resolve().parents[2] / '.env',
+            Path(__file__).resolve().parents[3] / 'django_app' / '.env',
+            Path(__file__).resolve().parents[3] / '.env',
+        )
+        extra = 'ignore'
 
 settings = Settings()

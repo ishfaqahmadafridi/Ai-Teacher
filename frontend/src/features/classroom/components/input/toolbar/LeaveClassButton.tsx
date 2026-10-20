@@ -11,10 +11,10 @@ export const LeaveClassButton = memo(function LeaveClassButton({
   return (
     <Link
       href="/dashboard"
-      className={`px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-semibold flex items-center gap-2 transition-all cursor-pointer shrink-0 active:scale-95 shadow-md shadow-red-600/25 ${className}`}
+      className={`min-h-11 px-4 py-2 rounded-xl border border-dashboard-danger/25 bg-dashboard-danger/5 hover:bg-dashboard-danger/10 text-dashboard-danger text-xs font-semibold flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashboard-primary transition-all cursor-pointer shrink-0 active:scale-95  ${className}`}
       title="Leave Physics Class & return to Dashboard"
     >
-      <LogOut className="w-4 h-4 text-white" />
+      <LogOut className="w-4 h-4 text-dashboard-danger" />
       <span>Leave Class</span>
     </Link>
   );

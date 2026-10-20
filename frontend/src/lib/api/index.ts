@@ -5,3 +5,5 @@ export { createSSEStream } from './sse';
 export { askQuestion, explainTopic } from './physicsApi';
 
 export type { AuthenticatedRequestConfig } from './types';
+
+export { refreshAccessToken } from './refreshAccessToken';

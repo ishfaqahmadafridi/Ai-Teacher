@@ -25,7 +25,7 @@ export const PlaybackControlsRow = memo(function PlaybackControlsRow({
         id="play-pause-btn"
         type="button"
         onClick={onPlayPause}
-        className="flex items-center gap-2 text-xs font-mono font-bold text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all cursor-pointer shadow-sm"
+        className="flex items-center gap-2 text-xs font-mono font-bold text-dashboard-muted hover:text-dashboard-primary px-3 py-1.5 rounded-xl bg-dashboard-subtle hover:bg-dashboard-selected border border-dashboard-border transition-all cursor-pointer shadow-sm"
       >
         {isPlaying && !isPaused ? (
           <>⏸ Pause</>
@@ -40,7 +40,7 @@ export const PlaybackControlsRow = memo(function PlaybackControlsRow({
           id="stop-btn"
           type="button"
           onClick={onStop}
-          className="flex items-center gap-2 text-xs font-mono font-bold text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all cursor-pointer shadow-sm"
+          className="flex items-center gap-2 text-xs font-mono font-bold text-dashboard-muted hover:text-red-400 px-3 py-1.5 rounded-xl bg-dashboard-subtle hover:bg-dashboard-selected border border-dashboard-border transition-all cursor-pointer shadow-sm"
         >
           ⏹ Stop
         </button>
@@ -54,8 +54,8 @@ export const PlaybackControlsRow = memo(function PlaybackControlsRow({
         title={showSubtitles ? 'Hide Subtitles' : 'Show Subtitles'}
         className={`flex items-center gap-1.5 text-xs font-mono font-bold px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer shadow-sm ${
           showSubtitles
-            ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60'
-            : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
+            ? 'bg-dashboard-success/10 border-dashboard-success/30 text-dashboard-success hover:bg-dashboard-success/15'
+            : 'bg-dashboard-subtle border-dashboard-border text-dashboard-muted hover:text-dashboard-muted'
         }`}
       >
         <span className="text-[10px] tracking-wider uppercase font-bold">CC</span>

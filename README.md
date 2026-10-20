@@ -141,6 +141,41 @@ python manage.py migrate
 python manage.py runserver 8000
 ```
 
+#### Classroom lesson queue (required for board lessons)
+
+The Django server submits classroom lessons to Redis and Celery. Running only Django,
+FastAPI, and Next.js leaves lessons queued. Start a local Redis installation in its
+own terminal, then run each worker command below in a separate terminal from
+`backend/django_app` with its virtual environment activated:
+
+```bash
+redis-server --bind 127.0.0.1 --port 6379
+```
+
+```bash
+celery -A config worker -Q lessons,maintenance --pool=solo --concurrency=1 --loglevel=info
+```
+
+```bash
+celery -A config beat --loglevel=info
+```
+
+The repository also provides startup scripts. From the project root, run each in
+its own terminal (Redis uses `.runtime/bin/redis-server` when available):
+
+```bash
+bash scripts/start-timetable-redis.sh
+bash scripts/start-classroom-worker.sh
+bash scripts/start-timetable-maintenance.sh
+bash scripts/start-timetable-beat.sh
+```
+
+Keep these processes running while using the classroom. The scheduler republishes
+pending jobs after a service restart. After 45 seconds in the queue, the browser
+shows an error and keeps the job available to resume instead of loading indefinitely.
+These local commands require Redis to be installed; the container setup in
+`infra/docker-compose.yml` also includes Redis and dedicated workers.
+
 #### 2. FastAPI AI Inference Service (`backend/fastapi_app`)
 ```bash
 cd backend/fastapi_app

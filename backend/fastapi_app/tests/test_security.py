@@ -11,7 +11,7 @@ from app.core.security import verify_token
 class SecurityTests(unittest.TestCase):
     def test_configuration_has_no_default_credentials(self):
         with patch.dict('os.environ', {}, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
         self.assertEqual(settings.SECRET_KEY, '')
         self.assertEqual(settings.DB_PASSWORD, '')
 
@@ -67,3 +67,20 @@ class SecurityTests(unittest.TestCase):
     def test_default_cors_is_not_wildcard(self):
         with patch.dict('os.environ', {}, clear=True):
             self.assertNotIn('*', Settings().BACKEND_CORS_ORIGINS)
+
+    def test_explicit_shared_env_loads_signing_key_without_builtin_credentials(self):
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as folder, patch.dict('os.environ', {}, clear=True):
+            shared = Path(folder) / '.env'
+            shared.write_text('DJANGO_SECRET_KEY=test-only-shared-secret\nIGNORED_SERVICE_SETTING=value\n')
+            config = Settings(_env_file=shared)
+            self.assertEqual(config.SECRET_KEY, 'test-only-shared-secret')
+
+    def test_environment_signing_key_overrides_env_file(self):
+        from pathlib import Path
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as folder, patch.dict('os.environ', {'DJANGO_SECRET_KEY': 'process-key'}, clear=True):
+            shared = Path(folder) / '.env'
+            shared.write_text('DJANGO_SECRET_KEY=file-key\n')
+            self.assertEqual(Settings(_env_file=shared).SECRET_KEY, 'process-key')

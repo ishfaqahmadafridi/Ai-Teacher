@@ -1,7 +1,7 @@
 import { readPendingLessonJob, savePendingLessonJob, clearPendingLessonJob } from '../utilities/pendingLessonJob';
 import { lessonJobSchema } from '../validators/lessonJob.schema';
 import { waitForLessonJob } from '../utilities/waitForLessonJob';
-import { LESSON_JOB_POLL_MS, LESSON_JOB_POLL_JITTER_MS, LESSON_JOB_WAIT_MS } from '../constants/lessonJobConstants';
+import { LESSON_JOB_POLL_MS, LESSON_JOB_POLL_JITTER_MS, LESSON_JOB_WAIT_MS, LESSON_JOB_QUEUE_WAIT_MS } from '../constants/lessonJobConstants';
 import { apiClient } from '@/lib/api';
 import { isAxiosError } from 'axios';
 import type { ClassroomAnswer, ClassroomQuestion, ClassroomHealth } from '../types/api.types';
@@ -11,6 +11,7 @@ import type { ValidatedTeachingResponse } from '../validators/classroom.schema';
 export class ClassroomService {
   static async askQuestion({ question, sessionId, signal, onStatus }: ClassroomQuestion): Promise<ClassroomAnswer> {
     const pending = readPendingLessonJob(sessionId);
+    onStatus?.(pending?.question === question ? 'Reconnecting to your saved lesson…' : 'Submitting your lesson request…');
     const submit = () => apiClient.post<unknown>('/api/lesson-jobs/', {
       question, session_id: sessionId, research: true, request_id: crypto.randomUUID(),
     }, { signal });
@@ -27,7 +28,12 @@ export class ClassroomService {
     let job = lessonJobSchema.parse(submission.data);
     savePendingLessonJob(sessionId, job.id, question);
     const deadline = Date.now() + LESSON_JOB_WAIT_MS;
+    let queuedSince = Date.now();
     while (job.status === 'queued' || job.status === 'processing') {
+      if (job.status === 'processing') queuedSince = Date.now();
+      if (job.status === 'queued' && Date.now() - queuedSince >= LESSON_JOB_QUEUE_WAIT_MS) {
+        throw new Error('Your lesson is still queued. Please try again shortly. If this continues, the lesson worker may be offline.');
+      }
       onStatus?.(job.status === 'queued' ? 'Your lesson is queued…' : 'Preparing your lesson and visuals…');
       if (Date.now() >= deadline) throw new Error('Lesson preparation is taking longer than expected. Please check again shortly.');
       await waitForLessonJob(LESSON_JOB_POLL_MS + Math.random() * LESSON_JOB_POLL_JITTER_MS, signal);

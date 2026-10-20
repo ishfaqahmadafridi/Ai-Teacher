@@ -363,7 +363,8 @@ test('queued lesson polling updates status and returns the prepared response', a
   }, { crypto: { randomUUID: () => '00000000-0000-4000-8000-000000000002' } });
   const answer = await ClassroomService.askQuestion({ question: 'Heart', sessionId: 'session', onStatus: status => statuses.push(status) });
   assert.equal(answer.topic, 'Heart');
-  assert.match(statuses[0], /queued/);
+  assert.match(statuses[0], /Submitting/);
+  assert.match(statuses[1], /queued/);
 });
 
 test('pending lesson recovery reuses the owned job instead of submitting again', async () => {
@@ -405,4 +406,64 @@ test('polynomial visual samples the actual equation and places the zero axis cor
   assert.match(graph.path, /^M40,40 /);
   assert.ok(graph.path.includes('L300,340'));
   assert.equal(visualGeometry({ kind: 'polynomial', coefficients: [0, 1], x_min: 1, x_max: 3 }).axisX, null);
+});
+
+function recoveryHarness(recoverPending = false) {
+  const effects = [], actions = [], requests = [];
+  const actionCreators = new Proxy({}, { get: (_, type) => payload => ({ type, payload }) });
+  const { useClassroomApi } = load('features/classroom/hooks/useClassroomApi.ts', {
+    react: { useRef: value => ({ current: value }), useCallback: fn => fn, useEffect: fn => effects.push(fn) },
+    './useClassroomQueries': { useClassroomQuestionMutation: () => ({ mutateAsync: request => new Promise((resolve, reject) => { requests.push(request); request.signal.addEventListener('abort', () => reject(new Error('aborted'))); }) }) },
+    '@/shared/hooks/useConversationSession': { useConversationSession: () => () => 'session' },
+    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action) },
+    '@/features/classroom/state/classroomSlice': actionCreators,
+    '../utilities/pendingLessonJob': { readPendingLessonJob: () => ({ question: 'Gravity' }) },
+  }, { AbortController });
+  // eslint-disable-next-line react-hooks/rules-of-hooks -- isolated hook lifecycle harness
+  useClassroomApi({ recoverPending });
+  return { effects, actions, requests };
+}
+
+test('classroom consumers do not independently resume the pending lesson', () => {
+  const h = recoveryHarness();
+  h.effects.forEach(effect => effect());
+  assert.equal(h.requests.length, 0);
+});
+
+test('classroom owner resumes after Strict Mode cleanup and clears cancelled loading', async () => {
+  const h = recoveryHarness(true);
+  const cleanup = h.effects[0]();
+  h.effects[1]();
+  assert.equal(h.requests.length, 1);
+  cleanup();
+  assert.equal(h.requests[0].signal.aborted, true);
+  assert.ok(h.actions.some(action => action.type === 'setLoading' && action.payload === false));
+  const secondCleanup = h.effects[0]();
+  h.effects[1]();
+  assert.equal(h.requests.length, 2);
+  assert.equal(h.requests[1].signal.aborted, false);
+  secondCleanup();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(h.actions.filter(action => action.type === 'setError').length, 0);
+});
+
+test('an offline lesson queue stops the spinner but preserves the recoverable job', async () => {
+  let now = 0, submissions = 0;
+  const records = new Map();
+  const job = { id: '00000000-0000-4000-8000-000000000001', status: 'queued', error: '', result: {} };
+  const { ClassroomService } = load('features/classroom/services/classroomService.ts', {
+    '@/lib/api': { apiClient: {
+      post: async () => { submissions++; return { data: job }; },
+      get: async () => ({ data: job }),
+    } },
+    '../utilities/waitForLessonJob': { waitForLessonJob: async () => { now += 46000; } },
+  }, {
+    Date: { now: () => now }, crypto: { randomUUID: () => job.id },
+    sessionStorage: { getItem: key => records.get(key), setItem: (key, value) => records.set(key, value), removeItem: key => records.delete(key) },
+  });
+  await assert.rejects(ClassroomService.askQuestion({ question: 'Gravity', sessionId: 'session' }), /worker may be offline/);
+  assert.equal(submissions, 1);
+  assert.equal(records.size, 1);
+  await assert.rejects(ClassroomService.askQuestion({ question: 'Gravity', sessionId: 'session' }), /worker may be offline/);
+  assert.equal(submissions, 1);
 });

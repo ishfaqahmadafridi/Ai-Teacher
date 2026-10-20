@@ -27,14 +27,14 @@ export const ChatMessageItemRow = memo(function ChatMessageItemRow({
         className={`max-w-[80%] rounded-xl p-2.5 text-xs font-sans ${
           isStudent
             ? 'bg-sky-600/25 border border-sky-500/40 text-sky-100'
-            : 'bg-slate-800/90 border border-slate-700/80 text-slate-200'
+            : 'bg-dashboard-subtle border border-dashboard-border text-dashboard-text'
         }`}
       >
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-[10px] font-bold text-slate-300">
+          <span className="text-[10px] font-bold text-dashboard-muted">
             {msg.sender}
           </span>
-          <span className="text-[9px] text-slate-500">{msg.timestamp}</span>
+          <span className="text-[9px] text-dashboard-muted">{msg.timestamp}</span>
         </div>
         <p className="leading-relaxed">{msg.text}</p>
       </div>

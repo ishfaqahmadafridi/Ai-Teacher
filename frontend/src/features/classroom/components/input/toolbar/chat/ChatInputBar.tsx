@@ -7,14 +7,14 @@ import type { ChatInputBarProps } from '../../../../types/input.types';
 export const ChatInputBar = memo(function ChatInputBar({ inputMsg, onChange, onSend }: ChatInputBarProps) {
 
   return (
-    <div className="p-2.5 border-t border-slate-800/90 bg-slate-900/80 flex items-center gap-2">
+    <div className="p-2.5 border-t border-dashboard-border bg-dashboard-subtle flex items-center gap-2">
       <input
         type="text"
         placeholder="Send message to classroom chat..."
         value={inputMsg}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && onSend()}
-        className="flex-1 bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-sky-500/80 font-sans"
+        className="flex-1 bg-dashboard-panel border border-dashboard-border rounded-xl px-3 py-1.5 text-xs text-dashboard-text placeholder:text-dashboard-muted focus:outline-none focus:border-sky-500/80 font-sans"
       />
       <button
         type="button"

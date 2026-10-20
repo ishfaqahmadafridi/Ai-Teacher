@@ -110,3 +110,16 @@
   --font-hanken: 'Hanken Grotesk', sans-serif;
   --font-jetbrains: 'JetBrains Mono', monospace;
 }
+
+@theme {
+  --color-hero-day-top: #79c3f2;
+  --color-hero-day-bottom: #d7edf8;
+  --color-hero-sunset-top: #796c9e;
+  --color-hero-sunset-bottom: #ffbd76;
+  --color-hero-night-top: #07132f;
+  --color-hero-night-bottom: #263d68;
+  --color-hero-sun: #fff3be;
+  --color-hero-moon: #fff5d4;
+  --color-hero-night-tint: #12264b;
+  --color-hero-sunset-tint: #e6a167;
+}

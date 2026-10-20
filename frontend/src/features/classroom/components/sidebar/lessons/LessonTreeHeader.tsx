@@ -24,9 +24,9 @@ export const LessonTreeHeader = memo(function LessonTreeHeader({
         </span>
       </div>
       {isExpanded ? (
-        <ChevronUp className="w-4 h-4 text-[#c4c5d9] group-hover:text-white shrink-0 transition-colors" aria-hidden="true" />
+        <ChevronUp className="w-4 h-4 text-[#c4c5d9] group-hover:text-dashboard-primary shrink-0 transition-colors" aria-hidden="true" />
       ) : (
-        <ChevronDown className="w-4 h-4 text-[#c4c5d9] group-hover:text-white shrink-0 transition-colors" aria-hidden="true" />
+        <ChevronDown className="w-4 h-4 text-[#c4c5d9] group-hover:text-dashboard-primary shrink-0 transition-colors" aria-hidden="true" />
       )}
     </button>
   );

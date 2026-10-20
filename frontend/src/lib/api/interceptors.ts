@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import type { AuthenticatedRequestConfig } from './types';
-import { apiClient, BASE_URL } from './client';
+import { apiClient } from './client';
+import { refreshAccessToken } from './refreshAccessToken';
 import { useAuthStore } from '@/features/auth/state/authStore';
 
-let refreshRequest: Promise<string> | null = null;
 
 export function setupInterceptors() {
   apiClient.interceptors.request.use((config: AuthenticatedRequestConfig) => {
@@ -31,22 +31,7 @@ export function setupInterceptors() {
       }
       if (session.refreshToken && session.user) {
         try {
-          if (!refreshRequest) {
-            const refreshToken = session.refreshToken;
-            const userId = session.user.id;
-            refreshRequest = axios.post<{ access: string; refresh: string }>(
-              `${BASE_URL}/api/auth/refresh/`, { refresh: refreshToken }, { timeout: 15000 }
-            ).then(({ data: tokens }) => {
-              const current = useAuthStore.getState();
-              if (!current.user || current.user.id !== userId || current.refreshToken !== refreshToken) {
-                throw new Error('The signed-in account changed.');
-              }
-              current.setUser(current.user, tokens.access, tokens.refresh);
-              return tokens.access;
-            }).finally(() => { refreshRequest = null; });
-          }
-          const access = await refreshRequest;
-          if (useAuthStore.getState().user?.id !== session.user.id) throw new Error('The signed-in account changed.');
+          const access = await refreshAccessToken(session.user.id);
           original.headers.Authorization = `Bearer ${access}`;
           return apiClient(original);
         } catch {
