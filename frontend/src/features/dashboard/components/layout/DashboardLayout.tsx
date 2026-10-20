@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import '../../styles/dashboard-controls.css';
 import { useDashboardLayout } from '../../hooks';
 import { DashboardBackgroundGlow } from './DashboardBackgroundGlow';
 import { DashboardTopNav, DashboardSideNav } from '../navigation';
@@ -39,7 +40,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
   } = useDashboardLayout();
 
   return (
-    <div className="min-h-screen bg-[#0A0F18] font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] relative flex">
+    <div className="min-h-screen bg-dashboard-bg font-['Hanken_Grotesk',sans-serif] text-dashboard-text relative flex">
       {/* Glow Orbs in Background */}
       <DashboardBackgroundGlow />
 
@@ -72,7 +73,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
 
         {/* Main Workspace Area */}
         {dashboardError && <p role="alert" className="px-4 md:px-10 pt-6 text-red-400">Unable to load or save dashboard data: {dashboardError}</p>}
-        {isDashboardLoading ? <p role="status" className="px-4 md:px-10 py-8 text-slate-300">Loading your dashboard…</p> : <DashboardMainContent
+        {isDashboardLoading ? <p role="status" className="px-4 md:px-10 py-8 text-dashboard-muted">Loading your dashboard…</p> : <DashboardMainContent
           activeTabId={activeTabId}
           studentName={profile.name}
           streakDays={profile.streakDays}

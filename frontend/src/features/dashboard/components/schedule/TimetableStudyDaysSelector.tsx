@@ -12,22 +12,23 @@ export const TimetableStudyDaysSelector = memo(
   }: TimetableStudyDaysSelectorProps) {
     return (
       <div className={`space-y-2 ${className}`}>
-        <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
+        <label className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider">
           Study Days Distribution
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {STUDY_DAYS_OPTIONS.map((opt) => (
             <button
               key={opt.id}
+              aria-pressed={includeSaturday === opt.includeSaturday}
               type="button"
               onClick={() => onSelectIncludeSaturday(opt.includeSaturday)}
               className={`p-3 rounded-xl text-left border transition-all ${
                 includeSaturday === opt.includeSaturday
-                  ? 'bg-purple-600/20 border-purple-500/80 text-white ring-1 ring-purple-500/50'
-                  : 'bg-slate-800/40 border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-dashboard-selected border-dashboard-primary/40 text-dashboard-text ring-1 ring-dashboard-primary/20'
+                  : 'bg-dashboard-subtle/40 border-dashboard-border/60 text-dashboard-muted hover:bg-dashboard-subtle hover:text-dashboard-muted'
               }`}
             >
-              <span className="block text-xs font-bold text-white">{opt.label}</span>
+              <span className="block text-xs font-bold text-dashboard-text">{opt.label}</span>
             </button>
           ))}
         </div>

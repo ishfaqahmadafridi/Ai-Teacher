@@ -18,30 +18,30 @@ export const NavSearchResultsDropdown = memo(function NavSearchResultsDropdown({
 
   return (
     <div
-      className={`absolute left-0 top-full mt-2 w-full min-w-[340px] md:min-w-[420px] bg-[#0F172A]/95 backdrop-blur-xl border border-[#1E293B] shadow-2xl rounded-2xl p-3 z-50 text-[#F8FAFC] max-h-[480px] overflow-y-auto font-['Hanken_Grotesk',sans-serif] animate-in fade-in zoom-in-95 duration-150 ${className}`}
+      className={`absolute left-0 top-full mt-2 w-full min-w-[340px] md:min-w-[420px] bg-dashboard-panel/95 backdrop-blur-xl border border-dashboard-border shadow-none rounded-2xl p-3 z-50 text-dashboard-text max-h-[480px] overflow-y-auto font-['Hanken_Grotesk',sans-serif] animate-in fade-in zoom-in-95 duration-150 ${className}`}
     >
       {totalCount === 0 ? (
         <div className="flex flex-col items-center justify-center py-8 px-4 text-center space-y-2">
-          <SearchX className="w-8 h-8 text-[#64748B]" aria-hidden="true" />
-          <p className="text-sm font-medium text-[#94A3B8]">
-            No results found for &quot;<span className="text-[#F8FAFC] font-semibold">{searchQuery}</span>&quot;
+          <SearchX className="w-8 h-8 text-dashboard-muted" aria-hidden="true" />
+          <p className="text-sm font-medium text-dashboard-muted">
+            No results found for &quot;<span className="text-dashboard-text font-semibold">{searchQuery}</span>&quot;
           </p>
-          <p className="text-xs text-[#64748B]">
+          <p className="text-xs text-dashboard-muted">
             Try searching for subject names like &quot;CS&quot;, &quot;AI&quot;, &quot;Quiz&quot;, or &quot;Linear Algebra&quot;.
           </p>
         </div>
       ) : (
         <div className="space-y-4">
           {/* Header Summary */}
-          <div className="flex items-center justify-between px-2 pb-1 border-b border-[#1E293B] text-xs text-[#94A3B8]">
+          <div className="flex items-center justify-between px-2 pb-1 border-b border-dashboard-border text-xs text-dashboard-muted">
             <span>Search Results ({totalCount})</span>
-            <span className="text-[10px] text-[#64748B]">Press ESC to close</span>
+            <span className="text-[10px] text-dashboard-muted">Press ESC to close</span>
           </div>
 
           {/* 1. Courses */}
           {courses.length > 0 && (
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-[#38BDF8] uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-dashboard-primary uppercase tracking-wider">
                 <BookOpen className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Courses ({courses.length})</span>
               </div>
@@ -54,7 +54,7 @@ export const NavSearchResultsDropdown = memo(function NavSearchResultsDropdown({
           {/* 2. Assignments & Quizzes */}
           {assignments.length > 0 && (
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-[#F59E0B] uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-dashboard-warning uppercase tracking-wider">
                 <FileText className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Assignments & Quizzes ({assignments.length})</span>
               </div>
@@ -80,7 +80,7 @@ export const NavSearchResultsDropdown = memo(function NavSearchResultsDropdown({
           {/* 4. Topics */}
           {topics.length > 0 && (
             <div className="space-y-1">
-              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-[#A855F7] uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 px-2 text-[11px] font-semibold text-dashboard-primary uppercase tracking-wider">
                 <Layers className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Topics & Modules ({topics.length})</span>
               </div>

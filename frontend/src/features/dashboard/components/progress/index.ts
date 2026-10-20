@@ -12,3 +12,5 @@ export * from './ClassBehaviorBanBanner';
 export * from './ClassBehaviorHeader';
 export * from './ClassBehaviorWarnings';
 export * from './ClassBehaviorMetrics';
+
+export * from './ClassConductRulesDialog';

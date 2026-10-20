@@ -25,7 +25,7 @@ export const CreateAccountForm = memo(function CreateAccountForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
       {error && (
-        <div className="rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3">
+        <div className="rounded-xl bg-red-500/10 border border-red-500/30 text-dashboard-danger text-sm px-4 py-3">
           {error}
         </div>
       )}

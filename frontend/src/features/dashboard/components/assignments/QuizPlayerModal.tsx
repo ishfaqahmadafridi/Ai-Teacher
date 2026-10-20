@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { DashboardDialog } from '../modals/DashboardDialog';
 import { useQuizPlayer } from '../../hooks';
 import { QuizPlayerHeader } from './QuizPlayerHeader';
 import { QuizPlayerResultView } from './QuizPlayerResultView';
@@ -20,8 +21,7 @@ export const QuizPlayerModal = memo(function QuizPlayerModal({
   if (!isOpen || !item) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
-      <div className="bg-[#0F172A] border border-[#8B5CF6]/40 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
+    <DashboardDialog title="Quiz" onClose={onClose} className="max-w-[42rem] p-5 sm:p-8 space-y-6">
         {/* Modal Header */}
         <QuizPlayerHeader {...headerProps} />
 
@@ -34,8 +34,7 @@ export const QuizPlayerModal = memo(function QuizPlayerModal({
             <QuizPlayerFooter {...footerProps} />
           </div>
         )}
-      </div>
-    </div>
+    </DashboardDialog>
   );
 });
 

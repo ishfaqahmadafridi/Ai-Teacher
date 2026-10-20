@@ -14,9 +14,9 @@ export const ScheduleGridRow = memo(function ScheduleGridRow({
   className = '',
 }: ScheduleGridRowProps) {
   return (
-    <div style={{ gridTemplateColumns: 'var(--schedule-columns)' }} className={`grid gap-3 items-stretch min-h-[84px] ${className}`}>
+    <div role="row" style={{ gridTemplateColumns: 'var(--schedule-columns)' }} className={`grid items-stretch min-h-[120px] border-b border-dashboard-border last:border-b-0 ${className}`}>
       {/* Day Row Header */}
-      <div className="sticky left-0 z-10 bg-[#0F172A] flex items-center px-3 py-2 text-sm font-semibold text-slate-200">
+      <div role="rowheader" className="sticky left-0 z-10 bg-dashboard-panel flex items-start px-4 py-5 text-sm font-semibold text-dashboard-text">
         <span className="truncate">{day}</span>
       </div>
 

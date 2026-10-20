@@ -24,10 +24,10 @@ export const ScheduledClassNoticeModal = memo(function ScheduledClassNoticeModal
   return (
     <Dialog.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/65 backdrop-blur-sm" />
-        <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 w-[calc(100%_-_2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 max-h-[calc(100dvh_-_2rem)] overflow-y-auto rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl space-y-5 outline-none">
+        <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/35 backdrop-blur-[2px]" />
+        <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 w-[calc(100%_-_2rem)] max-w-[32rem] -translate-x-1/2 -translate-y-1/2 max-h-[calc(100dvh_-_2rem)] overflow-y-auto rounded-2xl border border-dashboard-border bg-dashboard-panel p-5 sm:p-6 shadow-xl space-y-5 outline-none">
         <ScheduledClassNoticeHeader
-          title={access.ended || item.status === 'completed' ? 'Session ended' : access.canJoin ? 'Session is ready' : 'Your session is scheduled'}
+          title={access.ended || item.status === 'completed' ? 'Session ended' : access.isLate ? 'You’re late for this class' : access.canJoin ? 'Session is ready' : 'Your session is scheduled'}
           onClose={onClose}
         />
         <ScheduledClassNoticeDetails item={item} />
@@ -38,7 +38,7 @@ export const ScheduledClassNoticeModal = memo(function ScheduledClassNoticeModal
           <button
             type="button"
             onClick={onClose}
-            className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+            className="dashboard-button dashboard-button-secondary w-full"
           >
             Back to schedule
           </button>

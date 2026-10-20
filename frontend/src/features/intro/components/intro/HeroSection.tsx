@@ -12,19 +12,16 @@ export const HeroSection = memo(function HeroSection() {
     <>
       {/* Main Headline - Exactly 2 Lines with Clean Fit */}
       <h1
-        className="m-0 text-center font-extrabold tracking-tight max-w-[1280px] w-full"
+        className="m-0 text-center font-semibold tracking-[-0.04em] max-w-[60rem] w-full"
         style={{
-          fontSize: 'clamp(28px, 4.4vw, 68px)',
+          fontSize: 'clamp(36px, 5.2vw, 72px)',
           lineHeight: 1.15,
           animation: 'intro-titleReveal 1.0s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both',
         }}
       >
-        <span className="block text-[#f0f6ff] mb-1">{HERO_TITLE_PREFIX}</span>
+        <span className="block text-dashboard-text mb-1">{HERO_TITLE_PREFIX}</span>
         <span
-          className="block bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-[length:200%_auto] bg-clip-text text-transparent sm:whitespace-nowrap"
-          style={{
-            animation: 'intro-shimmer 5s linear infinite',
-          }}
+          className="block text-dashboard-primary"
         >
           {HERO_TITLE_GRADIENT}
         </span>
@@ -32,7 +29,7 @@ export const HeroSection = memo(function HeroSection() {
 
       {/* Subtitle / Description */}
       <p
-        className="mt-6 mb-0 font-sans text-center text-blue-100/70 max-w-[640px]"
+        className="mt-6 mb-0 font-sans text-center text-dashboard-muted max-w-[40rem]"
         style={{
           fontSize: 'clamp(15px, 1.8vw, 19px)',
           lineHeight: 1.65,

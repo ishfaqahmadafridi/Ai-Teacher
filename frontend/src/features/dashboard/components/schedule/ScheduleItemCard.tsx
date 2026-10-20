@@ -12,7 +12,7 @@ export const ScheduleItemCard = memo(function ScheduleItemCard(
   props: ScheduleItemCardProps
 ) {
   const { item, className = '' } = props;
-  const { isLive, isEnded, showNotice, handleClick, handleCloseNotice } =
+  const { isLive, isJoinAvailable, isEnded, showNotice, handleClick, handleCloseNotice } =
     useScheduleItemCard(props);
 
   return (
@@ -28,15 +28,15 @@ export const ScheduleItemCard = memo(function ScheduleItemCard(
       {/* Main Card Container */}
       <div
         onClick={handleClick}
-        className={`relative bg-[#0F172A] border rounded-3xl p-6 transition-all duration-300 shadow-xl group flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden cursor-pointer ${
+        className={`relative bg-dashboard-panel border rounded-3xl p-6 transition-all duration-300 shadow-none group flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden cursor-pointer ${
           isLive
-            ? 'border-[#EF4444]/50 shadow-[#EF4444]/10 bg-gradient-to-r from-[#0F172A] via-[#1E1B4B]/40 to-[#0F172A]'
-            : 'border-[#1E293B] hover:border-[#38BDF8]/40 hover:shadow-[#38BDF8]/5'
+            ? 'border-dashboard-primary/40 bg-dashboard-panel'
+            : 'border-dashboard-border hover:border-dashboard-primary/40 hover:shadow-none/5'
         } ${className}`}
       >
         {/* Background Glow */}
         {isLive && (
-          <div className="absolute top-0 right-0 w-64 h-full bg-[#EF4444]/10 blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-full bg-dashboard-primary/5 blur-3xl pointer-events-none" />
         )}
 
         <div className="flex-1 min-w-0 relative z-10">
@@ -44,13 +44,13 @@ export const ScheduleItemCard = memo(function ScheduleItemCard(
           <ScheduleItemCardBadges item={item} isLive={isLive} />
 
           {/* Class Title */}
-          <h3 className="font-['Hanken_Grotesk',sans-serif] text-lg sm:text-xl font-bold text-white group-hover:text-[#38BDF8] transition-colors leading-snug">
+          <h3 className="font-['Hanken_Grotesk',sans-serif] text-lg sm:text-xl font-bold text-dashboard-text group-hover:text-dashboard-primary transition-colors leading-snug">
             {item.title}
           </h3>
         </div>
 
         {/* Action Button */}
-        {isEnded ? <ScheduleAttendanceBadge item={{ ...item, sessionEnded: true }} /> : <ScheduleItemCardActionButton isLive={isLive} onClick={handleClick} />}
+        {isEnded ? <ScheduleAttendanceBadge item={{ ...item, sessionEnded: true }} /> : <ScheduleItemCardActionButton isLive={isLive} isJoinAvailable={isJoinAvailable} onClick={handleClick} />}
       </div>
     </div>
   );

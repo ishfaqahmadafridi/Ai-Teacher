@@ -14,13 +14,7 @@ export const FormSubmitButton = memo(function FormSubmitButton({
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl py-3.5 text-white font-bold text-sm uppercase tracking-widest transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-        style={{
-          background: isLoading
-            ? 'rgba(37,99,235,0.6)'
-            : 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-          boxShadow: isLoading ? 'none' : '0 4px 24px rgba(37,99,235,0.4)',
-        }}
+        className="w-full mt-2 flex items-center justify-center gap-2 rounded-xl py-3.5 text-white font-semibold text-sm transition-all duration-200 bg-dashboard-primary hover:bg-dashboard-primary-hover focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dashboard-primary disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
       >
         {isLoading ? (
           <>
@@ -40,9 +34,9 @@ export const FormSubmitButton = memo(function FormSubmitButton({
         )}
       </button>
 
-      <p className="text-center text-[#64748b] text-sm pt-2">
+      <p className="text-center text-dashboard-muted text-sm pt-2">
         Already have an account?{' '}
-        <Link href="/login" className="text-[#38bdf8] hover:text-[#7dd3fc] font-semibold transition-colors">
+        <Link href="/login" className="text-dashboard-primary hover:text-dashboard-primary-hover font-semibold transition-colors">
           Sign In
         </Link>
       </p>

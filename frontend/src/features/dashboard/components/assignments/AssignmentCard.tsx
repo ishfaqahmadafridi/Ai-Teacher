@@ -32,7 +32,7 @@ export const AssignmentCard = memo(function AssignmentCard({
 
   return (
     <div
-      className={`bg-[#0F172A] border rounded-3xl p-6 shadow-2xl transition-all duration-300 hover:border-[#38BDF8]/40 flex flex-col justify-between gap-5 ${containerBgStyles} ${className}`}
+      className={`bg-dashboard-panel border rounded-3xl p-6 shadow-none transition-all duration-300 hover:border-dashboard-primary/40 flex flex-col justify-between gap-5 ${containerBgStyles} ${className}`}
     >
       {/* Body Section */}
       <AssignmentCardBody item={item} isGraded={isGraded} />

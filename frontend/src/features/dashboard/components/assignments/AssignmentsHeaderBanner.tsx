@@ -21,7 +21,7 @@ export const AssignmentsHeaderBanner = memo(function AssignmentsHeaderBanner({
 
   return (
     <div
-      className={`bg-[#0F172A] border border-[#1E293B] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 ${className}`}
+      className={`bg-dashboard-panel border border-dashboard-border rounded-3xl p-6 sm:p-8 shadow-none space-y-6 ${className}`}
     >
       {/* Top Title & "+ Assign New Work" Button */}
       <AssignmentsHeaderTitle onOpenAssignModal={onOpenAssignModal} />

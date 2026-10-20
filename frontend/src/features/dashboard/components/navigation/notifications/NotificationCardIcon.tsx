@@ -15,11 +15,11 @@ export const NotificationCardIcon = memo(function NotificationCardIcon({
       className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center border ${iconStyles} ${className}`}
     >
       {isDeadline ? (
-        <Clock className="w-4 h-4 text-[#F43F5E]" />
+        <Clock className="w-4 h-4 text-dashboard-danger" />
       ) : isGraded ? (
-        <Award className="w-4 h-4 text-[#10B981]" />
+        <Award className="w-4 h-4 text-dashboard-success" />
       ) : (
-        <ClipboardList className="w-4 h-4 text-[#8B5CF6]" />
+        <ClipboardList className="w-4 h-4 text-dashboard-primary" />
       )}
     </div>
   );

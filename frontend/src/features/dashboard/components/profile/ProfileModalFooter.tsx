@@ -12,13 +12,13 @@ export const ProfileModalFooter = memo(function ProfileModalFooter({
   className = '',
 }: ProfileModalFooterProps) {
   return (
-    <div className={`pt-4 border-t border-[#1E293B] flex items-center justify-between gap-3 ${className}`}>
+    <div className={`pt-4 border-t border-dashboard-border flex items-center justify-between gap-3 ${className}`}>
       {/* Left: Logout Button */}
       {onLogout ? (
         <button
           type="button"
           onClick={onLogout}
-          className="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+          className="px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 hover:text-red-300 text-sm font-semibold transition-all flex items-center gap-2 cursor-pointer shadow-none"
         >
           <LogOut className="w-4 h-4" aria-hidden="true" />
           <span>Log Out</span>
@@ -32,14 +32,14 @@ export const ProfileModalFooter = memo(function ProfileModalFooter({
         <button
           type="button"
           onClick={onClose}
-          className="px-5 py-2.5 rounded-xl border border-[#334155] text-[#94A3B8] hover:text-white hover:bg-[#1E293B] text-sm font-semibold transition-all cursor-pointer"
+          className="px-5 py-2.5 rounded-xl border border-dashboard-border text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle text-sm font-semibold transition-all cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={isSaving}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white text-sm font-semibold shadow-lg shadow-[#2563eb]/25 transition-all flex items-center gap-2 cursor-pointer"
+          className="px-6 py-2.5 rounded-xl bg-dashboard-primary hover:bg-dashboard-primary-hover text-white text-sm font-semibold shadow-none transition-all flex items-center gap-2 cursor-pointer"
         >
           {isSaved ? (
             <>

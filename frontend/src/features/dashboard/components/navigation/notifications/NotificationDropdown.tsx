@@ -20,7 +20,7 @@ export const NotificationDropdown = memo(function NotificationDropdown({
 
   return (
     <div
-      className={`absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-[#030712]/95 border border-[#1E293B] shadow-2xl backdrop-blur-xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150 ${className}`}
+      className={`absolute right-0 top-full mt-2 w-80 sm:w-96 rounded-3xl bg-dashboard-panel/95 border border-dashboard-border shadow-none backdrop-blur-xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150 ${className}`}
     >
       <NotificationHeader
         unreadCount={unreadCount}

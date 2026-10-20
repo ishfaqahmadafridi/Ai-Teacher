@@ -1,0 +1,90 @@
+/* Shared controls for the dashboard's light palette. */
+.dashboard-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.dashboard-button-primary {
+  background: var(--color-dashboard-primary);
+  border-color: var(--color-dashboard-primary);
+  color: var(--color-on-primary);
+}
+
+.dashboard-button-primary:hover:not(:disabled) {
+  background: var(--color-dashboard-primary-hover);
+  border-color: var(--color-dashboard-primary-hover);
+}
+
+.dashboard-button-secondary {
+  background: var(--color-dashboard-panel);
+  border-color: var(--color-dashboard-border);
+  color: var(--color-dashboard-text);
+}
+
+.dashboard-button-secondary:hover:not(:disabled) {
+  background: var(--color-dashboard-subtle);
+  border-color: var(--color-dashboard-muted);
+}
+
+.dashboard-button-icon {
+  width: 2.5rem;
+  padding: 0;
+  color: var(--color-dashboard-muted);
+}
+
+.dashboard-button-segment {
+  min-height: 2rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+.dashboard-button > svg {
+  flex-shrink: 0;
+  color: inherit;
+  stroke-width: 1.75;
+}
+
+.dashboard-button:focus-visible {
+  outline: 2px solid var(--color-dashboard-primary);
+  outline-offset: 3px;
+}
+
+.dashboard-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-button {
+    transition: none;
+  }
+}
+
+.dashboard-button-join {
+  color: var(--color-on-primary);
+  background: var(--color-schedule-join);
+  border-color: var(--color-schedule-join);
+}
+
+.dashboard-button-join:hover:not(:disabled) {
+  background: var(--color-schedule-join-hover);
+  border-color: var(--color-schedule-join-hover);
+}
+
+.dashboard-button-join:focus-visible {
+  outline-color: var(--color-schedule-join);
+}

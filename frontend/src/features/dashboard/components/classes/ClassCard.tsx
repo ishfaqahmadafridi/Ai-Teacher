@@ -17,14 +17,14 @@ export const ClassCard = memo(function ClassCard({
 
   return (
     <div
-      className={`bg-[#0F172A]/90 backdrop-blur-md rounded-2xl p-5 shadow-lg border border-[#1E293B] flex flex-col justify-between hover:border-[#38BDF8]/40 transition-all duration-300 group font-['Hanken_Grotesk',sans-serif] space-y-4 ${className}`}
+      className={`bg-dashboard-panel/90 backdrop-blur-md rounded-2xl p-5 shadow-none border border-dashboard-border flex flex-col justify-between hover:border-dashboard-primary/40 transition-all duration-300 group font-['Hanken_Grotesk',sans-serif] space-y-4 ${className}`}
     >
       <div>
         {/* Top Header: Subject & Live Status */}
         <ClassCardHeader subject={classItem.subject} isLive={classItem.isLive} />
 
         {/* Class Title */}
-        <h3 className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-white mb-2 group-hover:text-[#38BDF8] transition-colors leading-snug">
+        <h3 className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-dashboard-text mb-2 group-hover:text-dashboard-primary transition-colors leading-snug">
           {classItem.title}
         </h3>
 

@@ -11,18 +11,18 @@ export const AssignmentCardAttachments = memo(function AssignmentCardAttachments
 
   return (
     <div className="space-y-1.5 pt-1">
-      <div className="text-[11px] font-bold text-[#64748B] uppercase tracking-wider flex items-center gap-1">
-        <Paperclip className="w-3 h-3 text-[#38BDF8]" />
+      <div className="text-[11px] font-bold text-dashboard-muted uppercase tracking-wider flex items-center gap-1">
+        <Paperclip className="w-3 h-3 text-dashboard-primary" />
         <span>Reference Attachments ({attachments.length})</span>
       </div>
       <div className="flex flex-wrap gap-2">
         {attachments.map((att, idx) => (
           <div
             key={idx}
-            className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-[#090D16] border border-[#1E293B] text-[#38BDF8]"
+            className="inline-flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg bg-dashboard-panel border border-dashboard-border text-dashboard-primary"
           >
             <span>{att.name}</span>
-            <span className="text-[9px] text-[#64748B]">({att.sizeFormatted})</span>
+            <span className="text-[9px] text-dashboard-muted">({att.sizeFormatted})</span>
           </div>
         ))}
       </div>

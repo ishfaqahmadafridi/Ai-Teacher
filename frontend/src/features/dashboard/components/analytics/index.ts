@@ -5,3 +5,4 @@ export * from './AnalyticsTrendGraph';
 export * from './AnalyticsMetricCard';
 export * from './AnalyticsMetricsGrid';
 export * from './AnalyticsStreakFooter';
+export * from './AnalyticsSummaryItem';

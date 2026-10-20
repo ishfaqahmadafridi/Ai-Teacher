@@ -8,14 +8,11 @@ export const ProfileCoverBackground = memo(function ProfileCoverBackground({
   className = '',
 }: ProfileCoverBackgroundProps) {
   return (
-    <div className={`absolute inset-0 overflow-hidden rounded-t-3xl ${className}`}>
-      <img
-        src={coverUrl || '/images/profile_cover.png'}
-        alt="Profile Cover Banner"
-        className="w-full h-full object-cover opacity-85 transition-opacity duration-300"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A] via-[#0F172A]/40 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#1E40AF]/30 via-transparent to-[#7C3AED]/30" />
+    <div className={`absolute inset-0 overflow-hidden rounded-t-2xl ${className}`}>
+      {coverUrl && (
+        <img src={coverUrl} alt="Profile cover" className="w-full h-full object-cover" />
+      )}
+
     </div>
   );
 });

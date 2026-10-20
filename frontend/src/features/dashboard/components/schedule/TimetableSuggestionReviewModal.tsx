@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { DashboardDialog } from '../modals/DashboardDialog';
 import { useTimetableSuggestionReviewModal } from '../../hooks/useTimetableSuggestionReviewModal';
 import { TimetableSuggestionReviewHeader } from './TimetableSuggestionReviewHeader';
 import { TimetableSuggestionReviewGrid } from './TimetableSuggestionReviewGrid';
@@ -27,9 +28,8 @@ export const TimetableSuggestionReviewModal = memo(
     if (!isOpen || !suggestion) return null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-        <div className="relative w-full max-w-2xl p-6 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
-          {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
+      <DashboardDialog title="Review your timetable" onClose={onClose} className="max-w-[48rem] p-5 sm:p-6 space-y-6">
+          {error && <p role="alert" className="text-sm text-dashboard-danger">{error}</p>}
           {/* Header */}
           <TimetableSuggestionReviewHeader
             optimizationSummary={suggestion.optimizationSummary}
@@ -51,8 +51,7 @@ export const TimetableSuggestionReviewModal = memo(
             onAccept={handleAccept}
             onCustomize={handleCustomize}
           />
-        </div>
-      </div>
+      </DashboardDialog>
     );
   }
 );

@@ -14,7 +14,7 @@ export function DesktopNav({ links }: DesktopNavProps) {
           onClick={() => {
             router.push(link.href);
           }}
-          className="text-sm font-medium text-blue-100/70 hover:text-white transition-colors duration-200 no-underline bg-transparent border-none cursor-pointer outline-none"
+          className="text-sm font-medium text-dashboard-muted hover:text-dashboard-text transition-colors duration-200 no-underline bg-transparent border-none cursor-pointer focus-visible:outline-2 focus-visible:outline-dashboard-primary"
           style={{ fontFamily: 'var(--font-inter), sans-serif' }}
         >
           {link.label}

@@ -24,7 +24,7 @@ export const ClassProgressSection = memo(function ClassProgressSection(
       {/* 2. Teacher Q&A Topic Relevance Analytics */}
       <TeacherQuestionsCard questions={questionsList} />
 
-      {options.attendanceLogs === undefined && history.isPending && <p role="status" className="text-slate-400">Loading attendance history…</p>}
+      {options.attendanceLogs === undefined && history.isPending && <p role="status" className="text-dashboard-muted">Loading attendance history…</p>}
       {(history.isError || history.downloadError) && <p role="alert" className="text-rose-400">Attendance history or export could not be loaded. Please retry.</p>}
       {/* 3. Attendance Report & Last 3 Missed Classes with CSV Download */}
       {(options.attendanceLogs !== undefined || history.isSuccess) && <AttendanceReportCard

@@ -17,11 +17,11 @@ export const AskMessageItem = memo(function AskMessageItem({
       className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} gap-2 ${className}`}
     >
       {msg.role === 'user' ? (
-        <Card className="max-w-[85%] p-4 rounded-2xl rounded-tr-none border border-white/10 bg-[#1c1b1d] text-slate-100 shadow-md">
+        <Card className="max-w-[85%] p-4 rounded-2xl rounded-tr-none border border-dashboard-border bg-dashboard-selected text-dashboard-text shadow-md">
           <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{msg.content}</p>
         </Card>
       ) : (
-        <Card className="w-full max-w-[90%] p-6 rounded-2xl rounded-tl-none glass-panel ai-glow relative">
+        <Card className="w-full max-w-[90%] p-6 rounded-2xl rounded-tl-none bg-dashboard-panel border border-dashboard-border relative">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="relative w-5 h-5 shrink-0">
@@ -30,14 +30,10 @@ export const AskMessageItem = memo(function AskMessageItem({
                   alt="NEUROLEARN Logo"
                   fill
                   sizes="20px"
-                  className="object-contain mix-blend-screen"
-                  style={{
-                    mixBlendMode: 'screen',
-                    filter: 'drop-shadow(0 0 6px rgba(56,189,248,0.9))',
-                  }}
+                  className="object-contain"
                 />
               </div>
-              <span className="text-sm font-semibold tracking-tight gradient-text">NeuroLearn AI Tutor</span>
+              <span className="text-sm font-semibold tracking-tight text-dashboard-text">NeuroLearn AI Tutor</span>
             </div>
 
             {/* Speaker button */}
@@ -46,8 +42,8 @@ export const AskMessageItem = memo(function AskMessageItem({
               onClick={() => onSpeak(msg.id, msg.content)}
               className={`p-1.5 rounded-lg transition-all ${
                 speakingId === msg.id
-                  ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5 border-none bg-transparent cursor-pointer'
+                  ? 'bg-blue-500/20 text-dashboard-primary border border-dashboard-border animate-pulse'
+                  : 'text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle border-none bg-transparent cursor-pointer'
               }`}
               title={speakingId === msg.id ? 'Mute' : 'Speak'}
             >
@@ -57,12 +53,12 @@ export const AskMessageItem = memo(function AskMessageItem({
             </Button>
           </div>
 
-          <div className="prose prose-invert prose-sm leading-relaxed">
+          <div className="prose text-dashboard-text prose-sm leading-relaxed">
             <FormulaBlock>{msg.content}</FormulaBlock>
           </div>
         </Card>
       )}
-      <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono pl-2 pr-2">
+      <span className="text-[10px] text-dashboard-muted uppercase tracking-widest font-mono pl-2 pr-2">
         {msg.role === 'user' ? 'Sent' : 'Generated'}
       </span>
     </div>

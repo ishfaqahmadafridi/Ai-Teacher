@@ -15,7 +15,7 @@ export const AskTypingIndicator = memo(function AskTypingIndicator({
           <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '200ms' }}></div>
           <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
         </div>
-        <span className="text-xs text-slate-400 italic font-['Hanken_Grotesk',sans-serif]">{text}</span>
+        <span className="text-xs text-dashboard-muted italic font-['Hanken_Grotesk',sans-serif]">{text}</span>
       </div>
     </div>
   );

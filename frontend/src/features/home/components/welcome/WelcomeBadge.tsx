@@ -3,7 +3,7 @@
 export function WelcomeBadge() {
   return (
     <div className="dash-badge">
-      Revolutionizing Education with AI
+      A little guidance. A lot of possibility.
     </div>
   );
 }

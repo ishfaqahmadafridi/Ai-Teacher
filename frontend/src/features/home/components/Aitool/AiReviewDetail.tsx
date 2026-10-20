@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export function AiReviewDetail() {
   return (
-    <section className="feat-section border-b border-white/5 pb-20" id="ai-review-detail">
+    <section className="feat-section border-b border-dashboard-border pb-20" id="ai-review-detail">
       <div className="future-flex" style={{ gap: '48px', alignItems: 'center' }}>
         {/* Left Side: Review Hologram Image Showcase */}
         <div className="future-right md:order-1">
@@ -16,7 +16,7 @@ export function AiReviewDetail() {
                 width: '100%', 
                 height: '100%', 
                 borderRadius: '24px', 
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                border: '1px solid var(--color-dashboard-border)',
                 transform: 'none', // flat rendering
               }}
             >
@@ -34,11 +34,11 @@ export function AiReviewDetail() {
 
         {/* Right Side: Content */}
         <div className="future-left md:order-2">
-          <span className="feat-subtitle" style={{ color: '#60a5fa' }}>Evaluation Engine</span>
+          <span className="feat-subtitle" >Evaluation Engine</span>
           <h2 className="feat-title" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', marginBottom: '20px' }}>
             AI Assignment Review
           </h2>
-          <p className="feat-desc" style={{ fontSize: '15.5px', lineHeight: '1.75', color: 'rgba(224, 242, 254, 0.7)' }}>
+          <p className="feat-desc" style={{ fontSize: '15.5px', lineHeight: '1.75', color: 'var(--color-dashboard-muted)' }}>
             Upload assignments to receive detailed AI feedback, grammar corrections, plagiarism 
             insights, code reviews, improvement suggestions, and personalized recommendations 
             before submission. Our evaluator uses semantic analysis to ensure structural consistency, 

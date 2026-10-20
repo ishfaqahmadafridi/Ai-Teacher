@@ -23,10 +23,10 @@ export const DashboardSideNav = memo(function DashboardSideNav({
 
   return (
     <aside
-      className={`w-72 bg-[#030712] border-r border-[#1E293B] flex flex-col shrink-0 h-screen sticky top-0 font-['Hanken_Grotesk',sans-serif] ${className}`}
+      className={`w-16 md:w-64 bg-dashboard-panel border-r border-dashboard-border flex flex-col shrink-0 h-screen sticky top-0 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {/* ── Profile at top ── */}
-      <div className="px-5 pt-6 pb-4 shrink-0">
+      <div className="px-2 md:px-5 pt-6 pb-4 shrink-0">
         <SidebarUserHeader
           studentName={studentName}
           studentAvatar={studentAvatar}
@@ -38,10 +38,10 @@ export const DashboardSideNav = memo(function DashboardSideNav({
       </div>
 
       {/* ── Divider ── */}
-      <div className="mx-5 border-t border-[#1E293B]" />
+      <div className="mx-2 md:mx-5 border-t border-dashboard-border" />
 
       {/* ── Nav links — scrollable middle ── */}
-      <div className="flex-1 overflow-y-auto px-5 py-4">
+      <div className="flex-1 overflow-y-auto px-2 md:px-5 py-4">
         <NavTabList
           navLinks={mainNavLinks}
           activeTabId={activeTabId}
@@ -50,10 +50,10 @@ export const DashboardSideNav = memo(function DashboardSideNav({
       </div>
 
       {/* ── Divider ── */}
-      <div className="mx-5 border-t border-[#1E293B]" />
+      <div className="mx-2 md:mx-5 border-t border-dashboard-border" />
 
       {/* ── Settings pinned at bottom ── */}
-      <div className="px-5 py-4 shrink-0">
+      <div className="px-2 md:px-5 py-4 shrink-0">
         <SidebarFooterSettings
           settingsLink={settingsLink}
           activeTabId={activeTabId}

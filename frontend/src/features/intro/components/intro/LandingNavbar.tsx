@@ -10,7 +10,7 @@ export const LandingNavbar = memo(function LandingNavbar({
   onEnterApp,
 }: LandingNavbarProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300 bg-[#0d141d]/80 backdrop-blur-xl border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-300 bg-dashboard-panel/95 backdrop-blur-md border-b border-dashboard-border">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Logo & Name Only */}
         <Link href="/home" prefetch={true} className="flex items-center gap-3 cursor-pointer group no-underline">
@@ -20,23 +20,19 @@ export const LandingNavbar = memo(function LandingNavbar({
               alt={BRAND_CONFIG.logoAlt}
               fill
               sizes="44px"
-              className="object-contain rounded-lg mix-blend-screen"
-              style={{
-                mixBlendMode: 'screen',
-                filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
-              }}
+              className="object-contain rounded-lg"
               priority
             />
           </div>
           <span
-            className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors leading-tight"
+            className="font-semibold tracking-tight text-dashboard-text group-hover:text-dashboard-primary transition-colors leading-tight"
             style={{
               fontSize: '1.25rem',
               fontFamily: 'var(--font-outfit), sans-serif',
-              letterSpacing: '0.14em',
+              letterSpacing: '-0.025em',
             }}
           >
-            {BRAND_CONFIG.name}
+            {BRAND_CONFIG.name.charAt(0) + BRAND_CONFIG.name.slice(1).toLowerCase()}
           </span>
         </Link>
       </div>

@@ -12,14 +12,14 @@ export const AskHeader = memo(function AskHeader({
   className = '',
 }: AskHeaderProps) {
   return (
-    <header className={`absolute top-0 left-0 right-0 z-20 h-16 flex items-center justify-between px-6 bg-[#0a0f18]/80 backdrop-blur-md border-b border-white/5 ${className}`}>
+    <header className={`absolute top-0 left-0 right-0 z-20 h-16 flex items-center justify-between px-6 bg-dashboard-panel/95 backdrop-blur-md border-b border-dashboard-border ${className}`}>
       {/* Brand & Drawer Trigger */}
       <div className="flex items-center gap-4">
         {!drawerOpen && (
           <Button
             type="button"
             onClick={onOpenDrawer}
-            className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/5 transition-all duration-200 border-none bg-transparent cursor-pointer"
+            className="text-dashboard-muted hover:text-dashboard-text p-2 rounded-xl hover:bg-dashboard-subtle transition-all duration-200 border-none bg-transparent cursor-pointer"
             title="Open Sidebar"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -36,16 +36,12 @@ export const AskHeader = memo(function AskHeader({
               alt="NEUROLEARN Logo"
               fill
               sizes="40px"
-              className="object-contain rounded-lg mix-blend-screen"
-              style={{
-                mixBlendMode: 'screen',
-                filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
-              }}
+              className="object-contain rounded-lg"
               priority
             />
           </div>
-          <span className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors text-lg font-['Outfit',sans-serif]">
-            NEUROLEARN
+          <span className="font-semibold tracking-tight text-dashboard-text group-hover:text-dashboard-primary transition-colors text-lg font-['Outfit',sans-serif]">
+            Neurolearn
           </span>
         </Link>
       </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { DashboardDialog } from '../modals/DashboardDialog';
 import { ScheduleTopicFields } from './ScheduleTopicFields';
 import { ScheduleTimingFields } from './ScheduleTimingFields';
 import { ScheduleLocationFields } from './ScheduleLocationFields';
@@ -25,14 +26,13 @@ export const CreateScheduleSlotModal = memo(
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-        <div className="relative w-full max-w-xl p-6 bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+      <DashboardDialog title="Add Timetable Class Slot" onClose={onClose} className="max-w-[36rem] p-5 sm:p-6 space-y-6">
           {/* Header */}
           <CreateScheduleSlotHeader onClose={onClose} />
 
           {/* Error message */}
           {error && (
-            <div className="p-3 rounded-xl bg-red-950/50 border border-red-500/40 text-red-300 text-xs font-semibold">
+            <div className="p-3 rounded-xl bg-dashboard-danger/5 border border-dashboard-danger/20 text-dashboard-danger text-xs font-semibold">
               {error}
             </div>
           )}
@@ -50,8 +50,7 @@ export const CreateScheduleSlotModal = memo(
             {/* Footer */}
             <CreateScheduleSlotFooter onClose={onClose} />
           </form>
-        </div>
-      </div>
+      </DashboardDialog>
     );
   }
 );

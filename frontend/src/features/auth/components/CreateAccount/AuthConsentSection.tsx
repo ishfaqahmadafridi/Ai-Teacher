@@ -21,13 +21,13 @@ export const AuthConsentSection = memo(function AuthConsentSection({
           onChange={(e) => onConsentChange('agreeToTerms', e.target.checked)}
           className="w-4 h-4 mt-0.5 rounded accent-[#2563eb] shrink-0"
         />
-        <span className="text-[#94a3b8] text-xs leading-relaxed">
+        <span className="text-dashboard-muted text-xs leading-relaxed">
           I agree to the{' '}
-          <Link href="/terms" className="text-[#38bdf8] hover:underline">Terms of Service</Link>{' '}
-          <span className="text-red-400">*</span>
+          <Link href="/terms" className="text-dashboard-primary hover:underline">Terms of Service</Link>{' '}
+          <span className="text-dashboard-danger">*</span>
         </span>
       </label>
-      {termsError && <p className="text-xs text-red-400 pl-7">{termsError}</p>}
+      {termsError && <p className="text-xs text-dashboard-danger pl-7">{termsError}</p>}
 
       <label className="flex items-start gap-3 cursor-pointer group">
         <input
@@ -37,13 +37,13 @@ export const AuthConsentSection = memo(function AuthConsentSection({
           onChange={(e) => onConsentChange('agreeToPrivacy', e.target.checked)}
           className="w-4 h-4 mt-0.5 rounded accent-[#2563eb] shrink-0"
         />
-        <span className="text-[#94a3b8] text-xs leading-relaxed">
+        <span className="text-dashboard-muted text-xs leading-relaxed">
           I agree to the{' '}
-          <Link href="/privacy" className="text-[#38bdf8] hover:underline">Privacy Policy</Link>{' '}
-          <span className="text-red-400">*</span>
+          <Link href="/privacy" className="text-dashboard-primary hover:underline">Privacy Policy</Link>{' '}
+          <span className="text-dashboard-danger">*</span>
         </span>
       </label>
-      {privacyError && <p className="text-xs text-red-400 pl-7">{privacyError}</p>}
+      {privacyError && <p className="text-xs text-dashboard-danger pl-7">{privacyError}</p>}
     </div>
   );
 });

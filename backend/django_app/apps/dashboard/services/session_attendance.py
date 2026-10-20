@@ -5,6 +5,7 @@ from uuid import UUID
 from zoneinfo import ZoneInfo
 from django.utils import timezone
 from apps.dashboard.models import SessionAttendance
+from ..constants.session_access_constants import JOIN_EARLY_MINUTES
 
 
 def session_window(item, profile_timezone, now=None):
@@ -13,8 +14,13 @@ def session_window(item, profile_timezone, now=None):
     today = now.astimezone(zone).date()
     monday = today - timedelta(days=today.weekday())
     date = monday + timedelta(days=list(day_name).index(item["dayOfWeek"]))
-    return (datetime.combine(date, time.fromisoformat(item["startTime"]), zone),
-            datetime.combine(date, time.fromisoformat(item["endTime"]), zone))
+    start = datetime.combine(date, time.fromisoformat(item["startTime"]), zone)
+    end = datetime.combine(date, time.fromisoformat(item["endTime"]), zone)
+    # Sunday night admission for a Monday midnight session belongs to the next week.
+    if now >= end and start + timedelta(days=7, minutes=-JOIN_EARLY_MINUTES) <= now:
+        start += timedelta(days=7)
+        end += timedelta(days=7)
+    return start, end
 
 
 def schedule_with_attendance(saved, user, now=None):

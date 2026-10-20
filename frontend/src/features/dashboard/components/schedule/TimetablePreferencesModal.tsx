@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { DashboardDialog } from '../modals/DashboardDialog';
 import { TimetableCustomHoursFields } from './TimetableCustomHoursFields';
 import { useTimetablePreferencesModal } from '../../hooks/useTimetablePreferencesModal';
 import { TimetablePreferencesModalHeader } from './TimetablePreferencesModalHeader';
@@ -34,10 +35,9 @@ export const TimetablePreferencesModal = memo(
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-        <div className="relative w-full max-w-xl p-6 bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl space-y-6">
+      <DashboardDialog title="AI Timetable Planner" onClose={onClose} className="max-w-[36rem] p-5 sm:p-6 space-y-6">
           {/* Header */}
-          {error && <p role="alert" className="text-sm text-red-400">{error}</p>}
+          {error && <p role="alert" className="text-sm text-dashboard-danger">{error}</p>}
           <TimetablePreferencesModalHeader onClose={onClose} />
 
           {/* Form */}
@@ -76,8 +76,7 @@ export const TimetablePreferencesModal = memo(
               isLoading={isLoading}
             />
           </form>
-        </div>
-      </div>
+      </DashboardDialog>
     );
   }
 );

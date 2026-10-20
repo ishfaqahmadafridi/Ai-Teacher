@@ -16,8 +16,8 @@ export function ProfileModalForm({ model, onClose }: ProfileModalSectionProps) {
 
         {/* Modal Form Body */}
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-5 max-h-[55vh] overflow-y-auto">
-          <div className="rounded-xl border border-slate-700 p-4 space-y-2">
-            <p className="text-sm text-slate-300">Complete skipped details or update your education, academic year, country, timezone, and learning interests.</p>
+          <div className="rounded-xl border border-dashboard-border p-4 space-y-2">
+            <p className="text-sm text-dashboard-muted">Complete skipped details or update your education, academic year, country, timezone, and learning interests.</p>
             <Link href="/onboarding/step-3" className="inline-block text-sky-400 hover:text-sky-300">Edit learning details</Link>
           </div>
           {activeTab === 'personal' ? (

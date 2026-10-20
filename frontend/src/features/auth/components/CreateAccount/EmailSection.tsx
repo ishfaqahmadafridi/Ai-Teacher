@@ -12,8 +12,8 @@ export const EmailSection = memo(function EmailSection({
 }: EmailSectionProps) {
   return (
     <div>
-      <label htmlFor="reg-email" className="block text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
-        Email Address <span className="text-red-400">*</span>
+      <label htmlFor="reg-email" className="block text-sm font-medium text-dashboard-muted mb-2">
+        Email Address <span className="text-dashboard-danger">*</span>
       </label>
       <input
         id="reg-email"
@@ -26,7 +26,7 @@ export const EmailSection = memo(function EmailSection({
         className={INPUT_BASE_CLASSES}
         style={getInputStyle(emailError)}
       />
-      {emailError && <p className="text-xs text-red-400 mt-1">{emailError}</p>}
+      {emailError && <p className="text-xs text-dashboard-danger mt-1">{emailError}</p>}
     </div>
   );
 });

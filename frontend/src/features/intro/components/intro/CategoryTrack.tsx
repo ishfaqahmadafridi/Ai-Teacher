@@ -8,24 +8,15 @@ export const CategoryTrack = memo(function CategoryTrack({
   items,
   className = '',
 }: CategoryTrackProps) {
-  // Quadruple items array to guarantee seamless loop scrolling wrapping effect
-  const quadrupledItems = [...items, ...items, ...items, ...items];
-
   return (
-    <div
-      className="overflow-hidden py-1"
-      style={{
-        maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)',
-      }}
-    >
-      <div className={`flex gap-3.5 w-max ${className}`}>
-        {quadrupledItems.map((item, index) => (
-          <CategoryPill
-            key={`${item.id}-${index}`}
-            item={item}
-          />
-        ))}
+    <div className="intro-category-window py-1">
+      <div className={`intro-category-motion ${className}`}>
+        <div className="intro-category-group">
+          {items.map((item) => <CategoryPill key={item.id} item={item} />)}
+        </div>
+        <div className="intro-category-group intro-category-copy" aria-hidden="true" inert>
+          {items.map((item) => <CategoryPill key={item.id} item={item} />)}
+        </div>
       </div>
     </div>
   );

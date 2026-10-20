@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Bot } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
 import { AI_PROFESSOR_AVATARS } from '../../../constants/settingsConstants';
 import type { AIAvatarModelCardProps } from '../../../types/settings.types';
 
@@ -11,14 +11,14 @@ export const AIAvatarModelCard = memo(function AIAvatarModelCard({
   className = '',
 }: AIAvatarModelCardProps) {
   return (
-    <div className={`p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] space-y-3 ${className}`}>
+    <div className={`p-4 rounded-2xl bg-dashboard-panel border border-dashboard-border space-y-3 ${className}`}>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#2563EB]/15 border border-[#2563EB]/30 flex items-center justify-center text-[#38BDF8] shrink-0">
-          <Bot className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-xl bg-dashboard-subtle border border-dashboard-border flex items-center justify-center text-dashboard-muted shrink-0">
+          <GraduationCap aria-hidden="true" strokeWidth={1.75} className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-white">AI Professor Avatar Model</h4>
-          <p className="text-xs text-[#94A3B8]">
+          <h4 className="text-sm font-bold text-dashboard-text">AI Professor Avatar Model</h4>
+          <p className="text-xs text-dashboard-muted">
             Select primary AI Teacher persona for live classroom lectures.
           </p>
         </div>
@@ -31,11 +31,12 @@ export const AIAvatarModelCard = memo(function AIAvatarModelCard({
             <button
               key={model.id}
               type="button"
+              aria-pressed={isSelected}
               onClick={() => onChangeModel(model.id)}
               className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-[#2563EB]/20 border-[#38BDF8] text-white font-bold'
-                  : 'bg-[#070D1A] border-[#1E293B] text-[#94A3B8] hover:text-white'
+                  ? 'bg-dashboard-selected border-dashboard-primary/50 text-dashboard-text font-semibold'
+                  : 'bg-dashboard-panel border-dashboard-border text-dashboard-muted hover:text-dashboard-text'
               }`}
             >
               <div className="text-xs">{model.name}</div>

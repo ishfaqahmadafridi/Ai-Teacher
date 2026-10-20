@@ -15,16 +15,16 @@ export const RegisterSubjectFieldInput = memo(function RegisterSubjectFieldInput
     <div className={className}>
       <label
         htmlFor="reg-subject-field"
-        className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+        className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
       >
-        <Tag className="w-3.5 h-3.5 text-[#38BDF8]" /> Subject / Field Name
+        <Tag className="w-3.5 h-3.5 text-dashboard-primary" /> Subject / Field Name
       </label>
       <select
         id="reg-subject-field"
         name="subjectField"
         value={subjectField}
         onChange={onChange}
-        className="w-full bg-[#1E293B] border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] transition-colors cursor-pointer"
+        className="w-full bg-dashboard-subtle border border-dashboard-border rounded-xl px-3.5 py-2.5 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary transition-colors cursor-pointer"
       >
         <option value="">Select a saved learning interest</option>
         {interests.map((interest) => <option key={interest} value={interest}>{interest}</option>)}

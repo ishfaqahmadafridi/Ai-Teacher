@@ -1,4 +1,5 @@
 import type { DayOfWeek, ScheduleItem } from '../types/schedule.types';
+import { getScheduleTimeMinutes } from './scheduleTimeFormat';
 
 export function filterScheduleItemsByDay(
   items: ScheduleItem[],
@@ -23,10 +24,10 @@ export function hasLiveSessionOnDay(items: ScheduleItem[], day: DayOfWeek): bool
 
 /** Build matrix rows from persisted sessions, including custom study hours. */
 export function getScheduleTimeSlots(items: ScheduleItem[]): string[] {
-  const slots = new Map<string, string>();
+  const slots = new Map<string, number>();
   for (const item of items) {
     const slot = item.timeSlot || item.timeFormatted;
-    if (slot) slots.set(slot, item.startTime || slot);
+    if (slot) slots.set(slot, getScheduleTimeMinutes(item.startTime || slot.split(/\s*[-–]\s*/)[0]) ?? Number.POSITIVE_INFINITY);
   }
-  return [...slots.keys()].sort((left, right) => slots.get(left)!.localeCompare(slots.get(right)!));
+  return [...slots.keys()].sort((left, right) => slots.get(left)! - slots.get(right)! || left.localeCompare(right));
 }

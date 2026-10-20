@@ -12,7 +12,7 @@ export const TimetableSuggestionReviewGrid = memo(
   }: TimetableSuggestionReviewGridProps) {
     return (
       <div className={`space-y-3 ${className}`}>
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <div className="flex items-center justify-between text-xs font-semibold text-dashboard-muted uppercase tracking-wider">
           <span>Generated Weekly Distribution</span>
           <span className="text-purple-400">
             {totalWeeklyClasses} Sessions Planned

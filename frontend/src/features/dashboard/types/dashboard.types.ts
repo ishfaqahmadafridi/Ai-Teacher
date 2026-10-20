@@ -62,6 +62,7 @@ export interface DashboardBackgroundGlowProps {
 }
 
 export interface UseDashboardOverviewGridOptions {
+  assignments?: AssignmentItem[];
   continueLearningId?: string;
   onResumeCourse?: (id?: string) => void;
   onJoinClass?: (id?: string) => void;

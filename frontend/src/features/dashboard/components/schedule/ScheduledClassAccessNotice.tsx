@@ -12,17 +12,19 @@ interface ScheduledClassAccessNoticeProps {
 
 export function ScheduledClassAccessNotice({ item, timezone, access }: ScheduledClassAccessNoticeProps) {
   return (
-    <div className="bg-[#2563EB]/10 border border-[#2563EB]/30 rounded-xl p-4 text-sm text-[#CBD5E1] flex items-start gap-3 leading-relaxed">
-      <AlertCircle className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5" />
+    <div className="bg-dashboard-selected/50 border border-dashboard-primary/15 rounded-xl p-4 text-sm text-dashboard-muted flex items-start gap-3 leading-relaxed">
+      <AlertCircle className="w-5 h-5 text-dashboard-primary shrink-0 mt-0.5" />
       <div>
-        <p className="font-bold text-white">When you can join</p>
-        <Dialog.Description className="mt-1 text-slate-300">
-          {access.startsSoon
-            ? `Your class starts in ${Math.ceil(access.minutesUntilStart!)} minutes. `
+        <p className="font-semibold text-dashboard-text">{access.isLate ? 'The joining window has closed' : 'When you can join'}</p>
+        <Dialog.Description className="mt-1 text-xs leading-6 text-dashboard-muted">
+          {access.isLate
+            ? 'Sorry, you’re late. Entry closes 10 minutes after the class starts. '
             : access.ended || item.status === 'completed'
               ? 'This session has ended. '
-              : 'This class is outside its scheduled time. '}
-          Join is available from the scheduled start until the end of class.
+              : access.startsSoon
+                ? `Your class starts in ${Math.ceil(access.minutesUntilStart!)} minutes. You can join now. `
+                : access.canJoin ? 'You can join this class now. ' : 'This class is not open for joining yet. '}
+          Join is available from <strong>{access.joinOpensAt}</strong> through <strong>{access.joinClosesAt}</strong>.{' '}
           Your session is on <strong>{item.dayOfWeek}</strong> at <strong>{formatScheduleItemTime(item)}</strong>
           {(item.timezone || timezone) && <> ({item.timezone || timezone})</>}.
 

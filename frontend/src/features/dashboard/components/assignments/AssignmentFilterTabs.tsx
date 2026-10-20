@@ -20,8 +20,8 @@ export const AssignmentFilterTabs = memo(function AssignmentFilterTabs({
             onClick={() => onFilterChange(tab.id)}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap border ${
               isActive
-                ? 'bg-[#8B5CF6] text-white border-[#8B5CF6] shadow-md'
-                : 'bg-[#090D16] text-[#94A3B8] border-[#1E293B] hover:text-white hover:border-[#334155]'
+                ? 'bg-dashboard-primary text-white border-dashboard-primary shadow-none'
+                : 'bg-dashboard-panel text-dashboard-muted border-dashboard-border hover:text-dashboard-text hover:border-dashboard-border'
             }`}
           >
             {tab.label}

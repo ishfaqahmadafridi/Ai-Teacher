@@ -119,3 +119,8 @@ export interface ClassBehaviorSectionProps {
   banStatus: ReturnType<typeof checkBanStatus>;
   handleFineClick: () => void;
 }
+
+export interface ClassConductRulesDialogProps {
+  banStatus: ReturnType<typeof checkBanStatus>;
+  onClose: () => void;
+}

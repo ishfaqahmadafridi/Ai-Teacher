@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { DashboardDialog } from '../modals/DashboardDialog';
 import { useAssignModal } from '../../hooks';
 import { AssignModalHeader } from './AssignModalHeader';
 import { AssignModalTypeSelector } from './AssignModalTypeSelector';
@@ -32,8 +33,7 @@ export const AssignModal = memo(function AssignModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-[#0F172A] border border-[#1E293B] rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 sm:p-8 space-y-6">
+    <DashboardDialog title="Assign work" onClose={onClose} className="max-w-[42rem] p-5 sm:p-8 space-y-6">
         {/* Modal Header */}
         <AssignModalHeader onClose={onClose} />
 
@@ -59,8 +59,7 @@ export const AssignModal = memo(function AssignModal({
           {/* Action Buttons */}
           <AssignModalFooterActions onClose={onClose} />
         </form>
-      </div>
-    </div>
+    </DashboardDialog>
   );
 });
 

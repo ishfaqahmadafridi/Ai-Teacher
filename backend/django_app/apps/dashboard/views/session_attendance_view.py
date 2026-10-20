@@ -10,6 +10,6 @@ from ..services.session_join_service import join_session
 class SessionJoinView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(summary="Join an owned class during its scheduled time", tags=["dashboard"], request=None, responses=SessionJoinSerializer)
+    @extend_schema(summary="Join an owned class from 3 minutes early through 10 minutes after start", tags=["dashboard"], request=None, responses=SessionJoinSerializer)
     def post(self, request, session_id):
         return Response(SessionJoinSerializer(join_session(request.user, session_id)).data)

@@ -9,7 +9,7 @@ export const AssignmentCardGradeBanner = memo(function AssignmentCardGradeBanner
   if (!grade) return null;
 
   return (
-    <div className="p-3 rounded-2xl bg-[#10B981]/15 border border-[#10B981]/30 text-xs text-[#10B981] font-semibold space-y-1">
+    <div className="p-3 rounded-2xl bg-dashboard-success/15 border border-dashboard-success/30 text-xs text-dashboard-success font-semibold space-y-1">
       <div className="flex items-center justify-between font-bold">
         <span>Graded Output Score</span>
         <span className="font-mono text-sm">
@@ -17,7 +17,7 @@ export const AssignmentCardGradeBanner = memo(function AssignmentCardGradeBanner
         </span>
       </div>
       {grade.feedback && (
-        <div className="text-[11px] text-[#A7F3D0] italic">
+        <div className="text-[11px] text-dashboard-success italic">
           &ldquo;{grade.feedback}&rdquo;
         </div>
       )}

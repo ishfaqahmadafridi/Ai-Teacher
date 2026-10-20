@@ -16,13 +16,13 @@ export const AssignSubjectPointsInput = memo(function AssignSubjectPointsInput({
     <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${className}`}>
       {/* Subject Dropdown */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+        <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider">
           Subject / Discipline
         </label>
         <select
           value={subject}
           onChange={(e) => onSubjectChange(e.target.value)}
-          className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#8B5CF6]"
+          className="w-full bg-dashboard-panel border border-dashboard-border rounded-2xl px-4 py-3 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary"
         >
           {ASSIGNMENT_SUBJECT_OPTIONS.map((opt) => (
             <option key={opt} value={opt}>
@@ -34,8 +34,8 @@ export const AssignSubjectPointsInput = memo(function AssignSubjectPointsInput({
 
       {/* Max Points Input */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
-          <Award className="w-3.5 h-3.5 text-[#F59E0B]" />
+        <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider flex items-center gap-1">
+          <Award className="w-3.5 h-3.5 text-dashboard-warning" />
           Max Points
         </label>
         <input
@@ -44,7 +44,7 @@ export const AssignSubjectPointsInput = memo(function AssignSubjectPointsInput({
           max={500}
           value={points}
           onChange={(e) => onPointsChange(Number(e.target.value))}
-          className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#8B5CF6]"
+          className="w-full bg-dashboard-panel border border-dashboard-border rounded-2xl px-4 py-3 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary"
         />
       </div>
     </div>

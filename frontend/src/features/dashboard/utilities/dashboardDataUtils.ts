@@ -7,7 +7,9 @@ export function mapDashboardCourse(c: DashboardOverviewResponse['courses'][numbe
     courseCode: c.course_code, creditHours: c.credit_hours,
     progressPercent: c.progress_percent,
     completedLessons: 0,
-    totalLessons: 0, enrolledDate: '', status: 'active' as const,
+    totalLessons: 0, enrolledDate: c.created_at && !Number.isNaN(Date.parse(c.created_at))
+      ? new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(c.created_at))
+      : '', status: 'active' as const,
   };
 }
 export function mapDashboardLiveClass(lc: DashboardOverviewResponse['live_classes'][number], index: number) {

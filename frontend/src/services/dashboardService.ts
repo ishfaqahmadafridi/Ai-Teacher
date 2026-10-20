@@ -23,6 +23,7 @@ export interface DashboardOverviewResponse {
     course_code: string;
     credit_hours: number;
     progress_percent: number;
+    created_at?: string;
   }>;
   live_classes: Array<{
     id: number | string;
@@ -69,6 +70,7 @@ export class DashboardService {
       course_code: string;
       credit_hours: number;
       progress_percent: number;
+      created_at?: string;
     }>>('/api/dashboard/courses/');
 
     return response.data.map(mapDashboardCourse);
@@ -85,9 +87,10 @@ export class DashboardService {
       course_code: string;
       credit_hours: number;
       progress_percent: number;
+      created_at?: string;
     }>('/api/dashboard/courses/', payload);
 
-    return { ...mapDashboardCourse(response.data), completedLessons: 0, enrolledDate: 'Just Now' };
+    return mapDashboardCourse(response.data);
   }
 
   /**

@@ -12,9 +12,9 @@ export function useAnalyticsTrendGraph(trendData: AnalyticsTrendGraphProps['tren
     const step = trendData.length > 1 ? width / (trendData.length - 1) : width;
     return trendData.map((d, i) => ({
       day: d.day,
-      score: d.score,
+      score: Math.min(100, Math.max(0, d.score)),
       x: i * step,
-      y: Math.max(10, Math.min(90, height - d.score)),
+      y: Math.max(0, Math.min(height, height - d.score)),
     }));
   }, [trendData]);
 

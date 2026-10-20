@@ -12,7 +12,7 @@ import type { DashboardNavLink } from '../types/dashboard.types';
 
 export const SIDEBAR_ICON_MAP: Record<string, React.ReactNode> = {
   dashboard: <LayoutDashboard className="w-5 h-5 shrink-0" aria-hidden="true" />,
-  ai_chatbot: <Bot className="w-5 h-5 shrink-0 text-[#38BDF8]" aria-hidden="true" />,
+  ai_chatbot: <Bot className="w-5 h-5 shrink-0 text-dashboard-primary" aria-hidden="true" />,
   registered_courses: <BookOpen className="w-5 h-5 shrink-0" aria-hidden="true" />,
   schedule: <Calendar className="w-5 h-5 shrink-0" aria-hidden="true" />,
   class_progress: <LineChart className="w-5 h-5 shrink-0" aria-hidden="true" />,

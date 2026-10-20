@@ -42,7 +42,7 @@ export const NavSearchBar = memo(function NavSearchBar({
           onFocus={handleFocus}
           placeholder={placeholder}
           aria-label="Search Dashboard"
-          className="bg-[#0F172A] border border-[#1E293B] rounded-full py-2 pl-4 pr-10 text-sm font-['Hanken_Grotesk',sans-serif] text-[#F8FAFC] placeholder-[#94A3B8] focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] transition-all w-64 md:w-80 outline-none"
+          className="bg-dashboard-panel border border-dashboard-border rounded-lg py-2 pl-4 pr-10 text-sm font-['Hanken_Grotesk',sans-serif] text-dashboard-text placeholder-dashboard-muted focus:ring-2 focus:ring-dashboard-primary focus:border-dashboard-primary transition-all w-64 md:w-80 outline-none"
         />
 
         {searchQuery ? (
@@ -50,13 +50,13 @@ export const NavSearchBar = memo(function NavSearchBar({
             type="button"
             onClick={handleClear}
             aria-label="Clear Search Input"
-            className="absolute right-3 p-1 rounded-full text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#1E293B] transition-colors focus:outline-none focus:ring-1 focus:ring-[#2563EB]"
+            className="absolute right-3 p-1 rounded-full text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle transition-colors focus:outline-none focus:ring-1 focus:ring-dashboard-primary"
           >
             <X className="w-4 h-4" aria-hidden="true" />
           </button>
         ) : (
-          <div className="absolute right-3 flex items-center pointer-events-none text-[#64748B]">
-            <Search className="w-4 h-4 text-[#94A3B8]" aria-hidden="true" />
+          <div className="absolute right-3 flex items-center pointer-events-none text-dashboard-muted">
+            <Search className="w-4 h-4 text-dashboard-muted" aria-hidden="true" />
           </div>
         )}
       </div>

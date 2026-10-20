@@ -10,14 +10,15 @@ export const ScheduleGridHeader = memo(function ScheduleGridHeader({
   className = '',
 }: ScheduleGridHeaderProps) {
   return (
-    <div style={{ gridTemplateColumns: 'var(--schedule-columns)' }} className={`grid gap-3 mb-3 border-b border-[#1E293B] pb-4 ${className}`}>
-      <div className="text-xs font-bold text-[#64748B] uppercase tracking-wider flex items-center justify-start px-3">
+    <div role="row" style={{ gridTemplateColumns: 'var(--schedule-columns)' }} className={`grid border-b border-dashboard-border bg-dashboard-subtle/70 ${className}`}>
+      <div role="columnheader" className="sticky left-0 z-20 bg-dashboard-subtle text-xs font-semibold text-dashboard-muted flex items-center px-4 py-4">
         Day
       </div>
       {slots.map((slot) => (
         <div
           key={formatScheduleTimeSlot(slot)}
-          className="text-left px-4 font-['Hanken_Grotesk',sans-serif] text-xs font-semibold tabular-nums text-slate-300 py-2.5"
+          role="columnheader"
+          className="border-l border-dashboard-border text-left px-4 text-xs font-semibold tabular-nums text-dashboard-muted py-4"
         >
           {formatScheduleTimeSlot(slot)}
         </div>

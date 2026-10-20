@@ -11,15 +11,15 @@ export const TimetablePreferencesModalHeader = memo(
   }: TimetablePreferencesModalHeaderProps) {
     return (
       <div
-        className={`flex items-start justify-between border-b border-slate-800 pb-4 ${className}`}
+        className={`flex items-start justify-between border-b border-dashboard-border pb-4 ${className}`}
       >
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-400">
+          <div className="p-2.5 rounded-xl bg-dashboard-selected border border-dashboard-border text-dashboard-primary">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">AI Timetable Planner</h3>
-            <p className="text-xs text-slate-400">
+            <h3 className="text-lg font-bold text-dashboard-text">AI Timetable Planner</h3>
+            <p className="text-xs text-dashboard-muted">
               Customize your study schedule preferences before AI generation
             </p>
           </div>
@@ -27,7 +27,7 @@ export const TimetablePreferencesModalHeader = memo(
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="p-1.5 rounded-lg text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle transition-colors"
           aria-label="Close preferences modal"
         >
           <X className="w-5 h-5" />

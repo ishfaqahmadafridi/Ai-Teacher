@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { ArrowRight, Play, Compass } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import { Button } from '../ui';
@@ -33,33 +34,12 @@ export function ActionButtons({
         className="dash-btn-primary"
       >
         <span>Get Started Free</span>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
+        <ArrowRight aria-hidden="true" className="h-4 w-4" />
       </Button>
 
-      <Button onClick={onWatchDemo} className="dash-btn-secondary">
-        {/* Play Icon */}
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="text-blue-300"
-        >
-          <path d="M8 5v14l11-7z" />
-        </svg>
-        <span>Watch Demo</span>
+      <Button onClick={onWatchDemo ?? (() => router.push('/features'))} className="dash-btn-secondary">
+        {onWatchDemo ? <Play aria-hidden="true" className="h-4 w-4" /> : <Compass aria-hidden="true" className="h-4 w-4" />}
+        <span>{onWatchDemo ? 'Watch demo' : 'Explore features'}</span>
       </Button>
     </div>
   );

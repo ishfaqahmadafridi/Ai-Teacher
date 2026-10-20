@@ -19,27 +19,27 @@ export const QuizQuestionStep = memo(function QuizQuestionStep({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Question Counter Header */}
-      <div className="flex items-center justify-between text-xs text-[#94A3B8]">
+      <div className="flex items-center justify-between text-xs text-dashboard-muted">
         <span>
-          Question <strong className="text-white">{currentQuestionIndex + 1}</strong> of{' '}
-          <strong className="text-white">{totalQuestions}</strong>
+          Question <strong className="text-dashboard-text">{currentQuestionIndex + 1}</strong> of{' '}
+          <strong className="text-dashboard-text">{totalQuestions}</strong>
         </span>
-        <span className="font-mono text-[#F59E0B] font-bold">
+        <span className="font-mono text-dashboard-warning font-bold">
           {currentQuestion.points} Points
         </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full bg-[#1E293B] h-2 rounded-full overflow-hidden">
+      <div className="w-full bg-dashboard-subtle h-2 rounded-full overflow-hidden">
         <div
-          className="bg-gradient-to-r from-[#8B5CF6] to-[#C4B5FD] h-full rounded-full transition-all duration-300"
+          className="bg-dashboard-primary h-full rounded-full transition-all duration-300"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
 
       {/* Question Text & Options */}
       <div className="space-y-4">
-        <h4 className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-white leading-relaxed">
+        <h4 className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-dashboard-text leading-relaxed">
           {currentQuestion.questionText}
         </h4>
 
@@ -54,16 +54,16 @@ export const QuizQuestionStep = memo(function QuizQuestionStep({
                 onClick={() => onSelectOption(opt.id)}
                 className={`w-full p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#8B5CF6]/20 border-[#8B5CF6] text-white shadow-lg'
-                    : 'bg-[#090D16] border-[#1E293B] text-[#94A3B8] hover:border-[#334155] hover:text-white'
+                    ? 'bg-dashboard-primary/20 border-dashboard-primary text-dashboard-text shadow-none'
+                    : 'bg-dashboard-panel border-dashboard-border text-dashboard-muted hover:border-dashboard-border hover:text-dashboard-text'
                 }`}
               >
                 <span className="text-xs font-semibold">{opt.text}</span>
                 <div
                   className={`w-5 h-5 rounded-full border flex items-center justify-center ${
                     isSelected
-                      ? 'border-[#8B5CF6] bg-[#8B5CF6] text-white'
-                      : 'border-[#334155]'
+                      ? 'border-dashboard-primary bg-dashboard-primary text-white'
+                      : 'border-dashboard-border'
                   }`}
                 >
                   {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}

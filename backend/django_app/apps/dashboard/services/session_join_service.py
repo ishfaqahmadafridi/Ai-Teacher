@@ -1,10 +1,12 @@
 """Serialize admission against finalization and persist an owned, time-checked join."""
+from datetime import timedelta
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import APIException, NotFound
 from ..models import SavedTimetable, SessionAttendance
+from ..constants.session_access_constants import JOIN_EARLY_MINUTES, JOIN_LATE_MINUTES
 from .session_attendance import session_window
 from .attendance_reconciliation import snapshot_occurrence
 
@@ -22,8 +24,14 @@ def join_session(user, session_id):
             raise NotFound('Session not found.')
         now = timezone.now()
         start, end = session_window(item, user.timezone, now)
-        if not start <= now < end or item.get('status') == 'completed':
-            raise SessionUnavailable('Join is available only during the scheduled class time.')
+        opens_at = start - timedelta(minutes=JOIN_EARLY_MINUTES)
+        closes_at = min(start + timedelta(minutes=JOIN_LATE_MINUTES), end)
+        if now >= end or item.get('status') == 'completed':
+            raise SessionUnavailable('This session has ended.')
+        if now > closes_at:
+            raise SessionUnavailable('Sorry, you are late. Entry closes 10 minutes after the class starts.')
+        if now < opens_at:
+            raise SessionUnavailable('Join opens 3 minutes before the scheduled class start.')
         snapshot_occurrence(user, item, start, end)
         attendance, _ = SessionAttendance.objects.get_or_create(
             user=user, session_id=session_id, session_date=start.date(),
