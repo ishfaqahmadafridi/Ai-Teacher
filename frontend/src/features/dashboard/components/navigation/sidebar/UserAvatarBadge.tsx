@@ -10,14 +10,14 @@ export const UserAvatarBadge = memo(function UserAvatarBadge({
   return (
     <div className="relative shrink-0">
       <div
-        className="w-24 h-24 rounded-full border border-violet-400/25 bg-violet-500/10 p-0.5"
+        className="w-11 h-11 rounded-full border border-dashboard-border bg-dashboard-subtle p-0.5"
       >
-        <div className="w-full h-full rounded-full overflow-hidden bg-[#15152B]">
+        <div className="w-full h-full rounded-full overflow-hidden bg-dashboard-panel">
           {studentAvatar?.trim() ? <img
             src={studentAvatar}
             alt={studentName}
             className="w-full h-full object-cover"
-          /> : <span className="flex h-full w-full items-center justify-center text-2xl font-semibold text-violet-200" aria-label={studentName}>{studentName?.trim().charAt(0).toUpperCase() || 'S'}</span>}
+          /> : <span className="flex h-full w-full items-center justify-center text-2xl font-semibold text-dashboard-text" aria-label={studentName}>{studentName?.trim().charAt(0).toUpperCase() || 'S'}</span>}
         </div>
       </div>
 

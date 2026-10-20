@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import { Zap, ShieldCheck } from 'lucide-react';
+import { Focus, MessagesSquare } from 'lucide-react';
 import type { ClassBehaviorSectionProps } from '../../types/progress.types';
 
 export const ClassBehaviorMetrics = memo(function ClassBehaviorMetrics({ metrics }: ClassBehaviorSectionProps) {
@@ -10,38 +10,38 @@ export const ClassBehaviorMetrics = memo(function ClassBehaviorMetrics({ metrics
       {/* Behavior Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Focus Level */}
-        <div className="bg-[#090D16] p-4 rounded-2xl border border-[#1E293B] space-y-2">
+        <div className="bg-dashboard-panel p-4 rounded-2xl border border-dashboard-border space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#94A3B8] font-medium flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#38BDF8]" />
+            <span className="text-dashboard-muted font-medium flex items-center gap-1.5">
+              <Focus className="w-4 h-4 text-dashboard-muted" />
               Focus Level Index
             </span>
-            <span className="font-mono font-bold text-[#38BDF8]">
+            <span className="font-mono font-bold text-dashboard-text">
               {metrics.focusLevelPercent}%
             </span>
           </div>
-          <div className="w-full bg-[#1E293B] h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-dashboard-subtle h-2 rounded-full overflow-hidden">
             <div
-              className="bg-gradient-to-r from-[#2563EB] to-[#38BDF8] h-full rounded-full transition-all duration-500"
+              className="bg-dashboard-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${metrics.focusLevelPercent}%` }}
             />
           </div>
         </div>
 
         {/* Interaction Quality */}
-        <div className="bg-[#090D16] p-4 rounded-2xl border border-[#1E293B] space-y-2">
+        <div className="bg-dashboard-panel p-4 rounded-2xl border border-dashboard-border space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-[#94A3B8] font-medium flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+            <span className="text-dashboard-muted font-medium flex items-center gap-1.5">
+              <MessagesSquare className="w-4 h-4 text-dashboard-muted" />
               Interaction Quality
             </span>
-            <span className="font-mono font-bold text-[#10B981]">
+            <span className="font-mono font-bold text-dashboard-text">
               {metrics.interactionQualityPercent}%
             </span>
           </div>
-          <div className="w-full bg-[#1E293B] h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-dashboard-subtle h-2 rounded-full overflow-hidden">
             <div
-              className="bg-gradient-to-r from-[#059669] to-[#10B981] h-full rounded-full transition-all duration-500"
+              className="bg-dashboard-primary h-full rounded-full transition-all duration-500"
               style={{ width: `${metrics.interactionQualityPercent}%` }}
             />
           </div>

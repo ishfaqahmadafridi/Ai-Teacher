@@ -31,33 +31,33 @@ export const AnalyticsMetricCard = memo(function AnalyticsMetricCard({
     switch (item.accentTheme) {
       case 'blue':
         return {
-          iconBox: 'bg-[#2563EB]/20 text-[#38BDF8] border-[#2563EB]/30',
-          hoverBorder: 'hover:border-[#2563EB]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
       case 'purple':
         return {
-          iconBox: 'bg-[#712AE2]/20 text-[#A855F7] border-[#712AE2]/30',
-          hoverBorder: 'hover:border-[#712AE2]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
       case 'amber':
         return {
-          iconBox: 'bg-[#F59E0B]/20 text-[#F59E0B] border-[#F59E0B]/30',
-          hoverBorder: 'hover:border-[#F59E0B]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
       case 'cyan':
         return {
-          iconBox: 'bg-[#004AC6]/20 text-[#38BDF8] border-[#004AC6]/30',
-          hoverBorder: 'hover:border-[#38BDF8]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
       case 'emerald':
         return {
-          iconBox: 'bg-[#10B981]/20 text-[#10B981] border-[#10B981]/30',
-          hoverBorder: 'hover:border-[#10B981]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
       default:
         return {
-          iconBox: 'bg-[#2563EB]/20 text-[#38BDF8] border-[#2563EB]/30',
-          hoverBorder: 'hover:border-[#2563EB]/50',
+          iconBox: 'bg-dashboard-subtle text-dashboard-muted border-dashboard-border',
+          hoverBorder: 'hover:border-dashboard-border',
         };
     }
   };
@@ -66,7 +66,7 @@ export const AnalyticsMetricCard = memo(function AnalyticsMetricCard({
 
   return (
     <div
-      className={`bg-[#070D1A]/90 rounded-2xl p-4 flex items-center gap-4 border border-[#1E293B] ${theme.hoverBorder} transition-all duration-300 group shadow-md ${className}`}
+      className={`bg-dashboard-panel/90 rounded-lg p-4 flex items-center gap-4 border border-dashboard-border ${theme.hoverBorder} transition-all duration-300 group shadow-none ${className}`}
     >
       <div
         className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border group-hover:scale-105 transition-transform ${theme.iconBox}`}
@@ -74,10 +74,10 @@ export const AnalyticsMetricCard = memo(function AnalyticsMetricCard({
         {renderIcon()}
       </div>
       <div className="min-w-0">
-        <span className="font-['JetBrains_Mono',monospace] text-[10px] font-bold text-[#94A3B8] uppercase block truncate">
+        <span className="text-xs font-medium text-dashboard-muted block truncate">
           {item.label}
         </span>
-        <span className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-white truncate block mt-0.5">
+        <span className="font-['Hanken_Grotesk',sans-serif] text-base font-bold text-dashboard-text truncate block mt-0.5">
           {item.value}
         </span>
       </div>

@@ -15,9 +15,9 @@ export const ProfileIdentityFields = memo(function ProfileIdentityFields({
       <div>
         <label
           htmlFor="profile-fullname"
-          className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+          className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
         >
-          <User className="w-3.5 h-3.5 text-[#38BDF8]" /> Full Name
+          <User className="w-3.5 h-3.5 text-dashboard-primary" /> Full Name
         </label>
         <input
           id="profile-fullname"
@@ -26,15 +26,15 @@ export const ProfileIdentityFields = memo(function ProfileIdentityFields({
           value={name}
           onChange={onChange}
           required
-          className="w-full bg-[#1E293B] border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] transition-colors"
+          className="w-full bg-dashboard-subtle border border-dashboard-border rounded-xl px-3.5 py-2.5 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary transition-colors"
         />
       </div>
       <div>
         <label
           htmlFor="profile-studentid"
-          className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+          className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
         >
-          <IdCard className="w-3.5 h-3.5 text-[#38BDF8]" /> Student ID
+          <IdCard className="w-3.5 h-3.5 text-dashboard-primary" /> Student ID
         </label>
         <input
           id="profile-studentid"
@@ -43,7 +43,7 @@ export const ProfileIdentityFields = memo(function ProfileIdentityFields({
           value={studentId}
           onChange={onChange}
           readOnly
-          className="w-full bg-[#1E293B]/50 border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-[#94A3B8] cursor-not-allowed font-mono"
+          className="w-full bg-dashboard-subtle/50 border border-dashboard-border rounded-xl px-3.5 py-2.5 text-sm text-dashboard-muted cursor-not-allowed font-mono"
         />
       </div>
     </div>

@@ -19,7 +19,7 @@ export const DashboardTopNav = memo(function DashboardTopNav({
 }: DashboardTopNavProps) {
   return (
     <header
-      className={`h-20 bg-[#030712]/80 backdrop-blur-xl px-8 flex items-center justify-between shrink-0 sticky top-0 z-40 font-['Hanken_Grotesk',sans-serif] ${className}`}
+      className={`h-20 bg-dashboard-panel/80 backdrop-blur-xl px-4 md:px-8 flex items-center justify-between shrink-0 sticky top-0 z-40 font-['Hanken_Grotesk',sans-serif] ${className}`}
     >
       {/* Left: NEUROLEARN Brand Logo — right side of the sidebar border */}
       <NavBrandHeader />

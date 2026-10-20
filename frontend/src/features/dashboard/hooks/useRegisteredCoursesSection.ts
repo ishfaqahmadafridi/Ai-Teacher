@@ -18,7 +18,7 @@ export function useRegisteredCoursesSection({
 
   const filteredCourses = useMemo(() => {
     if (!filterQuery.trim()) return courses;
-    const q = filterQuery.toLowerCase();
+    const q = filterQuery.trim().toLowerCase();
     return courses.filter(
       (c) =>
         c.title.toLowerCase().includes(q) ||

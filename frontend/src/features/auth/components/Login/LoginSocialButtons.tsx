@@ -7,9 +7,9 @@ export const LoginSocialButtons = memo(function LoginSocialButtons() {
   return (
     <>
       {/* Create Account Link */}
-      <p className="text-center text-[#64748b] text-sm mt-8">
+      <p className="text-center text-dashboard-muted text-sm mt-8">
         Don&apos;t have an account?{' '}
-        <Link href="/register" className="text-[#38bdf8] hover:text-[#7dd3fc] font-semibold transition-colors">
+        <Link href="/register" className="text-dashboard-primary hover:text-dashboard-primary-hover font-semibold transition-colors">
           Create Account
         </Link>
       </p>
@@ -17,10 +17,10 @@ export const LoginSocialButtons = memo(function LoginSocialButtons() {
       {/* Divider */}
       <div className="relative mt-8 mb-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-white/10" />
+          <div className="w-full border-t border-dashboard-border" />
         </div>
         <div className="relative flex justify-center text-xs">
-          <span className="px-4 text-[#64748b]" style={{ background: 'transparent' }}>
+          <span className="px-4 bg-dashboard-panel text-dashboard-muted" >
             Or sign in with
           </span>
         </div>
@@ -54,7 +54,7 @@ export const LoginSocialButtons = memo(function LoginSocialButtons() {
           {
             label: 'Apple',
             icon: (
-              <svg className="w-5 h-5 text-white fill-current" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-dashboard-text fill-current" viewBox="0 0 24 24">
                 <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" />
               </svg>
             ),
@@ -62,13 +62,14 @@ export const LoginSocialButtons = memo(function LoginSocialButtons() {
         ].map(({ label, icon }) => (
           <button
             key={label}
+            aria-label={`Continue with ${label}`}
             type="button"
             disabled
             title={`${label} sign-in is not configured`}
-            className="flex items-center justify-center gap-2 rounded-xl py-3 text-white text-sm font-medium transition-all duration-200 hover:scale-105 cursor-pointer"
+            className="flex items-center justify-center gap-2 rounded-xl py-3 text-dashboard-text text-sm font-medium transition-all duration-200 hover:bg-dashboard-subtle disabled:cursor-not-allowed disabled:opacity-60"
             style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'var(--color-dashboard-panel)',
+              border: '1px solid var(--color-dashboard-border)',
             }}
           >
             {icon}

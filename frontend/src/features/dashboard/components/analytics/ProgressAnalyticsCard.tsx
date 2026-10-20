@@ -33,31 +33,25 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
 
   return (
     <div
-      className={`relative bg-gradient-to-b from-[#0E172A] via-[#09101F] to-[#070C18] backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#1E293B] font-['Hanken_Grotesk',sans-serif] space-y-6 overflow-hidden ${className}`}
+      className={`relative bg-dashboard-panel rounded-xl p-5 sm:p-6 border border-dashboard-border font-['Hanken_Grotesk',sans-serif] space-y-5 overflow-hidden ${className}`}
     >
-      {/* Background Ambient Radial Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#004AC6]/10 rounded-full blur-3xl pointer-events-none" />
-
       {/* Header Row */}
       <AnalyticsHeader
         activeTimeframe={activeTimeframe}
         onSelectTimeframe={handleSelectTimeframe}
       />
 
-      {/* Top Split Grid: Gauge & Attendance + Performance Trend Graph */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center bg-[#070D1A]/80 p-6 rounded-2xl border border-[#1E293B]">
-        <AnalyticsGaugeSection
-          weeklyProgressPercent={clampedProgress}
-          attendancePercent={attendancePercent}
-          classesAttended={classesAttended}
-          totalClasses={totalClasses}
-          className="lg:col-span-5"
-        />
-
-        <AnalyticsTrendGraph
-          trendData={trendData}
-          className="lg:col-span-7 border-t lg:border-t-0 lg:border-l border-[#1E293B] pt-5 lg:pt-0 lg:pl-6"
-        />
+      <div className="grid gap-6 border-t border-dashboard-border pt-6 lg:grid-cols-[minmax(0,1fr)_220px]">
+        <AnalyticsTrendGraph trendData={trendData} activeTimeframe={activeTimeframe} />
+        <div className="space-y-3 border-t border-dashboard-border pt-5 lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0">
+          <AnalyticsGaugeSection
+            weeklyProgressPercent={clampedProgress}
+            attendancePercent={attendancePercent}
+            classesAttended={classesAttended}
+            totalClasses={totalClasses}
+          />
+          <AnalyticsStreakFooter streakDays={streakDays} />
+        </div>
       </div>
 
       {/* 3-Column Score Cards Grid */}
@@ -71,8 +65,6 @@ export const ProgressAnalyticsCard = memo(function ProgressAnalyticsCard({
         classBehaviorScore={classBehaviorScore}
       />
 
-      {/* Bottom Streak Footer */}
-      <AnalyticsStreakFooter streakDays={streakDays} />
     </div>
   );
 });

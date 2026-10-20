@@ -13,7 +13,8 @@ export function useScheduleGridCell(options: UseScheduleGridCellOptions) {
   const timezone = useAuthStore((state) => state.user?.timezone || '');
   const now = useScheduleClock();
   const access = item && now ? getScheduleAccess(item, timezone, new Date(now)) : null;
-  const isLive = Boolean(access?.canJoin);
+  const isLive = Boolean(access?.inSession);
+  const isJoinAvailable = Boolean(access?.canJoin || access?.isLate);
   const isEnded = Boolean(access?.ended);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export function useScheduleGridCell(options: UseScheduleGridCellOptions) {
 
   return {
     isLive,
+    isJoinAvailable,
     isEnded,
     showNotice,
     handleClick,

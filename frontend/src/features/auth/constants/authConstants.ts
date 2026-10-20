@@ -23,7 +23,7 @@ export const COUNTRY_CODES: CountryCodeOption[] = [
 export const DEFAULT_COUNTRY_CODE = '+92';
 
 export const INPUT_BASE_CLASSES =
-  'w-full rounded-xl px-4 py-3 text-white text-sm placeholder-[#64748b] outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]';
+  'w-full rounded-xl px-4 py-3 text-dashboard-text text-sm placeholder:text-dashboard-muted outline-none transition-all duration-200 focus:ring-2 focus:ring-[#2563eb]';
 
 export const SOCIAL_PROVIDERS: SocialProviderOption[] = [
   {

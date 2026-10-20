@@ -12,11 +12,12 @@ export const VoiceMicButton = memo(function VoiceMicButton({
   return (
     <Button
       type="button"
+      aria-label={isListening ? 'Stop recording' : 'Start voice input'}
       onClick={onClick}
       className={`p-2.5 rounded-full transition-all duration-200 shrink-0 border-none cursor-pointer flex items-center justify-center ${
         isListening
           ? 'bg-red-500 text-white animate-pulse'
-          : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+          : 'bg-dashboard-subtle text-dashboard-muted hover:bg-dashboard-subtle hover:text-dashboard-text'
       } ${className}`}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">

@@ -9,12 +9,12 @@ export const AssignmentsEmptyState = memo(function AssignmentsEmptyState({
 }: AssignmentsEmptyStateProps) {
   return (
     <div
-      className={`bg-[#0F172A] border border-[#1E293B] rounded-3xl p-12 text-center space-y-3 ${className}`}
+      className={`bg-dashboard-panel border border-dashboard-border rounded-3xl p-12 text-center space-y-3 ${className}`}
     >
-      <div className="text-[#94A3B8] font-bold text-base">
+      <div className="text-dashboard-muted font-bold text-base">
         No assignments or quizzes found matching &ldquo;{searchQuery}&rdquo;.
       </div>
-      <p className="text-xs text-[#64748B]">
+      <p className="text-xs text-dashboard-muted">
         Try resetting your search query or selecting a different filter tab.
       </p>
     </div>

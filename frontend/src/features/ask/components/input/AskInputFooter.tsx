@@ -39,7 +39,7 @@ export const AskInputFooter = memo(function AskInputFooter({
   });
 
   return (
-    <footer className={`absolute bottom-0 left-0 right-0 z-30 bg-[#0a0f18]/90 backdrop-blur-md px-4 py-4 flex flex-col items-center border-t border-[#1E293B] font-['Hanken_Grotesk',sans-serif] ${className}`}>
+    <footer className={`absolute bottom-0 left-0 right-0 z-30 bg-dashboard-bg/95 backdrop-blur-md px-4 py-4 flex flex-col items-center border-t border-dashboard-border font-['Hanken_Grotesk',sans-serif] ${className}`}>
       {/* Hidden File Inputs */}
       <input
         ref={imageInputRef}
@@ -66,15 +66,15 @@ export const AskInputFooter = memo(function AskInputFooter({
         />
 
         {/* Input Pill Container */}
-        <div className="w-full bg-[#090D16] border border-[#1E293B] hover:border-[#38BDF8]/50 focus-within:border-[#38BDF8] focus-within:shadow-[0_0_25px_rgba(56,189,248,0.25)] rounded-full p-2.5 flex items-center gap-2.5 shadow-2xl transition-all duration-300">
+        <div className="w-full bg-dashboard-panel border border-dashboard-border hover:border-dashboard-muted/40 focus-within:border-dashboard-primary focus-within:ring-2 focus-within:ring-dashboard-primary/10 rounded-2xl p-2.5 flex items-center gap-2.5 shadow-sm transition-all duration-300">
           {/* Plus / Attachment Menu Button */}
           <button
             type="button"
             onClick={toggleMenu}
             className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer ${
               menuOpen
-                ? 'bg-[#2563EB] text-white rotate-45'
-                : 'bg-white/5 text-[#94A3B8] hover:bg-white/10 hover:text-white'
+                ? 'bg-dashboard-primary text-white rotate-45'
+                : 'bg-dashboard-subtle text-dashboard-muted hover:bg-dashboard-subtle hover:text-dashboard-text'
             }`}
             title="Attach photo or document"
           >
@@ -97,7 +97,7 @@ export const AskInputFooter = memo(function AskInputFooter({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={loading}
-            className="flex-1 bg-transparent border-none outline-none focus:ring-0 text-white placeholder-slate-500 font-sans text-sm resize-none py-1.5 px-3 min-h-[20px] max-h-[120px] custom-scrollbar"
+            className="min-w-0 flex-1 bg-transparent border-none outline-none focus:ring-0 text-dashboard-text placeholder:text-dashboard-muted font-sans text-sm resize-none py-1.5 px-3 min-h-[20px] max-h-[120px] custom-scrollbar"
           />
 
           {/* Voice Mic Button */}

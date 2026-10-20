@@ -16,9 +16,9 @@ export const ProfileAcademicFields = memo(function ProfileAcademicFields({
       <div>
         <label
           htmlFor="profile-grade"
-          className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+          className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
         >
-          <GraduationCap className="w-3.5 h-3.5 text-[#38BDF8]" /> Current Program / Grade
+          <GraduationCap className="w-3.5 h-3.5 text-dashboard-primary" /> Current Program / Grade
         </label>
         <input
           id="profile-grade"
@@ -26,7 +26,7 @@ export const ProfileAcademicFields = memo(function ProfileAcademicFields({
           name="gradeLevel"
           value={gradeLevel}
           onChange={onChange}
-          className="w-full bg-[#1E293B] border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] transition-colors"
+          className="w-full bg-dashboard-subtle border border-dashboard-border rounded-xl px-3.5 py-2.5 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary transition-colors"
         />
       </div>
 
@@ -34,9 +34,9 @@ export const ProfileAcademicFields = memo(function ProfileAcademicFields({
       <div>
         <label
           htmlFor="profile-bio"
-          className="block text-xs font-semibold text-[#94A3B8] uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+          className="block text-xs font-semibold text-dashboard-muted uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
         >
-          <Sparkles className="w-3.5 h-3.5 text-[#38BDF8]" /> Learning Bio & Goals
+          <Sparkles className="w-3.5 h-3.5 text-dashboard-primary" /> Learning Bio & Goals
         </label>
         <textarea
           id="profile-bio"
@@ -45,7 +45,7 @@ export const ProfileAcademicFields = memo(function ProfileAcademicFields({
           value={bio || ''}
           onChange={onChange}
           placeholder="Share your learning interests or physics goals..."
-          className="w-full bg-[#1E293B] border border-[#334155] rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-[#38BDF8] transition-colors resize-none"
+          className="w-full bg-dashboard-subtle border border-dashboard-border rounded-xl px-3.5 py-2.5 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary transition-colors resize-none"
         />
       </div>
     </div>

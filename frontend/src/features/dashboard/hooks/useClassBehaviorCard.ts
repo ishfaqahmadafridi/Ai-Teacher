@@ -1,21 +1,18 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { checkBanStatus } from '../utilities/progressUtils';
 import type { ClassBehaviorCardProps } from '../types/progress.types';
 
 export function useClassBehaviorCard({ metrics, onAttemptUnban }: ClassBehaviorCardProps) {
   const banStatus = checkBanStatus(metrics);
 
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
   const handleFineClick = useCallback(() => {
-    if (onAttemptUnban) {
-      onAttemptUnban();
-      return;
-    }
-    alert(
-      '⚠️ PAYMENT NOT ALLOWED:\n\nPaying money or fines for misbehavior is strictly NOT allowed in this application. Your account and email remain banned due to exceeding 3/3 live class disruption warnings.'
-    );
-  }, [onAttemptUnban]);
+    setIsRulesOpen(true);
+    if (banStatus.isBanned) onAttemptUnban?.();
+  }, [banStatus.isBanned, onAttemptUnban]);
+  const closeRules = useCallback(() => setIsRulesOpen(false), []);
 
-  return { banStatus, isBanned: banStatus.isBanned, handleFineClick };
+  return { banStatus, isBanned: banStatus.isBanned, handleFineClick, isRulesOpen, closeRules };
 }

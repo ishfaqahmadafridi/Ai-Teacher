@@ -13,7 +13,7 @@ export const NavProfileAvatarButton = memo(function NavProfileAvatarButton({
       type="button"
       onClick={onClick}
       aria-label="View Student Profile"
-      className={`relative w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-[#1E293B] hover:ring-[#8B5CF6] transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] ${className}`}
+      className={`relative w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-dashboard-border hover:ring-dashboard-primary transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-dashboard-primary ${className}`}
     >
       <img
         src={studentAvatar}

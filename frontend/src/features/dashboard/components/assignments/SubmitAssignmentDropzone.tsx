@@ -14,7 +14,7 @@ export const SubmitAssignmentDropzone = memo(function SubmitAssignmentDropzone({
 }: SubmitAssignmentDropzoneProps) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+      <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider">
         Upload File Deliverables (PDF, Notebook, DOCX, Code)
       </label>
       <div
@@ -23,17 +23,17 @@ export const SubmitAssignmentDropzone = memo(function SubmitAssignmentDropzone({
         onDragLeave={onDragLeave}
         className={`border-2 border-dashed rounded-3xl p-6 text-center transition-all flex flex-col items-center justify-center gap-3 ${
           isDragOver
-            ? 'border-[#2563EB] bg-[#2563EB]/10'
-            : 'border-[#1E293B] bg-[#090D16] hover:border-[#334155]'
+            ? 'border-dashboard-primary bg-dashboard-primary/10'
+            : 'border-dashboard-border bg-dashboard-panel hover:border-dashboard-border'
         }`}
       >
-        <div className="w-12 h-12 rounded-2xl bg-[#2563EB]/20 text-[#38BDF8] flex items-center justify-center">
+        <div className="w-12 h-12 rounded-2xl bg-dashboard-primary/20 text-dashboard-primary flex items-center justify-center">
           <Upload className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-white">
+          <p className="text-sm font-semibold text-dashboard-text">
             Drag and drop your files here, or{' '}
-            <label className="text-[#38BDF8] hover:underline cursor-pointer">
+            <label className="text-dashboard-primary hover:underline cursor-pointer">
               browse
               <input
                 type="file"
@@ -43,7 +43,7 @@ export const SubmitAssignmentDropzone = memo(function SubmitAssignmentDropzone({
               />
             </label>
           </p>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-dashboard-muted mt-1">
             Supports .pdf, .docx, .ipynb, .py, .zip (Max 50MB)
           </p>
         </div>

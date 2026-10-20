@@ -19,10 +19,10 @@ export const SocialAuthSection = memo(function SocialAuthSection(props: SocialAu
       {showDivider && (
         <div className="relative my-2">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10" />
+            <div className="w-full border-t border-dashboard-border" />
           </div>
           <div className="relative flex justify-center text-xs">
-            <span className="px-4 text-[#64748b] uppercase tracking-wider">{dividerText}</span>
+            <span className="px-4 bg-dashboard-panel text-dashboard-muted uppercase tracking-wider">{dividerText}</span>
           </div>
         </div>
       )}
@@ -31,11 +31,12 @@ export const SocialAuthSection = memo(function SocialAuthSection(props: SocialAu
         {SOCIAL_PROVIDERS.map((item: SocialProviderOption) => (
           <button
             key={item.id}
+            aria-label={`Continue with ${item.label}`}
             type="button"
             onClick={getClickHandler(item.provider)}
             disabled={!getClickHandler(item.provider)}
             title={!getClickHandler(item.provider) ? `${item.label} sign-in is not configured` : undefined}
-            className="flex items-center justify-center gap-2 rounded-xl py-3 text-white text-sm font-medium transition-all duration-200 hover:scale-105 cursor-pointer"
+            className="flex items-center justify-center gap-2 rounded-xl py-3 text-dashboard-text text-sm font-medium transition-all duration-200 hover:bg-dashboard-subtle disabled:cursor-not-allowed disabled:opacity-60"
             style={getInputStyle()}
           >
             {renderProviderIcon(item.provider)}

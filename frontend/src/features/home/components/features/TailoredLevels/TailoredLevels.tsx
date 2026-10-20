@@ -9,7 +9,7 @@ export function TailoredLevels() {
   const [activeTab, setActiveTab] = useState<TailoredLevelTab['id']>('k12');
 
   return (
-    <section className="feat-section" id="faq">
+    <section className="feat-section" id="learning-levels">
       <div className="feat-header">
         <span className="feat-subtitle">Adaptability</span>
         <h2 className="feat-title">Tailored for Every Level</h2>
@@ -20,6 +20,8 @@ export function TailoredLevels() {
         {LEVEL_TABS.map((tab) => (
           <button
             key={tab.id}
+            type="button"
+            aria-pressed={activeTab === tab.id}
             className={`level-tab-btn ${activeTab === tab.id ? 'active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >

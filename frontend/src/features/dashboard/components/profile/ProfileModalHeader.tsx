@@ -23,7 +23,7 @@ export function ProfileModalHeader({ model, onClose }: ProfileModalSectionProps)
         />
 
         {/* Profile Avatar & Header Meta Section */}
-        <div className="px-6 sm:px-8 pb-5 relative bg-[#0F172A]">
+        <div className="px-6 sm:px-8 pb-5 relative bg-dashboard-panel">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
             {/* Avatar Header Subcomponent */}
             <ProfileAvatarHeader

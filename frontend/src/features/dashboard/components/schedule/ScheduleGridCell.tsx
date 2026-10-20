@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { ScheduleAttendanceBadge } from './ScheduleAttendanceBadge';
-import { Video } from 'lucide-react';
+import { Video, Clock3 } from 'lucide-react';
 import { useScheduleGridCell } from '../../hooks/useScheduleGridCell';
 import { ScheduleItemCardNoticePopover } from './ScheduleItemCardNoticePopover';
 import type { ScheduleGridCellProps } from '../../types/schedule.types';
@@ -13,7 +13,7 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
   onSelectNoticeItem,
   className = '',
 }: ScheduleGridCellProps) {
-  const { isLive, isEnded, showNotice, handleClick, handleCloseNotice } =
+  const { isLive, isJoinAvailable, isEnded, showNotice, handleClick, handleCloseNotice } =
     useScheduleGridCell({
       item,
       onJoinClass,
@@ -23,7 +23,8 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
   if (!item) {
     return (
       <div
-        className={`h-full rounded-xl bg-[#090D16]/50 border border-[#1E293B]/40 flex items-center justify-center text-xs text-[#475569] italic ${className}`}
+        role="cell"
+        className={`h-full border-l border-dashboard-border bg-dashboard-panel flex items-center justify-center text-xs text-dashboard-muted italic ${className}`}
       >
         —
       </div>
@@ -31,7 +32,7 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
   }
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full border-l border-dashboard-border" role="cell">
       {/* Popover Notice Message */}
       {showNotice && (
         <ScheduleItemCardNoticePopover
@@ -42,36 +43,35 @@ export const ScheduleGridCell = memo(function ScheduleGridCell({
 
       {/* Grid Cell Container */}
       <div
-        onClick={handleClick}
-        className={`h-full rounded-xl px-3 py-2.5 border transition-all flex items-center gap-3 group cursor-pointer ${
+        className={`h-full p-4 transition-colors flex flex-col items-stretch justify-between gap-4 ${
           isLive
-            ? 'bg-gradient-to-br from-[#EF4444]/20 to-[#1E1B4B] border-[#EF4444]/60 shadow-lg shadow-[#EF4444]/10 hover:border-[#EF4444]'
-            : 'bg-slate-800/50 border-slate-700/50 hover:border-sky-500/50 hover:bg-slate-800/80'
+            ? 'bg-schedule-join-soft'
+            : 'bg-dashboard-panel hover:bg-dashboard-bg'
         } ${className}`}
       >
         <div className="min-w-0 flex-1">
-          <span className="text-[11px] font-medium text-sky-400 block truncate mb-1">
+          <span className="text-xs font-medium text-dashboard-muted block truncate mb-1">
             {item.subject}
           </span>
           {!item.sessionEnded && <ScheduleAttendanceBadge item={item} />}
-          <h5 title={item.title} className="font-['Hanken_Grotesk',sans-serif] text-xs font-medium text-slate-100 line-clamp-2 leading-snug group-hover:text-[#38BDF8] transition-colors">
+          <h5 title={item.title} className="font-['Hanken_Grotesk',sans-serif] text-sm font-medium text-dashboard-text line-clamp-2 leading-snug">
             {item.title}
           </h5>
         </div>
 
-        <div className="flex shrink-0 items-center">
+        <div className="flex shrink-0 items-center justify-start">
           {isEnded ? <ScheduleAttendanceBadge item={{ ...item, sessionEnded: true }} /> : <button
             type="button"
             onClick={handleClick}
-            className={`px-2.5 py-1.5 rounded-md text-white font-medium text-xs flex items-center gap-1 transition-colors shrink-0 cursor-pointer ${
-              isLive
-                ? 'bg-[#EF4444] hover:bg-[#DC2626] shadow-md shadow-[#EF4444]/30'
-                : 'bg-[#2563EB] hover:bg-[#1D4ED8]'
+            className={`inline-flex min-h-8 items-center justify-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-schedule-join focus-visible:ring-offset-2 ${
+              isJoinAvailable
+                ? 'border-schedule-join bg-schedule-join text-white hover:bg-schedule-join-hover'
+                : 'border-transparent bg-transparent text-dashboard-muted hover:bg-dashboard-subtle hover:text-dashboard-text'
             }`}
-            title={isLive ? 'Join Live Room' : 'View Schedule Time Notice'}
+            title={isJoinAvailable ? 'Join class' : 'View Schedule Time Notice'}
           >
-            <Video className="w-3 h-3" />
-            <span>Join</span>
+            {isJoinAvailable ? <Video className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" /> : <Clock3 className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />}
+            <span>{isJoinAvailable ? 'Join class' : 'View time'}</span>
           </button>}
         </div>
       </div>

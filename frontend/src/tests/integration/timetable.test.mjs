@@ -36,10 +36,10 @@ test('scheduled Join respects timezone, exact boundaries, reminder window and co
   const item = { id: 'session', dayOfWeek: 'Monday', startTime: '09:00', endTime: '10:30', timeFormatted: '09:00 - 10:30', status: 'upcoming', timezone: 'Asia/Karachi' };
   const at = (iso, changes = {}) => getScheduleAccess({ ...item, ...changes }, 'UTC', new Date(iso));
   assert.equal(at('2026-10-12T03:54:59Z').startsSoon, false);
-  assert.equal(at('2026-10-12T03:55:00Z').startsSoon, true);
-  assert.equal(at('2026-10-12T03:59:59Z').canJoin, false);
+  assert.equal(at('2026-10-12T03:57:00Z').startsSoon, true);
+  assert.equal(at('2026-10-12T03:59:59Z').canJoin, true);
   assert.equal(at('2026-10-12T04:00:00Z').canJoin, true);
-  assert.equal(at('2026-10-12T05:29:59Z').canJoin, true);
+  assert.equal(at('2026-10-12T05:29:59Z').canJoin, false);
   assert.equal(at('2026-10-12T05:30:00Z').canJoin, false);
   assert.equal(at('2026-10-13T04:00:00Z', { status: 'live' }).canJoin, false);
   assert.equal(at('2026-10-12T04:00:00Z', { status: 'completed' }).canJoin, false);
@@ -80,8 +80,32 @@ test('display times identify AM and PM without changing saved wall-clock values'
 test('Pakistan evening session closes at 11 PM instead of using an American timezone', () => {
   const { getScheduleAccess } = load('features/dashboard/utilities/scheduleAccess.ts');
   const item = { id: 'evening', dayOfWeek: 'Thursday', startTime: '21:00', endTime: '23:00', timezone: 'Asia/Karachi', timeFormatted: '21:00 - 23:00', status: 'upcoming' };
-  assert.equal(getScheduleAccess(item, 'America/New_York', new Date('2026-10-08T17:59:59Z')).canJoin, true);
+  assert.equal(getScheduleAccess(item, 'America/New_York', new Date('2026-10-08T17:59:59Z')).canJoin, false);
   const after = getScheduleAccess(item, 'America/New_York', new Date('2026-10-08T18:01:00Z'));
   assert.equal(after.canJoin, false);
   assert.equal(after.ended, true);
+});
+
+test('10 AM class opens at 9:57, admits through 10:10 and blocks late entry', () => {
+  const { getScheduleAccess } = load('features/dashboard/utilities/scheduleAccess.ts');
+  const item = { id: 'window', dayOfWeek: 'Monday', startTime: '10:00', endTime: '11:30', timeFormatted: '10:00 - 11:30', status: 'upcoming', timezone: 'Asia/Karachi' };
+  const at = iso => getScheduleAccess(item, 'UTC', new Date(iso));
+  assert.equal(at('2026-10-12T04:56:59Z').canJoin, false);
+  assert.equal(at('2026-10-12T04:57:00Z').canJoin, true);
+  assert.equal(at('2026-10-12T05:10:00Z').canJoin, true);
+  assert.equal(at('2026-10-12T05:10:00.001Z').canJoin, false);
+  assert.equal(at('2026-10-12T05:10:00.001Z').isLate, true);
+  assert.equal(at('2026-10-12T06:30:00Z').isLate, false);
+  assert.equal(at('2026-10-12T06:30:00Z').ended, true);
+  assert.equal(at('2026-10-12T04:57:00Z').joinOpensAt, '09:57 AM');
+  assert.equal(at('2026-10-12T04:57:00Z').joinClosesAt, '10:10 AM');
+});
+
+test('early admission crosses midnight and the Sunday/Monday boundary', () => {
+  const { getScheduleAccess } = load('features/dashboard/utilities/scheduleAccess.ts');
+  const item = { id: 'midnight', dayOfWeek: 'Monday', startTime: '00:00', endTime: '01:00', timeFormatted: '00:00 - 01:00', status: 'upcoming', timezone: 'UTC' };
+  assert.equal(getScheduleAccess(item, 'UTC', new Date('2026-10-11T23:56:59Z')).canJoin, false);
+  assert.equal(getScheduleAccess(item, 'UTC', new Date('2026-10-11T23:57:00Z')).canJoin, true);
+  assert.equal(getScheduleAccess({ ...item, sessionDate: '2026-10-12' }, 'UTC', new Date('2026-10-11T23:57:00Z')).canJoin, true);
+  assert.equal(getScheduleAccess({ ...item, sessionEnded: true }, 'UTC', new Date('2026-10-12T00:00:00Z')).canJoin, false);
 });

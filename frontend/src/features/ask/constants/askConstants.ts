@@ -5,8 +5,8 @@ export const DEFAULT_SIDEBAR_USER = {
 } as const;
 
 export const DEFAULT_EMPTY_STATE = {
-  title: 'Interactive Chat Assistant',
-  description: 'Ask anything about formulas, concepts, algorithms, code reviews, or physics textbooks. The AI Tutor is ready to assist you.',
+  title: 'What would you like to learn?' ,
+  description: 'Explore a concept, work through a problem, or get help with your code. Ask a question to get started.',
 } as const;
 
 export const DEFAULT_ATTACHMENT_CONFIG = {

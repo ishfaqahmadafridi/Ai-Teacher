@@ -37,6 +37,7 @@ export interface AnalyticsGaugeSectionProps {
 }
 
 export interface AnalyticsTrendGraphProps {
+  activeTimeframe?: 'week' | 'month';
   trendData: PerformanceTrendPoint[];
   className?: string;
 }
@@ -79,5 +80,15 @@ export interface UseAnalyticsMetricsGridOptions {
 
 export interface AnalyticsStreakFooterProps {
   streakDays: number;
+  className?: string;
+}
+
+export interface AnalyticsSummaryItemProps {
+  label: string;
+  value: number | string;
+  unit?: string;
+  description: string;
+  iconName: 'target' | 'calendar' | 'flame';
+  progressPercent?: number;
   className?: string;
 }

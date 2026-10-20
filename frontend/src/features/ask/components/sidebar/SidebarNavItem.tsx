@@ -16,8 +16,8 @@ export const SidebarNavItem = memo(function SidebarNavItem({
       onClick={() => onClick?.(item.id)}
       className={`w-full text-left flex items-center gap-3 p-3.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
         item.isActive
-          ? 'bg-blue-500/10 text-blue-300 border border-blue-500/20'
-          : 'text-slate-400 hover:bg-white/5 border-none bg-transparent hover:text-white'
+          ? 'bg-dashboard-selected text-dashboard-primary border border-dashboard-border'
+          : 'text-dashboard-muted hover:bg-dashboard-subtle border-none bg-transparent hover:text-dashboard-text'
       } ${className}`}
     >
       <SidebarNavIcon iconName={item.iconName} />

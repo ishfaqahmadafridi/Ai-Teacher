@@ -19,28 +19,31 @@ export const NavTabItem = memo(function NavTabItem({
   return (
     <Link
       href={link.href}
+      title={link.label}
+      aria-label={link.label}
+      aria-current={isActive ? 'page' : undefined}
       onClick={(e) => {
         if (link.href === '/dashboard' || link.href === '#') {
           e.preventDefault();
         }
         onSelectTab?.(link.id);
       }}
-      className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${
+      className={`w-full flex items-center justify-between px-3 md:px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
         isActive
-          ? 'bg-[#8B5CF6] text-white shadow-lg shadow-[#8B5CF6]/20 font-bold'
-          : 'text-[#94A3B8] hover:text-white hover:bg-[#1E293B]/40'
+          ? 'bg-dashboard-selected text-dashboard-primary shadow-none font-bold'
+          : 'text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle/40'
       } ${className}`}
     >
       <div className="flex items-center gap-3">
         {iconComponent}
-        <span>{link.label}</span>
+        <span className="hidden md:inline">{link.label}</span>
       </div>
       {link.badgeCount !== undefined && (
         <span
-          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+          className={`hidden md:inline px-2 py-0.5 rounded-full text-[10px] font-bold ${
             isActive
-              ? 'bg-white/20 text-white'
-              : 'bg-[#1E293B] text-[#94A3B8]'
+              ? 'bg-dashboard-selected text-dashboard-text'
+              : 'bg-dashboard-subtle text-dashboard-muted'
           }`}
         >
           {link.badgeCount}

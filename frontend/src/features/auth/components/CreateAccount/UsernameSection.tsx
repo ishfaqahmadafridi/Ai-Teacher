@@ -12,8 +12,8 @@ export const UsernameSection = memo(function UsernameSection({
 }: UsernameSectionProps) {
   return (
     <div>
-      <label htmlFor="username" className="block text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
-        Username <span className="text-red-400">*</span>
+      <label htmlFor="username" className="block text-sm font-medium text-dashboard-muted mb-2">
+        Username <span className="text-dashboard-danger">*</span>
       </label>
       <input
         id="username"
@@ -26,7 +26,7 @@ export const UsernameSection = memo(function UsernameSection({
         className={INPUT_BASE_CLASSES}
         style={getInputStyle(usernameError)}
       />
-      {usernameError && <p className="text-xs text-red-400 mt-1">{usernameError}</p>}
+      {usernameError && <p className="text-xs text-dashboard-danger mt-1">{usernameError}</p>}
     </div>
   );
 });

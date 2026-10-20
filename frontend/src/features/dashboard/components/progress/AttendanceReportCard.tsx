@@ -28,7 +28,7 @@ export const AttendanceReportCard = memo(function AttendanceReportCard({
 
   return (
     <div
-      className={`bg-[#0F172A] border border-[#1E293B] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 ${className}`}
+      className={`bg-dashboard-panel border border-dashboard-border rounded-3xl p-6 sm:p-8 shadow-none space-y-6 ${className}`}
     >
       <AttendanceReportHeader onDownloadClick={onDownloadClick} />
       <AttendanceReportStats attendanceRatePercent={attendanceRatePercent} presentCount={presentCount} absentCount={absentCount} />

@@ -17,10 +17,12 @@ export const SidebarFooterSettings = memo(function SidebarFooterSettings({
   const isSettingsActive = settingsLink ? activeTabId === settingsLink.id : false;
 
   return (
-    <div className={`pt-4 border-t border-[#1E293B] space-y-2 ${className}`}>
+    <div className={`space-y-2 ${className}`}>
       {settingsLink && (
         <Link
           href={settingsLink.href}
+          aria-label={settingsLink.label}
+          title={settingsLink.label}
           onClick={(e) => {
             if (settingsLink.href === '/dashboard' || settingsLink.href === '#') {
               e.preventDefault();
@@ -28,14 +30,14 @@ export const SidebarFooterSettings = memo(function SidebarFooterSettings({
             onSelectTab?.(settingsLink.id);
             onOpenSettings?.();
           }}
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition-all ${
+          className={`w-full flex items-center gap-3 px-3 md:px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
             isSettingsActive
-              ? 'bg-[#8B5CF6] text-white shadow-lg shadow-[#8B5CF6]/20 font-bold'
-              : 'text-[#94A3B8] hover:text-white hover:bg-[#1E293B]/40'
+              ? 'bg-dashboard-selected text-dashboard-primary shadow-none font-bold'
+              : 'text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle/40'
           }`}
         >
           <Settings className="w-4 h-4 shrink-0" aria-hidden="true" />
-          <span>{settingsLink.label}</span>
+          <span className="hidden md:inline">{settingsLink.label}</span>
         </Link>
       )}
 

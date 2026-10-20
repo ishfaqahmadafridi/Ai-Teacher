@@ -15,8 +15,8 @@ export const AssignDueDateInstructionsInput = memo(function AssignDueDateInstruc
     <div className={`space-y-4 ${className}`}>
       {/* Due Date Input */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider flex items-center gap-1">
-          <Calendar className="w-3.5 h-3.5 text-[#38BDF8]" />
+        <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider flex items-center gap-1">
+          <Calendar className="w-3.5 h-3.5 text-dashboard-primary" />
           Due Date *
         </label>
         <input
@@ -24,13 +24,13 @@ export const AssignDueDateInstructionsInput = memo(function AssignDueDateInstruc
           required
           value={dueDate}
           onChange={(e) => onDueDateChange(e.target.value)}
-          className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#8B5CF6]"
+          className="w-full bg-dashboard-panel border border-dashboard-border rounded-2xl px-4 py-3 text-sm text-dashboard-text focus:outline-none focus:border-dashboard-primary"
         />
       </div>
 
       {/* Task Instructions Textarea */}
       <div className="space-y-1.5">
-        <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+        <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider">
           Task Instructions & Guidelines
         </label>
         <textarea
@@ -38,7 +38,7 @@ export const AssignDueDateInstructionsInput = memo(function AssignDueDateInstruc
           value={instructions}
           onChange={(e) => onInstructionsChange(e.target.value)}
           placeholder="Detail the instructions, deliverables, requirements, and evaluation rubric..."
-          className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl p-4 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#8B5CF6]"
+          className="w-full bg-dashboard-panel border border-dashboard-border rounded-2xl p-4 text-sm text-dashboard-text placeholder-dashboard-border focus:outline-none focus:border-dashboard-primary"
         />
       </div>
     </div>

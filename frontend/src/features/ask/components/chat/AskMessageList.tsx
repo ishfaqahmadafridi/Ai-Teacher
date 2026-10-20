@@ -35,7 +35,7 @@ export const AskMessageList = memo(function AskMessageList({
 
           {/* Error Message */}
           {error && (
-            <div className="p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-red-300 text-sm text-center">
+            <div className="p-3.5 rounded-xl border border-red-500/30 bg-red-500/10 text-dashboard-danger text-sm text-center">
               {error}
             </div>
           )}

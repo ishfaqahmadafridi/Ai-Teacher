@@ -12,10 +12,10 @@ export const NotificationCardContent = memo(function NotificationCardContent({
   return (
     <div className={`flex-1 space-y-1 ${className}`}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold text-white leading-tight">{title}</span>
-        <span className="text-[10px] text-[#64748B]">{timeFormatted}</span>
+        <span className="text-xs font-bold text-dashboard-text leading-tight">{title}</span>
+        <span className="text-[10px] text-dashboard-muted">{timeFormatted}</span>
       </div>
-      <p className="text-[11px] text-[#94A3B8] leading-relaxed line-clamp-2">{message}</p>
+      <p className="text-[11px] text-dashboard-muted leading-relaxed line-clamp-2">{message}</p>
     </div>
   );
 });

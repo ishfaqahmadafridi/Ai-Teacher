@@ -10,27 +10,30 @@ export const VoiceStreamingCard = memo(function VoiceStreamingCard({
   className = '',
 }: VoiceStreamingCardProps) {
   return (
-    <div className={`flex items-center justify-between p-4 rounded-2xl bg-[#090D16] border border-[#1E293B] ${className}`}>
+    <div className={`flex items-center justify-between p-4 rounded-2xl bg-dashboard-panel border border-dashboard-border ${className}`}>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-[#2563EB]/15 border border-[#2563EB]/30 flex items-center justify-center text-[#38BDF8] shrink-0">
-          <Volume2 className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-xl bg-dashboard-subtle border border-dashboard-border flex items-center justify-center text-dashboard-muted shrink-0">
+          <Volume2 aria-hidden="true" strokeWidth={1.75} className="w-5 h-5" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-white">AI Voice Audio Streaming</h4>
-          <p className="text-xs text-[#94A3B8]">
+          <h4 className="text-sm font-bold text-dashboard-text">AI Voice Audio Streaming</h4>
+          <p className="text-xs text-dashboard-muted">
             Stream real-time voice lectures during Ask Prof. Gemini sessions.
           </p>
         </div>
       </div>
       <button
         type="button"
+        role="switch"
+        aria-checked={voiceStreaming}
+        aria-label="AI voice audio streaming"
         onClick={onToggleVoiceStreaming}
-        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-          voiceStreaming ? 'bg-[#2563EB]' : 'bg-[#1E293B]'
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-dashboard-primary focus-visible:ring-offset-2 ${
+          voiceStreaming ? 'bg-dashboard-primary' : 'bg-dashboard-subtle'
         }`}
       >
         <span
-          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-none ring-0 transition duration-200 ease-in-out ${
             voiceStreaming ? 'translate-x-5' : 'translate-x-0'
           }`}
         />

@@ -11,14 +11,15 @@ export const AssignmentSearchBar = memo(function AssignmentSearchBar({
   className = '',
 }: AssignmentSearchBarProps) {
   return (
-    <div className={`relative w-full lg:w-80 ${className}`}>
-      <Search className="w-4 h-4 text-[#64748B] absolute left-3.5 top-1/2 -translate-y-1/2" />
+    <div className={`relative w-full sm:max-w-[28rem] ${className}`}>
+      <Search aria-hidden="true" className="pointer-events-none w-4 h-4 text-dashboard-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
       <input
-        type="text"
+        type="search"
+        aria-label="Search assignments and quizzes"
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-[#64748B] focus:outline-none focus:border-[#8B5CF6] transition-all"
+        className="w-full min-h-11 bg-dashboard-panel border border-dashboard-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-dashboard-text placeholder:text-dashboard-muted placeholder:opacity-100 hover:border-dashboard-muted/50 focus:outline-none focus:border-dashboard-primary focus:ring-2 focus:ring-dashboard-primary/15 transition-colors"
       />
     </div>
   );

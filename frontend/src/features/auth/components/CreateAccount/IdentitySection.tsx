@@ -15,8 +15,8 @@ export const IdentitySection = memo(function IdentitySection({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
-        <label htmlFor="firstName" className="block text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
-          First Name <span className="text-red-400">*</span>
+        <label htmlFor="firstName" className="block text-sm font-medium text-dashboard-muted mb-2">
+          First Name <span className="text-dashboard-danger">*</span>
         </label>
         <input
           id="firstName"
@@ -29,11 +29,11 @@ export const IdentitySection = memo(function IdentitySection({
           className={INPUT_BASE_CLASSES}
           style={getInputStyle(firstNameError)}
         />
-        {firstNameError && <p className="text-xs text-red-400 mt-1">{firstNameError}</p>}
+        {firstNameError && <p className="text-xs text-dashboard-danger mt-1">{firstNameError}</p>}
       </div>
       <div>
-        <label htmlFor="lastName" className="block text-xs font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
-          Last Name <span className="text-red-400">*</span>
+        <label htmlFor="lastName" className="block text-sm font-medium text-dashboard-muted mb-2">
+          Last Name <span className="text-dashboard-danger">*</span>
         </label>
         <input
           id="lastName"
@@ -46,7 +46,7 @@ export const IdentitySection = memo(function IdentitySection({
           className={INPUT_BASE_CLASSES}
           style={getInputStyle(lastNameError)}
         />
-        {lastNameError && <p className="text-xs text-red-400 mt-1">{lastNameError}</p>}
+        {lastNameError && <p className="text-xs text-dashboard-danger mt-1">{lastNameError}</p>}
       </div>
     </div>
   );

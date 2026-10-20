@@ -10,7 +10,7 @@ export const AssignTaskTitleInput = memo(function AssignTaskTitleInput({
 }: AssignTaskTitleInputProps) {
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <label className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+      <label className="text-xs font-bold text-dashboard-muted uppercase tracking-wider">
         Task Title *
       </label>
       <input
@@ -19,7 +19,7 @@ export const AssignTaskTitleInput = memo(function AssignTaskTitleInput({
         value={title}
         onChange={(e) => onTitleChange(e.target.value)}
         placeholder="e.g. Build Neural Network Model from Scratch"
-        className="w-full bg-[#090D16] border border-[#1E293B] rounded-2xl px-4 py-3 text-sm text-white placeholder-[#64748B] focus:outline-none focus:border-[#8B5CF6]"
+        className="w-full bg-dashboard-panel border border-dashboard-border rounded-2xl px-4 py-3 text-sm text-dashboard-text placeholder-dashboard-border focus:outline-none focus:border-dashboard-primary"
       />
     </div>
   );

@@ -19,10 +19,10 @@ export function Navbar() {
     <header
       className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-10 py-3"
       style={{
-        background: 'rgba(10, 16, 28, 0.72)',
+        background: 'var(--color-dashboard-panel)',
         backdropFilter: 'blur(18px)',
         WebkitBackdropFilter: 'blur(18px)',
-        borderBottom: '1px solid rgba(99, 179, 237, 0.08)',
+        borderBottom: '1px solid var(--color-dashboard-border)',
         animation: 'intro-fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both',
       }}
     >
@@ -40,18 +40,20 @@ export function Navbar() {
         <button
           className="md:hidden flex flex-col gap-1.5 p-1 cursor-pointer bg-transparent border-none outline-none"
           onClick={() => setMenuOpen((v) => !v)}
+          type="button"
+          aria-expanded={menuOpen}
           aria-label="Toggle menu"
         >
           <span
-            className="block w-5 h-0.5 bg-blue-200 transition-all duration-300"
+            className="block w-5 h-0.5 bg-dashboard-muted transition-all duration-300"
             style={{ transform: menuOpen ? 'rotate(45deg) translateY(6px)' : 'none' }}
           />
           <span
-            className="block w-5 h-0.5 bg-blue-200 transition-all duration-300"
+            className="block w-5 h-0.5 bg-dashboard-muted transition-all duration-300"
             style={{ opacity: menuOpen ? 0 : 1 }}
           />
           <span
-            className="block w-5 h-0.5 bg-blue-200 transition-all duration-300"
+            className="block w-5 h-0.5 bg-dashboard-muted transition-all duration-300"
             style={{ transform: menuOpen ? 'rotate(-45deg) translateY(-6px)' : 'none' }}
           />
         </button>

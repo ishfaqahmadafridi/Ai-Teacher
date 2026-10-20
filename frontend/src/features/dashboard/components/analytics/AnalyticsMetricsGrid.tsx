@@ -27,6 +27,8 @@ export const AnalyticsMetricsGrid = memo(function AnalyticsMetricsGrid({
     avgScore,
   });
 
+  if (metricItems.length === 0) return null;
+
   return (
     <div className={`relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ${className}`}>
       {metricItems.map((item) => (

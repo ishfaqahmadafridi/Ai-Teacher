@@ -57,7 +57,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
       />
 
       {(error || joinError) && <p role="alert" className="text-sm text-red-400">{error || joinError}</p>}
-      {isLoading && <p role="status" className="text-sm text-slate-400">Timetable {jobStatus || 'queued'}…</p>}
+      {isLoading && <p role="status" className="text-sm text-dashboard-muted">Timetable {jobStatus || 'queued'}…</p>}
       <ScheduleStartReminder items={scheduleItems} />
       {/* Main Schedule Content View */}
       {viewMode === 'timeline' ? (

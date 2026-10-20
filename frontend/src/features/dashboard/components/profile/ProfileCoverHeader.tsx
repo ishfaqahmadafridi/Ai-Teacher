@@ -19,12 +19,12 @@ export const ProfileCoverHeader = memo(function ProfileCoverHeader({
   className = '',
 }: ProfileCoverHeaderProps) {
   return (
-    <div className={`relative h-32 sm:h-36 rounded-t-3xl bg-gradient-to-r from-[#1E40AF] via-[#2563EB] to-[#7C3AED] ${className}`}>
+    <div className={`relative h-32 sm:h-36 rounded-t-2xl bg-dashboard-subtle border-b border-dashboard-border ${className}`}>
       {/* Cover Background Picture Container */}
       <ProfileCoverBackground coverUrl={coverUrl} />
 
       {/* Banner Controls & Verified Badge */}
-      <div className="relative p-5 sm:p-6 flex items-start justify-between z-20">
+      <div className="relative p-4 sm:p-6 flex flex-wrap items-start justify-between gap-3 z-20">
         <ProfileVerifiedBadge />
         <ProfileCoverControls
           showCoverMenu={showCoverMenu}

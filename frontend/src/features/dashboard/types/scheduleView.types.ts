@@ -132,6 +132,7 @@ export interface ScheduleItemCardBadgesProps {
 }
 
 export interface ScheduleItemCardActionButtonProps {
+  isJoinAvailable?: boolean;
   isLive: boolean;
   onClick: (e?: React.MouseEvent) => void;
 }

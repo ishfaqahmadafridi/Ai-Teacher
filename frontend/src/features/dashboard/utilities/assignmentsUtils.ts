@@ -51,9 +51,9 @@ export function formatFileSize(bytes: number): string {
 }
 
 export function getAssignmentCardContainerStyles(isUrgent: boolean, isGraded: boolean): string {
-  if (isUrgent) return 'border-[#EF4444]/50 bg-[#160D12]';
-  if (isGraded) return 'border-[#10B981]/40 bg-[#091512]';
-  return 'border-[#1E293B]';
+  if (isUrgent) return 'border-dashboard-danger/50 bg-dashboard-danger/5';
+  if (isGraded) return 'border-dashboard-success/40 bg-dashboard-success/5';
+  return 'border-dashboard-border';
 }
 
 export function getAssignmentActionButtonStyles(
@@ -64,17 +64,17 @@ export function getAssignmentActionButtonStyles(
 ): string {
   if (isQuiz) {
     return isGraded
-      ? 'bg-[#1E293B] text-[#94A3B8] hover:text-white'
-      : 'bg-[#8B5CF6] hover:bg-[#7C3AED] text-white shadow-[#8B5CF6]/25';
+      ? 'bg-dashboard-subtle text-dashboard-muted hover:text-dashboard-text'
+      : 'bg-dashboard-primary hover:bg-dashboard-primary-hover text-white';
   }
 
   if (isSubmitted || isGraded) {
-    return 'bg-[#1E293B] text-[#38BDF8] border border-[#38BDF8]/30 hover:bg-[#334155]';
+    return 'bg-dashboard-subtle text-dashboard-primary border border-dashboard-primary/30 hover:bg-dashboard-subtle';
   }
 
   if (isUrgent) {
-    return 'bg-[#DC2626] hover:bg-[#B91C1C] text-white shadow-[#DC2626]/25';
+    return 'bg-dashboard-danger hover:bg-dashboard-danger text-white';
   }
 
-  return 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-[#2563EB]/25';
+  return 'bg-dashboard-primary hover:bg-dashboard-primary-hover text-white';
 }

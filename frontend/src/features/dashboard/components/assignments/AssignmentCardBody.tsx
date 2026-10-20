@@ -17,12 +17,12 @@ export const AssignmentCardBody = memo(function AssignmentCardBody({
       <AssignmentCardHeader type={item.type} subject={item.subject} points={item.points} />
 
       {/* Title */}
-      <h4 className="font-['Hanken_Grotesk',sans-serif] text-lg font-bold text-white leading-snug">
+      <h4 className="font-['Hanken_Grotesk',sans-serif] text-lg font-bold text-dashboard-text leading-snug">
         {item.title}
       </h4>
 
       {/* Instructions */}
-      <p className="text-xs text-[#94A3B8] leading-relaxed line-clamp-3">
+      <p className="text-xs text-dashboard-muted leading-relaxed line-clamp-3">
         {item.instructions}
       </p>
 

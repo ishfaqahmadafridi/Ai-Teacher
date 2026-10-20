@@ -16,24 +16,25 @@ export const TimetableTimePreferenceSelector = memo(
   }: TimetableTimePreferenceSelectorProps) {
     return (
       <div className={`space-y-2 ${className}`}>
-        <label className="flex items-center gap-2 text-xs font-semibold text-slate-300 uppercase tracking-wider">
-          <Clock className="w-4 h-4 text-purple-400" />
+        <label className="flex items-center gap-2 text-xs font-semibold text-dashboard-muted uppercase tracking-wider">
+          <Clock className="w-4 h-4 text-dashboard-primary" />
           Preferred Time of Day
         </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           {TIME_PREFERENCE_OPTIONS.map((opt) => (
             <button
               key={opt.id}
+              aria-pressed={preferredTime === opt.id}
               type="button"
               onClick={() => onSelectTime(opt.id as PreferredTimeOfDay)}
               className={`p-3 rounded-xl text-left border transition-all ${
                 preferredTime === opt.id
-                  ? 'bg-purple-600/20 border-purple-500/80 text-white ring-1 ring-purple-500/50'
-                  : 'bg-slate-800/40 border-slate-700/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                  ? 'bg-dashboard-selected border-dashboard-primary/40 text-dashboard-text ring-1 ring-dashboard-primary/20'
+                  : 'bg-dashboard-subtle/40 border-dashboard-border/60 text-dashboard-muted hover:bg-dashboard-subtle hover:text-dashboard-muted'
               }`}
             >
-              <span className="block text-xs font-bold text-white">{opt.label}</span>
-              <span className="block text-[11px] text-slate-400 mt-0.5">{opt.desc}</span>
+              <span className="block text-xs font-bold text-dashboard-text">{opt.label}</span>
+              <span className="block text-[11px] text-dashboard-muted mt-0.5">{opt.desc}</span>
             </button>
           ))}
         </div>

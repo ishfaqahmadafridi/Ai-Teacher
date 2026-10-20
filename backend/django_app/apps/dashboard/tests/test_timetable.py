@@ -147,7 +147,7 @@ class TimetableTests(TestCase):
         SavedTimetable.objects.create(user=self.user, schedule=[item])
         route = f'/api/dashboard/timetable/sessions/{session_id}/join/'
         at = lambda hour, minute=0: datetime(2026, 10, 12, hour, minute, tzinfo=tz.utc)
-        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(3, 59)):
+        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(3, 56)):
             self.assertEqual(self.client.post(route).status_code, 409)
         with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=at(4)):
             self.assertEqual(self.client.post(route).status_code, 200)
@@ -305,3 +305,35 @@ class TimetableTests(TestCase):
         self.assertEqual(len(report['attendanceLogs']), 2)
         self.assertEqual(len(report['recentMissed']), 3)
         self.assertEqual(report['summary'], dict(total=5, attended=2, missed=3, rate=40))
+
+    def test_join_window_boundaries_and_late_first_join(self):
+        from uuid import uuid4
+        from datetime import datetime, timedelta, timezone as tz
+        from apps.dashboard.models import SessionAttendance, SessionOccurrence
+        session_id = str(uuid4())
+        item = dict(id=session_id, title='Sorting', dayOfWeek='Monday', startTime='10:00', endTime='11:30', timezone='Asia/Karachi', status='upcoming')
+        SavedTimetable.objects.create(user=self.user, schedule=[item])
+        route = f'/api/dashboard/timetable/sessions/{session_id}/join/'
+        start = datetime(2026, 10, 12, 5, tzinfo=tz.utc)
+        for delta, expected in [(timedelta(minutes=-3, seconds=-1), 409), (timedelta(minutes=-3), 200), (timedelta(minutes=10), 200), (timedelta(minutes=10, microseconds=1), 409), (timedelta(minutes=90), 409)]:
+            with self.subTest(delta=delta):
+                SessionAttendance.objects.all().delete()
+                SessionOccurrence.objects.all().delete()
+                with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=start + delta):
+                    response = self.client.post(route)
+                self.assertEqual(response.status_code, expected)
+                self.assertEqual(SessionAttendance.objects.count(), 1 if expected == 200 else 0)
+                self.assertEqual(SessionOccurrence.objects.count(), 1 if expected == 200 else 0)
+                if delta == timedelta(minutes=10, microseconds=1):
+                    self.assertIn('late', str(response.data))
+
+    def test_early_join_at_midnight_crosses_week_boundary(self):
+        from uuid import uuid4
+        from datetime import datetime, timezone as tz
+        from apps.dashboard.models import SessionAttendance
+        session_id = str(uuid4())
+        SavedTimetable.objects.create(user=self.user, schedule=[dict(id=session_id, title='Midnight lesson', dayOfWeek='Monday', startTime='00:00', endTime='01:00', timezone='UTC', status='upcoming')])
+        with patch('apps.dashboard.services.session_join_service.timezone.now', return_value=datetime(2026, 10, 11, 23, 57, tzinfo=tz.utc)):
+            response = self.client.post(f'/api/dashboard/timetable/sessions/{session_id}/join/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(SessionAttendance.objects.get().session_date.isoformat(), '2026-10-12')

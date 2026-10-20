@@ -13,27 +13,27 @@ export const SubmitAssignmentFilesList = memo(function SubmitAssignmentFilesList
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <div className="text-xs font-bold text-[#94A3B8] uppercase tracking-wider">
+      <div className="text-xs font-bold text-dashboard-muted uppercase tracking-wider">
         Attached Files ({files.length})
       </div>
       <div className="space-y-2">
         {files.map((file, idx) => (
           <div
             key={idx}
-            className="p-3 rounded-2xl bg-[#090D16] border border-[#1E293B] flex items-center justify-between gap-3"
+            className="p-3 rounded-2xl bg-dashboard-panel border border-dashboard-border flex items-center justify-between gap-3"
           >
             <div className="flex items-center gap-3">
-              <File className="w-4 h-4 text-[#38BDF8]" />
+              <File className="w-4 h-4 text-dashboard-primary" />
               <div>
-                <div className="text-xs font-bold text-white">{file.name}</div>
-                <div className="text-[10px] text-[#64748B]">{file.sizeFormatted}</div>
+                <div className="text-xs font-bold text-dashboard-text">{file.name}</div>
+                <div className="text-[10px] text-dashboard-muted">{file.sizeFormatted}</div>
               </div>
             </div>
 
             <button
               type="button"
               onClick={() => onRemoveFile(idx)}
-              className="p-1.5 rounded-lg bg-[#EF4444]/10 text-[#EF4444] hover:bg-[#EF4444]/20 transition-all cursor-pointer"
+              className="p-1.5 rounded-lg bg-dashboard-danger/10 text-dashboard-danger hover:bg-dashboard-danger/20 transition-all cursor-pointer"
             >
               <Trash2 className="w-4 h-4" />
             </button>

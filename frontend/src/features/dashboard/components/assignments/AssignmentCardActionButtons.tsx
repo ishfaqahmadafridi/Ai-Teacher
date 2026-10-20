@@ -20,7 +20,7 @@ export const AssignmentCardActionButtons = memo(function AssignmentCardActionBut
         <button
           type="button"
           onClick={onAiHelpClick}
-          className="p-2.5 rounded-xl bg-[#1E293B] hover:bg-[#334155] text-[#38BDF8] transition-all cursor-pointer"
+          className="p-2.5 rounded-xl bg-dashboard-subtle hover:bg-dashboard-subtle text-dashboard-primary transition-all cursor-pointer"
           title="Ask AI Helper for Hints"
         >
           <Sparkles className="w-4 h-4" />
@@ -31,7 +31,7 @@ export const AssignmentCardActionButtons = memo(function AssignmentCardActionBut
       <button
         type="button"
         onClick={onActionClick}
-        className={`px-4 py-2 rounded-xl text-xs font-bold shadow-lg transition-all cursor-pointer flex items-center gap-2 ${actionBtnStyles}`}
+        className={`px-4 py-2 rounded-xl text-xs font-bold shadow-none transition-all cursor-pointer flex items-center gap-2 ${actionBtnStyles}`}
       >
         {isQuiz ? <Play className="w-3.5 h-3.5" /> : <Upload className="w-3.5 h-3.5" />}
         <span>{actionButtonText}</span>

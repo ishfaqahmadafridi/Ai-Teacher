@@ -26,35 +26,35 @@ export function useAnalyticsMetricsGrid(options: UseAnalyticsMetricsGridOptions)
       {
         id: 'assignments',
         label: 'Assignments',
-        value: `${assignmentsCompleted}/${totalAssignments} Done`,
+        value: totalAssignments > 0 ? `${assignmentsCompleted}/${totalAssignments} completed` : 'No assignments',
         iconName: 'file-check',
         accentTheme: 'blue',
       },
       {
         id: 'quizzes',
         label: 'Quizzes',
-        value: `${quizzesPassed}/${totalQuizzes} Passed`,
+        value: totalQuizzes > 0 ? `${quizzesPassed}/${totalQuizzes} passed` : 'No quizzes',
         iconName: 'help-circle',
         accentTheme: 'purple',
       },
       {
         id: 'ai-focus',
-        label: 'AI Focus State',
-        value: `${aiFocusScore}% Deep Flow`,
+        label: 'Focus score',
+        value: `${aiFocusScore}%`,
         iconName: 'zap',
         accentTheme: 'amber',
       },
       {
         id: 'concept-mastery',
         label: 'Concept Mastery',
-        value: `${conceptMasteryScore}% Advanced`,
+        value: `${conceptMasteryScore}%`,
         iconName: 'brain',
         accentTheme: 'cyan',
       },
       {
         id: 'class-behavior',
         label: 'Class Behavior',
-        value: `${classBehaviorScore}% Active`,
+        value: `${classBehaviorScore}%`,
         iconName: 'sparkles',
         accentTheme: 'purple',
       },
@@ -78,6 +78,16 @@ export function useAnalyticsMetricsGrid(options: UseAnalyticsMetricsGridOptions)
   ]);
 
   return {
-    metricItems,
+    metricItems: metricItems.filter((item) => {
+      switch (item.id) {
+        case 'assignments': return totalAssignments > 0;
+        case 'quizzes': return totalQuizzes > 0;
+        case 'ai-focus': return aiFocusScore > 0;
+        case 'concept-mastery': return conceptMasteryScore > 0;
+        case 'class-behavior': return classBehaviorScore > 0;
+        case 'avg-score': return avgScore > 0;
+        default: return false;
+      }
+    }),
   };
 }

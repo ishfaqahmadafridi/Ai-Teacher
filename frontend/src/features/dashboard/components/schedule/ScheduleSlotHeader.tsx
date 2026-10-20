@@ -9,9 +9,9 @@ export const ScheduleSlotHeader = memo(function ScheduleSlotHeader({
 }: ScheduleSlotHeaderProps) {
   return (
     <div className={`mb-4 flex items-center justify-between ${className}`}>
-      <h3 className="font-['Hanken_Grotesk',sans-serif] text-lg font-bold text-white flex items-center gap-2">
+      <h3 className="font-['Hanken_Grotesk',sans-serif] text-lg font-bold text-dashboard-text flex items-center gap-2">
         <span>{selectedDay}&apos;s Class Schedule</span>
-        <span className="text-xs font-normal text-[#94A3B8] bg-[#1E293B] px-2.5 py-0.5 rounded-full border border-[#334155]">
+        <span className="text-xs font-normal text-dashboard-muted bg-dashboard-subtle px-2.5 py-0.5 rounded-full border border-dashboard-border">
           Time Slots
         </span>
       </h3>

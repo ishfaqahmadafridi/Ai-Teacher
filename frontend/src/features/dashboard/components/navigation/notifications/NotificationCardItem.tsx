@@ -32,13 +32,13 @@ export const NotificationCardItem = memo(function NotificationCardItem({
         timeFormatted={notification.timeFormatted}
       />
       {notification.isUnread && (
-        <span className="w-2 h-2 rounded-full bg-[#8B5CF6] shrink-0 mt-1" />
+        <span className="w-2 h-2 rounded-full bg-dashboard-primary shrink-0 mt-1" />
       )}
       <button
         type="button"
         onClick={handleDismiss}
         aria-label="Dismiss notification"
-        className="text-[#64748B] hover:text-white p-1 rounded-lg hover:bg-[#1E293B] transition-all"
+        className="text-dashboard-muted hover:text-dashboard-text p-1 rounded-lg hover:bg-dashboard-subtle transition-all"
       >
         <X className="w-3.5 h-3.5" />
       </button>

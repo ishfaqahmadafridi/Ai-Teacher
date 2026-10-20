@@ -2,37 +2,20 @@
 
 import { memo } from 'react';
 import { useDashboardHeroSection } from '../../hooks';
-import { HeroBackgroundParticles } from './HeroBackgroundParticles';
 import { HeroGreetingContent } from './HeroGreetingContent';
 import { HeroStudyIllustration } from './HeroStudyIllustration';
 import type { DashboardHeroSectionProps } from '../../types';
 
-export const DashboardHeroSection = memo(function DashboardHeroSection({
-  studentName = 'Student',
-  weeklyProgressPercent = 0,
-  greeting: customGreeting,
-  className = '',
-}: DashboardHeroSectionProps) {
+export const DashboardHeroSection = memo(function DashboardHeroSection({ studentName = 'Student', weeklyProgressPercent = 0, greeting: customGreeting, className = '' }: DashboardHeroSectionProps) {
   const { greeting } = useDashboardHeroSection({ greeting: customGreeting });
-
   return (
-    <section
-      className={`bg-gradient-to-r from-[#0C3B73] via-[#0E4482] to-[#0A305E] rounded-20 p-6 sm:p-8 md:p-10 flex flex-col md:flex-row justify-between items-center relative overflow-hidden font-['Hanken_Grotesk',sans-serif] shadow-lg gap-6 ${className}`}
-    >
-      {/* Decorative Star Particles */}
-      <HeroBackgroundParticles />
-
-      {/* Greeting Title & Subtitle */}
-      <HeroGreetingContent
-        greeting={greeting}
-        studentName={studentName}
-        weeklyProgressPercent={weeklyProgressPercent}
-      />
-
-      {/* Desk Study SVG Illustration */}
+    <section className={`flex flex-col items-start justify-between gap-6 rounded-xl border border-dashboard-border bg-dashboard-panel p-5 sm:p-7 lg:flex-row lg:items-center ${className}`}>
+      <div className="min-w-0 flex-1">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-dashboard-muted">Learning dashboard</p>
+        <HeroGreetingContent greeting={greeting} studentName={studentName} weeklyProgressPercent={weeklyProgressPercent} />
+      </div>
       <HeroStudyIllustration />
     </section>
   );
 });
-
 DashboardHeroSection.displayName = 'DashboardHeroSection';

@@ -4,15 +4,15 @@ import Image from 'next/image';
 
 export function AiPlannerDetail() {
   return (
-    <section className="feat-section border-b border-white/5 pb-20" id="ai-planner-detail">
+    <section className="feat-section border-b border-dashboard-border pb-20" id="ai-planner-detail">
       <div className="future-flex" style={{ gap: '48px', alignItems: 'center' }}>
         {/* Left Side: Content */}
         <div className="future-left">
-          <span className="feat-subtitle" style={{ color: '#c084fc' }}>Productivity Engine</span>
+          <span className="feat-subtitle" >Productivity Engine</span>
           <h2 className="feat-title" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', marginBottom: '20px' }}>
             AI Study Planner
           </h2>
-          <p className="feat-desc" style={{ fontSize: '15.5px', lineHeight: '1.75', color: 'rgba(224, 242, 254, 0.7)' }}>
+          <p className="feat-desc" style={{ fontSize: '15.5px', lineHeight: '1.75', color: 'var(--color-dashboard-muted)' }}>
             Build a personalized study schedule that automatically organizes classes, assignments, 
             revision sessions, exams, and learning goals based on your availability and progress. 
             The planner continuously dynamically self-corrects your load, sends smart nudges for 
@@ -31,7 +31,7 @@ export function AiPlannerDetail() {
                 width: '100%', 
                 height: '100%', 
                 borderRadius: '24px', 
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                border: '1px solid var(--color-dashboard-border)',
                 transform: 'none', // flat rendering
               }}
             >

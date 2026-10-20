@@ -2,7 +2,6 @@
 
 import { memo } from 'react';
 import { useIntroScreen } from '../../hooks/useIntroScreen';
-import { BackgroundCanvas } from './BackgroundCanvas';
 import { LandingNavbar } from './LandingNavbar';
 import { NextGenBadge } from './NextGenBadge';
 import { HeroSection } from './HeroSection';
@@ -14,27 +13,25 @@ export const IntroScreen = memo(function IntroScreen() {
 
   return (
     <div
-      className="min-h-screen w-full bg-[#0b1017] text-white font-sans overflow-x-hidden relative"
+      className="min-h-screen w-full bg-dashboard-bg text-dashboard-text font-sans overflow-x-hidden relative"
       style={{
         fontFamily: 'var(--font-outfit), var(--font-inter), sans-serif',
       }}
     >
-      {/* Dynamic Background Particle & Glow Canvas */}
-      <BackgroundCanvas />
 
-      {/* Sticky Glass Navbar - Logo & Name Only */}
+      {/* Brand navigation */}
       <LandingNavbar onEnterApp={handleEnterPlatform} onLogin={handleLogin} />
 
       {/* Main Page Content Wrapper */}
-      <div className="relative z-10 w-full flex flex-col pt-20 pb-10">
+      <div className="relative z-10 w-full flex flex-col pt-24 sm:pt-32 pb-12">
         {/* Hero Banner Section - Compact Padding */}
-        <section className="relative flex flex-col items-center justify-center pt-6 pb-8 px-6 text-center max-w-7xl mx-auto w-full z-10">
+        <section className="relative flex flex-col items-center justify-center pt-8 sm:pt-12 pb-12 sm:pb-16 px-6 text-center max-w-7xl mx-auto w-full z-10">
           <NextGenBadge />
           <HeroSection />
           <CTAButton onNavigate={handleEnterPlatform} />
         </section>
 
-        {/* Marquee Category Scrolling Tracks */}
+        {/* Fields of study */}
         <CategoryScrollingTracks />
       </div>
     </div>

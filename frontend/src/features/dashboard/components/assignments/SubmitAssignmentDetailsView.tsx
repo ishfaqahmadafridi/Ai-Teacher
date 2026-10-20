@@ -11,8 +11,8 @@ export const SubmitAssignmentDetailsView = memo(function SubmitAssignmentDetails
   if (!submission) return null;
 
   return (
-    <div className={`p-4 rounded-2xl bg-[#10B981]/15 border border-[#10B981]/30 space-y-3 ${className}`}>
-      <div className="flex items-center justify-between text-xs font-bold text-[#10B981]">
+    <div className={`p-4 rounded-2xl bg-dashboard-success/15 border border-dashboard-success/30 space-y-3 ${className}`}>
+      <div className="flex items-center justify-between text-xs font-bold text-dashboard-success">
         <span className="flex items-center gap-1.5">
           <CheckCircle2 className="w-4 h-4" />
           Work Turned In Successfully
@@ -21,25 +21,25 @@ export const SubmitAssignmentDetailsView = memo(function SubmitAssignmentDetails
       </div>
 
       {submission.textNote && (
-        <div className="text-xs text-[#A7F3D0] italic bg-[#090D16] p-3 rounded-xl border border-[#10B981]/20">
+        <div className="text-xs text-dashboard-success italic bg-dashboard-panel p-3 rounded-xl border border-dashboard-success/20">
           &ldquo;{submission.textNote}&rdquo;
         </div>
       )}
 
       {submission.files.length > 0 && (
         <div className="space-y-1">
-          <div className="text-[11px] font-bold text-[#A7F3D0] uppercase tracking-wider">
+          <div className="text-[11px] font-bold text-dashboard-success uppercase tracking-wider">
             Submitted Files ({submission.files.length})
           </div>
           <div className="flex flex-wrap gap-2">
             {submission.files.map((f, i) => (
               <div
                 key={i}
-                className="px-3 py-1.5 rounded-xl bg-[#090D16] border border-[#10B981]/30 text-xs text-[#38BDF8] flex items-center gap-2"
+                className="px-3 py-1.5 rounded-xl bg-dashboard-panel border border-dashboard-success/30 text-xs text-dashboard-primary flex items-center gap-2"
               >
                 <File className="w-3.5 h-3.5" />
                 <span>{f.name}</span>
-                <span className="text-[10px] text-[#64748B]">({f.sizeFormatted})</span>
+                <span className="text-[10px] text-dashboard-muted">({f.sizeFormatted})</span>
               </div>
             ))}
           </div>

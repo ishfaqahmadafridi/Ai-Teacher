@@ -19,14 +19,14 @@ export const TimetableSuggestionReviewHeader = memo(
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Suggested AI Timetable</h3>
-            <p className="text-xs text-slate-400">{optimizationSummary}</p>
+            <h3 className="text-lg font-bold text-dashboard-text">Suggested AI Timetable</h3>
+            <p className="text-xs text-dashboard-muted">{optimizationSummary}</p>
           </div>
         </div>
         <button
           type="button"
           onClick={onClose}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+          className="p-1.5 rounded-lg text-dashboard-muted hover:text-dashboard-text hover:bg-dashboard-subtle transition-colors"
           aria-label="Close suggestion review modal"
         >
           <X className="w-5 h-5" />

@@ -11,13 +11,13 @@ export const CategoryPill = memo(function CategoryPill({
     <button
       type="button"
       onClick={() => onClick?.(item)}
-      className="intro-category-pill inline-flex items-center gap-2.5 px-[20px] py-[10px] rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md whitespace-nowrap cursor-pointer select-none transition-all duration-300 hover:border-cyan-400/50 hover:bg-cyan-500/10 hover:shadow-[0_0_15px_rgba(6,182,212,0.2)] active:scale-95"
+      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-dashboard-panel border border-dashboard-border whitespace-nowrap select-none transition-colors hover:border-dashboard-primary/40 focus-visible:outline-2 focus-visible:outline-dashboard-primary"
       style={{
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
       <span className="text-base leading-none">{item.icon}</span>
-      <span className="font-sans text-[13px] font-medium text-blue-100/85 tracking-wide">
+      <span className="font-sans text-[13px] font-medium text-dashboard-muted tracking-normal">
         {item.label}
       </span>
     </button>

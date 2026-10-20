@@ -21,7 +21,7 @@ export const CTAButton = memo(function CTAButton({
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="intro-cta-btn group relative inline-flex items-center gap-3 px-11 py-[18px] rounded-full border border-cyan-400/30 bg-gradient-to-r from-cyan-500/20 via-blue-600/20 to-purple-600/20 backdrop-blur-xl cursor-pointer outline-none text-[#e0f0ff] font-semibold text-[16px] tracking-wide shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:shadow-[0_0_45px_rgba(6,182,212,0.45)] hover:border-cyan-400/60 transition-all duration-300 active:scale-[0.98] no-underline"
+        className="group relative inline-flex items-center justify-center gap-3 px-7 py-3.5 rounded-xl bg-dashboard-primary hover:bg-dashboard-primary-hover text-white font-semibold text-base shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-dashboard-primary no-underline"
         style={{
           WebkitBackdropFilter: 'blur(20px)',
         }}
@@ -39,7 +39,7 @@ export const CTAButton = memo(function CTAButton({
         >
           <path
             d="M3.75 9H14.25M14.25 9L9.75 4.5M14.25 9L9.75 13.5"
-            stroke="rgba(147, 197, 253, 0.9)"
+            stroke="currentColor"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"

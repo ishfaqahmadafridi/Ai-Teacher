@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { StudentProfile } from './dashboard.types';
 
 export interface DashboardDialogsProps {
@@ -15,4 +16,11 @@ export interface DashboardDialogsProps {
   onSaveProfile: (updated: Partial<StudentProfile>) => Promise<void>;
   isSettingsOpen: boolean;
   onCloseSettings: () => void;
+}
+
+export interface DashboardDialogProps {
+  title: string;
+  onClose: () => void;
+  children: ReactNode;
+  className?: string;
 }

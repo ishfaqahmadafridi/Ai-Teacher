@@ -26,7 +26,7 @@ export const AskLayout = memo(function AskLayout() {
   } = useAskLayout();
 
   return (
-    <div className="flex h-screen w-screen bg-[#0a0f18] text-slate-100 font-sans overflow-hidden relative">
+    <div className="flex h-dvh w-full bg-dashboard-bg text-dashboard-text font-sans overflow-hidden relative">
       {/* Sidebar Drawer */}
       <AskSidebar 
         drawerOpen={drawerOpen} 
@@ -34,7 +34,7 @@ export const AskLayout = memo(function AskLayout() {
       />
 
       {/* Main Layout Area */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+      <div className="min-w-0 flex-1 flex flex-col h-full overflow-hidden relative">
         {/* Top Header */}
         <AskHeader 
           drawerOpen={drawerOpen} 

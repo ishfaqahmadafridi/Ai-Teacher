@@ -15,8 +15,8 @@ export const ScheduleDaySidebar = memo(function ScheduleDaySidebar({
 }: ScheduleDaySidebarProps) {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-[#64748B] flex items-center gap-2">
-        <Calendar className="w-3.5 h-3.5 text-[#38BDF8]" />
+      <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-dashboard-muted flex items-center gap-2">
+        <Calendar className="w-3.5 h-3.5 text-dashboard-primary" />
         <span>Select Day</span>
       </div>
 

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import type { NavBrandHeaderProps } from '../../../types/topbar.types';
 
 export const NavBrandHeader = memo(function NavBrandHeader({
-  brandName = 'NEUROLEARN',
+  brandName = 'Neurolearn',
   className = '',
 }: NavBrandHeaderProps) {
   return (
@@ -13,18 +13,14 @@ export const NavBrandHeader = memo(function NavBrandHeader({
       <div className="relative w-10 h-10 shrink-0">
         <Image
           src="/neurolearn-brain-logo.png"
-          alt="NEUROLEARN Logo"
+          alt=""
           fill
           sizes="40px"
-          className="object-contain rounded-lg mix-blend-screen"
-          style={{
-            mixBlendMode: 'screen',
-            filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
-          }}
+          className="object-contain rounded-lg"
           priority
         />
       </div>
-      <span className="font-['Outfit',sans-serif] text-xl font-extrabold tracking-[0.14em] uppercase text-white leading-tight">
+      <span className="font-['Outfit',sans-serif] text-xl font-semibold tracking-tight text-dashboard-text leading-tight">
         {brandName}
       </span>
     </div>

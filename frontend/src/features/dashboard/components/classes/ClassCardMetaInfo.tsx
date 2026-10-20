@@ -9,13 +9,13 @@ export const ClassCardMetaInfo = memo(function ClassCardMetaInfo({
   attendanceCount,
 }: ClassCardMetaInfoProps) {
   return (
-    <div className="flex items-center justify-between text-xs text-[#94A3B8] mb-3">
+    <div className="flex items-center justify-between text-xs text-dashboard-muted mb-3">
       <div className="flex items-center gap-1.5">
-        <Clock className="w-4 h-4 text-[#94A3B8]" aria-hidden="true" />
+        <Clock className="w-4 h-4 text-dashboard-muted" aria-hidden="true" />
         <span>{timeFormatted}</span>
       </div>
       <div className="flex items-center gap-1.5">
-        <Users className="w-4 h-4 text-[#94A3B8]" aria-hidden="true" />
+        <Users className="w-4 h-4 text-dashboard-muted" aria-hidden="true" />
         <span>{attendanceCount} Enrolled</span>
       </div>
     </div>

@@ -8,7 +8,7 @@ export const NotificationEmptyState = memo(function NotificationEmptyState({
   className = '',
 }: NotificationEmptyStateProps) {
   return (
-    <div className={`p-6 text-center text-xs text-[#64748B] ${className}`}>
+    <div className={`p-6 text-center text-xs text-dashboard-muted ${className}`}>
       {message}
     </div>
   );

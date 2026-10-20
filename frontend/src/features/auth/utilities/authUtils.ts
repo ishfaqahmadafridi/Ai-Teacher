@@ -1,13 +1,13 @@
 import type { CSSProperties } from 'react';
 
 /**
- * Pure helper utility function to compute dark theme input field style.
+ * Pure helper utility function to compute light theme input field style.
  * No React hooks, no Redux, zero side-effects.
  */
 export function getInputStyle(hasError?: boolean | string): CSSProperties {
   return {
-    background: '#1a2235',
-    border: hasError ? '1.5px solid #EF4444' : '1px solid rgba(255,255,255,0.18)',
+    background: 'var(--color-dashboard-panel)',
+    border: hasError ? '1.5px solid var(--color-dashboard-danger)' : '1px solid var(--color-dashboard-border)',
   };
 }
 

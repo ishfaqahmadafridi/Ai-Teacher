@@ -18,7 +18,7 @@ export const AssignmentCardFooter = memo(function AssignmentCardFooter({
   hasAiHelp,
 }: AssignmentCardFooterProps) {
   return (
-    <div className="pt-4 border-t border-[#1E293B] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="pt-4 border-t border-dashboard-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
       {/* Due Date / Turn In Status */}
       <AssignmentCardStatus
         dueDateFormatted={item.dueDateFormatted}

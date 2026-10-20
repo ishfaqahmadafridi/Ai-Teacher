@@ -13,23 +13,19 @@ export const Logo = memo(function Logo() {
           alt="NeuroLearn Neural Brain Logo"
           fill
           sizes="44px"
-          className="object-contain rounded-lg mix-blend-screen"
-          style={{
-            mixBlendMode: 'screen',
-            filter: 'drop-shadow(0 0 12px rgba(56,189,248,0.9))',
-          }}
+          className="object-contain rounded-lg"
           priority
         />
       </div>
       <span
-        className="font-extrabold tracking-[0.14em] uppercase text-white group-hover:text-[#38bdf8] transition-colors"
+        className="font-semibold tracking-tight text-dashboard-text group-hover:text-dashboard-primary transition-colors"
         style={{
           fontSize: '1.25rem',
           fontFamily: 'var(--font-outfit), sans-serif',
-          letterSpacing: '0.14em',
+          letterSpacing: '-0.025em',
         }}
       >
-        NEUROLEARN
+        Neurolearn
       </span>
     </Link>
   );
