@@ -16,6 +16,9 @@ class CourseModel(models.Model):
     course_code = models.CharField(max_length=50, db_index=True)
     credit_hours = models.IntegerField(default=3)
     progress_percent = models.IntegerField(default=0)
+    outline_topics = models.JSONField(default=list, blank=True)
+    outline_source = models.CharField(max_length=10, blank=True, default="", choices=[("manual", "Manual"), ("ai", "AI assisted")])
+    outline_updated_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

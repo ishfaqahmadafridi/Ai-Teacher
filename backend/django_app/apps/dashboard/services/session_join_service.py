@@ -37,4 +37,4 @@ def join_session(user, session_id):
             user=user, session_id=session_id, session_date=start.date(),
             defaults={'status': 'attended', 'joined_at': now},
         )
-    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status}
+    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status, 'lessonTopic': item.get('title', ''), 'courseTitle': item.get('subject', '')}

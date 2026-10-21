@@ -9,7 +9,7 @@ import { SubtitleBar } from './SubtitleBar';
 export const ClassroomStageArea = memo(function ClassroomStageArea() {
   useClassroomStageArea();
   return (
-    <main className="relative flex-1 overflow-hidden font-sans">
+    <main className="relative flex-1 overflow-hidden font-sans bg-dashboard-bg">
       {/* Chalkboard & Diagram Grid Stage */}
       <ClassroomStageGrid />
 

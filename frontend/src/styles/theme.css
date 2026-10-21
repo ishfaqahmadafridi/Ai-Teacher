@@ -123,3 +123,10 @@
   --color-hero-night-tint: #12264b;
   --color-hero-sunset-tint: #e6a167;
 }
+
+@theme {
+  --color-classroom-board: #fcfdff;
+  --color-classroom-board-border: #e0e7ef;
+  --color-classroom-board-text: #172033;
+  --color-classroom-board-muted: #526176;
+}

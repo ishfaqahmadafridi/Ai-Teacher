@@ -9,3 +9,5 @@ export * from './playbackConstants';
 export * from './circuitConstants';
 
 export * from './lessonJobConstants';
+
+export * from './boardWelcomeConstants';

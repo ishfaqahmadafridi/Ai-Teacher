@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { RegisterCourseModalProps } from '../types/courses.types';
+import type { RegisteredCourseItem, RegisterCourseModalProps } from '../types/courses.types';
 
 export function useRegisterCourseModal({
   isOpen,
   onClose,
   onRegisterCourse,
 }: RegisterCourseModalProps) {
+  const [registeredCourse, setRegisteredCourse] = useState<RegisteredCourseItem | null>(null);
+  const handleClose = useCallback(() => { setRegisteredCourse(null); onClose(); }, [onClose]);
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,12 +42,13 @@ export function useRegisterCourseModal({
       setIsPending(true);
 
       try {
-        await onRegisterCourse({
+        const course = await onRegisterCourse({
           subjectField: formData.subjectField,
           title: formData.title,
           courseCode: formData.courseCode.trim(),
           creditHours: formData.creditHours || 3,
         });
+        setRegisteredCourse(course);
       } catch (failure: unknown) {
         setError(failure instanceof Error ? failure.message : 'Course could not be registered.');
         return;
@@ -59,13 +62,15 @@ export function useRegisterCourseModal({
         courseCode: '',
         creditHours: 3,
       });
-      onClose();
+
     },
-    [formData, onRegisterCourse, onClose, isPending]
+    [formData, onRegisterCourse, isPending]
   );
 
   return {
     isOpen,
+    registeredCourse,
+    handleClose,
     error,
     isPending,
     formData,

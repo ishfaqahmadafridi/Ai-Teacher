@@ -20,8 +20,11 @@ class CourseModelSerializer(serializers.ModelSerializer):
             "credit_hours",
             "progress_percent",
             "created_at",
+            "outline_topics",
+            "outline_source",
+            "outline_updated_at",
         ]
-        read_only_fields = ["id", "created_at"]
+        read_only_fields = ["id", "created_at", "outline_topics", "outline_source", "outline_updated_at"]
 
 
 class CourseRegistrationRequestSerializer(serializers.Serializer):

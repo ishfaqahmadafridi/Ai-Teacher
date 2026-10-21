@@ -41,3 +41,6 @@ export * from './useCreateScheduleSlotModal';
 export * from './useAttendanceHistory';
 
 export * from './useClassBehaviorCard';
+
+export * from './useCourseOutline';
+export * from './useCourseOutlineCard';

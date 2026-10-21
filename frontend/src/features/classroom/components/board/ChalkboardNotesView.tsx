@@ -33,16 +33,16 @@ export const ChalkboardNotesView = memo(function ChalkboardNotesView({
           >
             <span
               className={`text-base sm:text-lg font-bold shrink-0 mt-[-2px] ${
-                isLatest ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'text-emerald-500/70'
+                isLatest ? 'text-dashboard-primary' : 'text-classroom-board-muted'
               }`}
             >
               •
             </span>
             <p
-              className={`font-mono text-xs sm:text-sm md:text-base leading-relaxed tracking-wide ${
+              className={`font-sans text-sm md:text-base leading-7 ${
                 isLatest
-                  ? 'text-white font-bold drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]'
-                  : 'text-slate-200'
+                  ? 'text-classroom-board-text font-semibold'
+                  : 'text-classroom-board-muted'
               }`}
             >
               {cleanText}
@@ -54,8 +54,8 @@ export const ChalkboardNotesView = memo(function ChalkboardNotesView({
 
       {isWriting && (
         <div className="flex items-center gap-2 mt-2">
-          <div className="w-2.5 h-4 bg-emerald-400 animate-pulse rounded-sm shadow-md shadow-emerald-400/50" />
-          <span className="text-xs font-mono text-emerald-300/80 italic animate-pulse">
+          <div className="w-2.5 h-4 bg-dashboard-primary animate-pulse rounded-sm motion-reduce:animate-none" />
+          <span className="text-xs text-classroom-board-muted">
             AI Tutor is teaching...
           </span>
         </div>

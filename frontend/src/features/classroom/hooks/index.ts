@@ -48,3 +48,5 @@ export * from './useLessonAudioPlayer';
 export * from './useLessonOutline';
 
 export * from './useCircuitLesson';
+
+export * from './useBoardWelcome';

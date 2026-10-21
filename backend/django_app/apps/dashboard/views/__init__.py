@@ -14,3 +14,5 @@ __all__ = [
     "LiveClassListView",
     "AssignmentListView",
 ]
+
+from .course_outline_view import CourseOutlineView, CourseOutlineGenerateView

@@ -8,6 +8,8 @@ export interface RegisteredCourseItem {
   completedLessons: number;
   totalLessons: number;
   enrolledDate: string;
+  outlineTopics?: string[];
+  outlineSource?: string;
   status: 'active' | 'completed' | 'upcoming';
 }
 
@@ -33,7 +35,7 @@ export interface RegisterCourseModalProps {
     title: string;
     courseCode: string;
     creditHours: number;
-  }) => Promise<void>;
+  }) => Promise<RegisteredCourseItem>;
   className?: string;
 }
 
@@ -75,4 +77,14 @@ export interface RegisterCourseFooterActionsProps {
   isPending: boolean;
   onClose: () => void;
   className?: string;
+}
+
+export interface CourseOutline {
+  topics: string[];
+  source: '' | 'manual' | 'ai';
+  updated_at: string | null;
+}
+export interface CourseOutlineEditorProps {
+  course: RegisteredCourseItem;
+  onClose: () => void;
 }

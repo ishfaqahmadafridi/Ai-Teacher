@@ -20,3 +20,5 @@ export interface ScheduleItem {
   roomOrLink: string;
   status: 'upcoming' | 'live' | 'completed';
 }
+
+export interface SessionJoinResult { lessonTopic: string; courseTitle: string }

@@ -18,9 +18,13 @@ from .views.session_attendance_view import SessionJoinView
 
 from .views.attendance_report_view import AttendanceReportView, AttendanceExportView
 
+from .views.course_outline_view import CourseOutlineView, CourseOutlineGenerateView
+
 app_name = "dashboard"
 
 urlpatterns = [
+    path("dashboard/courses/<int:course_id>/outline/", CourseOutlineView.as_view()),
+    path("dashboard/courses/<int:course_id>/outline/generate/", CourseOutlineGenerateView.as_view()),
     path("dashboard/attendance/export/", AttendanceExportView.as_view()),
     path("dashboard/attendance/", AttendanceReportView.as_view()),
     path("dashboard/timetable/sessions/<uuid:session_id>/join/", SessionJoinView.as_view()),

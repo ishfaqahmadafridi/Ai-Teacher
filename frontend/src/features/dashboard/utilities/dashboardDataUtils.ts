@@ -6,6 +6,7 @@ export function mapDashboardCourse(c: DashboardOverviewResponse['courses'][numbe
     id: String(c.id), title: c.title, subjectField: c.subject_field,
     courseCode: c.course_code, creditHours: c.credit_hours,
     progressPercent: c.progress_percent,
+    outlineTopics: c.outline_topics ?? [], outlineSource: c.outline_source ?? '',
     completedLessons: 0,
     totalLessons: 0, enrolledDate: c.created_at && !Number.isNaN(Date.parse(c.created_at))
       ? new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: 'numeric' }).format(new Date(c.created_at))
