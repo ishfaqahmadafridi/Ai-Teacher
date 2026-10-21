@@ -11,3 +11,7 @@ export * from './CourseOutlineEditor';
 export * from './CourseOutlineModal';
 
 export { CourseOutlineTopicPlan } from './CourseOutlineTopicPlan';
+
+export * from "./CourseOutlineWeeks";
+
+export * from './CourseStudyPlanModal';

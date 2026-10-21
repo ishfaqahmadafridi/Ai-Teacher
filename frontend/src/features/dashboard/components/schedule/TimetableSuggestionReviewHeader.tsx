@@ -19,7 +19,7 @@ export const TimetableSuggestionReviewHeader = memo(
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-dashboard-text">Suggested AI Timetable</h3>
+            <h3 className="text-lg font-bold text-dashboard-text">Review class timetable</h3>
             <p className="text-xs text-dashboard-muted">{optimizationSummary}</p>
           </div>
         </div>

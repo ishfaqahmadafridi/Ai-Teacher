@@ -6,6 +6,7 @@ import { ScheduleViewModeToggle } from './ScheduleViewModeToggle';
 import type { ScheduleHeaderBannerProps } from '../../types/schedule.types';
 
 export const ScheduleHeaderBanner = memo(function ScheduleHeaderBanner({
+  isDatedPlan = false,
   viewMode,
   onViewModeChange,
   onOpenAiPlanner,
@@ -21,13 +22,13 @@ export const ScheduleHeaderBanner = memo(function ScheduleHeaderBanner({
       <div className="relative z-10">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-dashboard-primary/20 text-dashboard-primary text-xs font-bold uppercase tracking-wider mb-2.5 border border-dashboard-primary/30">
           <Calendar className="w-4 h-4 text-dashboard-primary" />
-          <span>Weekly Class Timetable</span>
+          <span>{isDatedPlan ? 'Dated class timetable' : 'Weekly Class Timetable'}</span>
         </div>
         <h2 className="font-['Hanken_Grotesk',sans-serif] text-2xl sm:text-3xl font-black text-dashboard-text tracking-tight leading-tight">
           Class Schedule & Time Slots
         </h2>
         <p className="font-['Hanken_Grotesk',sans-serif] text-sm text-dashboard-muted mt-2 leading-relaxed">
-          Select a day on the left to view time slots, or switch to full weekly matrix view.
+          {isDatedPlan ? 'View class times scheduled from your saved course plans.' : 'Select a day on the left to view time slots, or switch to full weekly matrix view.'}
         </p>
       </div>
 
@@ -50,14 +51,14 @@ export const ScheduleHeaderBanner = memo(function ScheduleHeaderBanner({
             className="dashboard-button dashboard-button-secondary"
           >
             <Sparkles className="w-4 h-4" aria-hidden="true" />
-            <span>AI Smart Planner</span>
+            <span>Create class timetable</span>
           </button>
         )}
 
-        <ScheduleViewModeToggle
+        {!isDatedPlan && <ScheduleViewModeToggle
           viewMode={viewMode}
           onViewModeChange={onViewModeChange}
-        />
+        />}
       </div>
     </div>
   );

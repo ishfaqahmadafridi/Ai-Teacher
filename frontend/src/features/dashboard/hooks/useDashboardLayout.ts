@@ -105,6 +105,11 @@ export function useDashboardLayout() {
     setIsRegisterCourseModalOpen(true);
   }, []);
 
+  const handleOpenTimetable = useCallback(() => {
+    setIsRegisterCourseModalOpen(false);
+    setActiveTabId('schedule');
+  }, []);
+
   const handleCloseRegisterCourseModal = useCallback(() => {
     setIsRegisterCourseModalOpen(false);
   }, []);
@@ -167,6 +172,7 @@ export function useDashboardLayout() {
     handleCloseSettings,
     handleOpenRegisterCourseModal,
     handleCloseRegisterCourseModal,
+    handleOpenTimetable,
     handleRegisterCourse,
     handleJoinClass,
     handleResumeCourse,

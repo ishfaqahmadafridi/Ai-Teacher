@@ -35,6 +35,7 @@ export const DashboardMainContent = memo(function DashboardMainContent({
       )}
       {!isReady ? null : activeTabId === 'registered_courses' ? (
         <RegisteredCoursesSection
+          onOpenTimetable={onOpenTimetable}
           courses={registeredCourses}
           onJoinCourse={onJoinClass}
           onOpenRegisterModal={onOpenRegisterCourseModal}

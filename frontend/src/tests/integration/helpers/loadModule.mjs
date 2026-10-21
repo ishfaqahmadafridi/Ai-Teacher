@@ -15,8 +15,8 @@ export function load(path, mocks = {}, globals = {}) {
   vm.runInNewContext(source, { ...globals, module: testModule, exports: testModule.exports, console,
     require: name => {
       if (name in mocks) return mocks[name];
-      if (name.startsWith('.')) {
-        const target = resolve(root, path, '..', name);
+      if (name.startsWith('.') || name.startsWith('@/')) {
+        const target = name.startsWith('@/') ? resolve(root, name.slice(2)) : resolve(root, path, '..', name);
         for (const suffix of ['.ts', '.tsx']) {
           try { return load(target + suffix, mocks, globals); } catch (error) {
             if (error.code !== 'ENOENT') throw error;

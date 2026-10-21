@@ -1,8 +1,14 @@
+import type { DayOfWeek } from './scheduleDomain.types';
 export type PreferredTimeOfDay = 'morning' | 'afternoon' | 'evening' | 'any' | 'custom';
 
-export type MaxClassesPerDay = 2 | 3 | 4;
+export type MaxClassesPerDay = 1 | 2 | 3 | 4;
 
 export interface StudentSchedulePreferences {
+  useSavedPlans?: boolean;
+  courseIds?: string[];
+  studyDays?: DayOfWeek[];
+  startDate?: string;
+  durationMonths?: number;
   customStartTime?: string;
   customEndTime?: string;
   preferredTime: PreferredTimeOfDay;
@@ -51,4 +57,12 @@ export interface TimetablePreferencesModalFooterProps {
   onClose: () => void;
   isLoading?: boolean;
   className?: string;
+}
+
+export interface TimetableCourseSelectorProps {
+  courses: import('./courses.types').RegisteredCourseItem[];
+  selectedIds: string[];
+  onToggle: (id: string) => void;
+  isLoading: boolean;
+  hasError: boolean;
 }

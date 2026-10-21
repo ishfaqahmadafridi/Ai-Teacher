@@ -14,3 +14,9 @@ export * from './dashboardDataUtils';
 export * from './heroAppearance';
 
 export * from './courseOutlineUtils';
+
+export * from './studyPlanUtils';
+
+export * from './courseOutlineWeekUtils';
+
+export * from './timetablePreferencesUtils';

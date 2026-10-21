@@ -1,6 +1,7 @@
 import type { DayOfWeek, ScheduleItem, ScheduleViewMode } from './scheduleDomain.types';
 
 export interface ScheduleHeaderBannerProps {
+  isDatedPlan?: boolean;
   viewMode: ScheduleViewMode;
   onViewModeChange: (mode: ScheduleViewMode) => void;
   onOpenAiPlanner?: () => void;

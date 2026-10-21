@@ -26,6 +26,7 @@ export interface DashboardOverviewResponse {
     created_at?: string;
     outline_topics?: string[];
     outline_source?: string;
+    outline_period?: { start_date: string; duration_months: number };
   }>;
   live_classes: Array<{
     id: number | string;
@@ -75,6 +76,7 @@ export class DashboardService {
       created_at?: string;
     outline_topics?: string[];
     outline_source?: string;
+    outline_period?: { start_date: string; duration_months: number };
     }>>('/api/dashboard/courses/');
 
     return response.data.map(mapDashboardCourse);
@@ -94,6 +96,7 @@ export class DashboardService {
       created_at?: string;
     outline_topics?: string[];
     outline_source?: string;
+    outline_period?: { start_date: string; duration_months: number };
     }>('/api/dashboard/courses/', payload);
 
     return mapDashboardCourse(response.data);

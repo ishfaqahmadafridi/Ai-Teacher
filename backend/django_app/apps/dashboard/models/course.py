@@ -11,6 +11,7 @@ class CourseModel(models.Model):
     course_code = models.CharField(max_length=50, db_index=True)
     credit_hours = models.IntegerField(default=3)
     progress_percent = models.IntegerField(default=0)
+    outline_period = models.JSONField(default=dict, blank=True)
     outline_topics = models.JSONField(default=list, blank=True)
     outline_details = models.JSONField(default=list, blank=True)
     outline_source = models.CharField(max_length=10, blank=True, default="", choices=[("manual", "Manual"), ("ai", "AI assisted")])

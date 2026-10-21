@@ -13,6 +13,7 @@ from ..tasks import generate_timetable
 from ..constants.timetable_prompts import PLANNER_VERSION
 from .session_attendance import schedule_with_attendance
 from .attendance_reconciliation import reconcile_timetable
+from .timetable_preview import timetable_preview_expired
 
 
 class TimetableConflict(APIException):
@@ -22,18 +23,39 @@ class TimetableConflict(APIException):
 def request_timetable(user, preferences):
     with transaction.atomic():
         get_user_model().objects.select_for_update().get(pk=user.pk)
-        courses = list(CourseModel.objects.filter(user=user).order_by("id").values("id", "title", "subject_field", "outline_topics", "outline_details"))
+        courses = list(CourseModel.objects.filter(user=user).order_by("id").values("id", "title", "subject_field", "outline_topics", "outline_details", "outline_period"))
+        if preferences.get('use_saved_plans'):
+            selected = set(preferences['course_ids'])
+            courses = [course for course in courses if course['id'] in selected]
+            if {course['id'] for course in courses} != selected:
+                raise ValidationError({'detail': 'Select courses registered to your account.'})
         if not courses:
             raise ValidationError("Register a course before creating a timetable.")
         inputs = {"courses": courses, "preferences": preferences, "planner_version": PLANNER_VERSION}
+        if preferences.get('use_saved_plans'):
+            from .saved_plan_timetable import plan_saved_course_sessions
+            try:
+                plan_saved_course_sessions(inputs)
+            except ValueError as error:
+                raise ValidationError({'detail': str(error)}) from error
+        if preferences.get('start_date'):
+            from .study_plan_curriculum import plan_dated_sessions
+            try:
+                plan_dated_sessions(inputs)
+            except ValueError as error:
+                raise ValidationError({'detail': str(error)}) from error
         fingerprint = hashlib.sha256(json.dumps(inputs, sort_keys=True).encode()).hexdigest()
         TimetableJob.objects.filter(user=user, status="processing", updated_at__lt=timezone.now()-timedelta(seconds=settings.TIMETABLE_JOB_TIMEOUT_SECONDS)).update(status="failed", error="Planning timed out. Please retry.")
         pending = TimetableJob.objects.filter(user=user, status__in=["queued", "processing"]).first()
+        if pending and pending.fingerprint != fingerprint:
+            raise TimetableConflict('Another timetable is being created. Wait for it to finish before scheduling different courses.')
         if pending:
             return {"id": str(pending.id), "status": pending.status}
         job, created = TimetableJob.objects.get_or_create(user=user, fingerprint=fingerprint, defaults={"inputs": inputs})
-        if created or job.status == "failed":
+        expired = job.status == 'ready' and timetable_preview_expired(job.result, user.timezone)
+        if created or job.status == "failed" or expired:
             job.status, job.error, job.attempts, job.run_token, job.next_attempt_at = "queued", "", 0, None, None
+            job.result = {}
             job.save()
             def enqueue():
                 try:
@@ -51,11 +73,17 @@ def accept_timetable_job(user, job_id):
     with transaction.atomic():
         get_user_model().objects.select_for_update().get(pk=user.pk)
         job = get_object_or_404(TimetableJob, pk=job_id, user=user, status="ready")
+        if timetable_preview_expired(job.result, user.timezone):
+            raise TimetableConflict('Some class times have already passed. Create a new timetable preview before accepting.')
         if not set(str(course.pk) for course in CourseModel.objects.filter(user=user)).issuperset(item["courseId"] for item in job.result["schedule"]):
             raise TimetableConflict("Courses changed. Generate a new timetable.")
         current_outlines = {str(course.pk): (course.outline_topics, course.outline_details) for course in CourseModel.objects.filter(user=user)}
         if any(current_outlines.get(str(course['id']), []) != (course.get('outline_topics', []), course.get('outline_details', [])) for course in job.inputs['courses']):
             raise TimetableConflict("Course outlines changed. Generate a new timetable.")
+        if job.inputs['preferences'].get('use_saved_plans'):
+            periods = {str(course.pk): course.outline_period for course in CourseModel.objects.filter(user=user)}
+            if any(periods.get(str(course['id'])) != course.get('outline_period') for course in job.inputs['courses']):
+                raise TimetableConflict('Course plan durations changed. Create a new class timetable.')
         previous = SavedTimetable.objects.filter(user=user).first()
         if previous:
             reconcile_timetable(previous.pk)

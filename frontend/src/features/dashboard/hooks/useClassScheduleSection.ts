@@ -9,6 +9,7 @@ import type {
   ScheduleViewMode,
   UseClassScheduleSectionOptions,
 } from '../types/schedule.types';
+import { SAVED_TIMETABLE_REFRESH_MS } from '../constants/timetableConstants';
 import { DAYS_OF_WEEK } from '../constants/scheduleConstants';
 import { filterScheduleItemsByDay } from '../utilities/scheduleUtils';
 import { useScheduleEndSync } from './useScheduleEndSync';
@@ -28,9 +29,9 @@ export function useClassScheduleSection(
   const [saveError, setSaveError] = useState<string | null>(null);
   const profileTimezone = useAuthStore((state) => state.user?.timezone || '');
   const userId = useAuthStore((state) => state.user?.id);
-  const saved = useQuery({ queryKey: ['saved-timetable', userId], queryFn: ({ signal }) => TimetableService.saved(signal), enabled: Boolean(userId), refetchInterval: 30000 });
-  const [localItems, setScheduleItems] = useState<ScheduleItem[]>(initialScheduleItems);
-  const scheduleItems = saved.data ?? localItems;
+  const saved = useQuery({ queryKey: ['saved-timetable', userId], queryFn: ({ signal }) => TimetableService.saved(signal), enabled: Boolean(userId), refetchInterval: SAVED_TIMETABLE_REFRESH_MS });
+  const scheduleItems = saved.data ?? initialScheduleItems;
+  const hasDatedPlan = scheduleItems.some(item => item.planStartDate);
   useScheduleEndSync(scheduleItems, profileTimezone, userId);
   const { selectedDay, setSelectedDay } = useScheduleSelectedDay(scheduleItems[0]?.timezone || profileTimezone, defaultDay);
   const [viewMode, setViewMode] = useState<ScheduleViewMode>(defaultViewMode);
@@ -41,7 +42,6 @@ export function useClassScheduleSection(
   }, []);
 
   const handleScheduleUpdated = useCallback((newItems: ScheduleItem[]) => {
-    setScheduleItems(newItems);
     queryClient.setQueryData(['saved-timetable', userId], newItems);
   }, [queryClient, userId]);
 
@@ -95,6 +95,7 @@ export function useClassScheduleSection(
   }, [queryClient, userId]);
 
   return {
+    hasDatedPlan,
     days: DAYS_OF_WEEK,
     selectedDay,
     setSelectedDay: selectDay,

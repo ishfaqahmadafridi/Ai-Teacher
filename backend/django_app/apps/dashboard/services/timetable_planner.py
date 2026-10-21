@@ -11,6 +11,12 @@ class LearningSession(BaseModel):
     title: str = Field(min_length=1, max_length=255)
 
 def plan_sessions(inputs):
+    if inputs['preferences'].get('use_saved_plans'):
+        from .saved_plan_timetable import plan_saved_course_sessions
+        return plan_saved_course_sessions(inputs)
+    if inputs['preferences'].get('start_date'):
+        from .study_plan_curriculum import plan_dated_sessions
+        return plan_dated_sessions(inputs)
     # Reuse the existing provider integration; keep student identity out of the prompt.
     course_ids = tuple(str(course["id"]) for course in inputs["courses"])
     target = capacity(inputs["preferences"])

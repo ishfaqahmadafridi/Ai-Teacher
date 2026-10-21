@@ -9,6 +9,7 @@ from django.utils import timezone
 from rest_framework.exceptions import APIException, ValidationError
 from apps.classroom.services.llm_service import get_llm
 from ..models import CourseModel, SavedTimetable
+from .course_outline_plan import build_course_weeks
 from .session_attendance import schedule_with_attendance
 from ..serializers.course_outline_serializers import CourseOutlineSerializer
 from ..serializers.course_outline_draft import OutlineDraft
@@ -36,7 +37,7 @@ def read_course_outline(user, course_id):
                          start=item['startTime'], end=item['endTime'], timezone=item.get('timezone') or user.timezone)
                     for item in schedule_with_attendance(saved, user)
                     if str(item.get('courseId')) == str(course.id)]
-    return dict(topics=course.outline_topics, details=course.outline_details, sessions=sessions,
+    return dict(period=course.outline_period or None, weeks=build_course_weeks(course.outline_topics, course.outline_details, course.outline_period), topics=course.outline_topics, details=course.outline_details, sessions=sessions,
                 source=course.outline_source, updated_at=course.outline_updated_at)
 
 
@@ -46,12 +47,14 @@ def save_course_outline(user, course_id, data):
     course = owned_course(user, course_id)
     course.outline_topics, course.outline_source = data['topics'], data['source']
     course.outline_details = data.get('details', [])
+    if 'period' in data:
+        course.outline_period = {**data['period'], 'start_date': data['period']['start_date'].isoformat()}
     course.outline_updated_at = timezone.now()
-    course.save(update_fields=['outline_topics', 'outline_details', 'outline_source', 'outline_updated_at'])
+    course.save(update_fields=['outline_period', 'outline_topics', 'outline_details', 'outline_source', 'outline_updated_at'])
     return read_course_outline(user, course_id)
 
 
-def generate_course_outline(user, course_id):
+def generate_course_outline(user, course_id, period=None):
     course = owned_course(user, course_id)
     level = (user.education_level or '').strip().lower().replace(' ', '_').replace('-', '_')
     if level not in OUTLINE_LEVEL_POLICIES:
@@ -65,12 +68,13 @@ def generate_course_outline(user, course_id):
             ('system', COURSE_OUTLINE_PROMPT + '\nTeaching-level requirements: ' + guidance),
             ('human', json.dumps(dict(title=course.title, field=course.subject_field,
                 level=level, level_label=level_label, academic_year=user.academic_year,
-                grade=user.grade_level, language=user.preferred_language))),
+                grade=user.grade_level, language=user.preferred_language, study_period=period), default=str)),
         ])
         draft = OutlineDraft.model_validate(response)
         serializer = CourseOutlineSerializer(data={'topics': draft.topics, 'details': [item.model_dump() for item in draft.details], 'source': 'ai'})
         serializer.is_valid(raise_exception=True)
-        return {**serializer.validated_data, 'sessions': [], 'updated_at': None}
+        period = {**period, 'start_date': period['start_date'].isoformat()} if period else course.outline_period or None
+        return {**serializer.validated_data, 'period': period, 'weeks': build_course_weeks(draft.topics, serializer.validated_data['details'], period), 'sessions': [], 'updated_at': None}
     except OutlineUnavailable:
         raise
     except Exception as error:

@@ -18,9 +18,9 @@ export const TimetablePreferencesModalHeader = memo(
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-dashboard-text">AI Timetable Planner</h3>
+            <h3 className="text-lg font-bold text-dashboard-text">Create class timetable</h3>
             <p className="text-xs text-dashboard-muted">
-              Customize your study schedule preferences before AI generation
+              Choose courses and class times. Your saved study plans provide the duration and weekly topics.
             </p>
           </div>
         </div>
