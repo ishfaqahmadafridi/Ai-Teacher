@@ -11,9 +11,6 @@ class LearningSession(BaseModel):
     title: str = Field(min_length=1, max_length=255)
 
 def plan_sessions(inputs):
-    llm = get_llm(model=settings.TIMETABLE_MODEL, max_retries=0)
-    if llm is None:
-        raise ValueError("AI planning is unavailable. Please try again later.")
     # Reuse the existing provider integration; keep student identity out of the prompt.
     course_ids = tuple(str(course["id"]) for course in inputs["courses"])
     target = capacity(inputs["preferences"])
@@ -21,6 +18,12 @@ def plan_sessions(inputs):
         raise ValueError("Your availability cannot fit at least one session for every course.")
     base, extra = divmod(target, len(course_ids))
     targets = {course_id: base + (index < extra) for index, course_id in enumerate(course_ids)}
+    if all(course.get('outline_topics') for course in inputs['courses']):
+        return [dict(course_id=str(course['id']), title=course['outline_topics'][index % len(course['outline_topics'])])
+                for course in inputs['courses'] for index in range(targets[str(course['id'])])]
+    llm = get_llm(model=settings.TIMETABLE_MODEL, max_retries=0)
+    if llm is None:
+        raise ValueError("AI planning is unavailable. Please try again later.")
     session_schema = create_model("RegisteredLearningSession", __base__=LearningSession, course_id=(Literal[course_ids], ...))
     plan_schema = create_model("RegisteredLearningPlan", sessions=(list[session_schema], Field(min_length=target, max_length=target)))
     prompt_inputs = {**inputs, "courses": [{**course, "id": str(course["id"])} for course in inputs["courses"]], "target_sessions": target, "session_targets": targets}
@@ -36,4 +39,13 @@ def plan_sessions(inputs):
     for course_id, count in targets.items():
         if sum(session.course_id == course_id for session in plan.sessions) != count:
             raise ValueError("The AI plan did not match the requested course workload.")
-    return [session.model_dump() for session in plan.sessions]
+    # Saved outlines are authoritative; AI cannot replace or reorder their topics.
+    offsets = dict.fromkeys(course_ids, 0)
+    outlines = {str(course['id']): course.get('outline_topics', []) for course in inputs['courses']}
+    result = []
+    for session in plan.sessions:
+        topics = outlines[session.course_id]
+        title = topics[offsets[session.course_id] % len(topics)] if topics else session.title
+        offsets[session.course_id] += 1
+        result.append(dict(course_id=session.course_id, title=title))
+    return result

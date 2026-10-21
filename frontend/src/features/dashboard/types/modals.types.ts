@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { RegisteredCourseItem } from './courses.types';
 import type { StudentProfile } from './dashboard.types';
 
 export interface DashboardDialogsProps {
@@ -9,7 +10,7 @@ export interface DashboardDialogsProps {
     title: string;
     courseCode: string;
     creditHours: number;
-  }) => Promise<void>;
+  }) => Promise<RegisteredCourseItem>;
   isProfileOpen: boolean;
   onCloseProfile: () => void;
   profile: StudentProfile;

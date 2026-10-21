@@ -1,6 +1,8 @@
 'use client';
 
 import { memo } from 'react';
+import { useCourseOutlineCard } from '../../hooks/useCourseOutlineCard';
+import { CourseOutlineModal } from './CourseOutlineModal';
 import { CircleCheck, Clock3, Layers3, CalendarDays } from 'lucide-react';
 import type { RegisteredCourseCardProps } from '../../types/courses.types';
 
@@ -8,6 +10,7 @@ export const RegisteredCourseCard = memo(function RegisteredCourseCard({
   course,
   className = '',
 }: RegisteredCourseCardProps) {
+  const outline = useCourseOutlineCard();
   const StatusIcon = course.status === 'upcoming' ? Clock3 : CircleCheck;
 
   return (
@@ -52,6 +55,11 @@ export const RegisteredCourseCard = memo(function RegisteredCourseCard({
         </div>
       </div>
 
+      <div className="flex items-center justify-between gap-3 border-t border-dashboard-border pt-3">
+        <span className="text-xs text-dashboard-muted">{course.outlineTopics?.length ? `${course.outlineTopics.length} outline topics` : 'No outline yet'}</span>
+        <button type="button" onClick={outline.open} className="dashboard-button dashboard-button-secondary text-xs">{course.outlineTopics?.length ? 'View outline' : 'Set up outline'}</button>
+      </div>
+      {outline.isOpen && <CourseOutlineModal course={course} onClose={outline.close} />}
       {/* Bottom Row: Credit Hours & Enrollment Info */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3 border-t border-dashboard-border text-xs">
         <div className="flex items-center gap-1.5 font-medium text-dashboard-muted">

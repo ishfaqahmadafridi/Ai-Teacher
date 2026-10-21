@@ -28,7 +28,7 @@ export function useDashboardData() {
     },
   });
   const handleRegisterCourse = async (data: Parameters<RegisterCourseModalProps['onRegisterCourse']>[0]) => {
-    await registration.mutateAsync(data);
+    return registration.mutateAsync(data);
   };
   return {
     isLoading: overview.isLoading,

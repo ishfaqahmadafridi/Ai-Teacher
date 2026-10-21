@@ -259,3 +259,5 @@ for _budget_name in (
         raise ImproperlyConfigured(f'{_budget_name} must be positive')
 if CLASSROOM_MAX_RUNNING_JOBS > CLASSROOM_MAX_PENDING_JOBS:
     raise ImproperlyConfigured('Running lesson capacity must not exceed total pending capacity')
+
+REST_FRAMEWORK.setdefault("DEFAULT_THROTTLE_RATES", {})["course_outline"] = "5/min"

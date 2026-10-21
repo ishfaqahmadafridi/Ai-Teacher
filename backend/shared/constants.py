@@ -29,3 +29,10 @@ INTENT_NODE_MAPPING = {
     "quiz": "quiz_node",
     "study_plan": "planner_node",
 }
+
+# Pinned artifacts preserve compatibility with existing all-MiniLM FAISS snapshots.
+MINILM_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
+MINILM_REPOSITORY = 'qdrant/all-MiniLM-L6-v2-onnx'
+MINILM_REVISION = 'd13954661f83248295ba75c1ed411eef3b7b936e'
+MINILM_MAX_TOKENS = 256
+MINILM_DIMENSIONS = 384

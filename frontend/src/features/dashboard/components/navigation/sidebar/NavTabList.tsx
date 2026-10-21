@@ -11,7 +11,7 @@ export const NavTabList = memo(function NavTabList({
   className = '',
 }: NavTabListProps) {
   return (
-    <nav className={`flex-1 space-y-1.5 overflow-y-auto pr-1 ${className}`}>
+    <nav className={`flex-1 space-y-1.5 pr-1 ${className}`}>
       {navLinks.map((link) => (
         <NavTabItem
           key={link.id}

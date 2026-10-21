@@ -1,6 +1,8 @@
 'use client';
 
 import { memo } from 'react';
+import { PanelsTopLeft } from 'lucide-react';
+import '../../styles/board.css';
 import { useStageDiagramGrid } from '../../hooks/useStageDiagramGrid';
 import { useChalkboardStage } from '../../hooks/useChalkboardStage';
 import { ChalkboardWelcomeSlate } from '../board/ChalkboardWelcomeSlate';
@@ -9,20 +11,22 @@ import { DynamicDiagramStage } from '../../utilities/lazyComponents';
 
 export const ClassroomStageGrid = memo(function ClassroomStageGrid() {
   const { diagramType, currentCommand, currentFormula, hasVisual } = useStageDiagramGrid();
-  const { points, isWriting, showGrid } = useChalkboardStage();
+  const { points, isWriting, showGrid, topic } = useChalkboardStage();
 
   const hasContent = points.length > 0;
 
   return (
-    <div className="absolute top-6 left-6 right-6 bottom-6 flex flex-col font-sans select-none">
+    <div className="absolute inset-3 sm:inset-5 flex flex-col font-sans select-none">
       {/* Single Clean Unified Classroom Container — Zero internal divider lines */}
-      <div className="relative w-full h-full rounded-3xl bg-gradient-to-br from-[#111A16] via-[#0D1412] to-[#080D0B] border border-slate-800/80 shadow-2xl overflow-hidden flex flex-col p-6 sm:p-8">
-        {/* Ambient blackboard texture */}
-        <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-slate-400 to-transparent pointer-events-none z-0" />
+      <div className="classroom-board relative w-full h-full min-h-0 overflow-y-auto flex flex-col px-5 pb-5 sm:px-8 sm:pb-8">
+        <header className="relative z-10 flex shrink-0 items-center justify-between gap-4 border-b border-classroom-board-border py-4 sm:py-5">
+          <div className="flex min-w-0 items-center gap-2.5"><PanelsTopLeft className="h-4 w-4 shrink-0 text-classroom-board-muted" aria-hidden="true" /><h1 className="truncate text-sm font-medium text-classroom-board-text" title={topic || 'Lesson board'}>{topic || 'Lesson board'}</h1></div>
+          <span className="shrink-0 text-xs text-classroom-board-muted">{hasContent || hasVisual ? 'Notes & visuals' : 'Ready when you are'}</span>
+        </header>
 
         {/* Faint Grid Lines Overlay if enabled */}
         {showGrid && (
-          <div className="absolute inset-0 opacity-[0.05] bg-[radial-gradient(rgba(255,255,255,0.3)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none z-0" />
+          <div className="absolute inset-0 opacity-[0.025] bg-[radial-gradient(rgba(36,89,196,0.3)_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none z-0" />
         )}
 
         {/* Dynamic Classroom Content inside the Single Unified Container */}

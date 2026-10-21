@@ -6,3 +6,6 @@ export * from './RegisterCourseCodeHoursInputs';
 export * from './RegisterCourseFooterActions';
 export * from './RegisterCourseForm';
 export * from './RegisterCourseModal';
+
+export * from './CourseOutlineEditor';
+export * from './CourseOutlineModal';
