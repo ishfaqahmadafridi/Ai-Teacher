@@ -22,7 +22,13 @@ python-dotenv==1.2.2
 
 # ── RAG (shared FAISS vector store) ───────────────────────────────────────
 faiss-cpu==1.15.1
-fastembed==0.8.1
+# Direct text-only ONNX runtime avoids FastEmbed's Pillow<13 constraint.
+onnxruntime==1.23.2
+tokenizers==0.22.2
+huggingface-hub==0.36.2
 
 # ── WebSocket ────────────────────────────────────────────────────────────────
 websockets==16.1.1
+
+# Keep image decoding on the security-patched release.
+Pillow==13.0.0

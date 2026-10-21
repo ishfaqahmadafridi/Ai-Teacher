@@ -48,8 +48,9 @@ KaTeX advisory chains remain visible in npm's report; the configured threshold i
 
 The Python audit exports every installed package's public PEP 440 version for advisory lookup;
 Torch's `+cpu` build label is removed, but Torch itself is retained. A regression test verifies this.
-No dependency or advisory is ignored. ChromaDB was replaced by FAISS cosine retrieval with FastEmbed
-ONNX embeddings. Django and FastAPI share the same collection, model, and atomic pickle-free snapshot.
+No dependency or advisory is ignored. ChromaDB was replaced by FAISS cosine retrieval with text-only
+ONNX Runtime, tokenizers, and Hugging Face Hub embeddings. FastEmbed is no longer installed because
+its Pillow<13 constraint prevents installing the security-patched Pillow 13.0.0. Django and FastAPI share the same collection, model, and atomic pickle-free snapshot.
 The default API runtime no longer installs Torch or Transformers; the optional fine-tuned model loader
 has separate requirements in `backend/django_app/requirements/local-model.txt`.
 Shared tests cover ranking, snapshot round trips, model mismatch, invalid vectors, and failed writes.
@@ -61,3 +62,8 @@ initial model download. `CLASSROOM_VECTOR_INDEX_PATH`, `CLASSROOM_EMBED_CACHE_PA
 are excluded from Git. Previous Chroma files are preserved and are no longer read.
 The source is [OpenStax College Physics 2e](https://openstax.org/details/books/college-physics-2e);
 follow the publisher's current license when distributing the source or derived index.
+
+Text retrieval supports `sentence-transformers/all-MiniLM-L6-v2` with a pinned Qdrant ONNX revision,
+256-token truncation, attention-masked mean pooling, and L2 normalization. Existing MiniLM snapshots
+and the configured model cache remain compatible; other embedding models require an explicit adapter
+and index rebuild. Shared tests exercise padding exclusion, normalization, and invalid output handling.

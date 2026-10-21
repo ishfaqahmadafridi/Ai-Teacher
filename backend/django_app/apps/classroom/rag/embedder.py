@@ -19,10 +19,10 @@ def get_sentence_model():
         return _sentence_model
     with _model_lock:
         if _sentence_model is None:
-            from fastembed import TextEmbedding
+            from shared.services.text_embedding import MiniLMTextEmbedding
             logger.info("Loading embedding model %s", EMBEDDING_MODEL)
             model_name = EMBEDDING_MODEL if "/" in EMBEDDING_MODEL else f"sentence-transformers/{EMBEDDING_MODEL}"
-            _sentence_model = TextEmbedding(model_name=model_name, threads=EMBED_THREADS, cache_dir=str(EMBED_CACHE_PATH))
+            _sentence_model = MiniLMTextEmbedding(model_name=model_name, threads=EMBED_THREADS, cache_dir=str(EMBED_CACHE_PATH))
     return _sentence_model
 
 
