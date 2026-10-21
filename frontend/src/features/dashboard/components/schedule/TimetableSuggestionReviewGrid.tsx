@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import { StudyPlanWeeks } from './StudyPlanWeeks';
 import { TimetableSuggestionCard } from './TimetableSuggestionCard';
 import type { TimetableSuggestionReviewGridProps } from '../../types/schedule.types';
 
@@ -10,6 +11,7 @@ export const TimetableSuggestionReviewGrid = memo(
     totalWeeklyClasses,
     className = '',
   }: TimetableSuggestionReviewGridProps) {
+    if (schedule.some(item => item.planStartDate)) return <StudyPlanWeeks items={schedule} />;
     return (
       <div className={`space-y-3 ${className}`}>
         <div className="flex items-center justify-between text-xs font-semibold text-dashboard-muted uppercase tracking-wider">

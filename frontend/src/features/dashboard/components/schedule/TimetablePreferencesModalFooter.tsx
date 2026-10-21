@@ -34,7 +34,7 @@ export const TimetablePreferencesModalFooter = memo(
           ) : (
             <>
               <Sparkles className="w-4 h-4" />
-              <span>Generate AI Timetable</span>
+              <span>Create class timetable</span>
             </>
           )}
         </button>

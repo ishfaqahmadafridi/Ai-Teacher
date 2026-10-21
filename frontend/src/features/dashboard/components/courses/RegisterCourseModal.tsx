@@ -12,7 +12,7 @@ export const RegisterCourseModal = memo(function RegisterCourseModal(props: Regi
   const { isOpen, registeredCourse, handleClose, error, isPending, formData, handleChange, handleSubmit } = useRegisterCourseModal(props);
 
   if (!isOpen) return null;
-  if (registeredCourse) return <CourseOutlineModal course={registeredCourse} onClose={handleClose} />;
+  if (registeredCourse) return <CourseOutlineModal onOpenTimetable={props.onOpenTimetable} course={registeredCourse} onClose={handleClose} />;
 
   return (
     <DashboardDialog title="Register New Course" onClose={handleClose} className="max-w-[36rem] p-5 sm:p-8">

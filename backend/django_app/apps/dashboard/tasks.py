@@ -24,7 +24,7 @@ def generate_timetable(job_id):
             return
         # The durable queued row is picked up again by the dispatcher if admission is delayed.
         try:
-            delay = planning_delay()
+            delay = 0 if job.inputs['preferences'].get('use_saved_plans') else planning_delay()
         except Exception:
             logger.exception("Provider admission unavailable for job %s", job_id)
             return

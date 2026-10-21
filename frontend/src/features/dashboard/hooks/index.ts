@@ -44,3 +44,5 @@ export * from './useClassBehaviorCard';
 
 export * from './useCourseOutline';
 export * from './useCourseOutlineCard';
+
+export * from './useCourseStudyPlan';

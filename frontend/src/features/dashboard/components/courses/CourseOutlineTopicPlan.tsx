@@ -7,7 +7,7 @@ import type { CourseOutlineTopicPlanProps } from '../../types/courses.types';
 export const CourseOutlineTopicPlan = memo(function CourseOutlineTopicPlan({ topics, details, sessions, disabled, onUpdate }: CourseOutlineTopicPlanProps) {
   return <section className="space-y-3" aria-label="Topic details and timetable">
     <div><h3 className="text-base font-semibold">What each topic covers</h3>
-      <p className="mt-1 text-xs leading-5 text-dashboard-muted">Dates come from your saved weekly timetable for the current week. Exercises below are planned practice, not recorded completion. Keep each topic’s details under {COURSE_OUTLINE_MAX_DETAIL_CHARACTERS.toLocaleString('en-US')} characters. Save changes and regenerate the timetable to use them in lessons.</p></div>
+      <p className="mt-1 text-xs leading-5 text-dashboard-muted">Dates come from your saved timetable. Recurring weekly classes show their current-week occurrence. Exercises below are planned practice, not recorded completion. Keep each topic’s details under {COURSE_OUTLINE_MAX_DETAIL_CHARACTERS.toLocaleString('en-US')} characters. Save changes and regenerate the timetable to use them in lessons.</p></div>
     {topics.map((title, index) => {
       const detail = details.find(item => item.title === title);
       const planned = sessions.filter(item => item.title === title);

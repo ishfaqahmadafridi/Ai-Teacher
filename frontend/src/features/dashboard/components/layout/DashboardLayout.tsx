@@ -34,6 +34,7 @@ export const DashboardLayout = memo(function DashboardLayout() {
     handleCloseSettings,
     handleOpenRegisterCourseModal,
     handleCloseRegisterCourseModal,
+    handleOpenTimetable,
     handleRegisterCourse,
     handleJoinClass,
     handleResumeCourse,
@@ -86,12 +87,13 @@ export const DashboardLayout = memo(function DashboardLayout() {
           onJoinClass={handleJoinClass}
           onResumeCourse={handleResumeCourse}
           onOpenRegisterCourseModal={handleOpenRegisterCourseModal}
-          onOpenTimetable={() => handleSelectTab('schedule')}
+          onOpenTimetable={handleOpenTimetable}
         />}
       </div>
 
       {/* Dashboard Dialog Modals Container */}
       <DashboardDialogs
+        onOpenTimetable={handleOpenTimetable}
         isRegisterCourseModalOpen={isRegisterCourseModalOpen}
         onCloseRegisterCourseModal={handleCloseRegisterCourseModal}
         onRegisterCourse={handleRegisterCourse}

@@ -27,7 +27,7 @@ export const TimetableSuggestionCard = memo(
         <div className="flex items-center gap-2">
           <BookOpen className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
           <span className="text-xs font-semibold text-dashboard-text truncate">
-            {item.subject}
+            {item.subject} · {item.title}
           </span>
         </div>
       </div>

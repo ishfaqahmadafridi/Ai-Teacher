@@ -10,10 +10,12 @@ export interface RegisteredCourseItem {
   enrolledDate: string;
   outlineTopics?: string[];
   outlineSource?: string;
+  outlinePeriod?: CourseOutlinePeriod;
   status: 'active' | 'completed' | 'upcoming';
 }
 
 export interface RegisteredCoursesSectionProps {
+  onOpenTimetable?: () => void;
   courses?: RegisteredCourseItem[];
   fieldTitle?: string;
   onJoinCourse?: (id: string) => void;
@@ -22,12 +24,14 @@ export interface RegisteredCoursesSectionProps {
 }
 
 export interface RegisteredCourseCardProps {
+  onOpenTimetable?: () => void;
   course: RegisteredCourseItem;
   onJoinCourse?: (id: string) => void;
   className?: string;
 }
 
 export interface RegisterCourseModalProps {
+  onOpenTimetable?: () => void;
   isOpen: boolean;
   onClose: () => void;
   onRegisterCourse: (courseData: {
@@ -92,7 +96,16 @@ export interface CourseOutlineSession {
   end: string;
   timezone: string;
 }
+export interface CourseOutlinePeriod { start_date: string; duration_months: number }
+export interface CoursePlanAssignment { exercise: string; instruction: string }
+export interface CoursePlanQuiz { number: number; title: string; topics: string[] }
+export interface CourseOutlineWeekItem { assignments?: CoursePlanAssignment[]; title: string; subtopics: string[]; exercises: string[]; activity: 'Lesson' | 'Practice' | 'Review' }
+export interface CourseOutlineWeekTopic { assignments: CoursePlanAssignment[]; title: string; subtopics: string[]; exercises: string[]; activities: CourseOutlineWeekItem['activity'][] }
+export interface CourseOutlineWeek { quiz?: CoursePlanQuiz | null; number: number; start: string; end: string; items: CourseOutlineWeekItem[] }
+export interface CourseOutlineWeeksProps { weeks: CourseOutlineWeek[] }
 export interface CourseOutline {
+  period?: CourseOutlinePeriod | null;
+  weeks?: CourseOutlineWeek[];
   details: CourseOutlineTopicDetail[];
   sessions: CourseOutlineSession[];
   topics: string[];
@@ -100,6 +113,7 @@ export interface CourseOutline {
   updated_at: string | null;
 }
 export interface CourseOutlineEditorProps {
+  onOpenTimetable?: () => void;
   course: RegisteredCourseItem;
   onClose: () => void;
 }
@@ -110,4 +124,10 @@ export interface CourseOutlineTopicPlanProps {
   sessions: CourseOutlineSession[];
   disabled: boolean;
   onUpdate: (title: string, field: 'subtopics' | 'exercises', value: string) => void;
+}
+
+export interface CourseStudyPlanModalProps {
+  courses: RegisteredCourseItem[];
+  initialCourseId?: string;
+  onClose: () => void;
 }

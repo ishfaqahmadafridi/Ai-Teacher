@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import { useScheduleAttendance } from '../../hooks/useScheduleAttendance';
+import { StudyPlanWeeks } from './StudyPlanWeeks';
 import { ScheduleStartReminder } from './ScheduleStartReminder';
 import { useClassScheduleSection } from '../../hooks/useClassScheduleSection';
 import { ScheduleHeaderBanner } from './ScheduleHeaderBanner';
@@ -20,6 +21,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
   const { join, error: joinError } = useScheduleAttendance(onJoinClass);
   const {
     error,
+    hasDatedPlan,
     jobStatus,
     days,
     selectedDay,
@@ -50,6 +52,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
     <div className={`space-y-6 ${className}`}>
       {/* Top Banner Header & View Mode Switcher */}
       <ScheduleHeaderBanner
+        isDatedPlan={hasDatedPlan}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
         onOpenAiPlanner={openPreferences}
@@ -60,7 +63,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
       {isLoading && <p role="status" className="text-sm text-dashboard-muted">Timetable {jobStatus || 'queued'}…</p>}
       <ScheduleStartReminder items={scheduleItems} />
       {/* Main Schedule Content View */}
-      {viewMode === 'timeline' ? (
+      {hasDatedPlan ? <StudyPlanWeeks items={scheduleItems} onJoinClass={join} onSelectNoticeItem={setSelectedNoticeItem} /> : viewMode === 'timeline' ? (
         <ScheduleTimelineView
           days={days}
           selectedDay={selectedDay}
@@ -91,7 +94,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
         onAddScheduleSlot={handleAddScheduleSlot}
       />
 
-      {/* Step 1: AI Timetable Preferences Modal */}
+      {/* Step 1: Class availability preferences */}
       <TimetablePreferencesModal
         error={error}
         isOpen={isPreferencesOpen}
@@ -100,7 +103,7 @@ export const ClassScheduleSection = memo(function ClassScheduleSection(
         isLoading={isLoading}
       />
 
-      {/* Step 2: AI Suggested Timetable Review Modal */}
+      {/* Step 2: Timetable review */}
       <TimetableSuggestionReviewModal
         error={error}
         isOpen={isReviewOpen}
