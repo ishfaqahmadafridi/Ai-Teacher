@@ -23,6 +23,14 @@ def reconcile_timetable(saved_id, now=None):
             active = datetime.fromisoformat(item["activeFrom"]) if item.get("activeFrom") else saved.updated_at
             if timezone.is_naive(active):
                 active = timezone.make_aware(active, datetime_timezone.utc)
+            if item.get('planStartDate') and item.get('sessionDate'):
+                start, end = session_window(item, saved.user.timezone, now)
+                if start >= active and end <= now:
+                    snapshot_occurrence(saved.user, item, start, end)
+                    SessionAttendance.objects.get_or_create(user=saved.user, session_id=item['id'], session_date=start.date(), defaults={'status': 'missed'})
+                elif end > now and start >= active:
+                    next_ends.append(end)
+                continue
             # Backfill every elapsed week, including periods when the student never logged in.
             cursor = max(active, saved.reconciled_through) if saved.reconciled_through else active
             while cursor <= now:

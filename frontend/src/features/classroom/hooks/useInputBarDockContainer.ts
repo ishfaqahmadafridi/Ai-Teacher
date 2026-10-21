@@ -24,7 +24,7 @@ export function useInputBarDockContainer() {
 
   return {
     topic,
-    questionNotice: loading ? 'Preparing your answer…' : isPlaying ? 'Listen to the lesson. You can ask a question when it finishes.' : hasLecture ? `Any questions about ${topic || 'this topic'}? Type your question or use Mic, then select Ask. Answers play one step at a time.` : 'Type a question or use Mic, then select Ask.',
+    questionNotice: loading ? 'Preparing your answer…' : isPlaying ? 'Listen to the lesson. You can ask a question when it finishes.' : hasLecture ? `Any questions about ${topic || 'this topic'}? Type your question or use Mic, then select Ask. Answers play one step at a time.` : '',
     inputText,
     loading,
     isPlaying,

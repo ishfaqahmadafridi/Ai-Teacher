@@ -1,15 +1,15 @@
 import { isAxiosError } from 'axios';
 import { apiClient } from '@/lib/api';
-import type { ScheduleItem, SuggestedTimetable, StudentSchedulePreferences, SessionJoinResult } from '@/features/dashboard/types/schedule.types';
-export interface TimetableJob { id: string; status: 'queued' | 'processing' | 'ready' | 'failed'; result?: SuggestedTimetable; error?: string }
+import type { ScheduleItem, StudentSchedulePreferences, SessionJoinResult } from '@/features/dashboard/types/schedule.types';
+import { buildTimetableRequest } from '@/features/dashboard/utilities/timetablePreferencesUtils';
+import type { TimetableJob } from '@/features/dashboard/types/timetableJob.types';
+export type { TimetableJob } from '@/features/dashboard/types/timetableJob.types';
 const base = '/api/dashboard/timetable/';
 export const TimetableService = {
   async join(id: string): Promise<SessionJoinResult> { return (await apiClient.post<SessionJoinResult>(`${base}sessions/${id}/join/`)).data; },
   async generate(preferences: StudentSchedulePreferences, timezone: string): Promise<TimetableJob> {
-    const windows = { morning: ['09:00', '12:30'], afternoon: ['14:00', '17:00'], evening: ['16:00', '19:30'], any: ['09:00', '19:30'] };
-    const window = preferences.preferredTime === 'custom' ? [preferences.customStartTime, preferences.customEndTime] : windows[preferences.preferredTime];
     try {
-    return (await apiClient.post<TimetableJob>(`${base}generate/`, { start_time: window[0], end_time: window[1], days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', ...(preferences.includeSaturday ? ['Saturday'] : [])], max_classes: preferences.maxClassesPerDay, timezone })).data;
+      return (await apiClient.post<TimetableJob>(`${base}generate/`, buildTimetableRequest(preferences, timezone))).data;
     } catch (error) {
       if (isAxiosError(error)) {
         const data = error.response?.data;

@@ -3,8 +3,7 @@
 import { memo } from 'react';
 import type { PlaybackControlsRowProps } from '../../../types/input.types';
 
-import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { toggleSubtitles } from '@/features/classroom/state/classroomSlice';
+import { usePlaybackSubtitles } from '../../../hooks/usePlaybackSubtitles';
 
 export const PlaybackControlsRow = memo(function PlaybackControlsRow({
   chunksLength,
@@ -14,8 +13,7 @@ export const PlaybackControlsRow = memo(function PlaybackControlsRow({
   onStop,
   className = '',
 }: PlaybackControlsRowProps) {
-  const dispatch = useAppDispatch();
-  const showSubtitles = useAppSelector((s) => s.classroom.showSubtitles);
+  const { showSubtitles, onToggleSubtitles } = usePlaybackSubtitles();
 
   if (chunksLength === 0) return null;
 
@@ -50,7 +48,7 @@ export const PlaybackControlsRow = memo(function PlaybackControlsRow({
       <button
         id="subtitles-toggle-btn"
         type="button"
-        onClick={() => dispatch(toggleSubtitles())}
+        onClick={onToggleSubtitles}
         title={showSubtitles ? 'Hide Subtitles' : 'Show Subtitles'}
         className={`flex items-center gap-1.5 text-xs font-mono font-bold px-2.5 py-1.5 rounded-xl border transition-all cursor-pointer shadow-sm ${
           showSubtitles

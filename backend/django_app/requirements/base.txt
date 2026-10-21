@@ -20,7 +20,7 @@ langgraph==1.2.14
 pydantic==2.13.4
 
 numpy==2.4.6
-pypdf==6.19.0
+pypdf==6.20.1
 faiss-cpu==1.15.1
 # Direct text-only ONNX runtime avoids FastEmbed's Pillow<13 constraint.
 onnxruntime==1.23.2
@@ -39,3 +39,6 @@ gunicorn==26.2.0
 # Shared research cache and provider admission
 django-redis==7.0.0
 redis==6.4.0
+
+# Parse saved lesson Markdown consistently for Word exports.
+markdown-it-py==4.2.0

@@ -120,3 +120,6 @@ export interface ChalkboardNotesViewProps {
   isWriting: boolean;
   className?: string;
 }
+
+export interface FormattedFormulaProps { formula: string }
+export interface FormulaToken { text: string; className: string }

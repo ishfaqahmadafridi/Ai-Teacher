@@ -2,13 +2,12 @@
 import { memo } from 'react';
 import type { LectureNotesPanelProps } from '../../types/sidebar.types';
 import { useLectureNotesPanel } from '../../hooks/useLectureNotesPanel';
-import { NoteFigurePreview } from './notes/NoteFigurePreview';
 import { NoteLanguageSelector, NoteCustomInputForm, NoteDownloadActionCard } from './notes';
 
 export const LectureNotesPanel = memo(function LectureNotesPanel({ className = '' }: LectureNotesPanelProps) {
   const { isSignedIn, currentNote, notes, selectedId, selectNote, selectedLanguage, customLangInput,
     savedCustomLang, showCustomInput, activeLangLabel, setCustomLangInput, handleSaveCustomLang,
-    handlePillClick, handleDownloadPdf, handleDownloadDocx, translate, busy, error, loading } = useLectureNotesPanel();
+    handlePillClick, handleDownloadPdf, handleDownloadDocx, translate, translationReady, busy, error, loading } = useLectureNotesPanel();
   if (!currentNote) return <p className="p-3 text-xs text-dashboard-muted" role="status">
     {!isSignedIn ? 'Sign in to save and download lecture notes.' : loading ? 'Loading saved notes…' : error || 'Notes appear automatically after your first completed answer.'}
   </p>;
@@ -33,20 +32,10 @@ export const LectureNotesPanel = memo(function LectureNotesPanel({ className = '
         </button>
       </div>}
       {error && <p role="alert" className="text-xs text-dashboard-danger">{error}</p>}
-      <div dir={currentNote.direction} lang={currentNote.language} className="max-h-80 space-y-3 overflow-y-auto rounded-lg bg-dashboard-subtle p-3 text-xs text-dashboard-text">
-        {currentNote.sections.map((section, index) => <section key={index}>
-          {section.key_point && <h4 className="mb-1 font-semibold text-dashboard-primary">{section.key_point}</h4>}
-          <p className="whitespace-pre-wrap leading-relaxed">{section.explanation}</p>
-          {section.formula && <p dir="ltr" className="mt-1 font-mono">{section.formula}</p>}
-          {currentNote.figure_indices.includes(index) && <NoteFigurePreview noteId={currentNote.id} index={index} caption={section.annotation || section.key_point} />}
-          {section.image_source && <a href={section.image_source} target="_blank" rel="noopener noreferrer" className="mt-1 block text-dashboard-primary underline">Lecture image source</a>}
-          {section.annotation && <p className="mt-1 text-dashboard-muted">{section.annotation}</p>}
-        </section>)}
-        {currentNote.sources.map(source => <a key={source.number} href={source.url} target="_blank" rel="noopener noreferrer" className="block text-dashboard-primary underline">
-          [{source.number}] {source.title}
-        </a>)}
-      </div>
-      <fieldset disabled={busy}>
+      <p className="text-xs text-dashboard-muted" role="status">
+        {translationReady ? 'Your complete lecture notes are saved automatically. Download the document below.' : 'Load or create the selected translation before downloading.'}
+      </p>
+      <fieldset disabled={busy || !translationReady}>
         <NoteDownloadActionCard title={currentNote.title} activeLangLabel={activeLangLabel}
           onDownloadPdf={handleDownloadPdf} onDownloadDocx={handleDownloadDocx} />
       </fieldset>

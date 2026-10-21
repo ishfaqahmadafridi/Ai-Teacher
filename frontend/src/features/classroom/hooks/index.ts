@@ -50,3 +50,10 @@ export * from './useLessonOutline';
 export * from './useCircuitLesson';
 
 export * from './useBoardWelcome';
+
+export { useBoardFullscreen } from './useBoardFullscreen';
+
+export { useFullscreenInputDock } from './useFullscreenInputDock';
+
+export { usePlaybackSubtitles } from './usePlaybackSubtitles';
+export { useMobileClassroomSidebar } from './useMobileClassroomSidebar';

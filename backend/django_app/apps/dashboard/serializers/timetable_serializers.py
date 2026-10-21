@@ -2,9 +2,15 @@
 from calendar import day_name
 
 from rest_framework import serializers
+from django.utils import timezone as django_timezone
+from ..constants.study_plan import STUDY_PLAN_MONTH_OPTIONS
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 class TimetablePreferencesSerializer(serializers.Serializer):
+    use_saved_plans = serializers.BooleanField(required=False)
+    course_ids = serializers.ListField(child=serializers.IntegerField(min_value=1), min_length=1, max_length=60, required=False)
+    start_date = serializers.DateField(required=False)
+    duration_months = serializers.ChoiceField(choices=STUDY_PLAN_MONTH_OPTIONS, required=False)
     start_time = serializers.TimeField()
     end_time = serializers.TimeField()
     days = serializers.ListField(child=serializers.ChoiceField(choices=list(day_name)), min_length=1, max_length=7)
@@ -13,10 +19,20 @@ class TimetablePreferencesSerializer(serializers.Serializer):
     break_minutes = serializers.IntegerField(min_value=0, max_value=120, default=30)
     timezone = serializers.CharField(max_length=100)
     def validate(self, data):
+        if data.get('course_ids') and len(set(data['course_ids'])) != len(data['course_ids']):
+            raise serializers.ValidationError('Select each course only once.')
+        if data.get('course_ids') and not data.get('use_saved_plans'):
+            raise serializers.ValidationError('Course selection requires saved study plans.')
+        if data.get('use_saved_plans') and (not data.get('course_ids') or data.get('start_date') or data.get('duration_months')):
+            raise serializers.ValidationError('Select courses with saved plans; dates and duration come from those plans.')
+        if ('start_date' in data) != ('duration_months' in data):
+            raise serializers.ValidationError('Choose both a start date and plan duration.')
         try:
             ZoneInfo(data["timezone"])
         except (ZoneInfoNotFoundError, ValueError):
             raise serializers.ValidationError("Choose a valid timezone.")
+        if data.get('start_date') and data['start_date'] < django_timezone.now().astimezone(ZoneInfo(data['timezone'])).date():
+            raise serializers.ValidationError('Choose today or a future start date.')
         start, end = data["start_time"], data["end_time"]
         if any(value.second or value.microsecond for value in (start, end)):
             raise serializers.ValidationError("Study times must use whole minutes.")

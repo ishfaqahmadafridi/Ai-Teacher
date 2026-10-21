@@ -5,7 +5,7 @@ DRF serializers for Courses, Live Classes, Assignments, and Dashboard Overview s
 """
 
 from rest_framework import serializers
-from apps.dashboard.models.dashboard_models import CourseModel, AssignmentModel, LiveClassModel
+from apps.dashboard.models import CourseModel, AssignmentModel, LiveClassModel
 
 
 class CourseModelSerializer(serializers.ModelSerializer):
@@ -20,11 +20,12 @@ class CourseModelSerializer(serializers.ModelSerializer):
             "credit_hours",
             "progress_percent",
             "created_at",
+            "outline_period",
             "outline_topics",
             "outline_source",
             "outline_updated_at",
         ]
-        read_only_fields = ["id", "created_at", "outline_topics", "outline_source", "outline_updated_at"]
+        read_only_fields = ["id", "created_at", "outline_period", "outline_topics", "outline_source", "outline_updated_at"]
 
 
 class CourseRegistrationRequestSerializer(serializers.Serializer):

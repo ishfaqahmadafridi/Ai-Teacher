@@ -8,6 +8,7 @@ import type { RegisteredCoursesSectionProps } from '../../types/courses.types';
 import { useAuthStore } from '@/features/auth/state/authStore';
 
 export const RegisteredCoursesSection = memo(function RegisteredCoursesSection({
+  onOpenTimetable,
   courses = [],
   fieldTitle = 'Your registered courses',
   onJoinCourse,
@@ -81,6 +82,7 @@ export const RegisteredCoursesSection = memo(function RegisteredCoursesSection({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCourses.map((course) => (
           <RegisteredCourseCard
+            onOpenTimetable={onOpenTimetable}
             key={course.id}
             course={course}
             onJoinCourse={onJoinCourse}

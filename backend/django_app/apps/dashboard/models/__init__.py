@@ -1,7 +1,9 @@
 """
 apps/dashboard/models/__init__.py
 """
-from .dashboard_models import CourseModel, AssignmentModel, LiveClassModel
+from .course import CourseModel
+from .assignment import AssignmentModel
+from .live_class import LiveClassModel
 
 __all__ = [
     "CourseModel",

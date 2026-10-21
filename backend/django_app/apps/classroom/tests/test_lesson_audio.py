@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from apps.classroom.services.lecture_notes import save_lecture_note
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 
 class LessonAudioTests(TestCase):

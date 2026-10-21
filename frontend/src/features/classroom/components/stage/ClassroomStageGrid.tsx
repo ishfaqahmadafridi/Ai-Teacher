@@ -1,27 +1,38 @@
 'use client';
 
 import { memo } from 'react';
-import { PanelsTopLeft } from 'lucide-react';
+import { PanelsTopLeft, Maximize2, Minimize2 } from 'lucide-react';
 import '../../styles/board.css';
 import { useStageDiagramGrid } from '../../hooks/useStageDiagramGrid';
+import { useBoardFullscreen } from '../../hooks/useBoardFullscreen';
 import { useChalkboardStage } from '../../hooks/useChalkboardStage';
 import { ChalkboardWelcomeSlate } from '../board/ChalkboardWelcomeSlate';
 import { ChalkboardNotesView } from '../board/ChalkboardNotesView';
-import { DynamicDiagramStage } from '../../utilities/lazyComponents';
+import { DynamicDiagramStage } from '../lazyComponents';
 
 export const ClassroomStageGrid = memo(function ClassroomStageGrid() {
   const { diagramType, currentCommand, currentFormula, hasVisual } = useStageDiagramGrid();
   const { points, isWriting, showGrid, topic } = useChalkboardStage();
+
+  const { boardRef, isFullscreen, expanded, toggleFullscreen } = useBoardFullscreen();
 
   const hasContent = points.length > 0;
 
   return (
     <div className="absolute inset-3 sm:inset-5 flex flex-col font-sans select-none">
       {/* Single Clean Unified Classroom Container — Zero internal divider lines */}
-      <div className="classroom-board relative w-full h-full min-h-0 overflow-y-auto flex flex-col px-5 pb-5 sm:px-8 sm:pb-8">
+      <div ref={boardRef} data-fullscreen-board={isFullscreen} className={`classroom-board relative w-full h-full min-h-0 overflow-y-auto flex flex-col px-5 pb-5 sm:px-8 sm:pb-8 ${expanded ? 'classroom-board-expanded' : ''}`}>
         <header className="relative z-10 flex shrink-0 items-center justify-between gap-4 border-b border-classroom-board-border py-4 sm:py-5">
           <div className="flex min-w-0 items-center gap-2.5"><PanelsTopLeft className="h-4 w-4 shrink-0 text-classroom-board-muted" aria-hidden="true" /><h1 className="truncate text-sm font-medium text-classroom-board-text" title={topic || 'Lesson board'}>{topic || 'Lesson board'}</h1></div>
-          <span className="shrink-0 text-xs text-classroom-board-muted">{hasContent || hasVisual ? 'Notes & visuals' : 'Ready when you are'}</span>
+          <div className="flex shrink-0 items-center gap-3">
+            <span className="hidden text-xs text-classroom-board-muted sm:inline">{hasContent || hasVisual ? 'Notes & visuals' : 'Ready when you are'}</span>
+            <button type="button" onClick={toggleFullscreen} aria-pressed={isFullscreen}
+              aria-label={isFullscreen ? 'Exit fullscreen board' : 'Open board fullscreen'}
+              title={isFullscreen ? 'Exit fullscreen (Esc)' : 'Open board fullscreen'}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-classroom-board-border text-classroom-board-muted transition-colors hover:bg-dashboard-selected hover:text-dashboard-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashboard-primary">
+              {isFullscreen ? <Minimize2 className="h-4 w-4" aria-hidden="true" /> : <Maximize2 className="h-4 w-4" aria-hidden="true" />}
+            </button>
+          </div>
         </header>
 
         {/* Faint Grid Lines Overlay if enabled */}
@@ -53,6 +64,11 @@ export const ClassroomStageGrid = memo(function ClassroomStageGrid() {
             )}
           </div>
         )}
+        <div data-fullscreen-input-host className="classroom-fullscreen-input-host">
+          <button type="button" className="classroom-fullscreen-input-handle" aria-label="Show question input">
+            <span aria-hidden="true" className="h-1 w-10 rounded-full bg-dashboard-muted/40" />
+          </button>
+        </div>
       </div>
     </div>
   );

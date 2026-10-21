@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import SimpleTestCase
 from apps.classroom.services.lesson_visuals import resolve_lesson_visuals
 from apps.classroom.serializers.ask_serializers import GeneratedAnswerSerializer
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 
 class LessonVisualTests(SimpleTestCase):

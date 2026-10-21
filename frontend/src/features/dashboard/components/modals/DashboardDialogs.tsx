@@ -7,6 +7,7 @@ import { ProjectSettingsModal } from '../settings';
 import type { DashboardDialogsProps } from '../../types';
 
 export const DashboardDialogs = memo(function DashboardDialogs({
+  onOpenTimetable,
   isRegisterCourseModalOpen,
   onCloseRegisterCourseModal,
   onRegisterCourse,
@@ -21,6 +22,7 @@ export const DashboardDialogs = memo(function DashboardDialogs({
     <>
       {/* Course Enrollment Dialog Modal */}
       <RegisterCourseModal
+        onOpenTimetable={onOpenTimetable}
         isOpen={isRegisterCourseModalOpen}
         onClose={onCloseRegisterCourseModal}
         onRegisterCourse={onRegisterCourse}

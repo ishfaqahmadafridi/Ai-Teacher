@@ -3,6 +3,12 @@ export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Frida
 export type ScheduleViewMode = 'timeline' | 'grid';
 
 export interface ScheduleItem {
+  planStartDate?: string;
+  planEndDate?: string;
+  weekNumber?: number;
+  sessionKind?: 'lesson' | 'practice' | 'quiz';
+  subtopics?: string[];
+  exercises?: string[];
   attendance?: 'attended' | 'missed' | 'unmarked';
   sessionDate?: string;
   sessionEnded?: boolean;

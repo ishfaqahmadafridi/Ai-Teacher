@@ -2,11 +2,13 @@
 
 import { memo } from 'react';
 import { useCourseOutlineCard } from '../../hooks/useCourseOutlineCard';
+import { CourseStudyPlanModal } from './CourseStudyPlanModal';
 import { CourseOutlineModal } from './CourseOutlineModal';
 import { CircleCheck, Clock3, Layers3, CalendarDays } from 'lucide-react';
 import type { RegisteredCourseCardProps } from '../../types/courses.types';
 
 export const RegisteredCourseCard = memo(function RegisteredCourseCard({
+  onOpenTimetable,
   course,
   className = '',
 }: RegisteredCourseCardProps) {
@@ -59,7 +61,9 @@ export const RegisteredCourseCard = memo(function RegisteredCourseCard({
         <span className="text-xs text-dashboard-muted">{course.outlineTopics?.length ? `${course.outlineTopics.length} outline topics` : 'No outline yet'}</span>
         <button type="button" onClick={outline.open} className="dashboard-button dashboard-button-secondary text-xs">{course.outlineTopics?.length ? 'View outline' : 'Set up outline'}</button>
       </div>
-      {outline.isOpen && <CourseOutlineModal course={course} onClose={outline.close} />}
+      {!!course.outlineTopics?.length && <button type="button" onClick={outline.openStudyPlan} className="dashboard-button dashboard-button-secondary text-xs">View study plan</button>}
+      {outline.isStudyPlanOpen && <CourseStudyPlanModal courses={[course]} onClose={outline.closeStudyPlan} />}
+      {outline.isOpen && <CourseOutlineModal onOpenTimetable={onOpenTimetable} course={course} onClose={outline.close} />}
       {/* Bottom Row: Credit Hours & Enrollment Info */}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 pt-3 border-t border-dashboard-border text-xs">
         <div className="flex items-center gap-1.5 font-medium text-dashboard-muted">

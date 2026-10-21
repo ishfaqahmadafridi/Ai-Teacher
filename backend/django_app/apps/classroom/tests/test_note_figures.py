@@ -10,7 +10,7 @@ from rest_framework.exceptions import ValidationError
 from apps.classroom.services.lecture_notes import save_lecture_note, note_content
 from apps.classroom.services.note_figures import save_note_figure, note_figures
 from apps.classroom.services.note_document import create_note_document
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 
 class NoteFigureTests(TestCase):

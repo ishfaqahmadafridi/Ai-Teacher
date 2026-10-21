@@ -4,15 +4,12 @@ import { useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { TimetableService } from '@/services/timetableService';
 import { useAuthStore } from '@/features/auth/state/authStore';
+import { TIMETABLE_JOB_POLL_MS } from '../constants/timetableConstants';
+import type { UseTimetablePlannerModalOptions } from '../types/timetableJob.types';
 import { DEFAULT_STUDENT_PREFERENCES } from '../constants/scheduleConstants';
 import type {
-  ScheduleItem,
   StudentSchedulePreferences,
 } from '../types/schedule.types';
-
-export interface UseTimetablePlannerModalOptions {
-  onScheduleUpdated?: (newItems: ScheduleItem[]) => void;
-}
 
 export function useTimetablePlannerModal(options: UseTimetablePlannerModalOptions = {}) {
   const { onScheduleUpdated } = options;
@@ -21,7 +18,7 @@ export function useTimetablePlannerModal(options: UseTimetablePlannerModalOption
   const queryClient = useQueryClient();
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const job = useQuery({ queryKey: ['timetable-job', userId, jobId], queryFn: ({ signal }) => TimetableService.job(jobId!, signal), enabled: Boolean(jobId), refetchInterval: (query) => ['ready', 'failed'].includes(query.state.data?.status ?? '') ? false : 2000, retry: false });
+  const job = useQuery({ queryKey: ['timetable-job', userId, jobId], queryFn: ({ signal }) => TimetableService.job(jobId!, signal), enabled: Boolean(jobId), refetchInterval: (query) => ['ready', 'failed'].includes(query.state.data?.status ?? '') ? false : TIMETABLE_JOB_POLL_MS, retry: false });
 
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -32,6 +29,8 @@ export function useTimetablePlannerModal(options: UseTimetablePlannerModalOption
 
   const openPreferences = useCallback(() => {
     setJobId(null);
+    setError(null);
+    setIsReviewOpen(false);
     setIsLoading(false);
     setIsPreferencesOpen(true);
   }, []);
@@ -53,6 +52,7 @@ export function useTimetablePlannerModal(options: UseTimetablePlannerModalOption
       try {
         setError(null);
         const created = await TimetableService.generate(newPreferences, timezone || 'UTC');
+        queryClient.setQueryData(['timetable-job', userId, created.id], created);
         setJobId(created.id);
         setIsReviewOpen(true);
         await queryClient.invalidateQueries({ queryKey: ['timetable-job', userId, created.id] });

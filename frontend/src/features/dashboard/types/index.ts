@@ -13,3 +13,7 @@ export * from './settings.types';
 export * from './modals.types';
 
 
+
+export * from './studyPlan.types';
+
+export * from './timetableJob.types';

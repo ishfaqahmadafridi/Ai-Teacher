@@ -26,16 +26,16 @@ export const NoteLanguageSelector = memo(function NoteLanguageSelector({
         </span>
       </div>
 
-      {/* 4 Pills Grid */}
-      <div className="grid grid-cols-5 gap-1 p-1 rounded-xl bg-dashboard-subtle border border-dashboard-border">
+      {/* Wrap labels to keep every language readable in the sidebar. */}
+      <div className="flex flex-wrap gap-1 p-1 rounded-xl bg-dashboard-subtle border border-dashboard-border">
         {options.map((item) => (
           <button
             key={item.id}
             type="button"
             onClick={() => onPillClick(item.id)}
-            className={`py-1.5 px-1 rounded-lg text-[10px] font-mono font-bold text-center transition-all cursor-pointer truncate ${
+            className={`py-1.5 px-1 rounded-lg text-[10px] font-mono font-bold text-center transition-all cursor-pointer min-w-0 flex-1 basis-20 whitespace-normal break-words ${
               selectedLanguage === item.id
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-dashboard-text shadow-md'
+                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
                 : 'text-dashboard-muted hover:text-dashboard-primary hover:bg-dashboard-selected/60'
             }`}
             title={item.id === 'Custom' ? 'Click to open or edit custom format' : undefined}

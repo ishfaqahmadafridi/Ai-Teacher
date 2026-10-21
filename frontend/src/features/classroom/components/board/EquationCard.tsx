@@ -1,8 +1,8 @@
 'use client';
 
 import { memo } from 'react';
-import { renderFormattedFormula } from '../../utilities/formulaUtils';
-import type { EquationCardProps } from './board.types';
+import { FormattedFormula } from './FormattedFormula';
+import type { EquationCardProps } from '../../types/board.types';
 
 export const EquationCard = memo(function EquationCard({
   label = 'Primary Equation',
@@ -15,7 +15,7 @@ export const EquationCard = memo(function EquationCard({
         {label}
       </div>
       <div className="text-3xl md:text-4xl font-mono text-[#e2e2e8] flex items-center justify-center py-3.5 bg-[#0c0e12]/60 rounded-lg border border-white/10 shadow-inner px-4 overflow-x-auto">
-        {renderFormattedFormula(formula)}
+        <FormattedFormula formula={formula} />
       </div>
     </div>
   );

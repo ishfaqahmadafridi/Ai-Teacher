@@ -37,4 +37,9 @@ def join_session(user, session_id):
             user=user, session_id=session_id, session_date=start.date(),
             defaults={'status': 'attended', 'joined_at': now},
         )
-    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status, 'lessonTopic': item.get('title', ''), 'courseTitle': item.get('subject', '')}
+    lesson_topic = item.get('title', '')
+    if item.get('subtopics'):
+        lesson_topic += '. Cover these subtopics: ' + '; '.join(item['subtopics'])
+    if item.get('exercises'):
+        lesson_topic += '. Include guided practice: ' + '; '.join(item['exercises'])
+    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status, 'lessonTopic': lesson_topic, 'courseTitle': item.get('subject', '')}

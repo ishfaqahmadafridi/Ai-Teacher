@@ -3,6 +3,7 @@ import type { RegisteredCourseItem } from './courses.types';
 import type { StudentProfile } from './dashboard.types';
 
 export interface DashboardDialogsProps {
+  onOpenTimetable?: () => void;
   isRegisterCourseModalOpen: boolean;
   onCloseRegisterCourseModal: () => void;
   onRegisterCourse: (courseData: {

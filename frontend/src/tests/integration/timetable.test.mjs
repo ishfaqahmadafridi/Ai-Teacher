@@ -109,3 +109,20 @@ test('early admission crosses midnight and the Sunday/Monday boundary', () => {
   assert.equal(getScheduleAccess({ ...item, sessionDate: '2026-10-12' }, 'UTC', new Date('2026-10-11T23:57:00Z')).canJoin, true);
   assert.equal(getScheduleAccess({ ...item, sessionEnded: true }, 'UTC', new Date('2026-10-12T00:00:00Z')).canJoin, false);
 });
+
+test('class availability includes breaks and validates the entire daily class count', () => {
+  const { timetableAvailabilityError } = load('features/dashboard/utilities/timetablePreferencesUtils.ts');
+  assert.equal(timetableAvailabilityError({ preferredTime: 'morning', maxClassesPerDay: 2 }), null);
+  assert.match(timetableAvailabilityError({ preferredTime: 'morning', maxClassesPerDay: 3 }), /330 minutes/);
+  assert.ok(timetableAvailabilityError({ preferredTime: 'afternoon', maxClassesPerDay: 2 }));
+  assert.equal(timetableAvailabilityError({ preferredTime: 'afternoon', maxClassesPerDay: 1 }), null);
+  assert.equal(timetableAvailabilityError({ preferredTime: 'custom', customStartTime: '09:00', customEndTime: '14:30', maxClassesPerDay: 3 }), null);
+  assert.ok(timetableAvailabilityError({ preferredTime: 'custom', customStartTime: 'bad', customEndTime: '14:30', maxClassesPerDay: 2 }));
+});
+
+test('saved plan requests cannot override saved duration with stale form values', () => {
+  const { buildTimetableRequest } = load('features/dashboard/utilities/timetablePreferencesUtils.ts');
+  const request = buildTimetableRequest({ useSavedPlans: true, courseIds: ['1'], startDate: '2030-01-01', durationMonths: 4, preferredTime: 'morning', maxClassesPerDay: 2 }, 'Asia/Karachi');
+  assert.equal('start_date' in request, false);
+  assert.equal('duration_months' in request, false);
+});
