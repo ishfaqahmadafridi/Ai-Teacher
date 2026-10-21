@@ -4,7 +4,6 @@ export * from './formulaUtils';
 export * from './keyboardUtils';
 export * from './styleUtils';
 export * from './downloadNotesUtils';
-export * from './lazyComponents';
 
 export * from './lectureFigureCapture';
 

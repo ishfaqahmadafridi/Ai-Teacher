@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setInputText, setError, setChunks, setPendingQuestion, setChalkboardPoints } from '@/features/classroom/state/classroomSlice';
+import { setInputText, setError, setVoiceError, setChunks, setPendingQuestion, setChalkboardPoints } from '@/features/classroom/state/classroomSlice';
 import { useVoiceInput } from './useVoiceInput';
 import { useChunkPlayer } from './useChunkPlayer';
 import { useClassroomApi } from './useClassroomApi';
@@ -100,6 +100,7 @@ export function useInputBar() {
 
   const clearErrors = useCallback(() => {
     dispatch(setError(null));
+    dispatch(setVoiceError(null));
     setLocalError(null);
   }, [dispatch]);
 

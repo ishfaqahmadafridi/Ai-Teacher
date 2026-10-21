@@ -16,3 +16,5 @@ export * from './attendanceConstants';
 export * from './scheduleAccessConstants';
 
 export * from './heroAppearanceConstants';
+
+export * from './courseOutlineConstants';

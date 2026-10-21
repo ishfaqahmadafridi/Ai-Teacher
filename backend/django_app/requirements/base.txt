@@ -39,3 +39,6 @@ gunicorn==26.2.0
 # Shared research cache and provider admission
 django-redis==7.0.0
 redis==6.4.0
+
+# Parse saved lesson Markdown consistently for Word exports.
+markdown-it-py==4.2.0

@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 from rest_framework.exceptions import ValidationError
 from apps.classroom.models.lesson_job import LessonJob
 from apps.classroom.services.lesson_jobs import submit_lesson_job, run_lesson_job, LessonQueueFull
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 
 class LessonJobTests(TestCase):

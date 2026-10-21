@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 from django.core.cache import cache
 from apps.classroom.services.lecture_notes import save_lecture_note
 from apps.classroom.services.visual_repair import repair_note_visuals
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 @override_settings(CACHES={'default':{'BACKEND':'django.core.cache.backends.locmem.LocMemCache'}})
 class VisualRepairTests(TestCase):

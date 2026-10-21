@@ -1,4 +1,10 @@
 @theme {
+  --color-classroom-formula-blue: #b8c3ff;
+  --color-classroom-formula-green: #6ffbbe;
+  --color-classroom-formula-coral: #ffb59b;
+  --color-classroom-formula-purple: #d0bcff;
+  --color-classroom-formula-teal: #80d5d4;
+  --color-classroom-formula-number: #ffd8e4;
   /* Light dashboard: neutral surfaces, blue actions, accessible status text. */
   --color-dashboard-bg: #f6f8fb;
   --color-dashboard-panel: #ffffff;

@@ -8,7 +8,7 @@ import { QuestionTextInput } from './QuestionTextInput';
 import { VoiceMicButton } from './VoiceMicButton';
 import { SubmitAskButton } from './SubmitAskButton';
 import { ClassroomChatInboxPopover } from './ClassroomChatInboxPopover';
-import { DynamicEmojiReactionPopover } from '@/features/classroom/utilities/lazyComponents';
+import { DynamicEmojiReactionPopover } from '@/features/classroom/components/lazyComponents';
 
 export const InputBarDockContainer = memo(function InputBarDockContainer() {
   const {
@@ -30,11 +30,10 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
 
   return (
     <>
-    <p role="status" className="px-2 text-xs text-dashboard-muted">{questionNotice}</p>
+    {questionNotice && <p role="status" className="px-2 text-xs text-dashboard-muted">{questionNotice}</p>}
     <div className="flex flex-wrap items-center justify-between gap-3 bg-dashboard-panel border border-dashboard-border rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
       {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
       <div className="flex flex-wrap items-center gap-2 min-w-0">
-        <VoiceMicButton disabled={loading && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <RaiseHandButton handRaised={handRaised} onToggleHand={handleToggleHand} />
         <DynamicEmojiReactionPopover
           showEmojiPicker={showEmojiPicker}
@@ -53,6 +52,7 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
           onKeyDown={handleKeyDown}
           disabled={loading}
         />
+        <VoiceMicButton disabled={loading && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <SubmitAskButton
           loading={loading}
           disabled={loading || !inputText.trim()}

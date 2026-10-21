@@ -5,7 +5,7 @@ DRF serializers for Courses, Live Classes, Assignments, and Dashboard Overview s
 """
 
 from rest_framework import serializers
-from apps.dashboard.models.dashboard_models import CourseModel, AssignmentModel, LiveClassModel
+from apps.dashboard.models import CourseModel, AssignmentModel, LiveClassModel
 
 
 class CourseModelSerializer(serializers.ModelSerializer):

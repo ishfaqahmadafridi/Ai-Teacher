@@ -32,3 +32,5 @@ __all__ = [
 from .attendance_serializers import AttendanceReportSerializer, SessionJoinSerializer
 
 from .course_outline_serializers import CourseOutlineSerializer, CourseOutlineResponseSerializer
+
+from .course_outline_draft import OutlineDraft, OutlineTopicDetail

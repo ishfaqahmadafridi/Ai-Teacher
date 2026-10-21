@@ -9,3 +9,5 @@ export * from './RegisterCourseModal';
 
 export * from './CourseOutlineEditor';
 export * from './CourseOutlineModal';
+
+export { CourseOutlineTopicPlan } from './CourseOutlineTopicPlan';

@@ -17,7 +17,8 @@ export const InputBarToasts = memo(function InputBarToasts() {
           {voiceError && <button type="button" onClick={retryAudio} className="shrink-0 underline px-2">Retry audio</button>}
           <button
             type="button"
-            className="text-red-400 hover:text-dashboard-primary transition-colors cursor-pointer"
+            aria-label="Dismiss error"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-dashboard-danger hover:bg-dashboard-danger/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dashboard-primary transition-colors cursor-pointer"
             onClick={clearErrors}
           >
             <X className="w-4 h-4" />

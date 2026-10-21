@@ -1,9 +1,8 @@
 'use client';
 
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 import { ListTree, FileText, HelpCircle } from 'lucide-react';
-import { useUIStore } from '@/store/uiStore';
-import { useClassroomSidebar } from '../../../hooks/useClassroomSidebar';
+import { useMobileClassroomSidebar } from '../../../hooks/useMobileClassroomSidebar';
 import { LectureHeader } from '../LectureHeader';
 import { SidebarAccordionSection } from '../SidebarAccordionSection';
 import { TodayOutlinePanel } from '../TodayOutlinePanel';
@@ -15,39 +14,23 @@ export const MobileSidebar = memo(function MobileSidebar({
   onAsk,
   loading = false,
 }: SidebarProps) {
-  const { mobileSidebarOpen, setMobileSidebarOpen } = useUIStore();
-  const {
-    expandedSections,
-    activeTopicId,
-    activeTopicTitle,
-    topics,
-    toggleSection,
-    handleSelectTopic,
-  } = useClassroomSidebar();
-
-  // Close on Escape key
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setMobileSidebarOpen(false);
-    };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [setMobileSidebarOpen]);
+  const { isOpen, handleClose, expandedSections, activeTopicId, activeTopicTitle,
+    topics, toggleSection, selectTopic, ask } = useMobileClassroomSidebar(onAsk);
 
   return (
     <>
       {/* Backdrop */}
-      {mobileSidebarOpen && (
+      {isOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
-          onClick={() => setMobileSidebarOpen(false)}
+          onClick={handleClose}
         />
       )}
 
       {/* Drawer */}
       <aside
         className={`fixed top-0 left-0 h-full w-80 z-50 bg-dashboard-subtle border-r border-dashboard-border flex flex-col overflow-y-auto transition-transform duration-300 ease-in-out lg:hidden ${
-          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Top Header — Lecture Name & Close Button */}
@@ -56,7 +39,7 @@ export const MobileSidebar = memo(function MobileSidebar({
           <button
             id="mobile-sidebar-close"
             type="button"
-            onClick={() => setMobileSidebarOpen(false)}
+            onClick={handleClose}
             className="absolute top-3 right-3 p-1.5 rounded-lg text-dashboard-muted hover:text-dashboard-primary hover:bg-dashboard-selected transition-all cursor-pointer"
             aria-label="Close sidebar"
           >
@@ -78,10 +61,7 @@ export const MobileSidebar = memo(function MobileSidebar({
             <TodayOutlinePanel
             topics={topics}
               activeTopicId={activeTopicId}
-              onSelectTopic={(id) => {
-                handleSelectTopic(id);
-                setMobileSidebarOpen(false);
-              }}
+              onSelectTopic={selectTopic}
             />
           </SidebarAccordionSection>
 
@@ -107,10 +87,7 @@ export const MobileSidebar = memo(function MobileSidebar({
             onToggle={toggleSection}
           >
             <QuickDoubtPanel
-              onAsk={(q) => {
-                onAsk?.(q);
-                setMobileSidebarOpen(false);
-              }}
+              onAsk={ask}
               loading={loading}
             />
           </SidebarAccordionSection>

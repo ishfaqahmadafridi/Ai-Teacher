@@ -18,3 +18,47 @@
 @media (prefers-reduced-motion: reduce) {
   .classroom-board-start { transition: none; }
 }
+
+.classroom-board:fullscreen,
+.classroom-board-expanded {
+  width: 100%;
+  height: 100dvh;
+  border-radius: 0;
+}
+.classroom-board-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.classroom-fullscreen-input-host { display: none; }
+[data-fullscreen-board="true"] .classroom-fullscreen-input-host {
+  display: block;
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 30;
+  padding: 0.75rem max(0.5rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom));
+  background: var(--color-dashboard-bg);
+  border-top: 1px solid var(--color-classroom-board-border);
+  transform: translateY(calc(100% - 1.5rem));
+  transition: transform 180ms ease;
+}
+[data-fullscreen-board="true"] .classroom-fullscreen-input-host:is(:hover, :focus-within, [data-revealed="true"]) {
+  transform: translateY(0);
+}
+.classroom-fullscreen-input-handle {
+  display: flex;
+  width: 100%;
+  height: 1.5rem;
+  margin-top: -0.75rem;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.classroom-fullscreen-input-handle:focus-visible {
+  outline: 2px solid var(--color-dashboard-primary);
+  outline-offset: -2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .classroom-fullscreen-input-host { transition: none; }
+}

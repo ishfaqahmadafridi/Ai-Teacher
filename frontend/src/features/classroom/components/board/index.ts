@@ -14,3 +14,5 @@ export { EquationCard } from './EquationCard';
 
 // Types
 export * from './board.types';
+
+export { FormattedFormula } from './FormattedFormula';

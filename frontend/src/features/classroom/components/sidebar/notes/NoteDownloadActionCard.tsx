@@ -13,10 +13,10 @@ export const NoteDownloadActionCard = memo(function NoteDownloadActionCard({
 }: NoteDownloadActionCardProps) {
   return (
     <div
-      className={`p-3.5 rounded-2xl bg-dashboard-subtle border border-dashboard-border flex items-center justify-between gap-3 shadow-md ${className}`}
+      className={`p-3.5 rounded-2xl bg-dashboard-subtle border border-dashboard-border flex flex-wrap items-center justify-between gap-3 shadow-md ${className}`}
     >
-      <div className="min-w-0 flex-1">
-        <h4 className="text-xs font-bold text-dashboard-text truncate font-['Hanken_Grotesk',sans-serif]">
+      <div className="min-w-0 basis-full flex-1">
+        <h4 className="text-xs font-bold text-dashboard-text break-words font-['Hanken_Grotesk',sans-serif]">
           {title}
         </h4>
         <span className="inline-block mt-1 text-[9px] font-mono font-bold px-2 py-0.5 rounded-md bg-violet-500/15 text-dashboard-primary border border-violet-500/30 capitalize">

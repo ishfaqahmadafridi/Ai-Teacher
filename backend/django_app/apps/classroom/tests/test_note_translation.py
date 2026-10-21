@@ -1,13 +1,16 @@
 """Translation cache reuse, schema validation and failure recovery tests."""
 import json
 from types import SimpleNamespace
+from io import BytesIO
+from docx import Document
+from rest_framework.test import APIClient
 from unittest.mock import patch
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from apps.classroom.models.lecture_notes import NoteTranslation
 from apps.classroom.services.lecture_notes import save_lecture_note, note_content
 from apps.classroom.services.note_translation import translate_note, TranslationUnavailable, TranslationProcessing
-from apps.classroom.tests.test_lecture_notes import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 
 class NoteTranslationTests(TestCase):
@@ -59,3 +62,31 @@ class NoteTranslationTests(TestCase):
         with self.assertRaises(TranslationUnavailable):
             translate_note(self.note, 'ur')
         self.assertEqual(NoteTranslation.objects.get(note=self.note).status, 'failed')
+
+    @patch('apps.classroom.services.note_translation.get_llm')
+    def test_language_selection_translation_and_export_round_trip(self, llm):
+        client = APIClient()
+        client.force_authenticate(self.note.user)
+        for language, title, explanation, direction in [
+            ('ur', 'اوہم کا قانون', 'وولٹیج 12 V / 4 ohms = 3 A.', 'rtl'),
+            ('hi', 'ओम का नियम', 'वोल्टेज 12 V / 4 ohms = 3 A.', 'ltr'),
+            ('de', 'Ohmsches Gesetz', 'Spannung 12 V / 4 ohms = 3 A.', 'ltr'),
+        ]:
+            with self.subTest(language=language):
+                content = note_content(self.note)
+                content.update(language=language, title=title)
+                content['sections'][0]['explanation'] = explanation
+                llm.return_value.bind.return_value.invoke.return_value = SimpleNamespace(text=json.dumps(content), usage_metadata={'total_tokens': 10})
+                translated = client.post(f'/api/notes/{self.note.id}/translate/', {'language': language})
+                self.assertEqual(translated.status_code, 200)
+                self.assertEqual(translated.data['language'], language)
+                self.assertEqual(translated.data['direction'], direction)
+                calls = llm.call_count
+                cached = client.post(f'/api/notes/{self.note.id}/translate/', {'language': language})
+                self.assertEqual(cached.data['extra_llm_tokens'], 0)
+                document = client.get(f'/api/notes/{self.note.id}/document/', {'language': language})
+                self.assertEqual(document.status_code, 200)
+                word = Document(BytesIO(document.content))
+                self.assertEqual(word.paragraphs[0].text, title)
+                self.assertIn(explanation, '\n'.join(p.text for p in word.paragraphs))
+                self.assertEqual(llm.call_count, calls)

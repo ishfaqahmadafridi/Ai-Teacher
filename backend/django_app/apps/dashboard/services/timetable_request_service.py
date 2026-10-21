@@ -22,7 +22,7 @@ class TimetableConflict(APIException):
 def request_timetable(user, preferences):
     with transaction.atomic():
         get_user_model().objects.select_for_update().get(pk=user.pk)
-        courses = list(CourseModel.objects.filter(user=user).order_by("id").values("id", "title", "subject_field", "outline_topics"))
+        courses = list(CourseModel.objects.filter(user=user).order_by("id").values("id", "title", "subject_field", "outline_topics", "outline_details"))
         if not courses:
             raise ValidationError("Register a course before creating a timetable.")
         inputs = {"courses": courses, "preferences": preferences, "planner_version": PLANNER_VERSION}
@@ -53,8 +53,8 @@ def accept_timetable_job(user, job_id):
         job = get_object_or_404(TimetableJob, pk=job_id, user=user, status="ready")
         if not set(str(course.pk) for course in CourseModel.objects.filter(user=user)).issuperset(item["courseId"] for item in job.result["schedule"]):
             raise TimetableConflict("Courses changed. Generate a new timetable.")
-        current_outlines = {str(course.pk): course.outline_topics for course in CourseModel.objects.filter(user=user)}
-        if any(current_outlines.get(str(course['id']), []) != course.get('outline_topics', []) for course in job.inputs['courses']):
+        current_outlines = {str(course.pk): (course.outline_topics, course.outline_details) for course in CourseModel.objects.filter(user=user)}
+        if any(current_outlines.get(str(course['id']), []) != (course.get('outline_topics', []), course.get('outline_details', [])) for course in job.inputs['courses']):
             raise TimetableConflict("Course outlines changed. Generate a new timetable.")
         previous = SavedTimetable.objects.filter(user=user).first()
         if previous:

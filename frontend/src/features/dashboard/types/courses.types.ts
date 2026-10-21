@@ -79,7 +79,22 @@ export interface RegisterCourseFooterActionsProps {
   className?: string;
 }
 
+export interface CourseOutlineTopicDetail {
+  title: string;
+  subtopics: string[];
+  exercises: string[];
+}
+export interface CourseOutlineSession {
+  title: string;
+  day: string;
+  date: string;
+  start: string;
+  end: string;
+  timezone: string;
+}
 export interface CourseOutline {
+  details: CourseOutlineTopicDetail[];
+  sessions: CourseOutlineSession[];
   topics: string[];
   source: '' | 'manual' | 'ai';
   updated_at: string | null;
@@ -87,4 +102,12 @@ export interface CourseOutline {
 export interface CourseOutlineEditorProps {
   course: RegisteredCourseItem;
   onClose: () => void;
+}
+
+export interface CourseOutlineTopicPlanProps {
+  topics: string[];
+  details: CourseOutlineTopicDetail[];
+  sessions: CourseOutlineSession[];
+  disabled: boolean;
+  onUpdate: (title: string, field: 'subtopics' | 'exercises', value: string) => void;
 }

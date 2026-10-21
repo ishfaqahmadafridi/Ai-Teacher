@@ -1,5 +1,6 @@
 """Authenticated notes retrieval, explicit translation and zero-inference exports."""
 from django.http import HttpResponse
+from django.utils.http import content_disposition_header
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,6 +13,7 @@ from apps.classroom.serializers.note_serializers import NotesQuerySerializer, No
 from apps.classroom.services.lecture_notes import list_lecture_notes, get_lecture_note, note_response
 from apps.classroom.services.note_translation import translate_note, saved_note_content
 from apps.classroom.services.note_document import create_note_document
+from apps.classroom.utilities.note_export import note_document_filename
 
 
 class PrivateNotesView(APIView):
@@ -58,7 +60,7 @@ class NoteDocumentView(PrivateNotesView):
         note = get_lecture_note(request.user, note_id)
         content = saved_note_content(note, query.validated_data['language'])
         response = HttpResponse(create_note_document(note_response(note, content), note_figures(note)), content_type=DOCX_CONTENT_TYPE)
-        response['Content-Disposition'] = f'attachment; filename="lecture-notes-{note.id}.docx"'
+        response['Content-Disposition'] = content_disposition_header(True, note_document_filename(content['title']))
         return response
 
 
