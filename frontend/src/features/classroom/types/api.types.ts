@@ -6,7 +6,7 @@ export interface ClassroomAnswer {
   diagram_type: DiagramType;
   language: string;
 }
-export interface ClassroomQuestion { question: string; sessionId: string; signal?: AbortSignal; onStatus?: (status: string) => void }
+export interface ClassroomQuestion { scheduledSessionId?: string | null; question: string; sessionId: string; signal?: AbortSignal; onStatus?: (status: string) => void }
 export interface ClassroomHealth { status: string; model: string; rag: { active: boolean; dataset: string; status: string } }
 
 export interface UseClassroomApiOptions { recoverPending?: boolean }

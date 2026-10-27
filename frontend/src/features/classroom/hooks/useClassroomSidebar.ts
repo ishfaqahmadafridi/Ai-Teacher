@@ -10,6 +10,7 @@ import { DEFAULT_ACTIVE_TOPIC_ID, DEFAULT_LESSON_TOPICS, DEFAULT_LECTURE_TITLE }
 const STORAGE_KEY = 'classroom_sidebar_expanded_sections';
 
 export function useClassroomSidebar(options: UseClassroomSidebarOptions = {}) {
+  const courseTitle = useAppSelector(state => state.classroom.courseTitle);
   const lessonTopic = useAppSelector(state => state.classroom.topic);
   const topics = useLessonOutline();
   const stored = useBrowserStorage(STORAGE_KEY);
@@ -49,6 +50,7 @@ export function useClassroomSidebar(options: UseClassroomSidebarOptions = {}) {
   }, []);
 
   return {
+    subject: courseTitle || lessonTopic || '',
     expandedSections,
     activeTopicId,
     activeTopicTitle: lessonTopic || activeTopicTitle,

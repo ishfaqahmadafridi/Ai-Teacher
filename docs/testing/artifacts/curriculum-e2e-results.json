@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "steps": [
+    "Real authenticated dashboard",
+    "Registered course loaded from database",
+    "Outline editor loaded",
+    "Editable topic details",
+    "Outline persisted through real API",
+    "Nine-week plan displayed",
+    "Exactly four quiz checkpoints",
+    "Separate timetable screen",
+    "Saved course eligible for scheduling",
+    "Real timetable worker completed",
+    "Timetable saved and class join available",
+    "Admitted scheduled class",
+    "Dynamic course name",
+    "Incomplete curriculum rejected before publication",
+    "Validated lesson returned and rendered",
+    "Saved scope, level, coverage and lecture note verified in database"
+  ],
+  "browserErrors": [],
+  "checks": {
+    "questionLength": 28,
+    "requirements": 2,
+    "verifiedCoverage": 2,
+    "teacherCalls": 2,
+    "reviewCalls": 1,
+    "classCount": 13
+  },
+  "limits": "Real HTTP, database, auth and workers; AI/research responses stubbed; controlled clock and isolated database."
+}

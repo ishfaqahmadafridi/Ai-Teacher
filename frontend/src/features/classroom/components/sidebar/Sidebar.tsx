@@ -18,6 +18,7 @@ export const Sidebar = memo(function Sidebar({
     expandedSections,
     activeTopicId,
     activeTopicTitle,
+    subject,
     topics,
     toggleSection,
     handleSelectTopic,
@@ -26,7 +27,7 @@ export const Sidebar = memo(function Sidebar({
   return (
     <aside className="hidden lg:flex flex-col w-80 shrink-0 bg-dashboard-panel backdrop-blur border-r border-dashboard-border overflow-y-auto font-sans">
       {/* Top Header — Dynamic Active Topic Name */}
-      <LectureHeader lectureTitle={activeTopicTitle} />
+      <LectureHeader lectureTitle={activeTopicTitle} subject={subject} />
 
       {/* Accordion Sections List */}
       <div className="p-3.5 space-y-3.5 flex-1 overflow-y-auto">

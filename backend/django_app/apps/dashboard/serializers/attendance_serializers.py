@@ -24,6 +24,7 @@ class AttendanceReportSerializer(serializers.Serializer):
 
 
 class SessionJoinSerializer(serializers.Serializer):
+    lessonTitle = serializers.CharField(allow_blank=True)
     lessonTopic = serializers.CharField(allow_blank=True)
     courseTitle = serializers.CharField(allow_blank=True)
     sessionId = serializers.UUIDField()

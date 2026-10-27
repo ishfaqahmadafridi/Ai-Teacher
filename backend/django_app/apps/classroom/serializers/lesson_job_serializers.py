@@ -4,6 +4,7 @@ from .ask_serializers import AskRequestSerializer
 
 
 class LessonJobRequestSerializer(AskRequestSerializer):
+    scheduled_session_id = serializers.UUIDField(required=False)
     request_id = serializers.UUIDField()
 
 

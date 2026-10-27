@@ -57,3 +57,5 @@ export { useFullscreenInputDock } from './useFullscreenInputDock';
 
 export { usePlaybackSubtitles } from './usePlaybackSubtitles';
 export { useMobileClassroomSidebar } from './useMobileClassroomSidebar';
+
+export * from './useLeaveClass';

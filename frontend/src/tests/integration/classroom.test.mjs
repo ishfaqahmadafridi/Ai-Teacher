@@ -415,7 +415,7 @@ function recoveryHarness(recoverPending = false) {
     react: { useRef: value => ({ current: value }), useCallback: fn => fn, useEffect: fn => effects.push(fn) },
     './useClassroomQueries': { useClassroomQuestionMutation: () => ({ mutateAsync: request => new Promise((resolve, reject) => { requests.push(request); request.signal.addEventListener('abort', () => reject(new Error('aborted'))); }) }) },
     '@/shared/hooks/useConversationSession': { useConversationSession: () => () => 'session' },
-    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action) },
+    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action), useAppSelector: selector => selector({ classroom: {} }) },
     '@/features/classroom/state/classroomSlice': actionCreators,
     '../utilities/pendingLessonJob': { readPendingLessonJob: () => ({ question: 'Gravity' }) },
   }, { AbortController });
