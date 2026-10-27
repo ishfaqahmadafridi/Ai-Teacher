@@ -27,4 +27,4 @@ export interface ScheduleItem {
   status: 'upcoming' | 'live' | 'completed';
 }
 
-export interface SessionJoinResult { lessonTopic: string; courseTitle: string }
+export interface SessionJoinResult { sessionId: string; lessonTitle: string; lessonTopic: string; courseTitle: string }

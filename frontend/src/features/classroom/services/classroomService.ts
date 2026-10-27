@@ -9,11 +9,12 @@ import { classroomAnswerSchema, teachingResponseSchema } from '../validators/cla
 import type { ValidatedTeachingResponse } from '../validators/classroom.schema';
 
 export class ClassroomService {
-  static async askQuestion({ question, sessionId, signal, onStatus }: ClassroomQuestion): Promise<ClassroomAnswer> {
-    const pending = readPendingLessonJob(sessionId);
+  static async askQuestion({ question, sessionId, scheduledSessionId, signal, onStatus }: ClassroomQuestion): Promise<ClassroomAnswer> {
+    const candidate = readPendingLessonJob(sessionId);
+    const pending = (candidate?.scheduledSessionId ?? null) === (scheduledSessionId ?? null) ? candidate : null;
     onStatus?.(pending?.question === question ? 'Reconnecting to your saved lesson…' : 'Submitting your lesson request…');
     const submit = () => apiClient.post<unknown>('/api/lesson-jobs/', {
-      question, session_id: sessionId, research: true, request_id: crypto.randomUUID(),
+      question, ...(scheduledSessionId ? { scheduled_session_id: scheduledSessionId } : {}), session_id: sessionId, research: true, request_id: crypto.randomUUID(),
     }, { signal });
     let submission;
     if (pending?.question === question) {
@@ -26,7 +27,7 @@ export class ClassroomService {
       }
     } else submission = await submit();
     let job = lessonJobSchema.parse(submission.data);
-    savePendingLessonJob(sessionId, job.id, question);
+    savePendingLessonJob(sessionId, job.id, question, scheduledSessionId);
     const deadline = Date.now() + LESSON_JOB_WAIT_MS;
     let queuedSince = Date.now();
     while (job.status === 'queued' || job.status === 'processing') {

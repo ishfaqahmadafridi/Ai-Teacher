@@ -4,4 +4,4 @@ export const lessonJobSchema = z.object({
   result: z.record(z.string(), z.unknown()), error: z.string(),
 });
 
-export const pendingLessonJobSchema = z.object({ id: z.uuid(), question: z.string() });
+export const pendingLessonJobSchema = z.object({ id: z.uuid(), question: z.string(), scheduledSessionId: z.uuid().nullish() });

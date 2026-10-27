@@ -21,6 +21,9 @@ def generate_answer(
     temperature: float = DEFAULT_TEMPERATURE,
     research: bool = False,
     persist_history: bool = True,
+    curriculum=None,
+    student_context=None,
+    require_curriculum_coverage=False,
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
@@ -39,6 +42,11 @@ def generate_answer(
         metadata["rag_used"] = bool(rag_context)
         from apps.classroom.services.lesson_visuals import resolve_lesson_visuals, image_catalog_prompt
         system_prompt = SYSTEM_PROMPT
+        if student_context:
+            system_prompt += '\nStudent teaching context: ' + json.dumps(student_context)
+        if curriculum:
+            from apps.classroom.prompts.scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
+            system_prompt += SCHEDULED_LESSON_PROMPT.format(context=json.dumps({**curriculum, 'require_full_coverage': require_curriculum_coverage}))
         if rag_context:
             system_prompt += RAG_CONTEXT_SUFFIX.format(rag_context=rag_context)
         images = []
@@ -61,6 +69,11 @@ def generate_answer(
         serializer = GeneratedAnswerSerializer(data=extract_json(raw_answer))
         serializer.is_valid(raise_exception=True)
         parsed = validated_mapping(serializer.validated_data)
+        if curriculum and require_curriculum_coverage:
+            from apps.classroom.services.curriculum_coverage import review_curriculum_coverage
+            metadata['curriculum_coverage'], metadata['curriculum_review_tokens'] = review_curriculum_coverage(llm, parsed, curriculum, student_context)
+            metadata['curriculum_verified'] = True
+            metadata['scheduled_session_id'] = curriculum['session_id']
         metadata["visual_planning_tokens"] = 0
         parsed = resolve_lesson_visuals(parsed, images)
         metadata["visual_selection_tokens"] = parsed.pop("visual_selection_tokens", 0)
@@ -73,7 +86,7 @@ def generate_answer(
             ])
         usage = response.usage_metadata or {}
         return {
-            **parsed, "tokens_used": usage.get("total_tokens", 0) + metadata["visual_selection_tokens"] + metadata["visual_planning_tokens"],
+            **parsed, "tokens_used": usage.get("total_tokens", 0) + metadata.get("curriculum_review_tokens", 0) + metadata["visual_selection_tokens"] + metadata["visual_planning_tokens"],
             "model_info": metadata,
         }
     except Exception:

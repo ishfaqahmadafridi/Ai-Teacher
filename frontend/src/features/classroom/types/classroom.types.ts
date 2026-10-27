@@ -84,6 +84,8 @@ export interface SerializedVoice {
 }
 
 export interface ClassroomState {
+  courseTitle?: string;
+  scheduledSessionId?: string | null;
   pendingQuestion: { sectionIndex: number; question: string } | null;
   noteId: string | null;
   inputText: string;

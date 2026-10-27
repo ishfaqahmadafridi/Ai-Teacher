@@ -3,8 +3,10 @@ import { readPendingLessonJob } from '../utilities/pendingLessonJob';
 import { useCallback, useRef, useEffect } from 'react';
 import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
+import { useAppSelector } from '@/hooks/useAppStore';
 import { useAppDispatch } from '@/hooks/useAppStore';
 import {
+  setScheduledSessionId,
   setInputText,
   setLoading,
   setLoadingStatus,
@@ -21,7 +23,9 @@ import type { UseClassroomApiOptions } from '../types/api.types';
 
 export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptions = {}) {
   const dispatch = useAppDispatch();
+  const scheduledSessionId = useAppSelector(state => state.classroom.scheduledSessionId);
   const esRef = useRef<AbortController | null>(null);
+  const recoveredJobRef = useRef<string | null>(null);
   const { mutateAsync } = useClassroomQuestionMutation();
   const getSessionId = useConversationSession();
   useEffect(() => () => {
@@ -33,12 +37,14 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
   }, [dispatch]);
 
   const sendQuestion = useCallback(
-    async (question: string) => {
+    async (question: string, recoveredSessionId?: string) => {
       // Cancel any in-flight stream
       esRef.current?.abort();
       const controller = new AbortController();
       esRef.current = controller;
 
+      const currentSessionId = recoveredSessionId ?? scheduledSessionId;
+      dispatch(setScheduledSessionId(currentSessionId ?? null));
       dispatch(resetClassroomState());
       dispatch(setInputText(question));
       dispatch(setLoading(true));
@@ -47,7 +53,7 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
       const sessionId = getSessionId();
 
       try {
-        const data = await mutateAsync({ question, sessionId, signal: controller.signal, onStatus: status => { if (!controller.signal.aborted) dispatch(setLoadingStatus(status)); } });
+        const data = await mutateAsync({ question, sessionId, scheduledSessionId: currentSessionId, signal: controller.signal, onStatus: status => { if (!controller.signal.aborted) dispatch(setLoadingStatus(status)); } });
         if (controller.signal.aborted) return;
         const diagType = (data.diagram_type ?? 'default') as DiagramType;
         const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
@@ -73,16 +79,18 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
         dispatch(setLoadingStatus(''));
       }
     },
-    [dispatch, mutateAsync, getSessionId]
+    [dispatch, mutateAsync, getSessionId, scheduledSessionId]
   );
 
   useEffect(() => {
     if (!recoverPending) return;
     const pending = readPendingLessonJob(getSessionId());
-    if (pending) {
-      void sendQuestion(pending.question);
+    if (pending && (!scheduledSessionId || pending.scheduledSessionId === scheduledSessionId)) {
+      if (recoveredJobRef.current === pending.id && esRef.current && !esRef.current.signal.aborted) return;
+      recoveredJobRef.current = pending.id;
+      void sendQuestion(pending.question, pending.scheduledSessionId ?? undefined);
     }
-  }, [recoverPending, getSessionId, sendQuestion]);
+  }, [recoverPending, getSessionId, sendQuestion, scheduledSessionId]);
 
   const cancelStream = useCallback(() => {
     esRef.current?.abort();

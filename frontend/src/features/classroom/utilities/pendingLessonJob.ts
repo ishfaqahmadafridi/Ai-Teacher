@@ -8,8 +8,8 @@ export function readPendingLessonJob(sessionId: string) {
     return result.success ? result.data : null;
   } catch { return null; }
 }
-export function savePendingLessonJob(sessionId: string, id: string, question: string) {
-  try { sessionStorage.setItem(key(sessionId), JSON.stringify({ id, question })); } catch { /* Storage is optional. */ }
+export function savePendingLessonJob(sessionId: string, id: string, question: string, scheduledSessionId?: string | null) {
+  try { sessionStorage.setItem(key(sessionId), JSON.stringify({ id, question, scheduledSessionId })); } catch { /* Storage is optional. */ }
 }
 export function clearPendingLessonJob(sessionId: string) {
   try { sessionStorage.removeItem(key(sessionId)); } catch { /* Storage is optional. */ }

@@ -24,15 +24,23 @@ class LessonQueueFull(APIException):
 
 
 def submit_lesson_job(user, request_id, inputs):
+    if inputs.get('scheduled_session_id'):
+        inputs = {**inputs, 'scheduled_session_id': str(inputs['scheduled_session_id'])}
     with transaction.Atomic(using=None, savepoint=True, durable=False):
         LessonQueueGate.objects.get_or_create(pk=1)
         LessonQueueGate.objects.select_for_update().get(pk=1)
         submission = LessonJobSubmission.objects.select_related('job').filter(user=user, request_id=request_id).first()
         existing = submission.job if submission else LessonJob.objects.filter(user=user, request_id=request_id).first()
         if existing:
-            if existing.inputs != inputs:
+            original = {key: value for key, value in existing.inputs.items() if key not in ('student_context', 'curriculum')}
+            if original != inputs:
                 raise ValidationError('This request ID belongs to a different question.')
             return existing
+        from .student_teaching_context import student_teaching_context
+        inputs = {**inputs, 'student_context': student_teaching_context(user)}
+        if inputs.get('scheduled_session_id'):
+            from apps.dashboard.services.scheduled_curriculum import scheduled_curriculum
+            inputs['curriculum'] = scheduled_curriculum(user, inputs['scheduled_session_id'])
         private_session = account_session_id(user, inputs['session_id'])
         fingerprint = hashlib.sha256(json.dumps({'inputs': inputs, 'history': get_session(private_session)}, sort_keys=True).encode()).hexdigest()
         existing = LessonJob.objects.filter(user=user, flight_key=fingerprint, status__in=['queued', 'processing']).first()
@@ -98,7 +106,11 @@ def run_lesson_job(job_id):
     current = LessonJob.objects.filter(pk=job_id, status='processing', run_token=token)
     started = timezone.now()
     try:
-        result = generate_answer(**{**job.inputs, 'session_id': account_session_id(job.user, job.inputs['session_id']), 'persist_history': False})
+        curriculum = job.inputs.get('curriculum')
+        require_coverage = bool(curriculum) and not LessonJob.objects.filter(user=job.user, inputs__scheduled_session_id=job.inputs.get('scheduled_session_id'), status='ready', result__model_info__curriculum_verified=True).exists()
+        result = generate_answer(require_curriculum_coverage=require_coverage, **{**job.inputs, 'session_id': account_session_id(job.user, job.inputs['session_id']), 'persist_history': False})
+        if require_coverage and not result.get('model_info', {}).get('curriculum_verified'):
+            raise ValueError('The generated lesson did not meet its saved curriculum requirements.')
         if result.get('topic') == 'unknown':
             raise ValueError('Lesson provider unavailable')
         with transaction.Atomic(using=None, savepoint=True, durable=False):

@@ -14,7 +14,7 @@ export const MobileSidebar = memo(function MobileSidebar({
   onAsk,
   loading = false,
 }: SidebarProps) {
-  const { isOpen, handleClose, expandedSections, activeTopicId, activeTopicTitle,
+  const { isOpen, handleClose, expandedSections, activeTopicId, activeTopicTitle, subject,
     topics, toggleSection, selectTopic, ask } = useMobileClassroomSidebar(onAsk);
 
   return (
@@ -35,7 +35,7 @@ export const MobileSidebar = memo(function MobileSidebar({
       >
         {/* Top Header — Lecture Name & Close Button */}
         <div className="relative">
-          <LectureHeader lectureTitle={activeTopicTitle} />
+          <LectureHeader lectureTitle={activeTopicTitle} subject={subject} />
           <button
             id="mobile-sidebar-close"
             type="button"

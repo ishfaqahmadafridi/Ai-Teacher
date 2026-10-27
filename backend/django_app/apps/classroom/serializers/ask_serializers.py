@@ -54,6 +54,7 @@ class ClearSessionResponseSerializer(serializers.Serializer):
 
 
 class AnswerChunkSerializer(serializers.Serializer):
+    curriculum_ids = serializers.ListField(child=serializers.CharField(max_length=64), required=False, max_length=100)
     def validate_diagram(self, diagram):
         # Optional malformed display text must not discard valid narration.
         diagram = dict(diagram)

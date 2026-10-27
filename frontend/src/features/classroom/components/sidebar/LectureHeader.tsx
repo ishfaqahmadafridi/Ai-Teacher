@@ -7,7 +7,7 @@ import { DEFAULT_LECTURE_TITLE } from '../../constants/sidebarConstants';
 
 export const LectureHeader = memo(function LectureHeader({
   lectureTitle = DEFAULT_LECTURE_TITLE,
-  subject = 'Physics Class',
+  subject = '',
   className = '',
 }: LectureHeaderProps) {
   return (
@@ -34,7 +34,7 @@ export const LectureHeader = memo(function LectureHeader({
           <div className="flex items-center gap-1.5 mb-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-[10px] font-mono font-bold text-dashboard-success uppercase tracking-wider">
-              Active • {subject}
+              Active{subject && ` • ${subject}`}
             </span>
           </div>
 

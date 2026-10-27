@@ -19,6 +19,8 @@ const initialState: ClassroomState = {
   isWritingOnBoard: false,
   isPaused: false,
   topic: '',
+  courseTitle: '',
+  scheduledSessionId: null,
   isPlaying: false,
   currentChunkIndex: -1,
   spokenText: '',
@@ -80,6 +82,8 @@ const classroomSlice = createSlice({
     setIsPaused(state, action: PayloadAction<boolean>) {
       state.isPaused = action.payload;
     },
+    setScheduledSessionId(state, action: PayloadAction<string | null>) { state.scheduledSessionId = action.payload; },
+    setCourseTitle(state, action: PayloadAction<string>) { state.courseTitle = action.payload; },
     setTopic(state, action: PayloadAction<string>) {
       state.topic = action.payload;
     },
@@ -107,6 +111,8 @@ const classroomSlice = createSlice({
     resetClassroomState(state) {
       Object.assign(state, {
         ...initialState,
+        courseTitle: state.courseTitle,
+        scheduledSessionId: state.scheduledSessionId,
         voices: state.voices,
         selectedVoice: state.selectedVoice,
       });
@@ -132,6 +138,8 @@ export const {
   setTeacherPosition,
   setIsWritingOnBoard,
   setIsPaused,
+  setScheduledSessionId,
+  setCourseTitle,
   setTopic,
   setIsPlaying,
   setCurrentChunkIndex,

@@ -42,4 +42,4 @@ def join_session(user, session_id):
         lesson_topic += '. Cover these subtopics: ' + '; '.join(item['subtopics'])
     if item.get('exercises'):
         lesson_topic += '. Include guided practice: ' + '; '.join(item['exercises'])
-    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status, 'lessonTopic': lesson_topic, 'courseTitle': item.get('subject', '')}
+    return {'sessionId': str(session_id), 'sessionDate': attendance.session_date.isoformat(), 'attendance': attendance.status, 'lessonTitle': item.get('title', ''), 'lessonTopic': lesson_topic, 'courseTitle': item.get('subject', '')}
