@@ -1,6 +1,6 @@
 """Bounded physical visual values; no zero-resistance or nonfinite circuits."""
 from django.test import SimpleTestCase
-from apps.classroom.serializers.ask_serializers import GeneratedAnswerSerializer
+from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 
 

@@ -128,7 +128,7 @@ export interface ProfileAcademicFieldsProps {
 
 export interface ProfileLanguageSelectorProps {
   preferredLanguage?: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
 }
 

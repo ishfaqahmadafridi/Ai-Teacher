@@ -263,24 +263,19 @@ export interface DoubtInputFormProps {
   className?: string;
 }
 
+export interface NoteLanguageOption {
+  value: string;
+  label: string;
+}
+
 export interface NoteLanguageSelectorProps {
   selectedLanguage: string;
-  savedCustomLang: string;
-  activeLangLabel: string;
+  disabled?: boolean;
   onPillClick: (id: string) => void;
   className?: string;
 }
 
-export interface NoteCustomInputFormProps {
-  customLangInput: string;
-  onCustomLangInputChange: (value: string) => void;
-  onSubmit: (e?: React.FormEvent) => void;
-  className?: string;
-}
-
 export interface NoteDownloadActionCardProps {
-  title: string;
-  activeLangLabel: string;
   onDownloadPdf: () => void;
   onDownloadDocx: () => void;
   className?: string;

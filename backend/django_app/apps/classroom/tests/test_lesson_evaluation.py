@@ -7,6 +7,7 @@ from rest_framework.test import APIClient
 from apps.classroom.tests.lecture_note_fixtures import lesson_answer
 from apps.classroom.services.lecture_notes import save_lecture_note
 from apps.classroom.services.lesson_answers import submit_lesson_answer
+from apps.classroom.models.lesson_attempt import LessonProgress
 
 
 class LessonEvaluationTests(TestCase):
@@ -47,3 +48,43 @@ class LessonEvaluationTests(TestCase):
         other = get_user_model().objects.create_user(username='evaluation-other', email='evaluation-other@example.org')
         self.client.force_authenticate(other)
         self.assertEqual(self.client.post(self.url).status_code, 404)
+
+    @patch('apps.classroom.services.lesson_evaluation.get_llm')
+    def test_only_successful_evaluation_advances_the_saved_checkpoint(self, provider):
+        progress = LessonProgress.objects.get(note=self.note)
+        self.assertTrue(progress.waiting)
+        provider.return_value.bind.return_value.invoke.return_value = Mock(text='{"outcome":"understood","next_action":"continue","feedback":"Current halves because the voltage stays fixed.","missing_concepts":[]}')
+        self.assertEqual(self.client.post(self.url).status_code, 200)
+        progress.refresh_from_db()
+        self.assertFalse(progress.waiting)
+        self.assertEqual(progress.section_index, 1)
+        revision = progress.revision
+        self.client.post(self.url)
+        progress.refresh_from_db()
+        self.assertEqual(progress.revision, revision)
+
+    @patch('apps.classroom.services.lesson_evaluation.get_llm')
+    def test_reteach_and_clarify_keep_the_question_available_for_retry(self, provider):
+        for outcome, action in [('misconception', 'reteach'), ('unclear', 'clarify')]:
+            with self.subTest(outcome=outcome):
+                provider.return_value.bind.return_value.invoke.return_value = Mock(text='{"outcome":"%s","next_action":"%s","feedback":"Keep the voltage fixed and try again.","missing_concepts":["constant voltage"]}' % (outcome, action))
+                self.attempt.evaluation = {}
+                self.attempt.save(update_fields=['evaluation'])
+                self.assertEqual(self.client.post(self.url).status_code, 200)
+                progress = LessonProgress.objects.get(note=self.note)
+                self.assertTrue(progress.waiting)
+                self.assertEqual(progress.section_index, 0)
+
+    @patch('apps.classroom.services.lesson_evaluation.get_llm', return_value=None)
+    def test_provider_failure_preserves_waiting_checkpoint(self, provider):
+        self.assertEqual(self.client.post(self.url).status_code, 503)
+        self.assertTrue(LessonProgress.objects.get(note=self.note).waiting)
+
+    @patch('apps.classroom.services.lesson_evaluation.get_llm')
+    def test_late_feedback_cannot_rewind_a_later_checkpoint(self, provider):
+        LessonProgress.objects.filter(note=self.note).update(section_index=2, waiting=True)
+        provider.return_value.bind.return_value.invoke.return_value = Mock(text='{"outcome":"understood","next_action":"continue","feedback":"Correct.","missing_concepts":[]}')
+        self.assertEqual(self.client.post(self.url).status_code, 200)
+        progress = LessonProgress.objects.get(note=self.note)
+        self.assertEqual(progress.section_index, 2)
+        self.assertTrue(progress.waiting)

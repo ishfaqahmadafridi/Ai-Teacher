@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "checks": [
+    "Real authenticated frontend restores the lesson and pauses at guided practice",
+    "Playback does not advance past an unanswered checkpoint",
+    "Misconception feedback is displayed and the same checkpoint remains pending",
+    "Refresh restores the unanswered question and remaining lesson",
+    "An unclear answer requests clarification without advancing",
+    "Correct guided answer advances the database cursor to the next teaching step",
+    "Continue plays the next concept and pauses for independent practice",
+    "Correct independent answer permits the recap",
+    "No browser runtime exceptions"
+  ],
+  "browserErrors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/auth/me/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/9fbd7e4d-4411-4218-9d7a-ec1abb222b27/evaluate/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/ae8c2fd5-6eac-4314-af70-d987dec337cd/evaluate/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/88d33225-5693-431f-b90c-00b59543881d/evaluate/",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/progress/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes/58c6d816-9eac-4b20-ba14-6b8f3dbda2d7/answers/ce23737c-499e-41e8-af7f-772ee2197543/evaluate/",
+      "status": 200
+    }
+  ],
+  "limits": "Real UI/auth/HTTP/ORM; seeded lesson; deterministic AI feedback and speech substitutes. Live generation, real audio, Redis/Celery dispatch and provider quality not tested.",
+  "database_verification": {
+    "attempts": 4,
+    "outcomes": [
+      "misconception",
+      "unclear",
+      "understood",
+      "understood"
+    ],
+    "saved_section": 5,
+    "waiting": false,
+    "original_chunks_preserved": 6
+  }
+}

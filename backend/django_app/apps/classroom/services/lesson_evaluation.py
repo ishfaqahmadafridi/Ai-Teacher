@@ -1,10 +1,10 @@
 """Bounded evaluation with a durable lease and cached results."""
 import json
 from datetime import timedelta
-from django.db import transaction
+from django.db import models, transaction
 from django.utils import timezone
 from rest_framework.exceptions import APIException
-from apps.classroom.models.lesson_attempt import LessonAttempt
+from apps.classroom.models.lesson_attempt import LessonAttempt, LessonProgress
 from apps.classroom.services.llm_service import get_llm, extract_json
 from apps.classroom.prompts.lesson_evaluation import LESSON_EVALUATION_PROMPT
 from apps.classroom.serializers.lesson_serializers import LessonEvaluationSerializer
@@ -43,10 +43,14 @@ def evaluate_attempt(attempt):
             SystemMessage(content=LESSON_EVALUATION_PROMPT), HumanMessage(content=json.dumps(payload))])
         serializer = LessonEvaluationSerializer(data=extract_json(result.text))
         serializer.is_valid(raise_exception=True)
-        updated = LessonAttempt.objects.filter(pk=item.pk, evaluating_since=lease).update(
-            evaluation=dict(serializer.validated_data), evaluating_since=None)
-        if not updated:
-            raise EvaluationProcessing()
+        with transaction.atomic():
+            updated = LessonAttempt.objects.filter(pk=item.pk, evaluating_since=lease).update(
+                evaluation=dict(serializer.validated_data), evaluating_since=None)
+            if not updated:
+                raise EvaluationProcessing()
+            if serializer.validated_data['next_action'] == 'continue':
+                LessonProgress.objects.filter(note=item.note, section_index=item.section_index, waiting=True).update(
+                    section_index=item.section_index + 1, waiting=False, revision=models.F('revision') + 1)
         item.refresh_from_db()
         return item
     except EvaluationProcessing:

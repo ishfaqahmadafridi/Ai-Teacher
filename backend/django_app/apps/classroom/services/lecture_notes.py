@@ -11,7 +11,7 @@ from django.utils.translation import get_supported_language_variant
 from apps.classroom.constants.notes import NOTES_PAGE_SIZE, ACCOUNT_SESSION_PREFIX
 from django.shortcuts import get_object_or_404
 from apps.classroom.models.lecture_notes import LectureNote
-from apps.classroom.serializers.ask_serializers import GeneratedAnswerSerializer
+from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 from apps.classroom.serializers.note_serializers import NoteSourceSerializer
 
 

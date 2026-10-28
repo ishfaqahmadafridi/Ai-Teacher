@@ -123,7 +123,9 @@ test('invalid login errors do not try token refresh or clear the current account
 
 test('the displayed profile follows the signed-in database user rather than browser defaults', () => {
   const profileUtils = loadSource('features/dashboard/utilities/profileUtils.ts');
-  const defaults = loadSource('features/dashboard/constants/profileConstants.ts');
+  const defaults = loadSource('features/dashboard/constants/profileConstants.ts', {
+    'iso-639-1': { default: require('iso-639-1') },
+  });
   const user = userUtils.mapAuthUser({ ...apiUser, id: 12345, mobile: null });
   const useAuthStore = (select) => select({ user, accessToken: 'signed-access' });
   const { useStudentProfile } = loadSource('features/dashboard/hooks/useStudentProfile.ts', {

@@ -59,3 +59,5 @@ export { usePlaybackSubtitles } from './usePlaybackSubtitles';
 export { useMobileClassroomSidebar } from './useMobileClassroomSidebar';
 
 export * from './useLeaveClass';
+
+export { useLessonAnswerSubmission } from './useLessonAnswerSubmission';

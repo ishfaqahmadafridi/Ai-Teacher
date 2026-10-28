@@ -19,10 +19,5 @@ def submit_lesson_answer(user, note_id, request_id, section_index, answer):
         defaults={'section_index': section_index, 'question': question, 'answer': answer})
     if not created and (attempt.section_index != section_index or attempt.answer != answer):
         raise ValidationError('This request identifier has already been used for a different answer.')
-    if created:
-        progress = LessonProgress.objects.filter(note=note, waiting=True, section_index=section_index).first()
-        if progress:
-            progress.waiting = False
-            progress.revision += 1
-            progress.save()
+    LessonProgress.objects.get_or_create(note=note, defaults={'section_index': section_index, 'waiting': True})
     return attempt

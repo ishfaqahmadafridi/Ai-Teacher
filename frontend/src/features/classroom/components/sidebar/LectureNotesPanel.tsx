@@ -2,11 +2,10 @@
 import { memo } from 'react';
 import type { LectureNotesPanelProps } from '../../types/sidebar.types';
 import { useLectureNotesPanel } from '../../hooks/useLectureNotesPanel';
-import { NoteLanguageSelector, NoteCustomInputForm, NoteDownloadActionCard } from './notes';
+import { NoteLanguageSelector, NoteDownloadActionCard } from './notes';
 
 export const LectureNotesPanel = memo(function LectureNotesPanel({ className = '' }: LectureNotesPanelProps) {
-  const { isSignedIn, currentNote, notes, selectedId, selectNote, selectedLanguage, customLangInput,
-    savedCustomLang, showCustomInput, activeLangLabel, setCustomLangInput, handleSaveCustomLang,
+  const { isSignedIn, currentNote, notes, selectedId, selectNote, selectedLanguage,
     handlePillClick, handleDownloadPdf, handleDownloadDocx, translate, translationReady, busy, error, loading } = useLectureNotesPanel();
   if (!currentNote) return <p className="p-3 text-xs text-dashboard-muted" role="status">
     {!isSignedIn ? 'Sign in to save and download lecture notes.' : loading ? 'Loading saved notes…' : error || 'Notes appear automatically after your first completed answer.'}
@@ -20,26 +19,17 @@ export const LectureNotesPanel = memo(function LectureNotesPanel({ className = '
         </select>
       </label>
       <fieldset disabled={busy}>
-      <NoteLanguageSelector selectedLanguage={selectedLanguage} savedCustomLang={savedCustomLang}
-        activeLangLabel={activeLangLabel} onPillClick={handlePillClick} />
-      {selectedLanguage === 'Custom' && showCustomInput && <NoteCustomInputForm customLangInput={customLangInput}
-        onCustomLangInputChange={setCustomLangInput} onSubmit={handleSaveCustomLang} />}
+        <NoteLanguageSelector selectedLanguage={selectedLanguage} disabled={busy} onPillClick={handlePillClick} />
       </fieldset>
-      {selectedLanguage !== 'Original' && <div className="space-y-1">
-        <p className="text-xs text-dashboard-muted">A new translation uses AI once. Saved translations and downloads use no extra AI tokens.</p>
+      {selectedLanguage !== 'Original' && !translationReady && <div className="space-y-1">
         <button type="button" onClick={translate} disabled={busy} className="rounded-lg bg-dashboard-primary px-3 py-2 text-xs text-white disabled:opacity-50">
-          {busy ? 'Working…' : 'Load or create translation'}
+          {busy ? 'Working…' : 'Translate'}
         </button>
       </div>}
       {error && <p role="alert" className="text-xs text-dashboard-danger">{error}</p>}
-      <p className="text-xs text-dashboard-muted" role="status">
-        {translationReady ? 'Your complete lecture notes are saved automatically. Download the document below.' : 'Load or create the selected translation before downloading.'}
-      </p>
       <fieldset disabled={busy || !translationReady}>
-        <NoteDownloadActionCard title={currentNote.title} activeLangLabel={activeLangLabel}
-          onDownloadPdf={handleDownloadPdf} onDownloadDocx={handleDownloadDocx} />
+        <NoteDownloadActionCard onDownloadPdf={handleDownloadPdf} onDownloadDocx={handleDownloadDocx} />
       </fieldset>
-      <p className="text-xs text-dashboard-muted">PDF opens the print dialog. Choose Save as PDF.</p>
     </div>
   );
 });

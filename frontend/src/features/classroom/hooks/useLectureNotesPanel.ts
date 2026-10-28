@@ -2,13 +2,12 @@
 import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth/state/authStore';
-import ISO6391 from 'iso-639-1';
 import { lectureNotesService } from '../services/lectureNotesService';
 import { downloadBlob, printLectureNotes, blobAsDataUrl } from '../services/noteExportService';
 import { lectureNoteFilename } from '../utilities/downloadNotesUtils';
 import type { SavedLectureNote } from '../types/notes.types';
 import { noteErrorMessage } from '../utilities/noteErrors';
-import { NOTE_LANGUAGE_CODES } from '../constants/notesConstants';
+import { resolveNoteLanguageCode } from '../utilities/noteLanguage';
 
 export function useLectureNotesPanel() {
   const userId = useAuthStore(state => state.user?.id);
@@ -17,30 +16,18 @@ export function useLectureNotesPanel() {
   const [selectedId, setSelectedId] = useState('');
   const [translated, setTranslated] = useState<SavedLectureNote | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState('Original');
-  const [customLangInput, setCustomLangInput] = useState('');
-  const [savedCustomLang, setSavedCustomLang] = useState('');
-  const [showCustomInput, setShowCustomInput] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const source = query.data?.find(note => note.id === selectedId) ?? query.data?.[0];
   const currentNote = translated?.id === source?.id ? translated : source;
-  const requestedLanguage = selectedLanguage === 'Original' ? source?.language : NOTE_LANGUAGE_CODES[selectedLanguage] ||
-    (ISO6391.validate(savedCustomLang.toLowerCase()) ? savedCustomLang.toLowerCase() : ISO6391.getCode(savedCustomLang));
-  const translationReady = !!requestedLanguage && currentNote?.language === requestedLanguage &&
-    !(selectedLanguage === 'Custom' && showCustomInput);
-  const activeLangLabel = ISO6391.getNativeName(currentNote?.language ?? '') || currentNote?.language || 'Original';
+  const requestedLanguage = selectedLanguage === 'Original' ? source?.language : resolveNoteLanguageCode(selectedLanguage);
+  const translationReady = !!requestedLanguage && currentNote?.language === requestedLanguage;
 
   const handlePillClick = useCallback((language: string) => {
     setSelectedLanguage(language);
-    setShowCustomInput(language === 'Custom');
     setTranslated(null);
     setError('');
   }, []);
-  const handleSaveCustomLang = useCallback((event?: React.FormEvent) => {
-    event?.preventDefault();
-    setSavedCustomLang(customLangInput.trim());
-    setShowCustomInput(false);
-  }, [customLangInput]);
   const translate = useCallback(async () => {
     if (!source || busy) return;
     const language = requestedLanguage;
@@ -80,7 +67,7 @@ export function useLectureNotesPanel() {
   }, [currentNote, busy, translationReady]);
   const selectNote = useCallback((id: string) => { setSelectedId(id); setTranslated(null); setSelectedLanguage('Original'); }, []);
   return { isSignedIn: !!userId, currentNote, notes: query.data ?? [], selectedId: source?.id ?? '', selectNote,
-    selectedLanguage, customLangInput, savedCustomLang, showCustomInput, activeLangLabel,
-    setCustomLangInput, handleSaveCustomLang, handlePillClick, handleDownloadPdf, handleDownloadDocx,
+    selectedLanguage,
+    handlePillClick, handleDownloadPdf, handleDownloadDocx,
     translate, translationReady, busy, error: error || (query.isError ? 'Notes could not be loaded.' : ''), loading: query.isLoading };
 }

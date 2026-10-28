@@ -128,6 +128,13 @@ test('AI answers play sequential steps and finish after the final step', () => {
   assert.equal(h.dispatched.at(-2).payload, false);
 });
 
+test('continuing a checked lesson plays the remaining step without replaying its question', () => {
+  const h = playbackHarness('What happens next?');
+  h.player.playFrom(1);
+  assert.deepEqual(h.spoken.map(item => item.text), ['Second step']);
+  assert.equal(h.dispatched.find(item => item.type === 'setCurrentChunkIndex').payload, 1);
+});
+
 test('stopped answers ignore delayed speech events', () => {
   const h = playbackHarness();
   h.player.play();
@@ -184,6 +191,7 @@ test('understanding checks stop playback and preserve the pending question', () 
   const pending = h.dispatched.find(action => action.type === 'setPendingQuestion');
   assert.equal(pending.payload.sectionIndex, 0);
   assert.equal(pending.payload.question, 'What happens next?');
+  assert.ok(h.dispatched.some(action => action.type === 'addChalkboardPoint' && action.payload === pending.payload.question));
   assert.equal(h.dispatched.at(-1).payload, false);
 });
 

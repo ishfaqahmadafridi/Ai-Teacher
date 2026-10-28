@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setNoteId, setPendingQuestion, setSpokenText, setError } from '../state/classroomSlice';
+import { setNoteId, setPendingQuestion, setSpokenText, setError, setChunks, setTopic, setDiagramType, setCurrentChunkIndex, setChalkboardPoints } from '../state/classroomSlice';
 import { lessonProgressService } from '../services/lessonProgressService';
 
 export function useLessonRecovery() {
@@ -16,10 +16,15 @@ export function useLessonRecovery() {
     if (!saved) return;
     const controller = new AbortController();
     lessonProgressService.read(saved, controller.signal).then(progress => {
-      if (controller.signal.aborted || !progress.waiting || !progress.question) return;
+      if (controller.signal.aborted) return;
+      dispatch(setChunks(progress.answer.chunks));
+      dispatch(setTopic(progress.answer.topic));
+      dispatch(setDiagramType(progress.answer.diagram_type));
       dispatch(setNoteId(saved));
-      dispatch(setPendingQuestion({ sectionIndex: progress.section_index, question: progress.question }));
-      dispatch(setSpokenText(progress.question));
+      dispatch(setCurrentChunkIndex(progress.section_index));
+      dispatch(setPendingQuestion(progress.waiting && progress.question ? { sectionIndex: progress.section_index, question: progress.question } : null));
+      dispatch(setSpokenText(progress.question ?? ''));
+      dispatch(setChalkboardPoints(progress.waiting && progress.question ? [progress.question] : []));
     }).catch(error => {
       if (!controller.signal.aborted) dispatch(setError(error instanceof Error ? error.message : 'Unable to restore your lesson.'));
     });
