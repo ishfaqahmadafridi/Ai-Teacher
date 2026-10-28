@@ -75,6 +75,7 @@ export function useChunkPlaybackOwner() {
           onEnd: () => {
             if (run !== playbackRunRef.current) return;
             if (chunks[index].question) {
+              dispatch(addChalkboardPoint(chunks[index].question!));
               dispatch(setPendingQuestion({ sectionIndex: index, question: chunks[index].question! }));
               dispatch(setIsPlaying(false));
             } else speakChunkRef.current(index + 1);
@@ -151,6 +152,7 @@ export function useChunkPlaybackOwner() {
         utteranceRef.current = null;
         dispatch(setIsWritingOnBoard(false));
         if (chunk.question) {
+          dispatch(addChalkboardPoint(chunk.question));
           dispatch(setPendingQuestion({ sectionIndex: index, question: chunk.question }));
           dispatch(setIsPlaying(false));
           return;
@@ -203,15 +205,17 @@ export function useChunkPlaybackOwner() {
     speakChunkRef.current = speakChunk;
   }, [speakChunk]);
 
-  const play = useCallback(() => {
+  const playFrom = useCallback((startIndex: number) => {
     playbackRunRef.current += 1;
     window.speechSynthesis?.cancel();
     pausedRef.current = false;
     dispatch(setIsPlaying(true));
     dispatch(setIsPaused(false));
-    indexRef.current = 0;
-    speakChunk(0);
+    indexRef.current = startIndex;
+    speakChunk(startIndex);
   }, [dispatch, speakChunk]);
+
+  const play = useCallback(() => playFrom(0), [playFrom]);
 
   const pause = useCallback(() => {
     pausedRef.current = true;
@@ -252,5 +256,5 @@ export function useChunkPlaybackOwner() {
     };
   }, [clearStartTimer]);
 
-  return { play, pause, resume, stop };
+  return { play, playFrom, pause, resume, stop };
 }

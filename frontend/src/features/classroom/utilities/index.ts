@@ -14,3 +14,5 @@ export * from './speechVoiceSelection';
 export * from './waitForLessonJob';
 
 export * from './pendingLessonJob';
+
+export { resolveNoteLanguageCode } from './noteLanguage';

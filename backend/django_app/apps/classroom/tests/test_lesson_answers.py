@@ -51,6 +51,24 @@ class LessonAnswerTests(TestCase):
         restored = fresh.get(url)
         self.assertTrue(restored.data['waiting'])
         self.assertEqual(restored.data['question'], self.note.answer['chunks'][0]['question'])
+        self.assertEqual(restored.data['answer']['chunks'][0]['question'], restored.data['question'])
+
+    def test_multiple_checks_and_remaining_teaching_are_preserved(self):
+        answer = lesson_answer()
+        check = {**answer['chunks'][0], 'question': 'What stays fixed?', 'expected_concepts': ['voltage']}
+        answer['chunks'] = [check, answer['chunks'][0], {**check, 'question': 'What happens to current?'}]
+        note = save_lecture_note(self.user, 'interactive-lesson', answer)
+        restored = self.client.get(f'/api/notes/{note.id}/progress/')
+        self.assertEqual(restored.status_code, 200)
+        self.assertEqual(len(restored.data['answer']['chunks']), 3)
+        self.assertEqual(restored.data['answer']['chunks'][2]['question'], 'What happens to current?')
+
+    def test_check_without_assessment_criteria_is_rejected(self):
+        from rest_framework.exceptions import ValidationError
+        answer = lesson_answer()
+        answer['chunks'][0]['question'] = 'Explain your answer.'
+        with self.assertRaises(ValidationError):
+            save_lecture_note(self.user, 'missing-rubric', answer)
 
     def test_stale_cursor_cannot_overwrite_newer_position(self):
         url = f'/api/notes/{self.note.id}/progress/'

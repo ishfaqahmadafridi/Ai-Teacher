@@ -10,3 +10,5 @@ export interface ClassroomQuestion { scheduledSessionId?: string | null; questio
 export interface ClassroomHealth { status: string; model: string; rag: { active: boolean; dataset: string; status: string } }
 
 export interface UseClassroomApiOptions { recoverPending?: boolean }
+
+export interface LessonAnswerRequest { key: string; id: string }

@@ -1,11 +1,16 @@
 """Student response contracts."""
 from rest_framework import serializers
+from apps.classroom.constants.lesson import (
+    LESSON_TEXT_MAX_LENGTH, LESSON_FEEDBACK_MAX_LENGTH,
+    LESSON_CONCEPT_MAX_LENGTH, LESSON_MAX_CONCEPTS, LESSON_EVALUATION_ACTIONS,
+)
+from .answer_serializers import GeneratedAnswerSerializer
 
 
 class LessonAnswerSerializer(serializers.Serializer):
     request_id = serializers.UUIDField()
     section_index = serializers.IntegerField(min_value=0)
-    answer = serializers.CharField(max_length=2000)
+    answer = serializers.CharField(max_length=LESSON_TEXT_MAX_LENGTH)
 
 
 class LessonAttemptSerializer(serializers.Serializer):
@@ -24,6 +29,7 @@ class LessonProgressInputSerializer(serializers.Serializer):
 
 
 class LessonProgressSerializer(serializers.Serializer):
+    answer = GeneratedAnswerSerializer(source='note.answer', read_only=True)
     question = serializers.SerializerMethodField()
 
     def get_question(self, obj):
@@ -35,13 +41,15 @@ class LessonProgressSerializer(serializers.Serializer):
 
 
 class LessonEvaluationSerializer(serializers.Serializer):
-    outcome = serializers.ChoiceField(choices=['understood', 'misconception', 'unclear'])
-    feedback = serializers.CharField(max_length=4000)
-    missing_concepts = serializers.ListField(child=serializers.CharField(max_length=500), max_length=10)
-    next_action = serializers.ChoiceField(choices=['continue', 'reteach', 'clarify'])
+    outcome = serializers.ChoiceField(choices=tuple(LESSON_EVALUATION_ACTIONS))
+    feedback = serializers.CharField(max_length=LESSON_FEEDBACK_MAX_LENGTH)
+    missing_concepts = serializers.ListField(
+        child=serializers.CharField(max_length=LESSON_CONCEPT_MAX_LENGTH),
+        max_length=LESSON_MAX_CONCEPTS,
+    )
+    next_action = serializers.ChoiceField(choices=tuple(LESSON_EVALUATION_ACTIONS.values()))
 
     def validate(self, attrs):
-        expected = {'understood': 'continue', 'misconception': 'reteach', 'unclear': 'clarify'}
-        if attrs['next_action'] != expected[attrs['outcome']]:
+        if attrs['next_action'] != LESSON_EVALUATION_ACTIONS[attrs['outcome']]:
             raise serializers.ValidationError('Outcome and next action disagree.')
         return attrs

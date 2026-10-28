@@ -6,7 +6,7 @@ from PIL import Image
 from django.test import SimpleTestCase, override_settings
 from apps.classroom.services.visual_assets import normalized_image, asset_path
 from apps.classroom.serializers.structured_visual_serializers import StructuredVisualSerializer
-from apps.classroom.serializers.ask_serializers import GeneratedAnswerSerializer
+from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 
 class VisualAssetTests(SimpleTestCase):
     def test_corrupt_file_rejected(self):

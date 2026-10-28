@@ -2,14 +2,14 @@ import { apiClient } from '@/lib/api';
 import { lessonAttemptSchema, lessonEvaluationSchema } from '../validators/lesson.schema';
 import { savedLectureNoteSchema, savedLectureNotesSchema } from '../validators/notes.schema';
 export const lectureNotesService = {
-  async answer(id: string, sectionIndex: number, answer: string, requestId: string) {
+  async answer(id: string, sectionIndex: number, answer: string, requestId: string, signal?: AbortSignal) {
     const response = await apiClient.post(`/api/notes/${id}/answers/`, {
       section_index: sectionIndex, answer, request_id: requestId,
-    });
+    }, { signal });
     return lessonAttemptSchema.parse(response.data);
   },
-  async evaluate(id: string, attemptId: string) {
-    const response = await apiClient.post(`/api/notes/${id}/answers/${attemptId}/evaluate/`);
+  async evaluate(id: string, attemptId: string, signal?: AbortSignal) {
+    const response = await apiClient.post(`/api/notes/${id}/answers/${attemptId}/evaluate/`, undefined, { signal });
     return lessonEvaluationSchema.parse(response.data.evaluation);
   },
   async list(signal?: AbortSignal) {

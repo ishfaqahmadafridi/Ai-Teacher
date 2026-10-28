@@ -2,11 +2,11 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setInputText, setError, setVoiceError, setChunks, setPendingQuestion, setChalkboardPoints } from '@/features/classroom/state/classroomSlice';
+import { setInputText, setError, setVoiceError, setPendingQuestion, setChalkboardPoints, setSpokenText, setCurrentChunkIndex } from '@/features/classroom/state/classroomSlice';
 import { useVoiceInput } from './useVoiceInput';
 import { useChunkPlayer } from './useChunkPlayer';
 import { useClassroomApi } from './useClassroomApi';
-import { lectureNotesService } from '../services/lectureNotesService';
+import { useLessonAnswerSubmission } from './useLessonAnswerSubmission';
 
 export function useInputBar() {
   const dispatch = useAppDispatch();
@@ -18,10 +18,11 @@ export function useInputBar() {
   const isPaused = useAppSelector((s) => s.classroom.isPaused);
   const voiceError = useAppSelector((s) => s.classroom.voiceError);
   const chunks = useAppSelector((s) => s.classroom.chunks);
+  const currentChunkIndex = useAppSelector((s) => s.classroom.currentChunkIndex);
 
   const { isListening, startListening, stopListening } = useVoiceInput();
   const { sendQuestion } = useClassroomApi();
-  const { play, pause, resume, stop } = useChunkPlayer();
+  const { playFrom, pause, resume, stop } = useChunkPlayer();
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [handRaised, setHandRaised] = useState<boolean>(false);
@@ -29,7 +30,7 @@ export function useInputBar() {
   const [reactionToast, setReactionToast] = useState<string | null>(null);
 
   const submittingRef = useRef(false);
-  const answerRequestRef = useRef<{ key: string; id: string } | null>(null);
+  const submitLessonAnswer = useLessonAnswerSubmission(noteId);
 
   const handleSubmit = useCallback(async () => {
     if (!inputText.trim() || loading || submittingRef.current) return;
@@ -40,14 +41,14 @@ export function useInputBar() {
     try {
       const answer = inputText.trim();
       if (pendingQuestion && noteId) {
-        const key = JSON.stringify([noteId, pendingQuestion.sectionIndex, answer]);
-        if (answerRequestRef.current?.key !== key) answerRequestRef.current = { key, id: crypto.randomUUID() };
-        const attempt = await lectureNotesService.answer(noteId, pendingQuestion.sectionIndex, answer, answerRequestRef.current.id);
-        const evaluation = await lectureNotesService.evaluate(noteId, attempt.id);
-        dispatch(setPendingQuestion(null));
-        dispatch(setChalkboardPoints([]));
-        dispatch(setChunks([{ speak: evaluation.feedback, key_point: evaluation.missing_concepts.join('; ') || null }]));
-        answerRequestRef.current = null;
+        const evaluation = await submitLessonAnswer(pendingQuestion, answer);
+        if (!evaluation) return;
+        const canContinue = evaluation.next_action === 'continue';
+        dispatch(setPendingQuestion(canContinue ? null : pendingQuestion));
+        dispatch(setCurrentChunkIndex(pendingQuestion.sectionIndex + (canContinue ? 1 : 0)));
+        dispatch(setSpokenText(evaluation.feedback));
+        dispatch(setChalkboardPoints([evaluation.feedback]));
+        dispatch(setInputText(''));
       } else {
         await sendQuestion(answer);
       }
@@ -56,7 +57,7 @@ export function useInputBar() {
     } finally {
       submittingRef.current = false;
     }
-  }, [inputText, loading, sendQuestion, stopListening, pendingQuestion, noteId, stop, dispatch]);
+  }, [inputText, loading, sendQuestion, stopListening, pendingQuestion, noteId, stop, dispatch, submitLessonAnswer]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -90,13 +91,13 @@ export function useInputBar() {
 
   const handlePlayPause = useCallback(() => {
     if (!isPlaying && chunks.length > 0) {
-      play();
+      playFrom(pendingQuestion?.sectionIndex ?? Math.max(0, currentChunkIndex));
     } else if (isPlaying && !isPaused) {
       pause();
     } else if (isPlaying && isPaused) {
       resume();
     }
-  }, [isPlaying, isPaused, chunks.length, play, pause, resume]);
+  }, [isPlaying, isPaused, chunks.length, playFrom, pause, resume, pendingQuestion, currentChunkIndex]);
 
   const clearErrors = useCallback(() => {
     dispatch(setError(null));

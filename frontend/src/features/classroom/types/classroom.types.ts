@@ -83,10 +83,12 @@ export interface SerializedVoice {
   localService: boolean;
 }
 
+export interface PendingLessonQuestion { sectionIndex: number; question: string }
+
 export interface ClassroomState {
   courseTitle?: string;
   scheduledSessionId?: string | null;
-  pendingQuestion: { sectionIndex: number; question: string } | null;
+  pendingQuestion: PendingLessonQuestion | null;
   noteId: string | null;
   inputText: string;
   loading: boolean;

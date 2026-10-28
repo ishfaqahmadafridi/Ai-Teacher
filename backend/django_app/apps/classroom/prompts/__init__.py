@@ -11,3 +11,7 @@ __all__ = [
 ]
 
 from .note_translation import NOTE_TRANSLATION_PROMPT
+from .scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
+from .lesson_evaluation import LESSON_EVALUATION_PROMPT
+
+__all__ += ['SCHEDULED_LESSON_PROMPT', 'LESSON_EVALUATION_PROMPT']

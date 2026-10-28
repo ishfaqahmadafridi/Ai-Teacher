@@ -1,51 +1,40 @@
 'use client';
 
 import { memo } from 'react';
-import { Globe } from 'lucide-react';
+import { Combobox } from '@base-ui/react/combobox';
+import { ChevronDown } from 'lucide-react';
 import { useNoteLanguageSelector } from '../../../hooks/useNoteLanguageSelector';
 import type { NoteLanguageSelectorProps } from '../../../types/sidebar.types';
 
 export const NoteLanguageSelector = memo(function NoteLanguageSelector({
-  selectedLanguage,
-  savedCustomLang,
-  activeLangLabel,
-  onPillClick,
-  className = '',
+  selectedLanguage, onPillClick, disabled = false, className = '',
 }: NoteLanguageSelectorProps) {
-  const options = useNoteLanguageSelector(savedCustomLang);
-
+  const { options, value, handleSelect } = useNoteLanguageSelector(selectedLanguage, onPillClick);
   return (
-    <div className={`space-y-1.5 ${className}`}>
-      <div className="flex items-center justify-between px-0.5">
-        <span className="text-[11px] font-bold text-dashboard-muted flex items-center gap-1.5 font-['Hanken_Grotesk',sans-serif]">
-          <Globe className="w-3.5 h-3.5 text-dashboard-primary" />
-          Note Language & Style
-        </span>
-        <span className="text-[10px] font-mono font-bold text-dashboard-primary bg-violet-500/15 px-2 py-0.5 rounded-md border border-violet-500/30 truncate max-w-[120px] capitalize">
-          {activeLangLabel}
-        </span>
-      </div>
-
-      {/* Wrap labels to keep every language readable in the sidebar. */}
-      <div className="flex flex-wrap gap-1 p-1 rounded-xl bg-dashboard-subtle border border-dashboard-border">
-        {options.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => onPillClick(item.id)}
-            className={`py-1.5 px-1 rounded-lg text-[10px] font-mono font-bold text-center transition-all cursor-pointer min-w-0 flex-1 basis-20 whitespace-normal break-words ${
-              selectedLanguage === item.id
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : 'text-dashboard-muted hover:text-dashboard-primary hover:bg-dashboard-selected/60'
-            }`}
-            title={item.id === 'Custom' ? 'Click to open or edit custom format' : undefined}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
+    <div className={className}>
+      <Combobox.Root items={options} value={value} onValueChange={handleSelect} disabled={disabled}>
+        <Combobox.InputGroup className="flex items-center rounded-lg border border-dashboard-border bg-dashboard-subtle focus-within:ring-2 focus-within:ring-dashboard-primary">
+          <Combobox.Input aria-label="Note language" placeholder="Type or select a language"
+            className="min-w-0 flex-1 bg-transparent px-3 py-2 text-xs text-dashboard-text outline-none" />
+          <Combobox.Trigger type="button" aria-label="Show languages" className="p-2 text-dashboard-muted">
+            <ChevronDown className="h-4 w-4" />
+          </Combobox.Trigger>
+        </Combobox.InputGroup>
+        <Combobox.Portal>
+          <Combobox.Positioner sideOffset={4} className="z-50">
+            <Combobox.Popup className="w-[var(--anchor-width)] overflow-hidden rounded-lg border border-dashboard-border bg-dashboard-panel shadow-lg">
+              <Combobox.Empty className="p-3 text-xs text-dashboard-muted">No languages found.</Combobox.Empty>
+              <Combobox.List className="max-h-56 overflow-y-auto p-1">
+                {(option) => <Combobox.Item key={option.value} value={option}
+                  className="cursor-pointer rounded-md px-3 py-2 text-xs text-dashboard-text data-highlighted:bg-dashboard-selected data-selected:text-dashboard-primary">
+                  {option.label}
+                </Combobox.Item>}
+              </Combobox.List>
+            </Combobox.Popup>
+          </Combobox.Positioner>
+        </Combobox.Portal>
+      </Combobox.Root>
     </div>
   );
 });
-
 NoteLanguageSelector.displayName = 'NoteLanguageSelector';

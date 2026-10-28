@@ -1,4 +1,8 @@
 import type { StudentProfile } from '../types/dashboard.types';
+import ISO6391 from 'iso-639-1';
+
+export const PROFILE_LANGUAGE_MAX_LENGTH = 100;
+export const PROFILE_LANGUAGE_OPTIONS = ISO6391.getAllNames();
 
 export const DEFAULT_STUDENT_PROFILE: StudentProfile = {
   name: '', email: '', phone: '', studentId: '', gradeLevel: '',

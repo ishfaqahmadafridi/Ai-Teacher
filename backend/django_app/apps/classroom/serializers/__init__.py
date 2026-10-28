@@ -2,7 +2,7 @@
 apps/classroom/serializers/__init__.py
 """
 from .ask_serializers import (
-    AskRequestSerializer, AskResponseSerializer, GeneratedAnswerSerializer,
+    AskRequestSerializer,
     ClearSessionRequestSerializer, ClearSessionResponseSerializer,
 )
 
@@ -17,3 +17,8 @@ __all__ = [
 from .note_serializers import NotesQuerySerializer, NoteLanguageSerializer, NoteContentSerializer, NoteResponseSerializer, NoteFigureSerializer
 
 from .lesson_audio_serializers import LessonAudioRequestSerializer
+
+from .answer_serializers import AnswerChunkSerializer, AskResponseSerializer, GeneratedAnswerSerializer
+from .diagram_fields import AnswerDiagramField
+
+__all__ += ['AnswerChunkSerializer', 'AnswerDiagramField']

@@ -20,3 +20,7 @@ from .note_document import create_note_document
 from .note_figures import save_note_figure, note_figures
 
 from .lesson_audio import lesson_audio
+from .lesson_answers import submit_lesson_answer
+from .lesson_evaluation import evaluate_attempt
+
+__all__ += ['submit_lesson_answer', 'evaluate_attempt']

@@ -145,7 +145,6 @@ test('selected language blocks original downloads until its translation is ready
     '../services/noteExportService': { downloadBlob() {} },
     '../utilities/downloadNotesUtils': { lectureNoteFilename: () => 'Topic' },
     '../utilities/noteErrors': { noteErrorMessage: () => 'Translation failed' },
-    '../constants/notesConstants': { NOTE_LANGUAGE_CODES: { Urdu: 'ur', Hindi: 'hi', English: 'en' } },
   });
   // This test deliberately invokes the hook through its mocked state harness.
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -161,12 +160,21 @@ test('selected language blocks original downloads until its translation is ready
     await render().handleDownloadDocx();
     assert.equal(downloads.at(-1), language);
   }
-  render().handlePillClick('Custom');
-  render().setCustomLangInput('German');
-  render().handleSaveCustomLang();
+  render().handlePillClick('de');
   assert.equal(render().translationReady, false);
   await render().translate();
   assert.equal(render().translationReady, true);
   await render().handleDownloadDocx();
   assert.equal(downloads.at(-1), 'de');
+});
+
+test('note language resolution uses the language library for names and codes', () => {
+  const { resolveNoteLanguageCode } = load('features/classroom/utilities/noteLanguage.ts', {
+    'iso-639-1': { default: ISO6391 },
+  });
+  assert.equal(resolveNoteLanguageCode('English'), 'en');
+  assert.equal(resolveNoteLanguageCode('German'), 'de');
+  assert.equal(resolveNoteLanguageCode(' UR '), 'ur');
+  assert.equal(resolveNoteLanguageCode(''), '');
+  assert.equal(resolveNoteLanguageCode('not-a-language'), '');
 });
