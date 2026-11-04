@@ -1,3 +1,4 @@
+import type { ClassPhase } from './session.types';
 import type { z } from 'zod';
 import type { classroomChunkSchema, diagramCommandSchema, diagramTypeSchema, phaseSchema, teachingResponseSchema } from '../validators/classroom.schema';
 
@@ -18,9 +19,13 @@ export interface SerializedVoice {
   localService: boolean;
 }
 
-export interface PendingLessonQuestion { sectionIndex: number; question: string }
+export interface PendingLessonQuestion { sectionIndex: number; question: string; kind?: 'discussion'; expiresAt?: number }
 
 export interface ClassroomState {
+  handRaised?: boolean;
+  answerSubmitting?: boolean;
+  discussionExpired?: boolean;
+  classPhase?: ClassPhase;
   courseTitle?: string;
   scheduledSessionId?: string | null;
   pendingQuestion: PendingLessonQuestion | null;

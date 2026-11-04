@@ -13,7 +13,13 @@ from apps.classroom.views.lesson_audio_view import LessonAudioView
 from apps.classroom.views.lesson_job_views import LessonJobsView, LessonJobView, LessonQueueMetricsView
 from apps.classroom.views.visual_asset_view import VisualAssetView
 
+from apps.classroom.views.lesson_discussion_view import LessonDiscussionView
+
+from apps.classroom.views.lesson_hand_view import LessonHandView
+
 urlpatterns = [
+    path('notes/<uuid:note_id>/hand/', LessonHandView.as_view(), name='classroom-lesson-hand'),
+    path("notes/<uuid:note_id>/discussion/", LessonDiscussionView.as_view(), name="classroom-lesson-discussion"),
     re_path(r'^visual-assets/(?P<digest>[a-f0-9]{64})/?$', VisualAssetView.as_view(), name='classroom-visual-asset'),
     path('lesson-jobs/metrics/', LessonQueueMetricsView.as_view(), name='classroom-lesson-metrics'),
     path('lesson-jobs/', LessonJobsView.as_view(), name='classroom-lesson-jobs'),

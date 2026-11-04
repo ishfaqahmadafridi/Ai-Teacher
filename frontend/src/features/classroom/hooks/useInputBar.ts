@@ -2,10 +2,13 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setInputText, setError, setVoiceError, setPendingQuestion, setChalkboardPoints, setSpokenText, setCurrentChunkIndex } from '@/features/classroom/state/classroomSlice';
+import { setAnswerSubmitting, setInputText, setError, setVoiceError, setPendingQuestion, setChalkboardPoints, setSpokenText, setCurrentChunkIndex } from '@/features/classroom/state/classroomSlice';
+import { useClassroomInteraction } from './useClassroomInteraction';
+import { useRaisedHand } from './useRaisedHand';
 import { useVoiceInput } from './useVoiceInput';
 import { useChunkPlayer } from './useChunkPlayer';
 import { useClassroomApi } from './useClassroomApi';
+import { useDiscussionSubmission } from './useDiscussionSubmission';
 import { useLessonAnswerSubmission } from './useLessonAnswerSubmission';
 
 export function useInputBar() {
@@ -15,32 +18,40 @@ export function useInputBar() {
   const inputText = useAppSelector((s) => s.classroom.inputText);
   const loading = useAppSelector((s) => s.classroom.loading);
   const isPlaying = useAppSelector((s) => s.classroom.isPlaying);
-  const isPaused = useAppSelector((s) => s.classroom.isPaused);
+  const { inputBlocked, micBlocked } = useClassroomInteraction();
   const voiceError = useAppSelector((s) => s.classroom.voiceError);
   const chunks = useAppSelector((s) => s.classroom.chunks);
-  const currentChunkIndex = useAppSelector((s) => s.classroom.currentChunkIndex);
 
   const { isListening, startListening, stopListening } = useVoiceInput();
   const { sendQuestion } = useClassroomApi();
-  const { playFrom, pause, resume, stop } = useChunkPlayer();
+  const { playFrom, stop, playReply } = useChunkPlayer();
 
   const [localError, setLocalError] = useState<string | null>(null);
-  const [handRaised, setHandRaised] = useState<boolean>(false);
+  const { handRaised, handleToggleHand } = useRaisedHand();
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [reactionToast, setReactionToast] = useState<string | null>(null);
 
   const submittingRef = useRef(false);
+  const submitDiscussion = useDiscussionSubmission(noteId);
   const submitLessonAnswer = useLessonAnswerSubmission(noteId);
 
   const handleSubmit = useCallback(async () => {
-    if (!inputText.trim() || loading || submittingRef.current) return;
+    if (!inputText.trim() || inputBlocked || submittingRef.current) return;
     submittingRef.current = true;
-    stop();
+    dispatch(setAnswerSubmitting(true));
+    if (pendingQuestion?.kind !== 'discussion') stop();
     stopListening();
     setLocalError(null);
     try {
       const answer = inputText.trim();
-      if (pendingQuestion && noteId) {
+      if (pendingQuestion?.kind === 'discussion' && noteId) {
+        const response = await submitDiscussion(pendingQuestion, answer);
+        if (!response) return;
+        dispatch(setInputText(''));
+        dispatch(setSpokenText(response.reply));
+        dispatch(setChalkboardPoints([response.reply]));
+        await playReply(response.reply);
+      } else if (pendingQuestion && noteId) {
         const evaluation = await submitLessonAnswer(pendingQuestion, answer);
         if (!evaluation) return;
         const canContinue = evaluation.next_action === 'continue';
@@ -49,15 +60,23 @@ export function useInputBar() {
         dispatch(setSpokenText(evaluation.feedback));
         dispatch(setChalkboardPoints([evaluation.feedback]));
         dispatch(setInputText(''));
+        if (canContinue) playFrom(pendingQuestion.sectionIndex + 1);
       } else {
         await sendQuestion(answer);
       }
     } catch (error) {
+      if (error instanceof Error && ['AbortError', 'CanceledError'].includes(error.name)) return;
+      if (pendingQuestion?.kind === 'discussion') {
+        const message = error instanceof Error ? error.message : 'Your question could not be answered right now.';
+        dispatch(setSpokenText(message));
+        dispatch(setChalkboardPoints([message]));
+      }
       setLocalError(error instanceof Error ? error.message : 'Unable to save your answer. Please retry.');
     } finally {
       submittingRef.current = false;
+      dispatch(setAnswerSubmitting(false));
     }
-  }, [inputText, loading, sendQuestion, stopListening, pendingQuestion, noteId, stop, dispatch, submitLessonAnswer]);
+  }, [inputText, inputBlocked, sendQuestion, stopListening, pendingQuestion, noteId, stop, dispatch, submitLessonAnswer, playFrom, submitDiscussion, playReply]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -71,33 +90,14 @@ export function useInputBar() {
 
   const handleMicClick = useCallback(() => {
     if (isListening) stopListening();
-    else if (!loading) { pause(); startListening(); }
-  }, [isListening, loading, startListening, stopListening, pause]);
-
-  const handleToggleHand = useCallback(() => {
-    setHandRaised((prev) => {
-      const nextState = !prev;
-      setReactionToast(nextState ? '✋ You raised your hand' : 'Lowered hand');
-      setTimeout(() => setReactionToast(null), 3000);
-      return nextState;
-    });
-  }, []);
+    else if (!micBlocked) startListening();
+  }, [isListening, micBlocked, startListening, stopListening]);
 
   const handleSendReaction = useCallback((emoji: string, label: string) => {
     setShowEmojiPicker(false);
     setReactionToast(`${emoji} You reacted with ${label}`);
     setTimeout(() => setReactionToast(null), 3000);
   }, []);
-
-  const handlePlayPause = useCallback(() => {
-    if (!isPlaying && chunks.length > 0) {
-      playFrom(pendingQuestion?.sectionIndex ?? Math.max(0, currentChunkIndex));
-    } else if (isPlaying && !isPaused) {
-      pause();
-    } else if (isPlaying && isPaused) {
-      resume();
-    }
-  }, [isPlaying, isPaused, chunks.length, playFrom, pause, resume, pendingQuestion, currentChunkIndex]);
 
   const clearErrors = useCallback(() => {
     dispatch(setError(null));
@@ -116,7 +116,8 @@ export function useInputBar() {
     inputText,
     loading,
     isPlaying,
-    isPaused,
+    inputBlocked,
+    micBlocked,
     voiceError,
     localError,
     chunks,
@@ -130,8 +131,6 @@ export function useInputBar() {
     handleMicClick,
     handleToggleHand,
     handleSendReaction,
-    handlePlayPause,
-    stop,
     clearErrors,
     updateInputText,
   };

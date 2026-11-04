@@ -4,41 +4,30 @@ import { classroomErrorMessage } from '../utilities/classroomErrors';
 import { useEffect } from 'react';
 import { useAuthStore } from '@/features/auth/state/authStore';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
-import { setNoteId, setPendingQuestion, setSpokenText, setError, setChunks, setTopic, setDiagramType, setCurrentChunkIndex, setChalkboardPoints, setCurrentCommand, setCurrentFormula } from '../state/classroomSlice';
+import { setError } from '../state/classroomSlice';
+import { useRestoreLesson } from './useRestoreLesson';
 import { lessonProgressService } from '../services/lessonProgressService';
 
-export function useLessonRecovery() {
+export function useLessonRecovery(enabled = true) {
+  const restore = useRestoreLesson();
   const userId = useAuthStore(state => state.user?.id);
   const noteId = useAppSelector(state => state.classroom.noteId);
   const pending = useAppSelector(state => state.classroom.pendingQuestion);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (!userId || noteId) return;
+    if (!enabled || !userId || noteId) return;
     const saved = readActiveLessonNote(userId);
     if (!saved) return;
     const controller = new AbortController();
-    lessonProgressService.read(saved, controller.signal).then(progress => {
-      if (controller.signal.aborted) return;
-      dispatch(setChunks(progress.answer.chunks));
-      dispatch(setTopic(progress.answer.topic));
-      dispatch(setDiagramType(progress.answer.diagram_type));
-      const diagram = progress.answer.chunks[progress.section_index]?.diagram;
-      dispatch(setCurrentCommand(diagram ?? null));
-      dispatch(setCurrentFormula(diagram?.formula ?? null));
-      dispatch(setNoteId(saved));
-      dispatch(setCurrentChunkIndex(progress.section_index));
-      dispatch(setPendingQuestion(progress.waiting && progress.question ? { sectionIndex: progress.section_index, question: progress.question } : null));
-      dispatch(setSpokenText(progress.question ?? ''));
-      dispatch(setChalkboardPoints(progress.waiting && progress.question ? [progress.question] : []));
-    }).catch(error => {
+    restore(saved, controller.signal).catch(error => {
       if (!controller.signal.aborted) dispatch(setError(classroomErrorMessage(error, 'Unable to restore your lesson.')));
     });
     return () => controller.abort();
-  }, [userId, noteId, dispatch]);
+  }, [userId, noteId, dispatch, enabled, restore]);
   useEffect(() => {
     if (!userId || !noteId) return;
     saveActiveLessonNote(userId, noteId);
-    if (!pending) return;
+    if (!pending || pending.kind === 'discussion') return;
     const controller = new AbortController();
     lessonProgressService.read(noteId, controller.signal).then(progress => {
       if (progress.waiting && progress.section_index === pending.sectionIndex) return;

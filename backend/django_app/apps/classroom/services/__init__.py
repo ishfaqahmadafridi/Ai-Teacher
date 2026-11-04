@@ -31,3 +31,15 @@ __all__ += ['QuotaFallbackLLM', 'is_quota_error']
 from .teaching_messages import teaching_messages
 from .lesson_evaluation import evaluate_owned_attempt
 __all__ += ['teaching_messages', 'evaluate_owned_attempt']
+
+from .lesson_discussion import answer_discussion
+__all__ += ['answer_discussion']
+
+from .lesson_hand import lesson_hand
+
+from .prompt_budget import budget_teaching_messages, model_prompt_limits
+__all__ += ['budget_teaching_messages', 'model_prompt_limits']
+
+from .teaching_quality import generate_reviewed_teaching, review_teaching_quality, validate_teaching_structure
+
+__all__ += ['generate_reviewed_teaching', 'review_teaching_quality', 'validate_teaching_structure']

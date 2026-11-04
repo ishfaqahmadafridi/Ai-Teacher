@@ -102,7 +102,12 @@ class CurriculumCoverageTests(SimpleTestCase):
             with self.assertRaises(CurriculumCoverageError):
                 validate_curriculum_coverage({'chunks': [chunk]}, self.context)
 
-    def test_pipeline_sends_level_and_marks_only_validated_coverage(self):
+    @patch('apps.classroom.services.teaching_quality.review_teaching_quality', return_value=([], 0))
+    def test_pipeline_sends_level_and_marks_only_validated_coverage(self, quality_review):
+        from apps.classroom.tests.lecture_note_fixtures import quality_lesson
+        self.answer = quality_lesson()
+        self.answer['chunks'][0]['curriculum_ids'] = ['concept-0']
+        self.answer['chunks'][0]['key_point'] = 'Roots'
         llm = Mock()
         llm.invoke.side_effect = [AIMessage(content=json.dumps(self.answer)), AIMessage(content=json.dumps({'level_appropriate': True, 'findings': [{'requirement_id': 'concept-0', 'covered': True, 'evidence': self.answer['chunks'][0]['speak']}]}))]
         with patch('apps.classroom.inference.pipeline.get_llm', return_value=llm), patch('apps.classroom.rag.search', return_value=''), patch('apps.classroom.inference.pipeline.get_session', return_value=[]), patch('apps.classroom.services.lesson_visuals.resolve_lesson_visuals', side_effect=lambda answer, images: answer):

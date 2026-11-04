@@ -15,3 +15,9 @@ export * from './playback.types';
 export * from './circuit.types';
 
 export * from './visual.types';
+
+export * from './session.types';
+
+export * from './interaction.types';
+
+export type * from './voiceInput.types';

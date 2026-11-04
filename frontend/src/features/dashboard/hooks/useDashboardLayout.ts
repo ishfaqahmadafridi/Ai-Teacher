@@ -1,4 +1,5 @@
 'use client';
+import { classroomSessionUrl } from '@/features/classroom/utilities/scheduledClassPhase';
 
 import { useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -134,7 +135,7 @@ export function useDashboardLayout() {
 
   const handleJoinClass = useCallback(
     (_classId?: string) => {
-      router.push('/classroom');
+      router.push(classroomSessionUrl(_classId));
     },
     [router]
   );

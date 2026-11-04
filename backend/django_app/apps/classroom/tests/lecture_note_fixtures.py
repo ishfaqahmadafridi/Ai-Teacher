@@ -25,3 +25,18 @@ class LectureNotesFixture:
         self.client = APIClient()
         self.client.force_authenticate(self.user)
         self.note = save_lecture_note(self.user, 'lesson-session', lesson_answer())
+
+
+def quality_lesson():
+    """A complete concept block for structural/review tests; no external model."""
+    def chunk(text, step, **extra):
+        return dict(speak=text, teaching_step=step, diagram={'action': 'none'}, **extra)
+    return {'topic': 'Roots', 'language': 'en', 'lesson_mode': 'lesson', 'diagram_type': 'default', 'chunks': [
+        chunk('We will learn why roots supply plants with water.', 'introduction'),
+        chunk('Roots absorb water through root hairs, which increase contact with soil.', 'explanation', concept_id='roots'),
+        chunk('For example, a seedling takes up soil water through its growing roots.', 'example', concept_id='roots'),
+        chunk('Any questions about root water uptake?', 'discussion', discussion_prompt='Any questions about root water uptake?'),
+        chunk('The absorbed water travels into the plant transport tissues because connected pathways carry it onward.', 'explanation', concept_id='roots'),
+        chunk('Why do root hairs help water uptake?', 'practice', concept_id='roots', question='Why do root hairs help water uptake?', expected_concepts=['Increased contact with soil']),
+        chunk('Roots connect soil water uptake to the needs of the rest of the plant.', 'recap'),
+    ]}

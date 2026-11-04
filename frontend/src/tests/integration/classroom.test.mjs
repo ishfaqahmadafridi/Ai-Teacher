@@ -98,7 +98,9 @@ function playbackHarness(question, availableVoices = [{ voiceURI: 'test-local', 
   const dispatched = [], spoken = [], effects = [], timers = [], files = [];
   const actions = new Proxy({}, { get: (_, name) => value => ({ type: name, payload: value }) });
   const { useChunkPlaybackOwner: useChunkPlayer } = load('features/classroom/hooks/useChunkPlaybackOwner.ts', {
-    react: { useCallback: fn => fn, useRef: value => ({ current: value }), useEffect: fn => effects.push(fn) },
+    react: { useCallback: fn => fn, useRef: value => ({ current: value }), useEffect: fn => effects.push(fn), useLayoutEffect: fn => effects.push(fn) },
+    '../services/lessonProgressService': { lessonProgressService: { finish: async () => {} } },
+    './useTeacherReplyAudio': { useTeacherReplyAudio: () => ({ playReply: async () => {}, cancelReply() {} }) },
     './useLessonAudioPlayer': { useLessonAudioPlayer: () => ({ playAudio: (...args) => files.push(args), stopAudio() {}, pauseAudio() {}, resumeAudio() {} }) },
     '@/hooks/useAppStore': { useAppDispatch: () => action => dispatched.push(action), useAppSelector: fn => fn({ classroom: state }) },
     '@/features/classroom/state/classroomSlice': actions,
@@ -124,8 +126,8 @@ test('AI answers play sequential steps and finish after the final step', () => {
   h.spoken[0].onend();
   assert.deepEqual(h.spoken.map(u => u.text), ['First step', 'Second step']);
   h.spoken[1].onend();
-  assert.equal(h.dispatched.at(-2).type, 'setIsPlaying');
-  assert.equal(h.dispatched.at(-2).payload, false);
+  assert.equal(h.dispatched.findLast(item => item.type === 'setIsPlaying').payload, false);
+  assert.equal(h.dispatched.findLast(item => item.type === 'setCurrentChunkIndex').payload, 2);
 });
 
 test('continuing a checked lesson plays the remaining step without replaying its question', () => {
@@ -156,6 +158,7 @@ test('rendered classroom stage invokes the playback-owning layout hook', () => {
   let calls = 0;
   const result = { chunks: [{ speak: 'Voltage equals current times resistance.' }], isPlaying: true };
   const { useClassroomStageArea } = load('features/classroom/hooks/useClassroomStageArea.ts', {
+    './useDiscussionWindow': { useDiscussionWindow() {} },
     './useLectureFigureCapture': { useLectureFigureCapture: () => {} },
     './useClassroomLayout': { useClassroomLayout: () => { calls += 1; return result; } },
   });
@@ -416,14 +419,14 @@ test('polynomial visual samples the actual equation and places the zero axis cor
   assert.equal(visualGeometry({ kind: 'polynomial', coefficients: [0, 1], x_min: 1, x_max: 3 }).axisX, null);
 });
 
-function recoveryHarness(recoverPending = false) {
+function recoveryHarness(recoverPending = false, classroom = {}) {
   const effects = [], actions = [], requests = [];
   const actionCreators = new Proxy({}, { get: (_, type) => payload => ({ type, payload }) });
   const { useClassroomApi } = load('features/classroom/hooks/useClassroomApi.ts', {
     react: { useRef: value => ({ current: value }), useCallback: fn => fn, useEffect: fn => effects.push(fn) },
     './useClassroomQueries': { useClassroomQuestionMutation: () => ({ mutateAsync: request => new Promise((resolve, reject) => { requests.push(request); request.signal.addEventListener('abort', () => reject(new Error('aborted'))); }) }) },
     '@/shared/hooks/useConversationSession': { useConversationSession: () => () => 'session' },
-    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action), useAppSelector: selector => selector({ classroom: {} }) },
+    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action), useAppSelector: selector => selector({ classroom }) },
     '@/features/classroom/state/classroomSlice': actionCreators,
     '../utilities/pendingLessonJob': { readPendingLessonJob: () => ({ question: 'Gravity' }) },
   }, { AbortController });
@@ -475,3 +478,13 @@ test('an offline lesson queue stops the spinner but preserves the recoverable jo
   await assert.rejects(ClassroomService.askQuestion({ question: 'Gravity', sessionId: 'session' }), /worker may be offline/);
   assert.equal(submissions, 1);
 });
+
+
+for (const classroom of [{ isPlaying: true }, { pendingQuestion: { sectionIndex: 0, question: 'Try it' } }]) {
+  test(`alternate question entry cannot interrupt ${classroom.isPlaying ? 'narration' : 'a teacher checkpoint'}`, () => {
+    const h = recoveryHarness(true, classroom);
+    h.effects.forEach(effect => effect());
+    assert.equal(h.requests.length, 0);
+    assert.equal(h.actions.length, 0);
+  });
+}

@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "checks": [
+    "wait for server start",
+    "automatic narration",
+    "no manual playback controls",
+    "teacher question pauses",
+    "accepted answer automatically continues",
+    "completion persists",
+    "reload does not replay completed content",
+    "automatic scheduled exit",
+    "active narration stops at scheduled end",
+    "late speech callback ignored",
+    "no CC or status strip",
+    "chat and voice open only at teacher questions",
+    "no automatic microphone recording",
+    "chat and microphone close when teaching resumes",
+    "late transcripts ignored",
+    "no uncaught page exceptions"
+  ],
+  "pageErrors": [],
+  "limits": "Real frontend and isolated authenticated HTTP/database; seeded admitted classes, deterministic grading and simulated speech/recognition. No physical microphone permission, real audio, provider or broker test."
+}

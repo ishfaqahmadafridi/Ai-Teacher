@@ -46,10 +46,15 @@ class PersistenceRegressionTests(TestCase):
 
 
 class PipelineRegressionTests(TestCase):
+    def setUp(self):
+        review = patch('apps.classroom.services.teaching_quality.review_teaching_quality', return_value=([], 0))
+        review.start()
+        self.addCleanup(review.stop)
+
     @patch('apps.classroom.rag.search', side_effect=RuntimeError('retrieval unavailable'))
     @patch('apps.classroom.inference.pipeline.get_llm')
     def test_optional_textbook_outage_does_not_discard_a_valid_lesson(self, get_llm, search):
-        answer = {'chunks': [{'speak': 'Gravity attracts masses.', 'diagram': {'action': 'none'}}],
+        answer = {'lesson_mode': 'focused', 'chunks': [{'speak': 'Gravity attracts masses.', 'diagram': {'action': 'none'}}],
                   'topic': 'gravity', 'language': 'en', 'diagram_type': 'gravity'}
         get_llm.return_value.invoke.return_value = AIMessage(content=json.dumps(answer))
         result = generate_answer('What is gravity?', session_id='retrieval-outage')
@@ -78,7 +83,7 @@ class PipelineRegressionTests(TestCase):
     @patch('apps.classroom.rag.search', return_value='textbook context')
     @patch('apps.classroom.inference.pipeline.get_llm')
     def test_text_blocks_and_provider_token_usage(self, get_llm, search):
-        answer = {'chunks': [{'speak': 'Gravity attracts masses.', 'diagram': {'action': 'none'},
+        answer = {'lesson_mode': 'focused', 'chunks': [{'speak': 'Gravity attracts masses.', 'diagram': {'action': 'none'},
                               'key_point': 'Masses attract', 'teacher_position': 'left'}],
                   'topic': 'gravity', 'language': 'en', 'diagram_type': 'gravity'}
         get_llm.return_value.invoke.return_value = AIMessage(

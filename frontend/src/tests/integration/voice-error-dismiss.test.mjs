@@ -11,6 +11,7 @@ test('dismissing the error banner clears voice and general errors', () => {
     '@/features/classroom/state/classroomSlice': {
       setError: payload => ({ type: 'error', payload }), setVoiceError: payload => ({ type: 'voiceError', payload }),
     },
+    './useRaisedHand': { useRaisedHand: () => ({ handRaised: false, handleToggleHand() {} }) },
     './useVoiceInput': { useVoiceInput: () => ({}) },
     './useChunkPlayer': { useChunkPlayer: () => ({}) },
     './useClassroomApi': { useClassroomApi: () => ({}) },

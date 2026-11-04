@@ -79,3 +79,23 @@ class LessonAnswerTests(TestCase):
     def test_progress_is_private(self):
         self.client.force_authenticate(None)
         self.assertEqual(self.client.get(f'/api/notes/{self.note.id}/progress/').status_code, 401)
+
+    def test_completed_cursor_survives_reload_and_cannot_be_waiting(self):
+        url = f'/api/notes/{self.note.id}/progress/'
+        count = len(self.note.answer['chunks'])
+        saved = self.client.put(url, {'section_index': count, 'waiting': False, 'revision': 0})
+        self.assertEqual(saved.status_code, 200)
+        restored = self.client.get(url)
+        self.assertEqual(restored.data['section_index'], count)
+        self.assertFalse(restored.data['waiting'])
+        for index, waiting in [(count, True), (count + 1, False)]:
+            self.assertEqual(self.client.put(url, {'section_index': index, 'waiting': waiting, 'revision': 1}).status_code, 400)
+
+    def test_reading_initial_progress_does_not_write_a_checkpoint(self):
+        from apps.classroom.models.lesson_attempt import LessonProgress
+        url = f'/api/notes/{self.note.id}/progress/'
+        for _ in range(2):
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data['section_index'], 0)
+        self.assertFalse(LessonProgress.objects.filter(note=self.note).exists())

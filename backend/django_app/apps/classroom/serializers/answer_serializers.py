@@ -8,12 +8,18 @@ from .diagram_fields import AnswerDiagramField
 from apps.classroom.constants.visuals import DIAGRAM_TYPES
 
 
+from apps.classroom.constants.teaching_quality import LESSON_MODES, TEACHING_STEPS, CONCEPT_ID_LENGTH
+
+
 class AnswerChunkSerializer(serializers.Serializer):
+    concept_id = serializers.CharField(required=False, max_length=CONCEPT_ID_LENGTH)
+    teaching_step = serializers.ChoiceField(choices=TEACHING_STEPS, required=False)
     curriculum_ids = serializers.ListField(
         child=serializers.CharField(max_length=CURRICULUM_ID_MAX_LENGTH),
         required=False, max_length=CURRICULUM_MAX_REQUIREMENTS,
     )
 
+    discussion_prompt = serializers.CharField(required=False, max_length=LESSON_TEXT_MAX_LENGTH)
     question = serializers.CharField(required=False, max_length=LESSON_TEXT_MAX_LENGTH)
     expected_concepts = serializers.ListField(
         child=serializers.CharField(max_length=LESSON_CONCEPT_MAX_LENGTH),
@@ -28,6 +34,7 @@ class AnswerChunkSerializer(serializers.Serializer):
 
 
 class GeneratedAnswerSerializer(serializers.Serializer):
+    lesson_mode = serializers.ChoiceField(choices=LESSON_MODES, required=False)
     def validate(self, attrs):
         if any(chunk['diagram'].get('parameters') for chunk in attrs['chunks']):
             attrs['diagram_type'] = 'circuit'
@@ -38,6 +45,8 @@ class GeneratedAnswerSerializer(serializers.Serializer):
 
     def validate_chunks(self, chunks):
         for chunk in chunks:
+            if chunk.get('discussion_prompt') and (chunk.get('question') or chunk.get('expected_concepts')):
+                raise serializers.ValidationError('Discussion invitations cannot contain graded assessment fields.')
             if chunk.get('question') and not chunk.get('expected_concepts'):
                 raise serializers.ValidationError('Understanding checks require expected concepts.')
             if chunk.get('expected_concepts') and not chunk.get('question'):

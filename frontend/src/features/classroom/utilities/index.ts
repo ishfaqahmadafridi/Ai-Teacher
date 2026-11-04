@@ -23,3 +23,7 @@ export * from './schematicLayout';
 export * from './classroomErrors';
 
 export * from './activeLessonStorage';
+
+export * from './scheduledClassPhase';
+
+export * from './classroomInteraction';

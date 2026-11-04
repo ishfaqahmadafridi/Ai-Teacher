@@ -1,6 +1,8 @@
 'use client';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { useTeacherReplyAudio } from './useTeacherReplyAudio';
 import { useLessonAudioPlayer } from './useLessonAudioPlayer';
+import { lessonProgressService } from '../services/lessonProgressService';
 import { selectSpeechVoice } from '../utilities/speechVoiceSelection';
 import { SPEECH_START_TIMEOUT_MS, SPEECH_START_FAILURE } from '../constants/playbackConstants';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
@@ -20,6 +22,11 @@ import {
 
 export function useChunkPlaybackOwner() {
   const dispatch = useAppDispatch();
+  const { playReply, cancelReply } = useTeacherReplyAudio();
+  const classPhase = useAppSelector(s => s.classroom.classPhase);
+  const phaseRef = useRef(classPhase);
+  // Update the guard before child autoplay effects run at the class boundary.
+  useLayoutEffect(() => { phaseRef.current = classPhase; }, [classPhase]);
   const noteId = useAppSelector((s) => s.classroom.noteId);
   const { playAudio, stopAudio, pauseAudio, resumeAudio } = useLessonAudioPlayer();
   const useFileAudioRef = useRef(false);
@@ -52,9 +59,14 @@ export function useChunkPlaybackOwner() {
 
   const speakChunk = useCallback(
     (index: number) => {
+      if (phaseRef.current && phaseRef.current !== 'self-study' && phaseRef.current !== 'live') return;
       if (index >= chunks.length) {
         dispatch(setIsPlaying(false));
-        dispatch(setCurrentChunkIndex(-1));
+        dispatch(setCurrentChunkIndex(chunks.length));
+        dispatch(setIsWritingOnBoard(false));
+        if (noteId) void lessonProgressService.finish(noteId, chunks.length).catch(() => {
+          dispatch(setVoiceError('Your lesson finished, but its position could not be saved.'));
+        });
         return;
       }
 
@@ -74,7 +86,11 @@ export function useChunkPlaybackOwner() {
           },
           onEnd: () => {
             if (run !== playbackRunRef.current) return;
-            if (chunks[index].question) {
+            if (chunks[index].discussion_prompt) {
+              dispatch(addChalkboardPoint(chunks[index].discussion_prompt!));
+              dispatch(setPendingQuestion({ sectionIndex: index, question: chunks[index].discussion_prompt!, kind: 'discussion' }));
+              dispatch(setIsPlaying(false));
+            } else if (chunks[index].question) {
               dispatch(addChalkboardPoint(chunks[index].question!));
               dispatch(setPendingQuestion({ sectionIndex: index, question: chunks[index].question! }));
               dispatch(setIsPlaying(false));
@@ -151,6 +167,12 @@ export function useChunkPlaybackOwner() {
         clearStartTimer();
         utteranceRef.current = null;
         dispatch(setIsWritingOnBoard(false));
+        if (chunk.discussion_prompt) {
+          dispatch(addChalkboardPoint(chunk.discussion_prompt));
+          dispatch(setPendingQuestion({ sectionIndex: index, question: chunk.discussion_prompt, kind: 'discussion' }));
+          dispatch(setIsPlaying(false));
+          return;
+        }
         if (chunk.question) {
           dispatch(addChalkboardPoint(chunk.question));
           dispatch(setPendingQuestion({ sectionIndex: index, question: chunk.question }));
@@ -206,6 +228,7 @@ export function useChunkPlaybackOwner() {
   }, [speakChunk]);
 
   const playFrom = useCallback((startIndex: number) => {
+    if (phaseRef.current && phaseRef.current !== 'self-study' && phaseRef.current !== 'live') return;
     playbackRunRef.current += 1;
     window.speechSynthesis?.cancel();
     pausedRef.current = false;
@@ -235,6 +258,7 @@ export function useChunkPlaybackOwner() {
   }, [dispatch, speakChunk, resumeAudio]);
 
   const stop = useCallback(() => {
+    cancelReply();
     stopAudio();
     clearStartTimer();
     utteranceRef.current = null;
@@ -245,7 +269,7 @@ export function useChunkPlaybackOwner() {
     dispatch(setSpokenText(''));
     window.speechSynthesis?.cancel();
     indexRef.current = 0;
-  }, [dispatch, clearStartTimer, stopAudio]);
+  }, [dispatch, clearStartTimer, stopAudio, cancelReply]);
 
   useEffect(() => {
     return () => {
@@ -256,5 +280,5 @@ export function useChunkPlaybackOwner() {
     };
   }, [clearStartTimer]);
 
-  return { play, playFrom, pause, resume, stop };
+  return { play, playFrom, pause, resume, stop, playReply };
 }

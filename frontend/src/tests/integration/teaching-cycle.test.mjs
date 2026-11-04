@@ -5,7 +5,7 @@ import { load } from './helpers/loadModule.mjs';
 test('storage denial cannot interrupt saving an understanding checkpoint to the API', async () => {
   const effects = [], calls = [];
   const { useLessonRecovery } = load('features/classroom/hooks/useLessonRecovery.ts', {
-    react: { useEffect: fn => effects.push(fn) },
+    react: { useEffect: fn => effects.push(fn), useCallback: fn => fn, useRef: value => ({ current: value }) },
     '@/features/auth/state/authStore': { useAuthStore: fn => fn({ user: { id: 'student' } }) },
     '@/hooks/useAppStore': {
       useAppSelector: fn => fn({ classroom: { noteId: 'note', pendingQuestion: { sectionIndex: 1 } } }),
@@ -25,14 +25,15 @@ test('storage denial cannot interrupt saving an understanding checkpoint to the 
   cleanup();
 });
 
-function answerHarness(nextAction, evaluationError = false, waiting = true) {
+function answerHarness(nextAction, evaluationError = false, waiting = true, playing = false) {
   const chunks = [{ speak: 'Example', question: 'Try it', expected_concepts: ['reasoning'] }, { speak: 'Next concept' }];
-  const classroom = { chunks, noteId: 'note', pendingQuestion: waiting ? { sectionIndex: 0, question: 'Try it' } : null, inputText: 'My answer', currentChunkIndex: waiting ? 0 : 1 };
+  const classroom = { chunks, isPlaying: playing, noteId: 'note', pendingQuestion: waiting ? { sectionIndex: 0, question: 'Try it' } : null, inputText: 'My answer', currentChunkIndex: waiting ? 0 : 1 };
   const actions = [], played = [], calls = [];
   const { useInputBar } = load('features/classroom/hooks/useInputBar.ts', {
     react: { useEffect() {}, useCallback: fn => fn, useRef: current => ({ current }), useState: value => [value, () => {}] },
     '@/hooks/useAppStore': { useAppSelector: fn => fn({ classroom }), useAppDispatch: () => action => actions.push(action) },
     '@/features/classroom/state/classroomSlice': new Proxy({}, { get: (_, type) => payload => ({ type, payload }) }),
+    './useRaisedHand': { useRaisedHand: () => ({ handRaised: false, handleToggleHand() {} }) },
     './useVoiceInput': { useVoiceInput: () => ({ stopListening() {} }) },
     './useChunkPlayer': { useChunkPlayer: () => ({ stop() {}, playFrom: index => played.push(index) }) },
     './useClassroomApi': { useClassroomApi: () => ({ sendQuestion() { throw Error('An answer must not become a new lesson.'); } }) },
@@ -69,9 +70,9 @@ test('failed evaluation preserves the answer and pending check', async () => {
   assert.equal(h.actions.some(item => item.type === 'setInputText'), false);
 });
 
-test('play continues at the saved next step instead of restarting', () => {
-  const h = answerHarness('continue', false, false);
-  h.bar.handlePlayPause();
+test('accepted answers continue automatically without a play button', async () => {
+  const h = answerHarness('continue');
+  await h.bar.handleSubmit();
   assert.deepEqual(h.played, [1]);
 });
 
@@ -80,7 +81,7 @@ test(`recovery restores remaining chunks and ${waiting ? 'the visible question' 
   const effects = [], actions = [];
   const answer = { topic: 'Fractions', diagram_type: 'default', chunks: [{ speak: 'First' }, { speak: 'Next', diagram: { action: 'none', visual: { kind: 'assembly', model: 'beam', focus: 'load' } } }] };
   const { useLessonRecovery } = load('features/classroom/hooks/useLessonRecovery.ts', {
-    react: { useEffect: fn => effects.push(fn) },
+    react: { useEffect: fn => effects.push(fn), useCallback: fn => fn, useRef: value => ({ current: value }) },
     '@/features/auth/state/authStore': { useAuthStore: fn => fn({ user: { id: 'student' } }) },
     '@/hooks/useAppStore': { useAppSelector: fn => fn({ classroom: { noteId: null } }), useAppDispatch: () => action => actions.push(action) },
     '../state/classroomSlice': new Proxy({}, { get: (_, type) => payload => ({ type, payload }) }),
@@ -103,9 +104,13 @@ for (const waiting of [true, false]) {
     const effects = [], played = [];
     const classroom = { chunks: [{ speak: 'First' }, { speak: 'Next' }], currentChunkIndex: 1, pendingQuestion: waiting ? { sectionIndex: 1, question: 'Try it' } : null };
     const { useClassroomLayout } = load('features/classroom/hooks/useClassroomLayout.ts', {
-      react: { useEffect: fn => effects.push(fn) },
+      'next/navigation': { useRouter: () => ({ replace() {} }) },
+      './useScheduledClass': { useScheduledClass: () => ({ sessionId: null, phase: 'self-study' }) },
+      './useRestoreLesson': { useRestoreLesson: () => async () => {} },
+      '../state/classroomSlice': {},
+      react: { useEffect: fn => effects.push(fn), useCallback: fn => fn, useRef: value => ({ current: value }) },
       './useLessonRecovery': { useLessonRecovery() {} },
-      '@/hooks/useAppStore': { useAppSelector: fn => fn({ classroom }) },
+      '@/hooks/useAppStore': { useAppSelector: fn => fn({ classroom }), useAppDispatch: () => () => {} },
       './useClassroomApi': { useClassroomApi: () => ({}) },
       './useChunkPlayer': { useChunkPlayer: () => ({ playFrom: index => played.push(index) }) },
     });
@@ -171,4 +176,14 @@ test('frontend feedback validation agrees with the backend outcome/action contra
     assert.equal(lessonEvaluationSchema.safeParse({ outcome, next_action, feedback: 'Explanation', missing_concepts: [] }).success, true);
   }
   assert.equal(lessonEvaluationSchema.safeParse({ outcome: 'misconception', next_action: 'continue', feedback: 'Explanation', missing_concepts: [] }).success, false);
+});
+
+
+test('student submit and microphone controls cannot interrupt active narration', async () => {
+  const h = answerHarness('continue', false, false, true);
+  await h.bar.handleSubmit();
+  h.bar.handleMicClick();
+  assert.equal(h.calls.length, 0);
+  assert.equal(h.played.length, 0);
+  assert.equal(h.bar.inputBlocked, true);
 });

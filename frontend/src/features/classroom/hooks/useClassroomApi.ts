@@ -24,6 +24,9 @@ import type { UseClassroomApiOptions } from '../types/api.types';
 
 export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptions = {}) {
   const dispatch = useAppDispatch();
+  const isPlaying = useAppSelector(state => state.classroom.isPlaying);
+  const pendingQuestion = useAppSelector(state => state.classroom.pendingQuestion);
+  const classPhase = useAppSelector(state => state.classroom.classPhase);
   const scheduledSessionId = useAppSelector(state => state.classroom.scheduledSessionId);
   const esRef = useRef<AbortController | null>(null);
   const recoveredJobRef = useRef<string | null>(null);
@@ -39,6 +42,8 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
 
   const sendQuestion = useCallback(
     async (question: string, recoveredSessionId?: string) => {
+      if (isPlaying || pendingQuestion) return;
+      if (scheduledSessionId && classPhase && classPhase !== 'live' && !recoveredSessionId) return;
       // Cancel any in-flight stream
       esRef.current?.abort();
       const controller = new AbortController();
@@ -60,6 +65,7 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
         const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
           speak: c.speak ?? '',
           question: c.question,
+          discussion_prompt: c.discussion_prompt,
           expected_concepts: c.expected_concepts,
           key_point: c.key_point ?? c.speak ?? null,
           diagram: c.diagram,
@@ -80,7 +86,7 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
         dispatch(setLoadingStatus(''));
       }
     },
-    [dispatch, mutateAsync, getSessionId, scheduledSessionId]
+    [dispatch, mutateAsync, getSessionId, scheduledSessionId, isPlaying, pendingQuestion, classPhase]
   );
 
   useEffect(() => {

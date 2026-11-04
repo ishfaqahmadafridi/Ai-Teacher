@@ -29,11 +29,13 @@ def review_curriculum_coverage(llm, answer, curriculum, student_context):
     from apps.classroom.serializers.curriculum_review_serializers import CurriculumReviewSerializer
     from apps.classroom.prompts.curriculum_review_prompt import CURRICULUM_REVIEW_PROMPT
     required = validate_curriculum_coverage(answer, curriculum)
-    response = llm.invoke([
+    from apps.classroom.services.prompt_budget import validate_model_context
+    messages, output_tokens = validate_model_context(llm, [
         ('system', CURRICULUM_REVIEW_PROMPT),
         ('human', json.dumps(dict(curriculum=curriculum, student_context=student_context,
                                   narration=[dict(speak=chunk['speak'], key_point=chunk.get('key_point', '')) for chunk in answer['chunks']]))),
     ])
+    response = llm.invoke(messages, max_output_tokens=output_tokens)
     serializer = CurriculumReviewSerializer(data=extract_json(response.text))
     serializer.is_valid(raise_exception=True)
     report = serializer.validated_data

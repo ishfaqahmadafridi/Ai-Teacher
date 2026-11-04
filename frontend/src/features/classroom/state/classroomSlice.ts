@@ -2,6 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ClassroomState, ExtendedChunk, DiagramCommand, DiagramType, SerializedVoice } from '@/types';
 
 const initialState: ClassroomState = {
+  handRaised: false,
+  classPhase: 'self-study',
+  answerSubmitting: false,
+  discussionExpired: false,
   pendingQuestion: null,
   noteId: null,
   inputText: '',
@@ -33,7 +37,17 @@ const classroomSlice = createSlice({
   name: 'classroom',
   initialState,
   reducers: {
-    setPendingQuestion(state, action: PayloadAction<ClassroomState["pendingQuestion"]>) { state.pendingQuestion = action.payload; },
+    setHandRaised(state, action: PayloadAction<boolean>) { state.handRaised = action.payload; },
+    setDiscussionExpired(state, action: PayloadAction<boolean>) { state.discussionExpired = action.payload; },
+    setAnswerSubmitting(state, action: PayloadAction<boolean>) { state.answerSubmitting = action.payload; },
+    setClassPhase(state, action: PayloadAction<NonNullable<ClassroomState["classPhase"]>>) { state.classPhase = action.payload; },
+    setPendingQuestion(state, action: PayloadAction<ClassroomState["pendingQuestion"]>) {
+      if (action.payload && (action.payload.sectionIndex !== state.pendingQuestion?.sectionIndex || action.payload.question !== state.pendingQuestion?.question)) {
+        state.inputText = '';
+        state.discussionExpired = false;
+      }
+      state.pendingQuestion = action.payload;
+    },
     setNoteId(state, action: PayloadAction<string | null>) { state.noteId = action.payload; },
     setInputText(state, action: PayloadAction<string>) {
       state.inputText = action.payload;
@@ -113,6 +127,7 @@ const classroomSlice = createSlice({
         ...initialState,
         courseTitle: state.courseTitle,
         scheduledSessionId: state.scheduledSessionId,
+        classPhase: state.classPhase,
         voices: state.voices,
         selectedVoice: state.selectedVoice,
       });
@@ -121,6 +136,10 @@ const classroomSlice = createSlice({
 });
 
 export const {
+  setHandRaised,
+  setDiscussionExpired,
+  setAnswerSubmitting,
+  setClassPhase,
   setPendingQuestion,
   setNoteId,
   setInputText,
