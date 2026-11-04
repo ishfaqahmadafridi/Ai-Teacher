@@ -28,7 +28,7 @@ class LectureNotesTests(LectureNotesFixture, TestCase):
         self.assertEqual(self.client.get('/api/notes/', {'session_id': 'lesson-session'}).status_code, 401)
 
 
-    @patch('apps.classroom.views.ask_view.generate_answer')
+    @patch('apps.classroom.services.blocking_lesson.generate_answer')
     def test_successful_ask_saves_notes_and_returns_note_id(self, generate):
         generate.return_value = {**lesson_answer(), 'tokens_used': 10, 'model_info': {}}
         response = self.client.post('/api/ask/', {'question': 'Explain Ohms law', 'session_id': 'new-session'})
@@ -36,7 +36,7 @@ class LectureNotesTests(LectureNotesFixture, TestCase):
         self.assertTrue(LectureNote.objects.filter(pk=response.data['model_info']['note_id'], user=self.user).exists())
 
 
-    @patch('apps.classroom.views.ask_view.generate_answer')
+    @patch('apps.classroom.services.blocking_lesson.generate_answer')
     def test_unavailable_answer_is_not_saved_as_notes(self, generate):
         generate.return_value = {**lesson_answer(), 'topic': 'unknown', 'tokens_used': 0, 'model_info': {}}
         self.client.post('/api/ask/', {'question': 'Explain Ohms law', 'session_id': 'new-session'})
@@ -50,7 +50,7 @@ class LectureNotesTests(LectureNotesFixture, TestCase):
         self.assertEqual(response['Cache-Control'], 'private, no-store')
 
 
-    @patch('apps.classroom.views.ask_view.generate_answer')
+    @patch('apps.classroom.services.blocking_lesson.generate_answer')
     def test_accounts_with_the_same_client_session_use_separate_histories(self, generate):
         generate.return_value = {**lesson_answer(), 'tokens_used': 0, 'model_info': {}}
         self.client.post('/api/ask/', {'question': 'Explain Ohms law', 'session_id': 'same-session'})

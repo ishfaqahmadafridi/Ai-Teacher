@@ -3,6 +3,7 @@ import json
 from datetime import timedelta
 from django.db import models, transaction
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import APIException
 from apps.classroom.models.lesson_attempt import LessonAttempt, LessonProgress
 from apps.classroom.services.llm_service import get_llm, extract_json
@@ -19,6 +20,11 @@ class EvaluationUnavailable(APIException):
 class EvaluationProcessing(APIException):
     status_code = 409
     default_detail = 'Feedback is already processing. Retry shortly.'
+
+
+def evaluate_owned_attempt(user, note_id, attempt_id):
+    attempt = get_object_or_404(LessonAttempt, pk=attempt_id, note_id=note_id, note__user=user)
+    return evaluate_attempt(attempt)
 
 
 def evaluate_attempt(attempt):

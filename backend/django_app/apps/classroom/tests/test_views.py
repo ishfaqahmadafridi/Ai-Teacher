@@ -54,7 +54,7 @@ class AskViewTests(TestCase):
         # AskView now uses AskRequestSerializer — DRF returns field-level errors
         self.assertIn('question', data)  # serializer validation error for 'question' field
 
-    @patch('apps.classroom.views.ask_view.generate_answer')
+    @patch('apps.classroom.services.blocking_lesson.generate_answer')
     def test_valid_question_returns_200(self, mock_generate):
         mock_generate.return_value = {
             'chunks': [{'speak': 'Gravity pulls you down.', 'diagram': {'action': 'none'}}],
@@ -74,7 +74,7 @@ class AskViewTests(TestCase):
         self.assertIn('chunks', data)
         self.assertIn('topic', data)
 
-    @patch('apps.classroom.views.ask_view.generate_answer')
+    @patch('apps.classroom.services.blocking_lesson.generate_answer')
     def test_session_id_is_forwarded_to_generate_answer(self, mock_generate):
         mock_generate.return_value = {
             'chunks': [], 'topic': 'test', 'diagram_type': 'default',

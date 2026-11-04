@@ -21,6 +21,7 @@ def _create_llm(api_key: str, model: str, temperature: float, max_retries: int):
     return ChatGoogleGenerativeAI(
         model=model, google_api_key=api_key, temperature=temperature,
         max_retries=max_retries, request_timeout=LLM_TIMEOUT,
+        response_mime_type='application/json',
     )
 
 
@@ -32,7 +33,12 @@ def get_llm(temperature: float = DEFAULT_TEMPERATURE, model: str = GEMINI_MODEL,
         return None
     try:
         with _llm_lock:
-            return _create_llm(api_key, model, temperature, max_retries)
+            primary = _create_llm(api_key, model, temperature, max_retries)
+        groq_key = os.getenv('GROQ_API_KEY')
+        if groq_key:
+            from .quota_fallback import QuotaFallbackLLM
+            return QuotaFallbackLLM(primary, groq_key, temperature)
+        return primary
     except Exception:
         logger.exception("Failed to initialize classroom LLM")
         return None

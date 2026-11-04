@@ -61,3 +61,6 @@ export { useMobileClassroomSidebar } from './useMobileClassroomSidebar';
 export * from './useLeaveClass';
 
 export { useLessonAnswerSubmission } from './useLessonAnswerSubmission';
+
+export { useAssemblyVisual } from './useAssemblyVisual';
+export { useSchematicVisual } from './useSchematicVisual';

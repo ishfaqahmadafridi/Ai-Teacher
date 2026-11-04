@@ -42,3 +42,6 @@ redis==6.4.0
 
 # Parse saved lesson Markdown consistently for Word exports.
 markdown-it-py==4.2.0
+
+# Bounded server-side Groq quota fallback (shared with the FastAPI pin).
+httpx==0.28.1

@@ -2,6 +2,29 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { load } from './helpers/loadModule.mjs';
 
+test('storage denial cannot interrupt saving an understanding checkpoint to the API', async () => {
+  const effects = [], calls = [];
+  const { useLessonRecovery } = load('features/classroom/hooks/useLessonRecovery.ts', {
+    react: { useEffect: fn => effects.push(fn) },
+    '@/features/auth/state/authStore': { useAuthStore: fn => fn({ user: { id: 'student' } }) },
+    '@/hooks/useAppStore': {
+      useAppSelector: fn => fn({ classroom: { noteId: 'note', pendingQuestion: { sectionIndex: 1 } } }),
+      useAppDispatch: () => () => {},
+    },
+    '../state/classroomSlice': {},
+    '../services/lessonProgressService': { lessonProgressService: {
+      read: async () => ({ waiting: false, section_index: 0, revision: 3 }),
+      wait: async (...args) => calls.push(args),
+    } },
+  }, { localStorage: { setItem() { throw Error('Storage denied'); } }, AbortController });
+  useLessonRecovery();
+  const cleanup = effects[1]();
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0].slice(0, 3), ['note', 1, 3]);
+  cleanup();
+});
+
 function answerHarness(nextAction, evaluationError = false, waiting = true) {
   const chunks = [{ speak: 'Example', question: 'Try it', expected_concepts: ['reasoning'] }, { speak: 'Next concept' }];
   const classroom = { chunks, noteId: 'note', pendingQuestion: waiting ? { sectionIndex: 0, question: 'Try it' } : null, inputText: 'My answer', currentChunkIndex: waiting ? 0 : 1 };
@@ -55,7 +78,7 @@ test('play continues at the saved next step instead of restarting', () => {
 for (const waiting of [false, true]) {
 test(`recovery restores remaining chunks and ${waiting ? 'the visible question' : 'the saved position'}`, async () => {
   const effects = [], actions = [];
-  const answer = { topic: 'Fractions', diagram_type: 'default', chunks: [{ speak: 'First' }, { speak: 'Next' }] };
+  const answer = { topic: 'Fractions', diagram_type: 'default', chunks: [{ speak: 'First' }, { speak: 'Next', diagram: { action: 'none', visual: { kind: 'assembly', model: 'beam', focus: 'load' } } }] };
   const { useLessonRecovery } = load('features/classroom/hooks/useLessonRecovery.ts', {
     react: { useEffect: fn => effects.push(fn) },
     '@/features/auth/state/authStore': { useAuthStore: fn => fn({ user: { id: 'student' } }) },
@@ -68,6 +91,8 @@ test(`recovery restores remaining chunks and ${waiting ? 'the visible question' 
   await new Promise(resolve => setImmediate(resolve));
   assert.deepEqual(actions.find(item => item.type === 'setChunks').payload, answer.chunks);
   assert.equal(actions.find(item => item.type === 'setCurrentChunkIndex').payload, 1);
+  assert.deepEqual(actions.find(item => item.type === 'setCurrentCommand').payload, answer.chunks[1].diagram);
+  assert.equal(actions.find(item => item.type === 'setCurrentFormula').payload, null);
   assert.equal(JSON.stringify(actions.find(item => item.type === 'setChalkboardPoints').payload), JSON.stringify(waiting ? ['Try again'] : []));
   cleanup();
 });

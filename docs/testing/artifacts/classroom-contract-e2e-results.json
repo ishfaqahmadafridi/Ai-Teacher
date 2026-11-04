@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "jobStatus": "ready",
+  "injectedAction": "unsupported_provider_action",
+  "lessonRendered": true,
+  "noteSaved": true,
+  "pageErrors": [],
+  "provider": "deterministic fixture; Redis/Celery dispatch replaced by direct worker invocation",
+  "speech": "native browser; audio quality not assessed"
+}

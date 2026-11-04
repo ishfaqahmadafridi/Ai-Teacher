@@ -1,0 +1,201 @@
+[
+  {
+    "subject": "physics",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Imagine you need to lift something heavy, but you want to pull downwards instead of upwards. A fixed pulley is a simple machine that helps you do just that! It's essentially a wheel with a groove that a rope runs over, attached to a fixed point. This is a conceptual model to help us understand how it works, not a physical simulation.",
+        "model": "pulley",
+        "focusedParts": [
+          "wheel"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Let's look at the parts. First, we have the rope, which runs around the pulley wheel. On one end of the rope, we attach the load—the object you want to lift. Due to gravity, the load will naturally pull downwards.",
+        "model": "pulley",
+        "focusedParts": [
+          "rope"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "On the other end of the rope, you apply your effort, which is the force you exert to lift the load. With a fixed pulley, you pull the rope downwards, and in response, the load moves upwards. The pulley changes the direction of your force.",
+        "model": "pulley",
+        "focusedParts": [
+          "rope"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "So, if you pull down on the rope, what direction does the load move?",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": null,
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "medical",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Let's start by looking at how blood moves between your heart, lungs, and the rest of your body. Your heart has two main sides that work together: a right side and a left side. The right side receives blood that has already delivered its oxygen to your body, making it oxygen-poor. The left side receives blood that has just picked up oxygen from your lungs, making it oxygen-rich.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": null,
+        "unavailable": true,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "First, blood that has circulated through your body and given up its oxygen returns to the right side of your heart. This blood is considered oxygen-poor. The right side of your heart then pumps this oxygen-poor blood directly to your lungs.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "Once in the lungs, the oxygen-poor blood releases carbon dioxide (a waste product) and picks up fresh oxygen from the air you breathe. This exchange makes the blood oxygen-rich. This newly oxygenated blood then travels from the lungs back to the left side of your heart.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "Finally, the left side of your heart is a powerful pump. It takes this oxygen-rich blood and pumps it out to the rest of your body, delivering oxygen to all your tissues and organs. After delivering its oxygen, the blood becomes oxygen-poor again, and the cycle repeats.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "biology",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Just like you need water to live, plants need water to grow and stay healthy. They get this water from the soil, absorbing it through their roots. Think of the roots as a network of tiny straws soaking up moisture.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": null,
+        "unavailable": true,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Once absorbed by the roots, the water needs to travel upwards to all parts of the plant, especially the leaves. Plants have a special internal transport system, like tiny pipelines, called the xylem. The xylem runs all the way from the roots, up through the stem, and into the leaves, carrying water against gravity.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in a Plant",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "When the water reaches the leaves, some of it is used by the plant for photosynthesis (making food). However, most of the water evaporates from tiny pores on the leaf surface called stomata, releasing water vapor into the air. This process is called transpiration, and it creates a 'pull' or suction force, like sipping through a straw, that helps draw more water up through the xylem from the roots.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": null,
+        "unavailable": true,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "So, to recap, water goes from the soil, into the roots, up through the xylem in the stem, and finally evaporates from the leaves, creating a continuous flow. Which specific part of the plant acts like a pipeline to carry water from the roots to the leaves?",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": null,
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "mechanical",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Let's learn about a basic mechanical assembly often used to convert force from pressure into useful motion. It's called a piston assembly, and it has three main parts: a cylinder, a piston, and a piston rod.",
+        "model": "piston",
+        "focusedParts": [
+          "cylinder"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "First, we have the cylinder. This is the stationary, hollow tube that forms the outer casing of the assembly. The piston moves inside it.",
+        "model": "piston",
+        "focusedParts": [
+          "cylinder"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "Next is the piston itself. This is a disc-shaped component that fits snugly inside the cylinder. When pressure is applied, the piston is pushed and slides back and forth within the cylinder.",
+        "model": "piston",
+        "focusedParts": [
+          "piston"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "Finally, we have the piston rod. This rod is connected to the piston and extends out of the cylinder. As the piston moves, the rod moves with it, transferring that motion to other parts of a machine.",
+        "model": "piston",
+        "focusedParts": [
+          "rod"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "rope_control",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Let's look at the parts. First, we have the rope, which runs around the pulley wheel. On one end of the rope, we attach the load—the object you want to lift. Due to gravity, the load will naturally pull downwards.",
+        "model": "pulley",
+        "focusedParts": [
+          "rope"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  }
+]

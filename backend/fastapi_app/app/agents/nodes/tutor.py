@@ -1,47 +1,21 @@
-"""
-fastapi_app/app/agents/nodes/tutor.py
-Single-responsibility tutoring & teaching node.
-Generates structured response enriched with optional RAG context.
-"""
-import logging
-from typing import Dict, Any
-from ..state import ClassroomState
+"""Generate a question-specific explanation using explicitly separated evidence."""
+from langchain_core.messages import HumanMessage, SystemMessage
+from app.core.errors import InferenceUnavailable
 from app.langchain import get_langchain_llm
+from app.langchain.prompts import SYSTEM_PROMPT, RAG_CONTEXT_TEMPLATE
+from ..state import ClassroomState
 
-logger = logging.getLogger(__name__)
 
-
-async def tutor_node(state: ClassroomState) -> Dict[str, Any]:
-    """
-    Generates clear, pedagogical AI teaching response.
-    Reuses retrieved context if available without re-querying.
-    """
-    question = state.get("question", "")
-    context = state.get("retrieved_context", [])
-
-    context_str = ""
-    if context:
-        context_str = "\n".join([item.get("passage", "") for item in context])
-
-    llm = get_langchain_llm(temperature=0.7)
+async def tutor_node(state: ClassroomState) -> dict:
+    llm = get_langchain_llm()
     if llm is None:
-        return {"answer": "Physics concept: Force equals mass times acceleration (F = m * a)."}
-
-    prompt = (
-        "You are an expert AI Physics Tutor. "
-        "Explain the following concept clearly and concisely.\n"
-    )
-    if context_str:
-        prompt += f"Context: {context_str}\n"
-    prompt += f"Question: {question}"
-
-    try:
-        response = await llm.ainvoke(prompt)
-        return {
-            "answer": str(response.content),
-        }
-    except Exception as e:
-        logger.error(f"[Tutor Node] LLM invocation error: {e}")
-        return {
-            "answer": f"Newton's Second Law defines force as the product of mass and acceleration (F = m · a).",
-        }
+        raise InferenceUnavailable()
+    messages = [SystemMessage(content=SYSTEM_PROMPT)]
+    passages = '\n'.join(item['passage'] for item in state.get('retrieved_context', []) if item.get('passage'))
+    if passages:
+        messages.append(HumanMessage(content=RAG_CONTEXT_TEMPLATE.format(rag_context=passages)))
+    messages.append(HumanMessage(content=state.get('question', '')))
+    response = await llm.ainvoke(messages)
+    if not response.text.strip():
+        raise InferenceUnavailable()
+    return {'answer': response.text}

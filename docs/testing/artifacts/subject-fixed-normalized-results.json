@@ -1,0 +1,733 @@
+[
+  {
+    "subject": "physics",
+    "question": "Explain a fixed pulley to a beginner in English. Use the supported 3D pulley, highlight the rope, and explain the rope, load and effort direction. Make clear that this is conceptual rather than a physical simulation. Keep the lesson to four short teaching chunks including one understanding question.",
+    "elapsed_seconds": 10.45,
+    "fallback_attempted": false,
+    "errors": [],
+    "answer": {
+      "chunks": [
+        {
+          "speak": "A fixed pulley is a simple machine that helps us change the direction of a force. It consists of a wheel that rotates around a central axle, but the entire pulley system stays in one place, or is 'fixed'. This is a conceptual model to help you understand the principles, not a physical simulation.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "assembly",
+              "model": "pulley",
+              "focus": "wheel",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Fixed Pulley Basics"
+        },
+        {
+          "speak": "Now let's look at the rope. The rope runs over the groove in the pulley's wheel. One end of this rope is attached to the 'load' \u2013 that's the object you want to lift. The load, due to gravity, always pulls downwards.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "assembly",
+              "model": "pulley",
+              "focus": "rope",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Rope and Load"
+        },
+        {
+          "speak": "To lift the load, you apply a force called 'effort'. With a fixed pulley, if the load is pulling down on one side of the rope, you pull down on the other side of the rope. So, the effort you apply is also directed downwards, even though the load moves upwards.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "assembly",
+              "model": "pulley",
+              "focus": "rope",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Effort Direction"
+        },
+        {
+          "question": "What is the main advantage of using a fixed pulley?",
+          "expected_concepts": [
+            "change direction of force",
+            "easier to apply force downwards"
+          ],
+          "speak": "Based on what we've discussed, what is the main advantage of using a fixed pulley?",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "assembly",
+              "model": "pulley",
+              "focus": "wheel",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Check Your Understanding"
+        }
+      ],
+      "topic": "Fixed Pulley",
+      "diagram_type": "default",
+      "language": "en",
+      "tokens_used": 4412,
+      "model_info": {
+        "architecture": "LangChain-Gemini-RAG",
+        "model_type": "gemini-2.5-flash",
+        "source": "college-physics-2e",
+        "session_id": "isolated-subject-physics",
+        "rag_used": true,
+        "visual_planning_tokens": 0,
+        "visual_selection_tokens": 0,
+        "image_status": "no_matching_image"
+      }
+    }
+  },
+  {
+    "subject": "mechanical",
+    "question": "Explain a piston, cylinder and piston rod to a beginner in English. Use the supported 3D piston and highlight the rod as you explain it. Explain which parts move, without pretending to run an engine simulation. Keep the lesson to four short teaching chunks including one understanding question.",
+    "elapsed_seconds": 5.01,
+    "fallback_attempted": false,
+    "errors": [],
+    "answer": {
+      "chunks": [
+        {
+          "speak": "Imagine a hollow tube, like a can that's open at both ends. This is called a cylinder. Inside this cylinder, there's a disc-shaped part that fits snugly, called a piston. The piston can slide up and down within the cylinder.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "assembly",
+              "model": "piston",
+              "focus": "cylinder",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Piston and Cylinder"
+        },
+        {
+          "speak": "Attached to the piston is a long, thin shaft called the piston rod. The rod extends out from the cylinder and is used to transfer the motion of the piston to other parts of a machine.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "assembly",
+              "model": "piston",
+              "focus": "rod",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Piston Rod"
+        },
+        {
+          "speak": "In this setup, the cylinder usually stays still. The piston is the part that moves back and forth inside the cylinder, and because the piston rod is attached to it, the rod also moves back and forth along with the piston.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "assembly",
+              "model": "piston",
+              "focus": "piston",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Parts in Motion"
+        },
+        {
+          "question": "Out of the three parts we discussed\u2014the piston, the cylinder, and the piston rod\u2014which two parts typically move?",
+          "expected_concepts": [
+            "piston",
+            "piston rod",
+            "movement"
+          ],
+          "speak": "Out of the three parts we discussed\u2014the piston, the cylinder, and the piston rod\u2014which two parts typically move?",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "assembly",
+              "model": "piston",
+              "focus": "piston",
+              "phase": 0.5
+            }
+          },
+          "key_point": "Check Your Understanding"
+        }
+      ],
+      "topic": "Piston, Cylinder, and Piston Rod",
+      "diagram_type": "default",
+      "language": "en",
+      "tokens_used": 3450,
+      "model_info": {
+        "architecture": "LangChain-Gemini-RAG",
+        "model_type": "gemini-2.5-flash",
+        "source": "college-physics-2e",
+        "session_id": "isolated-subject-mechanical",
+        "rag_used": true,
+        "visual_planning_tokens": 0,
+        "visual_selection_tokens": 0,
+        "image_status": "no_matching_image"
+      }
+    }
+  },
+  {
+    "subject": "medical",
+    "question": "Explain the basic route of blood through the human heart and lungs for a beginner in English. Use a labelled flow diagram and explain each step. Distinguish oxygen-poor from oxygen-rich blood. Do not claim the diagram is realistic 3D anatomy. Keep the lesson to four short teaching chunks including one understanding question.",
+    "elapsed_seconds": 14.77,
+    "fallback_attempted": false,
+    "errors": [],
+    "answer": {
+      "chunks": [
+        {
+          "speak": "The human heart is like a powerful pump that continuously circulates blood throughout your body. Blood carries oxygen and nutrients to your cells and takes away waste products. We can think of the blood in two main states: oxygen-poor blood, which has given up its oxygen to the body, and oxygen-rich blood, which has picked up fresh oxygen from the lungs.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "schematic",
+              "title": "Basic Blood Circulation",
+              "nodes": [
+                {
+                  "id": "body_tissue",
+                  "label": "Body Tissues",
+                  "x": 0.05,
+                  "y": 0.5
+                },
+                {
+                  "id": "right_heart",
+                  "label": "Heart (Right Side)",
+                  "x": 0.35,
+                  "y": 0.25
+                },
+                {
+                  "id": "lungs",
+                  "label": "Lungs",
+                  "x": 0.65,
+                  "y": 0.25
+                },
+                {
+                  "id": "left_heart",
+                  "label": "Heart (Left Side)",
+                  "x": 0.35,
+                  "y": 0.75
+                }
+              ],
+              "edges": [
+                {
+                  "source": "body_tissue",
+                  "target": "right_heart",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "right_heart",
+                  "target": "lungs",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "lungs",
+                  "target": "left_heart",
+                  "label": "Oxygen-Rich Blood"
+                },
+                {
+                  "source": "left_heart",
+                  "target": "body_tissue",
+                  "label": "Oxygen-Rich Blood"
+                }
+              ],
+              "focus": "right_heart"
+            }
+          },
+          "key_point": "Heart as a Pump: Oxygen-Poor vs. Oxygen-Rich Blood"
+        },
+        {
+          "speak": "Let's start the journey with oxygen-poor blood. After your body tissues use up the oxygen, this deoxygenated blood returns to the right side of your heart. The right side of the heart then pumps this oxygen-poor blood directly to your lungs.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "schematic",
+              "title": "Basic Blood Circulation",
+              "nodes": [
+                {
+                  "id": "body_tissue",
+                  "label": "Body Tissues",
+                  "x": 0.05,
+                  "y": 0.5
+                },
+                {
+                  "id": "right_heart",
+                  "label": "Heart (Right Side)",
+                  "x": 0.35,
+                  "y": 0.25
+                },
+                {
+                  "id": "lungs",
+                  "label": "Lungs",
+                  "x": 0.65,
+                  "y": 0.25
+                },
+                {
+                  "id": "left_heart",
+                  "label": "Heart (Left Side)",
+                  "x": 0.35,
+                  "y": 0.75
+                }
+              ],
+              "edges": [
+                {
+                  "source": "body_tissue",
+                  "target": "right_heart",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "right_heart",
+                  "target": "lungs",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "lungs",
+                  "target": "left_heart",
+                  "label": "Oxygen-Rich Blood"
+                },
+                {
+                  "source": "left_heart",
+                  "target": "body_tissue",
+                  "label": "Oxygen-Rich Blood"
+                }
+              ],
+              "focus": "lungs"
+            }
+          },
+          "key_point": "Oxygen-Poor Blood to Lungs"
+        },
+        {
+          "speak": "Once in the lungs, a crucial exchange happens. The oxygen-poor blood releases carbon dioxide, a waste product, and picks up fresh oxygen from the air you breathe. This process transforms it into oxygen-rich blood. This oxygen-rich blood then returns from the lungs to the left side of your heart.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "schematic",
+              "title": "Basic Blood Circulation",
+              "nodes": [
+                {
+                  "id": "body_tissue",
+                  "label": "Body Tissues",
+                  "x": 0.05,
+                  "y": 0.5
+                },
+                {
+                  "id": "right_heart",
+                  "label": "Heart (Right Side)",
+                  "x": 0.35,
+                  "y": 0.25
+                },
+                {
+                  "id": "lungs",
+                  "label": "Lungs",
+                  "x": 0.65,
+                  "y": 0.25
+                },
+                {
+                  "id": "left_heart",
+                  "label": "Heart (Left Side)",
+                  "x": 0.35,
+                  "y": 0.75
+                }
+              ],
+              "edges": [
+                {
+                  "source": "body_tissue",
+                  "target": "right_heart",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "right_heart",
+                  "target": "lungs",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "lungs",
+                  "target": "left_heart",
+                  "label": "Oxygen-Rich Blood"
+                },
+                {
+                  "source": "left_heart",
+                  "target": "body_tissue",
+                  "label": "Oxygen-Rich Blood"
+                }
+              ],
+              "focus": "left_heart"
+            }
+          },
+          "key_point": "Lungs: Oxygenation and Return to Heart"
+        },
+        {
+          "question": "Which side of the heart receives oxygen-rich blood from the lungs?",
+          "expected_concepts": [
+            "left side of the heart",
+            "oxygen-rich blood",
+            "lungs"
+          ],
+          "speak": "The left side of your heart is the strongest part, as it's responsible for pumping this newly oxygen-rich blood out to the rest of your body. From there, the blood travels through arteries and capillaries, delivering oxygen to all your cells, and the cycle begins again. The schematic shows this continuous loop.",
+          "diagram": {
+            "action": "highlight",
+            "visual": {
+              "kind": "schematic",
+              "title": "Basic Blood Circulation",
+              "nodes": [
+                {
+                  "id": "body_tissue",
+                  "label": "Body Tissues",
+                  "x": 0.05,
+                  "y": 0.5
+                },
+                {
+                  "id": "right_heart",
+                  "label": "Heart (Right Side)",
+                  "x": 0.35,
+                  "y": 0.25
+                },
+                {
+                  "id": "lungs",
+                  "label": "Lungs",
+                  "x": 0.65,
+                  "y": 0.25
+                },
+                {
+                  "id": "left_heart",
+                  "label": "Heart (Left Side)",
+                  "x": 0.35,
+                  "y": 0.75
+                }
+              ],
+              "edges": [
+                {
+                  "source": "body_tissue",
+                  "target": "right_heart",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "right_heart",
+                  "target": "lungs",
+                  "label": "Oxygen-Poor Blood"
+                },
+                {
+                  "source": "lungs",
+                  "target": "left_heart",
+                  "label": "Oxygen-Rich Blood"
+                },
+                {
+                  "source": "left_heart",
+                  "target": "body_tissue",
+                  "label": "Oxygen-Rich Blood"
+                }
+              ],
+              "focus": "body_tissue"
+            }
+          },
+          "key_point": "Oxygen-Rich Blood to Body"
+        }
+      ],
+      "topic": "Blood Circulation",
+      "diagram_type": "default",
+      "language": "en",
+      "tokens_used": 5500,
+      "model_info": {
+        "architecture": "LangChain-Gemini-RAG",
+        "model_type": "gemini-2.5-flash",
+        "source": "college-physics-2e",
+        "session_id": "isolated-subject-medical",
+        "rag_used": true,
+        "visual_planning_tokens": 0,
+        "visual_selection_tokens": 0,
+        "image_status": "no_matching_image"
+      }
+    }
+  },
+  {
+    "subject": "biology",
+    "question": "Explain how a plant takes water from soil through roots and stem to leaves to a beginner in English. Use a labelled diagram and explain its parts. Keep the lesson to four short teaching chunks including one understanding question.",
+    "elapsed_seconds": 12.92,
+    "fallback_attempted": false,
+    "errors": [],
+    "answer": {
+      "chunks": [
+        {
+          "speak": "Plants need water to grow and stay healthy, just like we do. They get this water from the soil, and the first step in this journey happens in their roots, which are usually hidden underground. The roots act like tiny sponges or straws, soaking up water from the soil.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "schematic",
+              "title": "Water Transport in Plants",
+              "nodes": [
+                {
+                  "id": "soil_water",
+                  "label": "Soil Water",
+                  "x": 0.1,
+                  "y": 0.8
+                },
+                {
+                  "id": "roots",
+                  "label": "Roots",
+                  "x": 0.3,
+                  "y": 0.7
+                },
+                {
+                  "id": "stem",
+                  "label": "Stem (Xylem)",
+                  "x": 0.5,
+                  "y": 0.5
+                },
+                {
+                  "id": "leaves",
+                  "label": "Leaves",
+                  "x": 0.7,
+                  "y": 0.2
+                },
+                {
+                  "id": "atmosphere",
+                  "label": "Atmosphere",
+                  "x": 0.9,
+                  "y": 0.1
+                }
+              ],
+              "edges": [
+                {
+                  "source": "soil_water",
+                  "target": "roots",
+                  "label": "Absorption"
+                },
+                {
+                  "source": "roots",
+                  "target": "stem",
+                  "label": "Transport"
+                },
+                {
+                  "source": "stem",
+                  "target": "leaves",
+                  "label": "Transport"
+                },
+                {
+                  "source": "leaves",
+                  "target": "atmosphere",
+                  "label": "Transpiration"
+                }
+              ],
+              "focus": "roots"
+            }
+          },
+          "key_point": "Roots absorb water from the soil"
+        },
+        {
+          "speak": "Once the water is absorbed by the roots, it needs to travel upwards to the rest of the plant. This happens through the stem. Inside the stem, there's a special type of tissue called xylem, which forms tiny tubes or pipelines. Think of the xylem as the plant's internal plumbing system, carrying water all the way from the roots up towards the leaves.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "schematic",
+              "title": "Water Transport in Plants",
+              "nodes": [
+                {
+                  "id": "soil_water",
+                  "label": "Soil Water",
+                  "x": 0.1,
+                  "y": 0.8
+                },
+                {
+                  "id": "roots",
+                  "label": "Roots",
+                  "x": 0.3,
+                  "y": 0.7
+                },
+                {
+                  "id": "stem",
+                  "label": "Stem (Xylem)",
+                  "x": 0.5,
+                  "y": 0.5
+                },
+                {
+                  "id": "leaves",
+                  "label": "Leaves",
+                  "x": 0.7,
+                  "y": 0.2
+                },
+                {
+                  "id": "atmosphere",
+                  "label": "Atmosphere",
+                  "x": 0.9,
+                  "y": 0.1
+                }
+              ],
+              "edges": [
+                {
+                  "source": "soil_water",
+                  "target": "roots",
+                  "label": "Absorption"
+                },
+                {
+                  "source": "roots",
+                  "target": "stem",
+                  "label": "Transport"
+                },
+                {
+                  "source": "stem",
+                  "target": "leaves",
+                  "label": "Transport"
+                },
+                {
+                  "source": "leaves",
+                  "target": "atmosphere",
+                  "label": "Transpiration"
+                }
+              ],
+              "focus": "stem"
+            }
+          },
+          "key_point": "Xylem transports water up the stem"
+        },
+        {
+          "speak": "Finally, the water reaches the leaves. In the leaves, some of this water is used in a process called photosynthesis, where the plant makes its own food. The rest of the water evaporates into the air through tiny pores on the leaves, a process called transpiration. This evaporation actually helps pull more water up from the roots, creating a continuous flow.",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "schematic",
+              "title": "Water Transport in Plants",
+              "nodes": [
+                {
+                  "id": "soil_water",
+                  "label": "Soil Water",
+                  "x": 0.1,
+                  "y": 0.8
+                },
+                {
+                  "id": "roots",
+                  "label": "Roots",
+                  "x": 0.3,
+                  "y": 0.7
+                },
+                {
+                  "id": "stem",
+                  "label": "Stem (Xylem)",
+                  "x": 0.5,
+                  "y": 0.5
+                },
+                {
+                  "id": "leaves",
+                  "label": "Leaves",
+                  "x": 0.7,
+                  "y": 0.2
+                },
+                {
+                  "id": "atmosphere",
+                  "label": "Atmosphere",
+                  "x": 0.9,
+                  "y": 0.1
+                }
+              ],
+              "edges": [
+                {
+                  "source": "soil_water",
+                  "target": "roots",
+                  "label": "Absorption"
+                },
+                {
+                  "source": "roots",
+                  "target": "stem",
+                  "label": "Transport"
+                },
+                {
+                  "source": "stem",
+                  "target": "leaves",
+                  "label": "Transport"
+                },
+                {
+                  "source": "leaves",
+                  "target": "atmosphere",
+                  "label": "Transpiration"
+                }
+              ],
+              "focus": "leaves"
+            }
+          },
+          "key_point": "Leaves use water and release vapor (transpiration)"
+        },
+        {
+          "question": "What are the main parts of a plant involved in getting water from the soil to the leaves?",
+          "expected_concepts": [
+            "roots",
+            "stem",
+            "xylem",
+            "leaves"
+          ],
+          "speak": "What are the main parts of a plant involved in getting water from the soil to the leaves?",
+          "diagram": {
+            "action": "none",
+            "visual": {
+              "kind": "schematic",
+              "title": "Water Transport in Plants",
+              "nodes": [
+                {
+                  "id": "soil_water",
+                  "label": "Soil Water",
+                  "x": 0.1,
+                  "y": 0.8
+                },
+                {
+                  "id": "roots",
+                  "label": "Roots",
+                  "x": 0.3,
+                  "y": 0.7
+                },
+                {
+                  "id": "stem",
+                  "label": "Stem (Xylem)",
+                  "x": 0.5,
+                  "y": 0.5
+                },
+                {
+                  "id": "leaves",
+                  "label": "Leaves",
+                  "x": 0.7,
+                  "y": 0.2
+                },
+                {
+                  "id": "atmosphere",
+                  "label": "Atmosphere",
+                  "x": 0.9,
+                  "y": 0.1
+                }
+              ],
+              "edges": [
+                {
+                  "source": "soil_water",
+                  "target": "roots",
+                  "label": "Absorption"
+                },
+                {
+                  "source": "roots",
+                  "target": "stem",
+                  "label": "Transport"
+                },
+                {
+                  "source": "stem",
+                  "target": "leaves",
+                  "label": "Transport"
+                },
+                {
+                  "source": "leaves",
+                  "target": "atmosphere",
+                  "label": "Transpiration"
+                }
+              ]
+            }
+          },
+          "key_point": "Check your understanding"
+        }
+      ],
+      "topic": "Plant Water Transport",
+      "diagram_type": "default",
+      "language": "en",
+      "tokens_used": 5564,
+      "model_info": {
+        "architecture": "LangChain-Gemini-RAG",
+        "model_type": "gemini-2.5-flash",
+        "source": "college-physics-2e",
+        "session_id": "isolated-subject-biology",
+        "rag_used": true,
+        "visual_planning_tokens": 0,
+        "visual_selection_tokens": 0,
+        "image_status": "no_matching_image"
+      }
+    }
+  }
+]

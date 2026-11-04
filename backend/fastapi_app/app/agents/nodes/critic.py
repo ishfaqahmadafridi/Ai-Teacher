@@ -18,15 +18,10 @@ async def critic_node(state: ClassroomState) -> Dict[str, Any]:
     Enforces MAX_REVISIONS = 1 to guarantee zero infinite loops.
     """
     iterations = state.get("critic_iterations", 0) + 1
-    answer = state.get("answer", "")
 
     if iterations > MAX_REVISIONS:
         logger.info(f"[Critic Node] Max revision limit ({MAX_REVISIONS}) reached. Halting critique loop.")
         return {"critic_iterations": iterations}
 
-    # Lightweight validation check
-    if "F = m" in answer or "N" in answer:
-        logger.info("[Critic Node] Solution verified successfully.")
-        return {"critic_iterations": iterations}
-
+    # A substring is not mathematical verification. No correctness claim is made.
     return {"critic_iterations": iterations}

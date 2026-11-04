@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "Rendered and highlighted schematic through real saved-lesson API",
+    "Rendered and highlighted bridge through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted beam through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted piston through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted pulley through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted water through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted carbon_dioxide through real saved-lesson API with interactive WebGL canvas",
+    "Rendered and highlighted methane through real saved-lesson API with interactive WebGL canvas",
+    "WebGL unavailable: labelled 2D fallback renders without a blank classroom",
+    "No browser runtime exceptions"
+  ],
+  "browserErrors": [],
+  "limits": "Real UI/auth/HTTP/ORM; seeded visual lesson; deterministic AI feedback and speech. No live provider calls or scientific accuracy certification."
+}

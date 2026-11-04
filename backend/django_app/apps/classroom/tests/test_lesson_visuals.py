@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import SimpleTestCase
 from apps.classroom.services.lesson_visuals import resolve_lesson_visuals
 from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
-from apps.classroom.tests.lecture_note_fixtures import lesson_answer
+from apps.classroom.tests.lecture_note_fixtures import lesson_answer, schematic_visual
 
 
 class LessonVisualTests(SimpleTestCase):
@@ -66,6 +66,26 @@ class LessonVisualTests(SimpleTestCase):
         result = resolve_lesson_visuals(answer)
         self.assertEqual(result['chunks'][0]['diagram']['visual_status'], 'unavailable')
         self.assertNotIn('target', result['chunks'][0]['diagram'])
+
+    @patch('apps.classroom.services.lesson_visuals.concept_image', return_value=[])
+    def test_failed_image_uses_only_its_validated_step_fallback(self, search):
+        fallback = schematic_visual()
+        answer = lesson_answer()
+        answer['chunks'][0]['diagram'].update(image_query='a specific process', fallback_visual=fallback)
+        result = resolve_lesson_visuals(answer)
+        diagram = result['chunks'][0]['diagram']
+        self.assertEqual(diagram['visual'], fallback)
+        self.assertEqual(diagram['visual_status'], 'fallback')
+        self.assertEqual(diagram['visual_reason'], 'no_usable_asset')
+        self.assertNotIn('target', diagram)
+
+    @patch('apps.classroom.services.lesson_visuals.concept_image', return_value=[])
+    def test_fallback_is_not_shared_with_other_steps(self, search):
+        answer = lesson_answer()
+        answer['chunks'][0]['diagram'].update(image_query='a specific process', fallback_visual=schematic_visual())
+        answer['chunks'].append({'speak': 'Different concept', 'diagram': {'action': 'none', 'image_query': 'different image'}})
+        result = resolve_lesson_visuals(answer)
+        self.assertNotIn('visual', result['chunks'][-1]['diagram'])
 
     def test_asset_id_does_not_resolve_a_static_picture(self):
         answer = lesson_answer()

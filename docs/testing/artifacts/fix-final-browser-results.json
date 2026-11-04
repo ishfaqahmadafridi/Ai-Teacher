@@ -1,0 +1,201 @@
+[
+  {
+    "subject": "physics",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "A fixed pulley is a simple machine that helps us change the direction of a force. It consists of a wheel that rotates around a central axle, but the entire pulley system stays in one place, or is 'fixed'. This is a conceptual model to help you understand the principles, not a physical simulation.",
+        "model": "pulley",
+        "focusedParts": [
+          "wheel"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Now let's look at the rope. The rope runs over the groove in the pulley's wheel. One end of this rope is attached to the 'load' – that's the object you want to lift. The load, due to gravity, always pulls downwards.",
+        "model": "pulley",
+        "focusedParts": [
+          "rope"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "To lift the load, you apply a force called 'effort'. With a fixed pulley, if the load is pulling down on one side of the rope, you pull down on the other side of the rope. So, the effort you apply is also directed downwards, even though the load moves upwards.",
+        "model": "pulley",
+        "focusedParts": [
+          "rope"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "Based on what we've discussed, what is the main advantage of using a fixed pulley?",
+        "model": "pulley",
+        "focusedParts": [
+          "wheel"
+        ],
+        "svgTitle": "pulley parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "mechanical",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Imagine a hollow tube, like a can that's open at both ends. This is called a cylinder. Inside this cylinder, there's a disc-shaped part that fits snugly, called a piston. The piston can slide up and down within the cylinder.",
+        "model": "piston",
+        "focusedParts": [
+          "cylinder"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Attached to the piston is a long, thin shaft called the piston rod. The rod extends out from the cylinder and is used to transfer the motion of the piston to other parts of a machine.",
+        "model": "piston",
+        "focusedParts": [
+          "rod"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "In this setup, the cylinder usually stays still. The piston is the part that moves back and forth inside the cylinder, and because the piston rod is attached to it, the rod also moves back and forth along with the piston.",
+        "model": "piston",
+        "focusedParts": [
+          "piston"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "Out of the three parts we discussed—the piston, the cylinder, and the piston rod—which two parts typically move?",
+        "model": "piston",
+        "focusedParts": [
+          "piston"
+        ],
+        "svgTitle": "piston parts (2D fallback)",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "medical",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "The human heart is like a powerful pump that continuously circulates blood throughout your body. Blood carries oxygen and nutrients to your cells and takes away waste products. We can think of the blood in two main states: oxygen-poor blood, which has given up its oxygen to the body, and oxygen-rich blood, which has picked up fresh oxygen from the lungs.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Let's start the journey with oxygen-poor blood. After your body tissues use up the oxygen, this deoxygenated blood returns to the right side of your heart. The right side of the heart then pumps this oxygen-poor blood directly to your lungs.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "Once in the lungs, a crucial exchange happens. The oxygen-poor blood releases carbon dioxide, a waste product, and picks up fresh oxygen from the air you breathe. This process transforms it into oxygen-rich blood. This oxygen-rich blood then returns from the lungs to the left side of your heart.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "The left side of your heart is the strongest part, as it's responsible for pumping this newly oxygen-rich blood out to the rest of your body. From there, the blood travels through arteries and capillaries, delivering oxygen to all your cells, and the cycle begins again. The schematic shows this continuous loop.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Basic Blood Circulation",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "biology",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Plants need water to grow and stay healthy, just like we do. They get this water from the soil, and the first step in this journey happens in their roots, which are usually hidden underground. The roots act like tiny sponges or straws, soaking up water from the soil.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in Plants",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 1,
+        "spoken": "Once the water is absorbed by the roots, it needs to travel upwards to the rest of the plant. This happens through the stem. Inside the stem, there's a special type of tissue called xylem, which forms tiny tubes or pipelines. Think of the xylem as the plant's internal plumbing system, carrying water all the way from the roots up towards the leaves.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in Plants",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 2,
+        "spoken": "Finally, the water reaches the leaves. In the leaves, some of this water is used in a process called photosynthesis, where the plant makes its own food. The rest of the water evaporates into the air through tiny pores on the leaves, a process called transpiration. This evaporation actually helps pull more water up from the roots, creating a continuous flow.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in Plants",
+        "unavailable": false,
+        "overlappingNodes": []
+      },
+      {
+        "section": 3,
+        "spoken": "What are the main parts of a plant involved in getting water from the soil to the leaves?",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in Plants",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  },
+  {
+    "subject": "image_fallback",
+    "steps": [
+      {
+        "section": 0,
+        "spoken": "Plants need water to grow and stay healthy, just like we do. They get this water from the soil, and the first step in this journey happens in their roots, which are usually hidden underground. The roots act like tiny sponges or straws, soaking up water from the soil.",
+        "model": null,
+        "focusedParts": [],
+        "svgTitle": "Water Transport in Plants",
+        "unavailable": false,
+        "overlappingNodes": []
+      }
+    ],
+    "browserErrors": []
+  }
+]

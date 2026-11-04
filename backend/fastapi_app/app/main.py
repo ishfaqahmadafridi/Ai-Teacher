@@ -16,7 +16,9 @@ FastAPI handles: everything real-time and async.
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from app.core.errors import InferenceUnavailable
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
@@ -78,3 +80,8 @@ app.add_middleware(
 
 # ── Routers ───────────────────────────────────────────────────────────────────
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+
+@app.exception_handler(InferenceUnavailable)
+async def inference_unavailable_handler(request: Request, error: InferenceUnavailable):
+    return JSONResponse(status_code=503, content={'detail': 'This AI operation is currently unavailable. Please try again later.'})

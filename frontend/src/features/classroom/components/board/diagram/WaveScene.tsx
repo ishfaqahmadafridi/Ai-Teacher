@@ -1,4 +1,5 @@
 import { memo, useRef, useMemo } from 'react';
+import type { ComponentRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Line, Text } from '@react-three/drei';
 import type { WaveSceneProps } from '../../../types/board.types';
@@ -13,19 +14,14 @@ export const WaveScene = memo(function WaveScene({
   color = '#a78bfa',
 }: WaveSceneProps) {
   const t = useRef(0);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const lineRef = useRef<any>(null);
+  const lineRef = useRef<ComponentRef<typeof Line>>(null);
 
   const { amplitude, frequency, speed } = useMemo(() => {
-    const custom = command?.animate as unknown as {
-      amplitude?: number;
-      frequency?: number;
-      speed?: number;
-    } | undefined;
+    const custom = command?.animate;
     return {
-      amplitude: custom?.amplitude ?? baseAmplitude,
-      frequency: custom?.frequency ?? baseFrequency,
-      speed: custom?.speed ?? baseSpeed,
+      amplitude: custom && 'amplitude' in custom && typeof custom.amplitude === 'number' && Number.isFinite(custom.amplitude) ? custom.amplitude : baseAmplitude,
+      frequency: custom && 'frequency' in custom && typeof custom.frequency === 'number' && Number.isFinite(custom.frequency) ? custom.frequency : baseFrequency,
+      speed: typeof custom?.speed === 'number' && Number.isFinite(custom.speed) ? custom.speed : baseSpeed,
     };
   }, [command, baseAmplitude, baseFrequency, baseSpeed]);
 

@@ -1,0 +1,50 @@
+[
+  {
+    "subject": "physics",
+    "accepted": false,
+    "issues": [
+      {
+        "path": [
+          "chunks",
+          0,
+          "diagram",
+          "action"
+        ],
+        "message": "Invalid option: expected one of \"none\"|\"highlight\"|\"rotate\"|\"zoom\"|\"zoom_in\"|\"zoom_out\"|\"show_formula\"|\"show_formula_stepwise\"|\"show_initial\"|\"add_arrow\"|\"add_label\"|\"pause_and_highlight\"|\"pause_and_explain\""
+      },
+      {
+        "path": [
+          "chunks",
+          1,
+          "diagram",
+          "action"
+        ],
+        "message": "Invalid option: expected one of \"none\"|\"highlight\"|\"rotate\"|\"zoom\"|\"zoom_in\"|\"zoom_out\"|\"show_formula\"|\"show_formula_stepwise\"|\"show_initial\"|\"add_arrow\"|\"add_label\"|\"pause_and_highlight\"|\"pause_and_explain\""
+      },
+      {
+        "path": [
+          "chunks",
+          2,
+          "diagram",
+          "action"
+        ],
+        "message": "Invalid option: expected one of \"none\"|\"highlight\"|\"rotate\"|\"zoom\"|\"zoom_in\"|\"zoom_out\"|\"show_formula\"|\"show_formula_stepwise\"|\"show_initial\"|\"add_arrow\"|\"add_label\"|\"pause_and_highlight\"|\"pause_and_explain\""
+      }
+    ]
+  },
+  {
+    "subject": "medical",
+    "accepted": true,
+    "issues": []
+  },
+  {
+    "subject": "biology",
+    "accepted": true,
+    "issues": []
+  },
+  {
+    "subject": "mechanical",
+    "accepted": true,
+    "issues": []
+  }
+]

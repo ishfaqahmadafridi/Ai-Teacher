@@ -3,9 +3,11 @@ fastapi_app/app/tests/test_api_endpoints.py
 End-to-end HTTP API integration tests for FastAPI endpoints.
 """
 import unittest
+from unittest.mock import AsyncMock, Mock, patch
+from langchain_core.messages import AIMessage
+from app.core.errors import InferenceUnavailable
 import secrets
 import time
-from unittest.mock import patch
 import jwt
 from fastapi.testclient import TestClient
 from app.main import app
@@ -19,6 +21,15 @@ class TestAPIEndpoints(unittest.TestCase):
         cls.client = TestClient(app)
 
     def setUp(self):
+        model = Mock()
+        model.ainvoke = AsyncMock(return_value=AIMessage(content='Controlled test explanation.'))
+        for target in ('app.agents.nodes.tutor.get_langchain_llm', 'app.agents.nodes.solver.get_langchain_llm'):
+            provider_patch = patch(target, return_value=model)
+            provider_patch.start()
+            self.addCleanup(provider_patch.stop)
+        retrieval_patch = patch('app.services.stream_context.get_stream_context', new_callable=AsyncMock, return_value='')
+        retrieval_patch.start()
+        self.addCleanup(retrieval_patch.stop)
         key = secrets.token_urlsafe(32)
         self.signing_key = patch('app.core.security.settings.SECRET_KEY', key)
         self.signing_key.start()
@@ -60,18 +71,15 @@ class TestAPIEndpoints(unittest.TestCase):
         self.assertFalse(data["is_safe"])
 
     def test_agent_grade_assignment_endpoint(self):
-        """POST /api/v1/agents/grade-assignment returns score and feedback."""
+        """Legacy assignment grading returns 503 instead of a fixed score."""
         payload = {
             "student_answer": "F = m * a",
             "question_prompt": "State Newton's second law",
             "max_score": 100,
         }
         response = self.client.post("/api/v1/agents/grade-assignment", json=payload)
-        self.assertEqual(response.status_code, 200)
-        data = response.json()
-        self.assertIn("score", data)
-        self.assertIn("feedback", data)
-        self.assertEqual(data["max_score"], 100)
+        self.assertEqual(response.status_code, 503)
+        self.assertNotIn('score', response.json())
 
     def test_agent_generate_timetable_endpoint(self):
         """POST /api/v1/agents/generate-timetable returns timetable schedule."""
@@ -104,7 +112,8 @@ class TestAPIEndpoints(unittest.TestCase):
         self.assertIn("telemetry", data)
         self.assertIn("total_duration_ms", data["telemetry"])
 
-    def test_stream_ask_endpoint(self):
+    @patch('app.services.llm_service._build_llm', return_value=None)
+    def test_stream_ask_endpoint(self, provider):
         """POST /api/v1/stream/ask returns SSE event stream or valid response."""
         payload = {
             "question": "What is mass?",

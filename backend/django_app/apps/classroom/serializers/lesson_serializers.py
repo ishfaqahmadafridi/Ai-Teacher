@@ -52,4 +52,6 @@ class LessonEvaluationSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs['next_action'] != LESSON_EVALUATION_ACTIONS[attrs['outcome']]:
             raise serializers.ValidationError('Outcome and next action disagree.')
+        if attrs['outcome'] == 'understood' and attrs['missing_concepts']:
+            raise serializers.ValidationError('An understood answer cannot have missing concepts.')
         return attrs

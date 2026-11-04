@@ -2,10 +2,11 @@
 fastapi_app/app/services/agent_service.py
 Async agent service executing compiled LangGraph workflows without blocking the event loop.
 """
-import asyncio
 import logging
 from typing import Dict, Any, List, Optional
 from app.agents import compiled_classroom_graph, ClassroomState
+from app.agents.nodes.safety import safety_node
+from app.core.errors import InferenceUnavailable
 
 logger = logging.getLogger(__name__)
 
@@ -35,20 +36,17 @@ async def execute_langgraph_workflow(
         final_state = await compiled_classroom_graph.ainvoke(initial_state)
         final_state["telemetry"] = telemetry.summary()
         return final_state
-    except Exception as e:
-        logger.error(f"[LangGraph Service] Execution error: {e}")
-        return {
-            "answer": "Newton's Second Law states that force equals mass times acceleration (F = m · a).",
-            "safety_status": "safe",
-            "error": str(e),
-            "telemetry": telemetry.summary(),
-        }
+    except InferenceUnavailable:
+        raise
+    except Exception:
+        logger.exception('Classroom workflow failed')
+        raise InferenceUnavailable() from None
 
 
 
 async def async_check_chat_safety(message: str) -> Dict[str, Any]:
     """Evaluates chat message safety via compiled graph."""
-    res = await execute_langgraph_workflow(question=message)
+    res = await safety_node({'question': message})
     is_safe = res.get("safety_status") != "blocked"
     return {
         "is_safe": is_safe,
@@ -59,14 +57,9 @@ async def async_check_chat_safety(message: str) -> Dict[str, Any]:
 
 async def async_grade_assignment(student_answer: str, question_prompt: str, max_score: int = 100) -> Dict[str, Any]:
     """Evaluates assignment submission asynchronously via compiled graph."""
-    res = await execute_langgraph_workflow(question=f"grade assignment: {student_answer}")
-    structured = res.get("structured_data", {})
-    return {
-        "score": structured.get("score", int(max_score * 0.9)),
-        "max_score": max_score,
-        "feedback": structured.get("feedback", "Evaluation complete."),
-        "areas_to_improve": structured.get("weaknesses", ["Review steps."]),
-    }
+    # Real lesson feedback is provided by Django's persisted understanding checks.
+    # This legacy endpoint has no equivalent validated score/rubric implementation.
+    raise InferenceUnavailable()
 
 
 async def async_generate_timetable(
@@ -83,7 +76,7 @@ async def async_generate_timetable(
     state: ClassroomState = {
         "course_id": registered_class,
         "metadata": {
-            "registered_courses": registered_courses or [registered_class, "Calculus II", "Intro to CS"],
+            "registered_courses": registered_courses or ([registered_class] if registered_class else []),
             "preferred_time": preferred_time,
             "max_classes_per_day": max_classes_per_day,
             "include_saturday": include_saturday,
