@@ -1,5 +1,5 @@
-import type { DiagramCommand } from '../types/classroom.types';
-export function visualGeometry(visual: NonNullable<DiagramCommand['visual']>) {
+import type { TreeVisual, PolynomialVisual } from '../types/visual.types';
+export function visualGeometry(visual: TreeVisual | PolynomialVisual) {
   if (visual.kind === 'polynomial') {
     const points = Array.from({ length: 101 }, (_, i) => {
       const x = visual.x_min + (visual.x_max - visual.x_min) * i / 100;

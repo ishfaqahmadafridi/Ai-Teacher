@@ -3,6 +3,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from apps.classroom.services.lecture_notes import save_lecture_note
 
+
+def schematic_visual():
+    return {'kind': 'schematic', 'title': 'Flow', 'nodes': [
+        {'id': 'a', 'label': 'Input', 'x': 0.1, 'y': 0.5},
+        {'id': 'b', 'label': 'Output', 'x': 0.9, 'y': 0.5}],
+        'edges': [{'source': 'a', 'target': 'b'}], 'focus': 'a'}
+
 def lesson_answer(language='en'):
     return {'topic': 'Ohm law', 'language': language, 'diagram_type': 'circuit', 'chunks': [
         {'speak': 'Voltage equals current multiplied by resistance. 12 V / 4 ohms = 3 A.',

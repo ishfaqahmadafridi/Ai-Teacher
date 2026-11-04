@@ -1,5 +1,6 @@
 'use client';
 import { readPendingLessonJob } from '../utilities/pendingLessonJob';
+import { classroomErrorMessage } from '../utilities/classroomErrors';
 import { useCallback, useRef, useEffect } from 'react';
 import { useClassroomQuestionMutation } from './useClassroomQueries';
 import { useConversationSession } from '@/shared/hooks/useConversationSession';
@@ -18,7 +19,7 @@ import {
   setChalkboardPoints,
   resetClassroomState,
 } from '@/features/classroom/state/classroomSlice';
-import type { ExtendedChunk, DiagramType } from '@/types';
+import type { ExtendedChunk } from '../types/classroom.types';
 import type { UseClassroomApiOptions } from '../types/api.types';
 
 export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptions = {}) {
@@ -55,7 +56,7 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
       try {
         const data = await mutateAsync({ question, sessionId, scheduledSessionId: currentSessionId, signal: controller.signal, onStatus: status => { if (!controller.signal.aborted) dispatch(setLoadingStatus(status)); } });
         if (controller.signal.aborted) return;
-        const diagType = (data.diagram_type ?? 'default') as DiagramType;
+        const diagType = data.diagram_type;
         const chunks: ExtendedChunk[] = (data.chunks ?? []).map((c) => ({
           speak: c.speak ?? '',
           question: c.question,
@@ -74,7 +75,7 @@ export function useClassroomApi({ recoverPending = false }: UseClassroomApiOptio
         dispatch(setLoadingStatus(''));
       } catch (err) {
         if (controller.signal.aborted) return;
-        dispatch(setError(err instanceof Error ? err.message : 'Unable to get a response.'));
+        dispatch(setError(classroomErrorMessage(err, 'Unable to get a response.')));
         dispatch(setLoading(false));
         dispatch(setLoadingStatus(''));
       }

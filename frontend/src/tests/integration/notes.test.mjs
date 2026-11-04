@@ -48,11 +48,12 @@ test('document downloads release the object URL and remove the link', () => {
   assert.deepEqual(revoked, ['blob:notes']);
 });
 
-test('diagram capture cleanup cancels pending work and aborts its request', () => {
+for (const diagramType of ['wave', 'default']) {
+test(`diagram capture for ${diagramType} cancels pending work and aborts its request`, () => {
   let cleanup;
   let canceled = false;
   let aborted = false;
-  const state = { classroom: { noteId: note.id, currentChunkIndex: 0, diagramType: 'wave' } };
+  const state = { classroom: { noteId: note.id, currentChunkIndex: 0, diagramType, currentCommand: { visual: { kind: 'assembly', model: 'bridge' } } } };
   const { useLectureFigureCapture } = load('features/classroom/hooks/useLectureFigureCapture.ts', {
     '@tanstack/react-query': { useQueryClient: () => ({}) },
     react: { useEffect: effect => { cleanup = effect(); } },
@@ -68,6 +69,7 @@ test('diagram capture cleanup cancels pending work and aborts its request', () =
   assert.equal(canceled, true);
   assert.equal(aborted, true);
 });
+}
 
 test('canvas snapshots are resized and empty scenes are not saved', () => {
   const snapshot = { width: 0, height: 0, toDataURL: () => 'data:image/png;base64,PNG', getContext: () => context };

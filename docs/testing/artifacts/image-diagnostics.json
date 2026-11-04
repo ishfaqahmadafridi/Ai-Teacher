@@ -1,0 +1,12 @@
+[
+  {
+    "provider": "wikimedia",
+    "error_type": "URLError",
+    "http_status": null
+  },
+  {
+    "provider": "openverse",
+    "error_type": "TimeoutError",
+    "http_status": null
+  }
+]

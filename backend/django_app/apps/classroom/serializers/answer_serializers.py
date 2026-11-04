@@ -5,6 +5,7 @@ from apps.classroom.constants.lesson import (
     LESSON_TEXT_MAX_LENGTH, LESSON_CONCEPT_MAX_LENGTH, LESSON_MAX_CONCEPTS,
 )
 from .diagram_fields import AnswerDiagramField
+from apps.classroom.constants.visuals import DIAGRAM_TYPES
 
 
 class AnswerChunkSerializer(serializers.Serializer):
@@ -32,10 +33,15 @@ class GeneratedAnswerSerializer(serializers.Serializer):
             attrs['diagram_type'] = 'circuit'
         return attrs
 
+    def validate_diagram_type(self, value):
+        return value if value in DIAGRAM_TYPES else 'default'
+
     def validate_chunks(self, chunks):
         for chunk in chunks:
             if chunk.get('question') and not chunk.get('expected_concepts'):
                 raise serializers.ValidationError('Understanding checks require expected concepts.')
+            if chunk.get('expected_concepts') and not chunk.get('question'):
+                raise serializers.ValidationError('Assessment criteria require a question.')
         return chunks
 
     chunks = AnswerChunkSerializer(many=True, allow_empty=False)

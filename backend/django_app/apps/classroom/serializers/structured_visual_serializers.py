@@ -1,6 +1,7 @@
 """Bounded declarative visuals; no generated executable code."""
 import math
 from rest_framework import serializers
+from .conceptual_visual_serializers import SchematicVisualSerializer, AssemblyVisualSerializer
 
 
 class TreeNodeSerializer(serializers.Serializer):
@@ -10,6 +11,20 @@ class TreeNodeSerializer(serializers.Serializer):
 
 
 class StructuredVisualSerializer(serializers.Serializer):
+    conceptual_schemas = {'schematic': SchematicVisualSerializer, 'assembly': AssemblyVisualSerializer}
+
+    def to_internal_value(self, data):
+        schema = self.conceptual_schemas.get(data.get('kind')) if isinstance(data, dict) else None
+        if schema:
+            serializer = schema(data=data)
+            serializer.is_valid(raise_exception=True)
+            return serializer.validated_data
+        return super().to_internal_value(data)
+
+    def to_representation(self, instance):
+        schema = self.conceptual_schemas.get(instance.get('kind'))
+        return schema(instance).data if schema else super().to_representation(instance)
+
     kind = serializers.ChoiceField(choices=('tree', 'polynomial'))
     nodes = TreeNodeSerializer(many=True, required=False)
     coefficients = serializers.ListField(child=serializers.FloatField(), max_length=6, required=False)
@@ -17,6 +32,8 @@ class StructuredVisualSerializer(serializers.Serializer):
     x_max = serializers.FloatField(min_value=-100, max_value=100, required=False)
 
     def validate(self, attrs):
+        if attrs['kind'] in ('schematic', 'assembly'):
+            return attrs
         if attrs['kind'] == 'polynomial':
             coefficients = attrs.get('coefficients', [])
             low, high = attrs.get('x_min'), attrs.get('x_max')

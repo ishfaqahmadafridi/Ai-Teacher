@@ -24,3 +24,10 @@ from .lesson_answers import submit_lesson_answer
 from .lesson_evaluation import evaluate_attempt
 
 __all__ += ['submit_lesson_answer', 'evaluate_attempt']
+
+from .quota_fallback import QuotaFallbackLLM, is_quota_error
+__all__ += ['QuotaFallbackLLM', 'is_quota_error']
+
+from .teaching_messages import teaching_messages
+from .lesson_evaluation import evaluate_owned_attempt
+__all__ += ['teaching_messages', 'evaluate_owned_attempt']

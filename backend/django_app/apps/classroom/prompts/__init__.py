@@ -4,9 +4,11 @@ apps/classroom/prompts/__init__.py
 Barrel export for the Classroom prompts package.
 """
 from .classroom_prompts import SYSTEM_PROMPT, RAG_CONTEXT_SUFFIX
+from .conceptual_visual_prompt import CONCEPTUAL_VISUAL_PROMPT
 
 __all__ = [
     'SYSTEM_PROMPT',
+    'CONCEPTUAL_VISUAL_PROMPT',
     'RAG_CONTEXT_SUFFIX',
 ]
 
@@ -15,3 +17,6 @@ from .scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
 from .lesson_evaluation import LESSON_EVALUATION_PROMPT
 
 __all__ += ['SCHEDULED_LESSON_PROMPT', 'LESSON_EVALUATION_PROMPT']
+
+from .image_prompt import IMAGE_REQUIREMENTS_PROMPT
+__all__ += ['IMAGE_REQUIREMENTS_PROMPT']

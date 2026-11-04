@@ -13,8 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
 
-from apps.classroom.services.lecture_notes import save_lecture_note, account_session_id
-from apps.classroom.inference import generate_answer
+from apps.classroom.services.blocking_lesson import prepare_blocking_lesson
 from apps.classroom.serializers import AskRequestSerializer, AskResponseSerializer
 
 logger = logging.getLogger(__name__)
@@ -48,22 +47,14 @@ class AskView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
         request_data = validated_mapping(serializer.validated_data)
         try:
-            result = generate_answer(**{**request_data,
-                'session_id': account_session_id(request.user, request_data['session_id'])})
-            response_serializer = AskResponseSerializer(data=result)
-            response_serializer.is_valid(raise_exception=True)
-        except Exception as e:
-            logger.exception(f"[AskView] Unexpected error: {e}")
+            response_data = prepare_blocking_lesson(request.user, request_data)
+        except Exception:
+            logger.exception("Blocking classroom request failed")
             return Response(
                 {"error": "An unexpected server error occurred."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        response_data = validated_mapping(response_serializer.validated_data)
-        if request.user.is_authenticated and result.get('topic') != 'unknown':
-            note = save_lecture_note(request.user, request_data['session_id'], result)
-            response_data['model_info']['note_id'] = str(note.id)
         return Response(response_data, status=status.HTTP_200_OK)

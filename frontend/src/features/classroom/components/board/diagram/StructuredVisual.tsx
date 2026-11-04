@@ -1,8 +1,8 @@
 'use client';
 import { memo } from 'react';
-import type { DiagramCommand } from '../../../types/classroom.types';
+import type { LegacyVisualProps } from '../../../types/visual.types';
 import { visualGeometry } from '../../../utilities/structuredVisual';
-export const StructuredVisual = memo(function StructuredVisual({ visual }: { visual: NonNullable<DiagramCommand['visual']> }) {
+export const StructuredVisual = memo(function StructuredVisual({ visual }: LegacyVisualProps) {
   const geometry = visualGeometry(visual);
   return <svg data-lecture-svg viewBox="0 0 600 380" className="w-full h-full" role="img" aria-label={visual.kind === 'tree' ? 'Lesson tree diagram' : 'Polynomial graph'}>
     {visual.kind === 'polynomial' ? <><path d={`M40,${geometry.axisY} H560 ${geometry.axisX === null ? "" : `M${geometry.axisX},40 V340`}`} stroke="#94a3b8" fill="none" /><path d={geometry.path} stroke="#38bdf8" strokeWidth="3" fill="none" /><text x="40" y="370" fill="white">x: {visual.x_min} to {visual.x_max}; coefficients: {visual.coefficients.join(', ')}</text></> : <>

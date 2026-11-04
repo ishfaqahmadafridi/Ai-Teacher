@@ -46,6 +46,18 @@ class PersistenceRegressionTests(TestCase):
 
 
 class PipelineRegressionTests(TestCase):
+    @patch('apps.classroom.rag.search', side_effect=RuntimeError('retrieval unavailable'))
+    @patch('apps.classroom.inference.pipeline.get_llm')
+    def test_optional_textbook_outage_does_not_discard_a_valid_lesson(self, get_llm, search):
+        answer = {'chunks': [{'speak': 'Gravity attracts masses.', 'diagram': {'action': 'none'}}],
+                  'topic': 'gravity', 'language': 'en', 'diagram_type': 'gravity'}
+        get_llm.return_value.invoke.return_value = AIMessage(content=json.dumps(answer))
+        result = generate_answer('What is gravity?', session_id='retrieval-outage')
+        self.assertEqual(result['topic'], 'gravity')
+        self.assertTrue(result['model_info']['rag_unavailable'])
+        self.assertFalse(result['model_info']['rag_used'])
+        self.assertEqual(len(get_session('retrieval-outage')), 2)
+
     @patch('apps.classroom.inference.pipeline.get_llm')
     def test_missing_llm_returns_fallback_without_history(self, get_llm):
         get_llm.return_value = None
@@ -97,7 +109,7 @@ class EndpointRegressionTests(TestCase):
                 self.assertEqual(response.status_code, 400)
         clear.assert_not_called()
 
-    @patch('apps.classroom.views.ask_view.generate_answer', side_effect=RuntimeError('secret'))
+    @patch('apps.classroom.services.blocking_lesson.generate_answer', side_effect=RuntimeError('secret'))
     def test_error_response_does_not_expose_exception(self, generate):
         response = self.client.post('/api/ask/', {'question': 'What is gravity?'},
                                     content_type='application/json')

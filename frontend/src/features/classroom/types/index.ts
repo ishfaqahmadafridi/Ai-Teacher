@@ -13,3 +13,5 @@ export * from './notes.types';
 export * from './playback.types';
 
 export * from './circuit.types';
+
+export * from './visual.types';

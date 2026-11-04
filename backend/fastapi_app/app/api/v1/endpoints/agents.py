@@ -28,7 +28,8 @@ router = APIRouter()
     "/execute",
     response_model=AgentWorkflowResponse,
     status_code=status.HTTP_200_OK,
-    summary="Execute full LangGraph agent workflow with performance telemetry",
+    summary="Execute LangGraph workflow with performance telemetry",
+    responses={503: {"description": "Inference unavailable; no substitute answer is returned"}},
 )
 async def execute_agent(payload: AgentWorkflowRequest, identity: str = Depends(require_access_token)):
     """Executes the optimal state node path through the compiled classroom graph."""
@@ -64,10 +65,11 @@ async def check_safety(payload: ChatSafetyRequest):
     "/grade-assignment",
     response_model=GradeAssignmentResponse,
     status_code=status.HTTP_200_OK,
-    summary="Async AI assignment grading evaluation",
+    summary="Legacy assignment grading (currently unavailable)",
+    responses={503: {"description": "Use persisted classroom understanding checks for lesson feedback"}},
 )
 async def grade_assignment(payload: GradeAssignmentRequest):
-    """Evaluates student assignment submission with instant feedback."""
+    """Reject unavailable legacy grading instead of returning fabricated scores."""
     result = await async_grade_assignment(
         student_answer=payload.student_answer,
         question_prompt=payload.question_prompt,

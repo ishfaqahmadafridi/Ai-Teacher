@@ -7,3 +7,5 @@ export const NOTE_FILENAME_MAX_LENGTH = 150;
 
 export const NOTE_DOCUMENT_LABEL = 'Neurolearn · Lecture notes';
 export const NOTE_PRINT_STYLES = 'body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;line-height:1.7}p{white-space:pre-wrap}pre{direction:ltr;text-align:left;white-space:pre-wrap}@media print{body{margin:0}}';
+
+export const NOTE_ACTIVE_STORAGE_PREFIX = 'classroom-active-note:';

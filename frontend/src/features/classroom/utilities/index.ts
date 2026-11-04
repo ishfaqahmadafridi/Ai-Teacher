@@ -16,3 +16,10 @@ export * from './waitForLessonJob';
 export * from './pendingLessonJob';
 
 export { resolveNoteLanguageCode } from './noteLanguage';
+
+export * from './conceptualGeometry';
+export * from './schematicLayout';
+
+export * from './classroomErrors';
+
+export * from './activeLessonStorage';

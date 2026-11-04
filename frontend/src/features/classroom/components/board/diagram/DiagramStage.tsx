@@ -1,9 +1,9 @@
 'use client';
 
 import { memo } from 'react';
-import { VISUAL_FAILURE_MESSAGES } from '../../../constants/visualFailureConstants';
+import { VISUAL_FAILURE_MESSAGES, VISUAL_FALLBACK_MESSAGE } from '../../../constants/visualFailureConstants';
 import { VisualImage } from './VisualImage';
-import { StructuredVisual } from './StructuredVisual';
+import { LessonVisual } from './LessonVisual';
 import dynamic from 'next/dynamic';
 import { CircuitLesson } from './CircuitLesson';
 import { FormulaOverlay } from './FormulaOverlay';
@@ -22,8 +22,9 @@ const DiagramCanvas = dynamic(() => import('./DiagramCanvas').then(mod => mod.Di
 export const DiagramStage = memo(function DiagramStage({ diagramType, command, formula }: DiagramStageProps) {
   return (
     <div className="relative w-full h-full">
-      {command?.parameters ? <CircuitLesson key={`${command.parameters.voltage}:${command.parameters.resistance}`} parameters={command.parameters} /> : command?.visual ? <StructuredVisual visual={command.visual} /> : command?.visual_status === 'unavailable' ? <p role="status" className="text-sm text-slate-400">{VISUAL_FAILURE_MESSAGES[command.visual_reason ?? ''] ?? 'A visual is unavailable for this concept.'}</p> : (command?.target?.startsWith('/api/visual-assets/') || command?.target?.startsWith('/classroom-assets/') || command?.target?.startsWith('https://upload.wikimedia.org/') || command?.target?.startsWith('https://api.openverse.org/v1/images/')) ? <VisualImage key={command!.target!} src={command!.target!} annotation={command.annotation} /> : diagramType === 'circuit' ? <CircuitLesson key={`${command?.parameters?.voltage ?? "example"}:${command?.parameters?.resistance ?? "example"}`} parameters={command?.parameters} /> : <DiagramCanvas diagramType={diagramType} command={command} />}
+      {command?.parameters ? <CircuitLesson key={`${command.parameters.voltage}:${command.parameters.resistance}`} parameters={command.parameters} /> : command?.visual ? <LessonVisual visual={command.visual} /> : command?.visual_status === 'unavailable' ? <p role="status" className="text-sm text-slate-400">{VISUAL_FAILURE_MESSAGES[command.visual_reason ?? ''] ?? 'A visual is unavailable for this concept.'}</p> : (command?.target?.startsWith('/api/visual-assets/') || command?.target?.startsWith('/classroom-assets/') || command?.target?.startsWith('https://upload.wikimedia.org/') || command?.target?.startsWith('https://api.openverse.org/v1/images/')) ? <VisualImage key={command!.target!} src={command!.target!} annotation={command.annotation} /> : diagramType === 'circuit' ? <CircuitLesson key={`${command?.parameters?.voltage ?? "example"}:${command?.parameters?.resistance ?? "example"}`} parameters={command?.parameters} /> : <DiagramCanvas diagramType={diagramType} command={command} />}
       <FormulaOverlay command={command} formula={formula} />
+      {command?.visual && command.visual_status === 'fallback' && <p role="status" className="absolute left-2 top-2 rounded bg-dashboard-panel/90 px-2 py-1 text-xs text-dashboard-muted">{VISUAL_FALLBACK_MESSAGE}</p>}
     </div>
   );
 });

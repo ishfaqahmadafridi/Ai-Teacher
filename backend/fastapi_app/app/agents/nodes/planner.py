@@ -1,8 +1,8 @@
 """
 fastapi_app/app/agents/nodes/planner.py
 Single-responsibility study planner node.
-Uses deterministic constraint satisfaction first, LLM optimization second.
-Guarantees zero overlapping time slots across registered courses.
+Creates a deterministic preview from supplied course names and slot preferences.
+The authenticated Django timetable service owns persisted schedules.
 """
 import logging
 from typing import Dict, Any, List
@@ -20,8 +20,8 @@ TIME_SLOT_MAP = {
 
 async def planner_node(state: ClassroomState) -> Dict[str, Any]:
     """
-    Generates optimized timetable based on registered courses and student preferences.
-    Guarantees zero time-slot collisions and balances daily cognitive load.
+    Generates a preview with distinct named slots for each day.
+    This does not verify external course availability or persist a timetable.
     """
     metadata = state.get("metadata") or {}
     preferred_time = metadata.get("preferred_time", "morning")

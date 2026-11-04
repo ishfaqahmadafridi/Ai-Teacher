@@ -5,21 +5,12 @@ Async LLM streaming service for FastAPI.
 Streams Gemini 2.5 Flash responses token-by-token using LangChain's
 async streaming interface — powering SSE and WebSocket endpoints.
 """
-import asyncio
 import logging
-import os
 from typing import AsyncGenerator
 
 logger = logging.getLogger(__name__)
 
-# ── System Prompt ─────────────────────────────────────────────────────────────
-_SYSTEM_PROMPT = """You are an expert AI professor and academic tutor.
-Your role is to explain complex concepts clearly, concisely, and engagingly.
-Always respond in plain prose — no markdown, no bullet points, no code blocks
-unless the student explicitly requests them.
-Keep responses focused and educational."""
-
-_RAG_SUFFIX = "\n\n[Relevant textbook context for your response]:\n{rag_context}"
+from app.langchain.prompts import SYSTEM_PROMPT, RAG_CONTEXT_TEMPLATE
 
 
 def _build_llm(temperature: float = 0.7):
@@ -53,24 +44,17 @@ async def stream_answer(
         yield "I'm sorry, the AI service is currently unavailable. Please try again shortly."
         return
 
-    # Build system prompt (optionally enriched with RAG context)
-    system_content = _SYSTEM_PROMPT
+    messages = [SystemMessage(content=SYSTEM_PROMPT)]
     if rag_context:
-        system_content += _RAG_SUFFIX.format(rag_context=rag_context)
-
-    messages = [
-        SystemMessage(content=system_content),
-        HumanMessage(content=question),
-    ]
+        messages.append(HumanMessage(content=RAG_CONTEXT_TEMPLATE.format(rag_context=rag_context)))
+    messages.append(HumanMessage(content=question))
 
     logger.info(f"[LLM] Starting stream for session='{session_id}' question='{question[:60]}'")
 
     try:
         async for chunk in llm.astream(messages):
-            token = chunk.content
-            if token:
-                token_str = token if isinstance(token, str) else str(token)
-                yield token_str
+            if chunk.text:
+                yield chunk.text
     except Exception as e:
         logger.error(f"[LLM] Streaming error for session='{session_id}': {e}")
-        yield f"\n\n[Error: {str(e)}]"
+        yield "\n\nThe AI response was interrupted. Please try again shortly."

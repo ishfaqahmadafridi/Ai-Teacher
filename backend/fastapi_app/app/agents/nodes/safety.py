@@ -15,21 +15,21 @@ async def safety_node(state: ClassroomState) -> Dict[str, Any]:
     """
     Inspects student request.
     Fast-path: Deterministic string checks.
-    Slow-path: Isolated LLM safety call if ambiguous.
+    This keyword check is limited; it does not provide comprehensive safety review.
     """
     question = state.get("question", "").strip()
     if not question:
         return {
             "safety_status": "blocked",
             "warning_reason": "Empty question provided.",
-            "answer": "Please ask a valid physics question.",
+            "answer": "Please ask a valid learning question.",
         }
 
     # Deterministic fast check (0ms latency, zero LLM calls)
     lowered = question.lower()
     for term in FORBIDDEN_TERMS:
         if term in lowered:
-            logger.warning(f"[Safety Node] Blocked term '{term}' in question='{question[:40]}'")
+            logger.warning("Classroom keyword check blocked a request")
             return {
                 "safety_status": "blocked",
                 "warning_reason": "Message contains non-academic or inappropriate terms.",

@@ -22,3 +22,6 @@ from .answer_serializers import AnswerChunkSerializer, AskResponseSerializer, Ge
 from .diagram_fields import AnswerDiagramField
 
 __all__ += ['AnswerChunkSerializer', 'AnswerDiagramField']
+
+from .conceptual_visual_serializers import SchematicVisualSerializer, AssemblyVisualSerializer
+__all__ += ['SchematicVisualSerializer', 'AssemblyVisualSerializer']

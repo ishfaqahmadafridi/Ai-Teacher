@@ -8,9 +8,9 @@ from apps.classroom.constants import (
     RAG_SOURCE, RAG_TOP_K,
 )
 from apps.classroom.services import get_llm, extract_json, fallback_chunks, get_session
-from apps.classroom.services.session_service import clear_session, append_session
+from apps.classroom.services.session_service import append_session
 from apps.classroom.serializers import GeneratedAnswerSerializer
-from apps.classroom.prompts import SYSTEM_PROMPT, RAG_CONTEXT_SUFFIX
+from apps.classroom.services.teaching_messages import teaching_messages
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,6 @@ def generate_answer(
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
-    from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, BaseMessage
     from apps.classroom.rag import search as rag_search
 
     metadata = {
@@ -38,32 +37,36 @@ def generate_answer(
         llm = get_llm(temperature)
         if llm is None:
             return {**fallback_chunks(question), "tokens_used": 0, "model_info": metadata}
-        rag_context = rag_search(question, top_k=RAG_TOP_K)
+        try:
+            rag_context = rag_search(question, top_k=RAG_TOP_K)
+        except Exception:
+            logger.warning('Optional classroom textbook retrieval unavailable')
+            rag_context = ''
+            metadata['rag_unavailable'] = True
         metadata["rag_used"] = bool(rag_context)
         from apps.classroom.services.lesson_visuals import resolve_lesson_visuals, image_catalog_prompt
-        system_prompt = SYSTEM_PROMPT
+        supplemental_context = {}
         if student_context:
-            system_prompt += '\nStudent teaching context: ' + json.dumps(student_context)
+            supplemental_context['student'] = student_context
         if curriculum:
-            from apps.classroom.prompts.scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
-            system_prompt += SCHEDULED_LESSON_PROMPT.format(context=json.dumps({**curriculum, 'require_full_coverage': require_curriculum_coverage}))
+            supplemental_context['scheduled_lesson'] = {**curriculum, 'require_full_coverage': require_curriculum_coverage}
         if rag_context:
-            system_prompt += RAG_CONTEXT_SUFFIX.format(rag_context=rag_context)
+            supplemental_context['textbook'] = rag_context
         images = []
         if research:
             from apps.classroom.services.research_context import build_research_context
-            context, research_metadata = build_research_context(question)
+            _, research_metadata = build_research_context(question)
             metadata.update(research_metadata)
             images = research_metadata.get("images", [])
-            system_prompt += context
-        system_prompt += image_catalog_prompt(images)
+            supplemental_context['research'] = {'sources': research_metadata['sources'], 'status': research_metadata['research_status']}
+        supplemental_context['image_catalog'] = image_catalog_prompt(images)
         history = get_session(session_id)
-        messages: list[BaseMessage] = [SystemMessage(content=system_prompt)]
-        for entry in history:
-            message_type = HumanMessage if entry["role"] == "user" else AIMessage
-            messages.append(message_type(content=entry["content"]))
-        messages.append(HumanMessage(content=question))
+        messages = teaching_messages(question, history, supplemental_context)
         response = llm.invoke(messages)
+        provider_metadata = response.response_metadata or {}
+        if provider_metadata.get('classroom_provider'):
+            metadata['provider'] = provider_metadata['classroom_provider']
+            metadata['model_type'] = provider_metadata['model_name']
         # LangChain normalizes provider text blocks through AIMessage.text.
         raw_answer = response.text
         serializer = GeneratedAnswerSerializer(data=extract_json(raw_answer))
@@ -81,8 +84,8 @@ def generate_answer(
         metadata["image_status"] = "selected" if any(chunk["diagram"].get("target") for chunk in parsed["chunks"]) else "no_matching_image"
         if persist_history:
             append_session(session_id, [
-            {"role": "user", "content": question},
-            {"role": "assistant", "content": json.dumps(parsed)},
+                {"role": "user", "content": question},
+                {"role": "assistant", "content": json.dumps(parsed)},
             ])
         usage = response.usage_metadata or {}
         return {

@@ -3,6 +3,9 @@ fastapi_app/app/tests/test_agents_workflow.py
 Unit tests for LangGraph state nodes, intent routing, and full graph execution.
 """
 import unittest
+from unittest.mock import AsyncMock, Mock, patch
+from langchain_core.messages import AIMessage
+from app.core.errors import InferenceUnavailable
 import asyncio
 from app.agents.state import ClassroomState
 from app.agents.router import route_intent, select_next_node
@@ -21,6 +24,17 @@ from app.agents.nodes import (
 
 class TestAgentsWorkflow(unittest.TestCase):
     """Test suite for single-responsibility state nodes and intent routing."""
+
+    def setUp(self):
+        model = Mock()
+        model.ainvoke = AsyncMock(return_value=AIMessage(content='Controlled test explanation.'))
+        for target in ('app.agents.nodes.tutor.get_langchain_llm', 'app.agents.nodes.solver.get_langchain_llm'):
+            provider_patch = patch(target, return_value=model)
+            provider_patch.start()
+            self.addCleanup(provider_patch.stop)
+        retrieval_patch = patch('app.services.stream_context.get_stream_context', new_callable=AsyncMock, return_value='')
+        retrieval_patch.start()
+        self.addCleanup(retrieval_patch.stop)
 
     def test_safety_node_safe_question(self):
         """Verify safety node accepts normal academic questions."""
@@ -77,11 +91,10 @@ class TestAgentsWorkflow(unittest.TestCase):
         self.assertEqual(res["critic_iterations"], 3)
 
     def test_grader_node_output(self):
-        """Verify grader node returns evaluation payload with score."""
+        """Verify the unimplemented grader never fabricates a score."""
         state: ClassroomState = {"question": "Solve F = 10N, m = 2kg"}
-        res = asyncio.run(grader_node(state))
-        self.assertIn("structured_data", res)
-        self.assertEqual(res["structured_data"]["score"], 92)
+        with self.assertRaises(InferenceUnavailable):
+            asyncio.run(grader_node(state))
 
     def test_compiled_graph_execution(self):
         """Verify compiled LangGraph executes end-to-end without error."""

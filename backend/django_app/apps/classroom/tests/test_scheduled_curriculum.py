@@ -109,7 +109,7 @@ class CurriculumCoverageTests(SimpleTestCase):
             result = generate_answer('Teach this class', curriculum=self.context, student_context={'level': 'Primary school', 'guidance': 'Use simple words.'}, require_curriculum_coverage=True, persist_history=False)
         self.assertTrue(result['model_info']['curriculum_verified'])
         self.assertEqual(result['model_info']['curriculum_coverage'], ['concept-0'])
-        prompt = llm.invoke.call_args_list[0].args[0][0].content
+        prompt = '\n'.join(message.content for message in llm.invoke.call_args_list[0].args[0])
         self.assertIn('Primary school', prompt)
         self.assertIn('Roots', prompt)
 

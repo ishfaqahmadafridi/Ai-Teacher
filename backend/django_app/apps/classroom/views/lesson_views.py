@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema
 from apps.classroom.views.note_views import PrivateNotesView
 from apps.classroom.serializers.lesson_serializers import LessonAnswerSerializer, LessonAttemptSerializer
 from apps.classroom.services.lesson_answers import submit_lesson_answer
-from apps.classroom.services.lesson_evaluation import evaluate_attempt
+from apps.classroom.services.lesson_evaluation import evaluate_owned_attempt
 
 
 class LessonAnswerView(PrivateNotesView):
@@ -35,7 +35,4 @@ class LessonProgressView(PrivateNotesView):
 class LessonEvaluationView(PrivateNotesView):
     @extend_schema(tags=['classroom'], responses=LessonAttemptSerializer)
     def post(self, request, note_id, attempt_id):
-        from django.shortcuts import get_object_or_404
-        from apps.classroom.models.lesson_attempt import LessonAttempt
-        attempt = get_object_or_404(LessonAttempt, pk=attempt_id, note_id=note_id, note__user=request.user)
-        return Response(LessonAttemptSerializer(evaluate_attempt(attempt)).data)
+        return Response(LessonAttemptSerializer(evaluate_owned_attempt(request.user, note_id, attempt_id)).data)
