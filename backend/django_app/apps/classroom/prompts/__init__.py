@@ -22,3 +22,7 @@ from .discussion_prompt import DISCUSSION_REPLY_PROMPT
 __all__ += ['DISCUSSION_REPLY_PROMPT']
 
 __all__ += ['ASSEMBLY_VISUAL_PROMPT', 'MOLECULE_VISUAL_PROMPT']
+
+from .teaching_quality_prompt import TEACHING_DEPTH_PROMPT, TEACHING_REVIEW_PROMPT
+
+__all__ += ['TEACHING_DEPTH_PROMPT', 'TEACHING_REVIEW_PROMPT']

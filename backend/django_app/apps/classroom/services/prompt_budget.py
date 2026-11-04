@@ -108,10 +108,12 @@ def model_prompt_limits(llm):
     return context_limit, output_tokens
 
 
-def validate_model_context(llm, messages):
+def validate_model_context(llm, messages, *, requested_output_tokens=None):
     """Reject oversized secondary review requests without cutting their evidence."""
     from langchain_core.messages import convert_to_messages
     context_limit, output_tokens = model_prompt_limits(llm)
+    if requested_output_tokens is not None:
+        output_tokens = min(output_tokens, requested_output_tokens)
     converted = convert_to_messages(messages)
     if estimate_tokens(converted) + output_tokens + TOKEN_MARGIN > context_limit:
         raise PromptBudgetExceeded('Review input exceeds the configured model context budget.')

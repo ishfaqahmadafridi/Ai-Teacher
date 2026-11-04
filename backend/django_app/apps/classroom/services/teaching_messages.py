@@ -6,10 +6,12 @@ from apps.classroom.constants.visuals import ASSEMBLY_PARTS, DIAGRAM_ACTIONS
 from apps.classroom.prompts import SYSTEM_PROMPT, CONCEPTUAL_VISUAL_PROMPT, ASSEMBLY_VISUAL_PROMPT, MOLECULE_VISUAL_PROMPT
 from apps.classroom.prompts.scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
 from apps.classroom.prompts.research_prompt import RESEARCH_CONTEXT
+from apps.classroom.prompts.teaching_quality_prompt import TEACHING_DEPTH_PROMPT
 
 
 def teaching_messages(question, history, supplemental_context):
     policy = SYSTEM_PROMPT.replace('{diagram_actions}', ', '.join(DIAGRAM_ACTIONS))
+    policy += TEACHING_DEPTH_PROMPT
     policy += CONCEPTUAL_VISUAL_PROMPT
     # Unknown/translated model names still have the general schematic capability.
     topic = question + ' ' + json.dumps(supplemental_context.get('scheduled_lesson', {}), ensure_ascii=False)

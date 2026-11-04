@@ -2,6 +2,9 @@
 
 Verified 5 November 2026.
 
+Follow-up: [connected concept teaching](teaching-quality-verification.md) adds explicit teaching-depth rules and a separate quality review. The 37% measurement below is historical, before that extension.
+
+
 The shared teaching policy is shorter while retaining teaching sequence, trust boundaries, languages, graded checks, timed concept Q&A, visual bounds and JSON output requirements. Image rules now live once in the shared visual policy. The unused RAG suffix and separate duplicate image policy were removed. Assembly details are included only for registered model names found in the question, saved course context or most recent conversation turn. Generic/translated topics retain schematic, image, formula and scene capabilities. Scheduled and research instructions remain conditional on their corresponding reference data.
 
 For “Explain roots” with no history or references, the assembled system policy fell from 9,738 characters in committed HEAD to 6,115 characters (37.2%). Conservative UTF-8 estimates were 9,764 and 6,137 respectively (37.1%). This comparison is against committed HEAD, not an exact snapshot of all previous uncommitted changes. It is not a provider tokenizer measurement or a live teaching-quality evaluation.

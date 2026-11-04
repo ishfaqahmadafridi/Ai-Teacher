@@ -39,3 +39,7 @@ from .lesson_hand import lesson_hand
 
 from .prompt_budget import budget_teaching_messages, model_prompt_limits
 __all__ += ['budget_teaching_messages', 'model_prompt_limits']
+
+from .teaching_quality import generate_reviewed_teaching, review_teaching_quality, validate_teaching_structure
+
+__all__ += ['generate_reviewed_teaching', 'review_teaching_quality', 'validate_teaching_structure']

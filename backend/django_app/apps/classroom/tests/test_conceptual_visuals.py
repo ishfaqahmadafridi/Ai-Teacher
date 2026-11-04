@@ -11,6 +11,11 @@ from .lecture_note_fixtures import schematic_visual
 
 
 class ConceptualVisualTests(SimpleTestCase):
+    def setUp(self):
+        review = patch('apps.classroom.services.teaching_quality.review_teaching_quality', return_value=([], 0))
+        review.start()
+        self.addCleanup(review.stop)
+
     def schematic(self):
         return schematic_visual()
 
@@ -108,7 +113,7 @@ class ConceptualVisualTests(SimpleTestCase):
     @patch('apps.classroom.services.lesson_visuals.concept_image')
     def test_generation_wires_contract_preserves_visual_and_reports_provider(self, image, llm, search, history):
         from apps.classroom.inference import generate_answer
-        answer = {'topic': 'Bridge', 'language': 'en', 'diagram_type': 'default', 'chunks': [
+        answer = {'lesson_mode': 'focused', 'topic': 'Bridge', 'language': 'en', 'diagram_type': 'default', 'chunks': [
             {'speak': 'The deck carries the traffic.', 'diagram': {'action': 'none', 'visual': {
                 'kind': 'assembly', 'model': 'bridge', 'focus': 'deck'}}}]}
         llm.return_value.invoke.return_value = AIMessage(content=json.dumps(answer),

@@ -29,3 +29,7 @@ __all__ += ['SchematicVisualSerializer', 'AssemblyVisualSerializer']
 from .lesson_serializers import LessonDiscussionSerializer, LessonDiscussionReplySerializer
 
 from .lesson_serializers import LessonHandInputSerializer, LessonHandSerializer
+
+from .teaching_quality_serializers import TeachingReviewSerializer
+
+__all__ += ['TeachingReviewSerializer']

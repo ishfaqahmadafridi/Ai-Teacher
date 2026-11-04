@@ -8,7 +8,12 @@ from .diagram_fields import AnswerDiagramField
 from apps.classroom.constants.visuals import DIAGRAM_TYPES
 
 
+from apps.classroom.constants.teaching_quality import LESSON_MODES, TEACHING_STEPS, CONCEPT_ID_LENGTH
+
+
 class AnswerChunkSerializer(serializers.Serializer):
+    concept_id = serializers.CharField(required=False, max_length=CONCEPT_ID_LENGTH)
+    teaching_step = serializers.ChoiceField(choices=TEACHING_STEPS, required=False)
     curriculum_ids = serializers.ListField(
         child=serializers.CharField(max_length=CURRICULUM_ID_MAX_LENGTH),
         required=False, max_length=CURRICULUM_MAX_REQUIREMENTS,
@@ -29,6 +34,7 @@ class AnswerChunkSerializer(serializers.Serializer):
 
 
 class GeneratedAnswerSerializer(serializers.Serializer):
+    lesson_mode = serializers.ChoiceField(choices=LESSON_MODES, required=False)
     def validate(self, attrs):
         if any(chunk['diagram'].get('parameters') for chunk in attrs['chunks']):
             attrs['diagram_type'] = 'circuit'

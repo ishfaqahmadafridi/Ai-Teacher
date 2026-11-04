@@ -1,0 +1,106 @@
+{
+  "backend_tests": {
+    "passed": 327,
+    "failed": 0
+  },
+  "http_tests": "Authenticated publication and rejection tests included in backend suite; real database, mocked model replies.",
+  "latest_live_samples": [
+    {
+      "field": "Physics",
+      "passed": true,
+      "seconds": 23.36,
+      "tokens": 9601,
+      "quality": {
+        "attempts": 1,
+        "passed": true,
+        "tokens_used": 9601,
+        "checks": [
+          "request_fit",
+          "small_concepts",
+          "connections",
+          "subject_depth",
+          "examples",
+          "accuracy",
+          "visual_alignment",
+          "assessment"
+        ]
+      }
+    },
+    {
+      "field": "Medicine",
+      "passed": false,
+      "seconds": 37.52,
+      "error_type": "TeachingQualityError",
+      "reason": "Teaching response failed structural/content review after the bounded repair attempt.",
+      "quality": {
+        "attempts": 2,
+        "passed": false,
+        "tokens_used": 13702
+      }
+    }
+  ],
+  "initial_live_samples": [
+    {
+      "field": "Physics",
+      "passed": false,
+      "seconds": 34.6,
+      "error_type": "TeachingQualityError",
+      "reason": "Teaching response failed structural/content review after the bounded repair attempt.",
+      "quality": {
+        "attempts": 2,
+        "passed": false,
+        "tokens_used": 11542
+      }
+    },
+    {
+      "field": "Medicine",
+      "passed": false,
+      "seconds": 38.57,
+      "error_type": "TeachingQualityError",
+      "reason": "Teaching response failed structural/content review after the bounded repair attempt.",
+      "quality": {
+        "attempts": 2,
+        "passed": false,
+        "tokens_used": 12491
+      }
+    },
+    {
+      "field": "Biology",
+      "passed": false,
+      "seconds": 20.49,
+      "error_type": "HTTPStatusError",
+      "reason": "Provider/request unavailable",
+      "quality": {
+        "attempts": 1,
+        "passed": false,
+        "tokens_used": 6902
+      }
+    },
+    {
+      "field": "Mathematics",
+      "passed": false,
+      "seconds": 18.38,
+      "error_type": "HTTPStatusError",
+      "reason": "Provider/request unavailable",
+      "quality": {
+        "attempts": 1,
+        "passed": false,
+        "tokens_used": 6458
+      }
+    },
+    {
+      "field": "Computing",
+      "passed": false,
+      "seconds": 0.45,
+      "error_type": "HTTPStatusError",
+      "reason": "Provider/request unavailable",
+      "quality": null
+    }
+  ],
+  "limits": [
+    "Physics accepted by structural and separate model review; not independent expert certification.",
+    "Medical sample rejected after bounded attempts; subsequent diagnostic hit primary 429 and fallback 404.",
+    "No successful final live verification for biology, mathematics or computing.",
+    "No physical audio, clinical expert review, browser visual rendering or 1000-user load test in this follow-up."
+  ]
+}
