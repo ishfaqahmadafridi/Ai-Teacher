@@ -17,3 +17,6 @@ LESSON_EVALUATION_ACTIONS = {
     'misconception': 'reteach',
     'unclear': 'clarify',
 }
+
+DISCUSSION_WINDOW_SECONDS = research_budget('CLASSROOM_DISCUSSION_SECONDS', 30, maximum=120)
+DISCUSSION_MAX_TOKENS = research_budget('CLASSROOM_DISCUSSION_MAX_TOKENS', 768, maximum=2048)

@@ -1,0 +1,3 @@
+export const CLASSROOM_SESSION_TICK_MS = 1000;
+export const CLASSROOM_SESSION_REFRESH_MS = 60000;
+export const CLASSROOM_SESSION_QUERY_PARAM = 'session';

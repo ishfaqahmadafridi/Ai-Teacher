@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE_DIR = Path(os.environ.get('CLASSROOM_E2E_STATE_DIR', Path(tempfile.gettempdir()) / 'ai-teacher-e2e'))
@@ -60,9 +60,25 @@ def main():
         answer['chunks'][0]['diagram']['action'] = INJECTED_ACTION
         return answer
 
+    from langchain_core.messages import AIMessage
+    evaluator = Mock()
+    evaluator.bind.return_value.invoke.return_value = AIMessage(content=json.dumps({
+        'outcome': 'understood', 'next_action': 'continue',
+        'feedback': 'Correct: keep voltage fixed when comparing resistance and current.',
+        'missing_concepts': [],
+    }))
+
+    discussion_model = Mock()
+    discussion_model.bind.return_value.invoke.return_value = AIMessage(content=json.dumps({
+        'reply': 'At fixed voltage, doubling resistance halves current because current equals voltage divided by resistance.',
+    }))
+
     # Keep HTTP/auth/persistence real; replace external generation and dispatch.
     with (
         patch.object(lesson_jobs, 'generate_answer', generate),
+        patch('apps.classroom.services.lesson_evaluation.get_llm', return_value=evaluator),
+        patch('apps.classroom.services.lesson_discussion.get_llm', return_value=discussion_model),
+        patch('apps.classroom.services.lesson_discussion.provider_delay', return_value=0),
         patch('apps.classroom.services.lesson_provider_admission.provider_delay', return_value=0),
         patch.object(lesson_jobs, 'publish_lesson_job', lesson_jobs.run_lesson_job),
     ):

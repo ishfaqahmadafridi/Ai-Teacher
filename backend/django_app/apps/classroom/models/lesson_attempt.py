@@ -22,6 +22,7 @@ class LessonAttempt(models.Model):
 class LessonProgress(models.Model):
     note = models.OneToOneField(LectureNote, on_delete=models.CASCADE, related_name='progress')
     section_index = models.PositiveIntegerField(default=0)
+    hand_raised = models.BooleanField(default=False)
     waiting = models.BooleanField(default=False)
     revision = models.PositiveIntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)

@@ -11,12 +11,13 @@ import { saveLectureFigure } from '../services/lectureNotesService';
 export function useLectureFigureCapture() {
   const queryClient = useQueryClient();
   const noteId = useAppSelector(state => state.classroom.noteId);
+  const chunkCount = useAppSelector(state => state.classroom.chunks.length);
   const index = useAppSelector(state => state.classroom.currentChunkIndex);
   const type = useAppSelector(state => state.classroom.diagramType);
   const target = useAppSelector(state => state.classroom.currentCommand?.target);
   const visual = useAppSelector(state => state.classroom.currentCommand?.visual);
   useEffect(() => {
-    if (!noteId || index < 0 || (type === 'default' && !visual && !isImageUrl(target ?? ''))) return;
+    if (!noteId || index < 0 || index >= chunkCount || (type === 'default' && !visual && !isImageUrl(target ?? ''))) return;
     const controller = new AbortController();
     const frame = setTimeout(async () => {
       const canvas = document.querySelector<HTMLCanvasElement>('[data-lecture-diagram] canvas');
@@ -33,5 +34,5 @@ export function useLectureFigureCapture() {
       } catch { console.warn('The lecture diagram could not be captured.'); }
     }, LECTURE_FIGURE_CAPTURE_DELAY_MS);
     return () => { clearTimeout(frame); controller.abort(); };
-  }, [noteId, index, type, target, visual, queryClient]);
+  }, [noteId, index, chunkCount, type, target, visual, queryClient]);
 }

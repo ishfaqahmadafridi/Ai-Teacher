@@ -34,3 +34,5 @@ from .attendance_serializers import AttendanceReportSerializer, SessionJoinSeria
 from .course_outline_serializers import CourseOutlineSerializer, CourseOutlineResponseSerializer
 
 from .course_outline_draft import OutlineDraft, OutlineTopicDetail
+
+from .attendance_serializers import ClassroomSessionStatusSerializer

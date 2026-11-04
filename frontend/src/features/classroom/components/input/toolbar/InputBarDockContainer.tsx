@@ -7,15 +7,15 @@ import { RaiseHandButton } from './RaiseHandButton';
 import { QuestionTextInput } from './QuestionTextInput';
 import { VoiceMicButton } from './VoiceMicButton';
 import { SubmitAskButton } from './SubmitAskButton';
-import { ClassroomChatInboxPopover } from './ClassroomChatInboxPopover';
 import { DynamicEmojiReactionPopover } from '@/features/classroom/components/lazyComponents';
 
 export const InputBarDockContainer = memo(function InputBarDockContainer() {
   const {
     topic,
-    questionNotice,
     inputText,
     loading,
+    inputBlocked,
+    micBlocked,
     isListening,
     handRaised,
     showEmojiPicker,
@@ -29,8 +29,6 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
   } = useInputBarDockContainer();
 
   return (
-    <>
-    {questionNotice && <p role="status" className="px-2 text-xs text-dashboard-muted">{questionNotice}</p>}
     <div className="flex flex-wrap items-center justify-between gap-3 bg-dashboard-panel border border-dashboard-border rounded-2xl p-2.5 px-4 shadow-2xl backdrop-blur-xl transition-all">
       {/* 1. Left Section: Zoom Controls (Mic, Raise Hand, Reactions, Chat Inbox) */}
       <div className="flex flex-wrap items-center gap-2 min-w-0">
@@ -40,7 +38,6 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
           onTogglePicker={() => setShowEmojiPicker((prev) => !prev)}
           onSendReaction={handleSendReaction}
         />
-        <ClassroomChatInboxPopover />
       </div>
 
       {/* 2. Center Section: Prominent Integrated Ask AI Input Box */}
@@ -50,12 +47,12 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
           inputText={inputText}
           onChange={updateInputText}
           onKeyDown={handleKeyDown}
-          disabled={loading}
+          disabled={inputBlocked}
         />
-        <VoiceMicButton disabled={loading && !isListening} isListening={isListening} onMicClick={handleMicClick} />
+        <VoiceMicButton disabled={micBlocked && !isListening} isListening={isListening} onMicClick={handleMicClick} />
         <SubmitAskButton
           loading={loading}
-          disabled={loading || !inputText.trim()}
+          disabled={inputBlocked || !inputText.trim()}
           onSubmit={handleSubmit}
         />
       </div>
@@ -65,7 +62,6 @@ export const InputBarDockContainer = memo(function InputBarDockContainer() {
         <LeaveClassButton />
       </div>
     </div>
-    </>
   );
 });
 

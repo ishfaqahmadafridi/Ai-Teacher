@@ -49,6 +49,7 @@ export type ValidatedPhase = z.infer<typeof phaseSchema>;
 export type ValidatedDiagramCommand = z.infer<typeof diagramCommandSchema>;
 
 export const classroomChunkSchema = z.object({
+  discussion_prompt: z.string().min(1).max(2000).optional(),
   question: z.string().min(1).max(2000).optional(),
   expected_concepts: z.array(z.string()).max(10).optional(),
   speak: z.string(),

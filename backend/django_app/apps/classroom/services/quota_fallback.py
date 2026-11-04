@@ -28,13 +28,13 @@ class QuotaFallbackLLM:
     def bind(self, **kwargs):
         return QuotaFallbackLLM(self.primary.bind(**kwargs), self.api_key, self.temperature, {**self.options, **kwargs})
 
-    def invoke(self, messages):
+    def invoke(self, messages, **kwargs):
         try:
-            return self.primary.invoke(messages)
+            return self.primary.invoke(messages, **kwargs)
         except Exception as error:
             if not is_quota_error(error):
                 raise
-        return self.invoke_groq(messages)
+        return self.bind(**kwargs).invoke_groq(messages) if kwargs else self.invoke_groq(messages)
 
     def invoke_groq(self, messages):
         converted = convert_to_messages([('human', messages)] if isinstance(messages, str) else messages)

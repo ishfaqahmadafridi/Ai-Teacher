@@ -22,8 +22,6 @@ export { useTodayOutlinePanel } from './useTodayOutlinePanel';
 export { useInputBar } from './useInputBar';
 export { useInputBarToasts } from './useInputBarToasts';
 export { useInputBarDockContainer } from './useInputBarDockContainer';
-export { useInputBarPlayback } from './useInputBarPlayback';
-export { useClassroomChatInbox } from './useClassroomChatInbox';
 export { useChalkboardStage } from './useChalkboardStage';
 export { useClassroomStageArea } from './useClassroomStageArea';
 export { useSubtitleBar } from './useSubtitleBar';
@@ -55,7 +53,6 @@ export { useBoardFullscreen } from './useBoardFullscreen';
 
 export { useFullscreenInputDock } from './useFullscreenInputDock';
 
-export { usePlaybackSubtitles } from './usePlaybackSubtitles';
 export { useMobileClassroomSidebar } from './useMobileClassroomSidebar';
 
 export * from './useLeaveClass';
@@ -64,3 +61,17 @@ export { useLessonAnswerSubmission } from './useLessonAnswerSubmission';
 
 export { useAssemblyVisual } from './useAssemblyVisual';
 export { useSchematicVisual } from './useSchematicVisual';
+
+export * from './useScheduledClass';
+
+export * from './useRestoreLesson';
+
+export * from './useClassroomInteraction';
+
+export * from './useDiscussionWindow';
+
+export * from './useTeacherReplyAudio';
+
+export * from './useDiscussionSubmission';
+
+export { useRaisedHand } from './useRaisedHand';

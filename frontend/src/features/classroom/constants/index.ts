@@ -17,3 +17,7 @@ export * from './formulaConstants';
 export * from './conceptualVisualConstants';
 
 export * from './diagramConstants';
+
+export * from './sessionConstants';
+
+export * from './discussionConstants';

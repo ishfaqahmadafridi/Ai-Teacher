@@ -10,7 +10,7 @@ from apps.classroom.constants import (
 from apps.classroom.services import get_llm, extract_json, fallback_chunks, get_session
 from apps.classroom.services.session_service import append_session
 from apps.classroom.serializers import GeneratedAnswerSerializer
-from apps.classroom.services.teaching_messages import teaching_messages
+from apps.classroom.services.prompt_budget import budget_teaching_messages, model_prompt_limits, PromptBudgetExceeded
 
 logger = logging.getLogger(__name__)
 
@@ -59,10 +59,17 @@ def generate_answer(
             metadata.update(research_metadata)
             images = research_metadata.get("images", [])
             supplemental_context['research'] = {'sources': research_metadata['sources'], 'status': research_metadata['research_status']}
-        supplemental_context['image_catalog'] = image_catalog_prompt(images)
+        if images:
+            supplemental_context['image_catalog'] = image_catalog_prompt(images)
         history = get_session(session_id)
-        messages = teaching_messages(question, history, supplemental_context)
-        response = llm.invoke(messages)
+        context_limit, output_tokens = model_prompt_limits(llm)
+        messages, budget = budget_teaching_messages(question, history, supplemental_context,
+                                                   context_limit=context_limit, output_tokens=output_tokens)
+        metadata['prompt_budget'] = budget
+        logger.info('Teaching context estimated_input=%s cap=%s output=%s dropped_history=%s trimmed_references=%s',
+                    budget['estimated_input_tokens'], context_limit, output_tokens,
+                    budget['history_messages_dropped'], budget['references_trimmed'])
+        response = llm.invoke(messages, max_output_tokens=output_tokens)
         provider_metadata = response.response_metadata or {}
         if provider_metadata.get('classroom_provider'):
             metadata['provider'] = provider_metadata['classroom_provider']
@@ -88,10 +95,16 @@ def generate_answer(
                 {"role": "assistant", "content": json.dumps(parsed)},
             ])
         usage = response.usage_metadata or {}
+        metadata['prompt_budget']['provider_input_tokens'] = usage.get('input_tokens')
+        metadata['prompt_budget']['provider_output_tokens'] = usage.get('output_tokens')
         return {
             **parsed, "tokens_used": usage.get("total_tokens", 0) + metadata.get("curriculum_review_tokens", 0) + metadata["visual_selection_tokens"] + metadata["visual_planning_tokens"],
             "model_info": metadata,
         }
+    except PromptBudgetExceeded:
+        metadata['context_budget_exceeded'] = True
+        logger.warning('Classroom context exceeded configured budget; provider generation/review stopped')
+        return {**fallback_chunks(question), "tokens_used": 0, "model_info": metadata}
     except Exception:
         logger.exception("Classroom answer generation failed")
         return {**fallback_chunks(question), "tokens_used": 0, "model_info": metadata}

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect, useLayoutEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/useAppStore';
 import {
   setIsListening,
@@ -7,48 +7,41 @@ import {
   setInputText,
 } from '@/features/classroom/state/classroomSlice';
 
-// Minimal inline types for cross-browser SpeechRecognition
-interface ISpeechRecognition extends EventTarget {
-  lang: string;
-  interimResults: boolean;
-  maxAlternatives: number;
-  start(): void;
-  stop(): void;
-  onstart: ((this: ISpeechRecognition, ev: Event) => void) | null;
-  onend: ((this: ISpeechRecognition, ev: Event) => void) | null;
-  onerror: ((this: ISpeechRecognition, ev: Event & { error: string }) => void) | null;
-  onresult: ((this: ISpeechRecognition, ev: { results: { [k: number]: { [k: number]: { transcript: string } } } }) => void) | null;
-}
-
-interface ISpeechRecognitionConstructor {
-  new (): ISpeechRecognition;
-}
-
-declare global {
-  interface Window {
-    SpeechRecognition?: ISpeechRecognitionConstructor;
-    webkitSpeechRecognition?: ISpeechRecognitionConstructor;
-  }
-}
+import type { ISpeechRecognition } from '../types/voiceInput.types';
+import { useClassroomInteraction } from './useClassroomInteraction';
 
 export function useVoiceInput() {
   const dispatch = useAppDispatch();
   const isListening = useAppSelector((s) => s.classroom.isListening);
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
-  useEffect(() => () => {
+  const { questionTurn, questionKey } = useClassroomInteraction();
+  const allowedRef = useRef(questionTurn);
+
+  const stopListening = useCallback(() => {
     const recognition = recognitionRef.current;
+    recognitionRef.current = null;
     if (recognition) {
       recognition.onresult = null;
       recognition.onend = null;
       recognition.onerror = null;
       recognition.onstart = null;
-      recognition.stop();
+      try { recognition.stop(); } catch { /* The browser may already have stopped it. */ }
     }
     dispatch(setIsListening(false));
   }, [dispatch]);
 
+  useLayoutEffect(() => {
+    allowedRef.current = questionTurn;
+    stopListening();
+  }, [questionTurn, questionKey, stopListening]);
+  useEffect(() => () => {
+    allowedRef.current = false;
+    stopListening();
+  }, [stopListening]);
+
   const startListening = useCallback(() => {
+    if (!allowedRef.current) return;
     const SpeechRecognitionAPI =
       window.SpeechRecognition ?? window.webkitSpeechRecognition;
 
@@ -57,7 +50,7 @@ export function useVoiceInput() {
       return;
     }
 
-    recognitionRef.current?.stop();
+    stopListening();
     dispatch(setVoiceError(null));
     const recognition = new SpeechRecognitionAPI();
     recognition.lang = 'en-US';
@@ -65,29 +58,33 @@ export function useVoiceInput() {
     recognition.maxAlternatives = 1;
     recognitionRef.current = recognition;
 
-    recognition.onstart = () => dispatch(setIsListening(true));
-    recognition.onend = () => dispatch(setIsListening(false));
+    const current = () => allowedRef.current && recognitionRef.current === recognition;
+    recognition.onstart = () => {
+      if (current()) dispatch(setIsListening(true));
+    };
+    recognition.onend = () => {
+      if (recognitionRef.current !== recognition) return;
+      recognitionRef.current = null;
+      dispatch(setIsListening(false));
+    };
     recognition.onerror = (e) => {
+      if (!current()) return;
       dispatch(setIsListening(false));
       dispatch(setVoiceError(`Voice error: ${e.error}`));
     };
     recognition.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      dispatch(setInputText(transcript));
+      if (!current()) return;
+      const transcript = e.results[0]?.[0]?.transcript;
+      if (typeof transcript === 'string') dispatch(setInputText(transcript));
     };
 
     try {
       recognition.start();
     } catch {
-      dispatch(setIsListening(false));
+      stopListening();
       dispatch(setVoiceError('Unable to start the microphone. Check browser permissions and try again.'));
     }
-  }, [dispatch]);
-
-  const stopListening = useCallback(() => {
-    recognitionRef.current?.stop();
-    dispatch(setIsListening(false));
-  }, [dispatch]);
+  }, [dispatch, stopListening]);
 
   return { isListening, startListening, stopListening };
 }

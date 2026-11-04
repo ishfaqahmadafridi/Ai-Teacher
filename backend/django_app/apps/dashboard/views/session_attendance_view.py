@@ -3,12 +3,17 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..serializers.attendance_serializers import SessionJoinSerializer
+from ..serializers.attendance_serializers import SessionJoinSerializer, ClassroomSessionStatusSerializer
+from ..services.classroom_session_status import classroom_session_status
 from ..services.session_join_service import join_session
 
 
 class SessionJoinView(APIView):
     permission_classes = [IsAuthenticated]
+
+    @extend_schema(summary="Read the admitted class occurrence and its server-clock window", tags=["dashboard"], responses=ClassroomSessionStatusSerializer)
+    def get(self, request, session_id):
+        return Response(ClassroomSessionStatusSerializer(classroom_session_status(request.user, session_id)).data)
 
     @extend_schema(summary="Join an owned class from 3 minutes early through 10 minutes after start", tags=["dashboard"], request=None, responses=SessionJoinSerializer)
     def post(self, request, session_id):

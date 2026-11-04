@@ -14,6 +14,7 @@ class AnswerChunkSerializer(serializers.Serializer):
         required=False, max_length=CURRICULUM_MAX_REQUIREMENTS,
     )
 
+    discussion_prompt = serializers.CharField(required=False, max_length=LESSON_TEXT_MAX_LENGTH)
     question = serializers.CharField(required=False, max_length=LESSON_TEXT_MAX_LENGTH)
     expected_concepts = serializers.ListField(
         child=serializers.CharField(max_length=LESSON_CONCEPT_MAX_LENGTH),
@@ -38,6 +39,8 @@ class GeneratedAnswerSerializer(serializers.Serializer):
 
     def validate_chunks(self, chunks):
         for chunk in chunks:
+            if chunk.get('discussion_prompt') and (chunk.get('question') or chunk.get('expected_concepts')):
+                raise serializers.ValidationError('Discussion invitations cannot contain graded assessment fields.')
             if chunk.get('question') and not chunk.get('expected_concepts'):
                 raise serializers.ValidationError('Understanding checks require expected concepts.')
             if chunk.get('expected_concepts') and not chunk.get('question'):

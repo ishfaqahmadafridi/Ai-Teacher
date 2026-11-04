@@ -26,5 +26,3 @@ export const DEFAULT_LECTURE_NOTES: LectureNoteItem[] = [];
 export const DEFAULT_ATTENDANCE_SUMMARY: AttendanceSummary = { total: 0, present: 0, absent: 0 };
 
 export const DEFAULT_STUDENTS: StudentRecord[] = [];
-
-export const DEFAULT_CHAT_MESSAGES: import('../types/input.types').ChatMessage[] = [];

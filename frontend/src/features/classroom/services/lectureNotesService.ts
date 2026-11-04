@@ -1,7 +1,14 @@
+import { DISCUSSION_REQUEST_TIMEOUT_MS } from '../constants/discussionConstants';
 import { apiClient } from '@/lib/api';
-import { lessonAttemptSchema, lessonEvaluationSchema } from '../validators/lesson.schema';
+import { lessonAttemptSchema, lessonEvaluationSchema, discussionReplySchema } from '../validators/lesson.schema';
 import { savedLectureNoteSchema, savedLectureNotesSchema } from '../validators/notes.schema';
 export const lectureNotesService = {
+  async discuss(id: string, sectionIndex: number, question: string, requestId: string, signal: AbortSignal) {
+    const response = await apiClient.post(`/api/notes/${id}/discussion/`, {
+      section_index: sectionIndex, question, request_id: requestId,
+    }, { signal, timeout: DISCUSSION_REQUEST_TIMEOUT_MS });
+    return discussionReplySchema.parse(response.data);
+  },
   async answer(id: string, sectionIndex: number, answer: string, requestId: string, signal?: AbortSignal) {
     const response = await apiClient.post(`/api/notes/${id}/answers/`, {
       section_index: sectionIndex, answer, request_id: requestId,

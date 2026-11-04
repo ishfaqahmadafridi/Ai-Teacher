@@ -4,6 +4,3 @@ export { EmojiReactionPopover } from './EmojiReactionPopover';
 export { QuestionTextInput } from './QuestionTextInput';
 export { VoiceMicButton } from './VoiceMicButton';
 export { SubmitAskButton } from './SubmitAskButton';
-export { PlaybackControlsRow } from './PlaybackControlsRow';
-export { InputBarPlaybackRow } from './InputBarPlaybackRow';
-export { ClassroomChatInboxPopover } from './ClassroomChatInboxPopover';

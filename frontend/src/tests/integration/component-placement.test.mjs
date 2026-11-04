@@ -36,15 +36,17 @@ test('mobile sidebar hook preserves Escape, topic selection, question callbacks 
   assert.equal(removed, true);
 });
 
-test('playback subtitle hook reads the store and dispatches the existing toggle action', () => {
+test('in-lecture captions retain their existing close action without the CC toolbar', () => {
   const actions = [];
-  const { usePlaybackSubtitles } = load('features/classroom/hooks/usePlaybackSubtitles.ts', {
-    react: { useCallback: callback => callback },
-    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action), useAppSelector: selector => selector({ classroom: { showSubtitles: true } }) },
-    '../state/classroomSlice': { toggleSubtitles: () => ({ type: 'toggleSubtitles' }) },
+  const { useSubtitleBar } = load('features/classroom/hooks/useSubtitleBar.ts', {
+    react: { useEffect() {}, useRef: value => ({ current: value }) },
+    '@/hooks/useAppStore': { useAppDispatch: () => action => actions.push(action), useAppSelector: selector => selector({
+      classroom: { showSubtitles: true, isPlaying: true, spokenText: 'Concept explanation', currentChunkIndex: 0 },
+    }) },
+    '@/features/classroom/state/classroomSlice': { toggleSubtitles: () => ({ type: 'toggleSubtitles' }) },
   });
-  const playback = usePlaybackSubtitles();
-  assert.equal(playback.showSubtitles, true);
-  playback.onToggleSubtitles();
+  const captions = useSubtitleBar();
+  assert.equal(captions.isVisible, true);
+  captions.hideSubtitles();
   assert.deepEqual(actions, [{ type: 'toggleSubtitles' }]);
 });

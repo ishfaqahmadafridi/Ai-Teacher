@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.db import models, transaction
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, ValidationError
 from apps.classroom.models.lesson_attempt import LessonAttempt, LessonProgress
 from apps.classroom.services.llm_service import get_llm, extract_json
 from apps.classroom.prompts.lesson_evaluation import LESSON_EVALUATION_PROMPT
@@ -30,6 +30,8 @@ def evaluate_owned_attempt(user, note_id, attempt_id):
 def evaluate_attempt(attempt):
     with transaction.atomic():
         item = LessonAttempt.objects.select_for_update().get(pk=attempt.pk)
+        if not item.note.answer['chunks'][item.section_index].get('question'):
+            raise ValidationError('This response is not a graded understanding check.')
         if item.evaluation:
             return item
         lease = timezone.now()

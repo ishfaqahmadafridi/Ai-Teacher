@@ -25,3 +25,7 @@ __all__ += ['AnswerChunkSerializer', 'AnswerDiagramField']
 
 from .conceptual_visual_serializers import SchematicVisualSerializer, AssemblyVisualSerializer
 __all__ += ['SchematicVisualSerializer', 'AssemblyVisualSerializer']
+
+from .lesson_serializers import LessonDiscussionSerializer, LessonDiscussionReplySerializer
+
+from .lesson_serializers import LessonHandInputSerializer, LessonHandSerializer

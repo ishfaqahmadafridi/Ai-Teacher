@@ -28,3 +28,6 @@ from .session_join_service import join_session
 from .manual_timetable_service import add_timetable_slot
 
 from .course_outline_service import read_course_outline, save_course_outline, generate_course_outline
+
+from .classroom_session_status import classroom_session_status
+__all__ += ['classroom_session_status']

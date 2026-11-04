@@ -30,3 +30,13 @@ class SessionJoinSerializer(serializers.Serializer):
     sessionId = serializers.UUIDField()
     sessionDate = serializers.DateField()
     attendance = serializers.ChoiceField(choices=["attended"])
+
+
+class ClassroomSessionStatusSerializer(serializers.Serializer):
+    sessionId = serializers.UUIDField()
+    startsAt = serializers.DateTimeField()
+    endsAt = serializers.DateTimeField()
+    serverNow = serializers.DateTimeField()
+    courseTitle = serializers.CharField(allow_blank=True)
+    lessonTitle = serializers.CharField(allow_blank=True)
+    noteId = serializers.UUIDField(allow_null=True)

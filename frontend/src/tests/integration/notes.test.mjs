@@ -53,7 +53,7 @@ test(`diagram capture for ${diagramType} cancels pending work and aborts its req
   let cleanup;
   let canceled = false;
   let aborted = false;
-  const state = { classroom: { noteId: note.id, currentChunkIndex: 0, diagramType, currentCommand: { visual: { kind: 'assembly', model: 'bridge' } } } };
+  const state = { classroom: { chunks: [{ speak: 'Step' }], noteId: note.id, currentChunkIndex: 0, diagramType, currentCommand: { visual: { kind: 'assembly', model: 'bridge' } } } };
   const { useLectureFigureCapture } = load('features/classroom/hooks/useLectureFigureCapture.ts', {
     '@tanstack/react-query': { useQueryClient: () => ({}) },
     react: { useEffect: effect => { cleanup = effect(); } },

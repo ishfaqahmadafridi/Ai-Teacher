@@ -11,3 +11,7 @@ __all__ = ['AskView', 'ClearSessionView', 'HealthView']
 from .note_views import NotesView, NoteTranslationView, NoteDocumentView, NoteFigureView
 
 from .lesson_audio_view import LessonAudioView
+
+from .lesson_discussion_view import LessonDiscussionView
+
+from .lesson_hand_view import LessonHandView
