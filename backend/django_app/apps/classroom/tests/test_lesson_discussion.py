@@ -2,7 +2,7 @@
 import uuid
 from datetime import timedelta
 from unittest.mock import Mock, patch
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
@@ -109,3 +109,21 @@ class LessonDiscussionTests(TestCase):
         self.assertEqual(self.client.post(self.url, self.payload).status_code, 503)
         provider.assert_not_called()
         self.assertIsNone(LessonAttempt.objects.get().evaluating_since)
+
+
+class DiscussionConceptTests(SimpleTestCase):
+    """The Q&A reply model receives spoken text only, never a nearby check's answer key."""
+
+    def test_concept_is_spoken_text_without_answer_keys_or_visuals(self):
+        from apps.classroom.services.lesson_discussion import discussion_concept
+        chunks = [{'speak': 'Ohm law links V, I and R.', 'diagram': {'action': 'none'}},
+                  {'speak': 'What happens if R doubles?', 'question': 'What happens if R doubles?',
+                   'expected_concepts': ['Current halves'], 'diagram': {'action': 'none'}},
+                  {'speak': 'Any questions?', 'discussion_prompt': 'Any questions?'}]
+        concept = discussion_concept(chunks, 2)
+        self.assertEqual(concept, ['Ohm law links V, I and R.', 'What happens if R doubles?'])
+        self.assertNotIn('Current halves', str(concept))
+
+    def test_first_section_has_no_previous_concept(self):
+        from apps.classroom.services.lesson_discussion import discussion_concept
+        self.assertEqual(discussion_concept([{'speak': 'Any questions?'}], 0), [])

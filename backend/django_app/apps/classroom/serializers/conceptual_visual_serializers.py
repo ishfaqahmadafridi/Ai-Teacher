@@ -2,7 +2,7 @@
 import math
 from rest_framework import serializers
 from apps.classroom.constants.visuals import (
-    ASSEMBLY_PARTS, MOLECULE_ATOM_COUNTS, SCHEMATIC_MAX_NODES,
+    ANATOMY_PARTS, ASSEMBLY_PARTS, MOLECULE_ATOM_COUNTS, SCHEMATIC_MAX_NODES,
     SCHEMATIC_MAX_EDGES, VISUAL_ID_LENGTH, VISUAL_LABEL_LENGTH, VISUAL_NO_FOCUS,
 )
 
@@ -70,3 +70,12 @@ class AssemblyVisualSerializer(serializers.Serializer):
         elif 'molecule' in attrs:
             raise serializers.ValidationError('Molecule parameters require the molecule builder.')
         return _validate_focus(attrs, parts)
+
+
+class AnatomyVisualSerializer(serializers.Serializer):
+    kind = serializers.ChoiceField(choices=('anatomy',))
+    model = serializers.ChoiceField(choices=tuple(ANATOMY_PARTS))
+    focus = serializers.CharField(max_length=VISUAL_ID_LENGTH, required=False)
+
+    def validate(self, attrs):
+        return _validate_focus(attrs, ANATOMY_PARTS[attrs['model']])

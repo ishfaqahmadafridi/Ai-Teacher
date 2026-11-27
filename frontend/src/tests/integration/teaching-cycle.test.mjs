@@ -35,7 +35,7 @@ function answerHarness(nextAction, evaluationError = false, waiting = true, play
     '@/features/classroom/state/classroomSlice': new Proxy({}, { get: (_, type) => payload => ({ type, payload }) }),
     './useRaisedHand': { useRaisedHand: () => ({ handRaised: false, handleToggleHand() {} }) },
     './useVoiceInput': { useVoiceInput: () => ({ stopListening() {} }) },
-    './useChunkPlayer': { useChunkPlayer: () => ({ stop() {}, playFrom: index => played.push(index) }) },
+    './useChunkPlayer': { useChunkPlayer: () => ({ stop() {}, playFrom: index => played.push(index), playReply: async text => played.push(text) }) },
     './useClassroomApi': { useClassroomApi: () => ({ sendQuestion() { throw Error('An answer must not become a new lesson.'); } }) },
     '../services/lectureNotesService': { lectureNotesService: {
       answer: async (...args) => { calls.push(args); return { id: 'attempt' }; },
@@ -48,6 +48,14 @@ function answerHarness(nextAction, evaluationError = false, waiting = true, play
   // eslint-disable-next-line react-hooks/rules-of-hooks -- isolated state harness
   return { bar: useInputBar(), classroom, actions, played, calls };
 }
+
+test('a student doubt during a check is answered aloud and the check stays open', async () => {
+  const h = answerHarness('answer_question');
+  await h.bar.handleSubmit();
+  assert.equal(h.actions.find(item => item.type === 'setPendingQuestion').payload.question, 'Try it');
+  assert.equal(h.actions.find(item => item.type === 'setCurrentChunkIndex').payload, 0);
+  assert.deepEqual(h.played, ['Specific feedback']);
+});
 
 for (const action of ['continue', 'reteach', 'clarify']) {
   test(`checkpoint handles ${action} without discarding the lesson`, async () => {
@@ -172,10 +180,11 @@ test('failed answer submission does not request grading', async () => {
 
 test('frontend feedback validation agrees with the backend outcome/action contract', () => {
   const { lessonEvaluationSchema } = load('features/classroom/validators/lesson.schema.ts');
-  for (const [outcome, next_action] of [['understood', 'continue'], ['misconception', 'reteach'], ['unclear', 'clarify']]) {
+  for (const [outcome, next_action] of [['understood', 'continue'], ['misconception', 'reteach'], ['unclear', 'clarify'], ['student_question', 'answer_question']]) {
     assert.equal(lessonEvaluationSchema.safeParse({ outcome, next_action, feedback: 'Explanation', missing_concepts: [] }).success, true);
   }
   assert.equal(lessonEvaluationSchema.safeParse({ outcome: 'misconception', next_action: 'continue', feedback: 'Explanation', missing_concepts: [] }).success, false);
+  assert.equal(lessonEvaluationSchema.safeParse({ outcome: 'student_question', next_action: 'answer_question', feedback: 'Explanation', missing_concepts: ['gap'] }).success, false);
 });
 
 

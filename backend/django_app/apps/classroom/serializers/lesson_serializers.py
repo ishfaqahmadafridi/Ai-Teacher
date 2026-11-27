@@ -5,7 +5,7 @@ from django.utils import timezone
 from apps.classroom.constants.lesson import DISCUSSION_WINDOW_SECONDS
 from apps.classroom.constants.lesson import (
     LESSON_TEXT_MAX_LENGTH, LESSON_FEEDBACK_MAX_LENGTH,
-    LESSON_CONCEPT_MAX_LENGTH, LESSON_MAX_CONCEPTS, LESSON_EVALUATION_ACTIONS,
+    LESSON_CONCEPT_MAX_LENGTH, LESSON_MAX_CONCEPTS, LESSON_EVALUATION_ACTIONS, LESSON_OUTCOMES_WITHOUT_GAPS,
 )
 from .answer_serializers import GeneratedAnswerSerializer
 
@@ -25,6 +25,11 @@ class LessonDiscussionSerializer(LessonSectionRequestSerializer):
 
 class LessonDiscussionReplySerializer(serializers.Serializer):
     id = serializers.UUIDField()
+    reply = serializers.CharField(max_length=LESSON_FEEDBACK_MAX_LENGTH)
+
+
+class DoubtReplySerializer(serializers.Serializer):
+    """Model output contract for a doubt explained during a pending check."""
     reply = serializers.CharField(max_length=LESSON_FEEDBACK_MAX_LENGTH)
 
 
@@ -77,8 +82,8 @@ class LessonEvaluationSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs['next_action'] != LESSON_EVALUATION_ACTIONS[attrs['outcome']]:
             raise serializers.ValidationError('Outcome and next action disagree.')
-        if attrs['outcome'] == 'understood' and attrs['missing_concepts']:
-            raise serializers.ValidationError('An understood answer cannot have missing concepts.')
+        if attrs['outcome'] in LESSON_OUTCOMES_WITHOUT_GAPS and attrs['missing_concepts']:
+            raise serializers.ValidationError('This outcome cannot list missing concepts.')
         return attrs
 
 

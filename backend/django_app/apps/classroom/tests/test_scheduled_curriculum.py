@@ -13,6 +13,7 @@ from apps.classroom.models.lesson_job import LessonJob
 from apps.classroom.services.lesson_jobs import submit_lesson_job, run_lesson_job
 from apps.classroom.services.curriculum_coverage import CurriculumCoverageError, validate_curriculum_coverage, review_curriculum_coverage
 from apps.classroom.inference.pipeline import generate_answer
+from apps.classroom.tests.lecture_note_fixtures import compact_lesson_depth
 
 
 class ScheduledCurriculumTests(TestCase):
@@ -91,6 +92,7 @@ class ScheduledCurriculumTests(TestCase):
         self.assertEqual(followup.status, 'ready')
 
 
+@compact_lesson_depth()
 class CurriculumCoverageTests(SimpleTestCase):
     def setUp(self):
         self.context = dict(session_id=str(uuid4()), requirements=[dict(id='concept-0', kind='concept', label='Roots')])

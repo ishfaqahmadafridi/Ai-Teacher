@@ -11,11 +11,16 @@ class LectureNote(models.Model):
     session_id = models.CharField(max_length=128)
     version = models.CharField(max_length=64)
     answer = models.JSONField()
+    # Course memory: links a scheduled class to its course so previous classes are recalled
+    # per course only (maths memory never reaches a physics class). Empty for ad-hoc lessons.
+    course_key = models.CharField(max_length=255, blank=True, default='')
+    scheduled_session_id = models.CharField(max_length=64, blank=True, default='')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['user', 'session_id', 'version'], name='unique_lecture_note_version')]
-        indexes = [models.Index(fields=['user', 'session_id', '-created_at'])]
+        indexes = [models.Index(fields=['user', 'session_id', '-created_at']),
+                   models.Index(fields=['user', 'course_key', '-created_at'])]
 
 
 class NoteTranslation(models.Model):

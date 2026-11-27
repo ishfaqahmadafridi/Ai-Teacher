@@ -1,66 +1,40 @@
-import { memo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
-import { Sphere, Line, Text } from '@react-three/drei';
-import * as THREE from 'three';
+import { memo } from 'react';
+import { Sphere, Line } from '@react-three/drei';
+import { FREE_FALL, GRAVITY_LOOK as look, SCENE_COLORS } from '../../../constants/physicsSceneConstants';
+import { useGravityScene } from '../../../hooks/useGravityScene';
 import type { GravitySceneProps } from '../../../types/board.types';
+import { DiagramLabel } from './DiagramLabel';
+import { SceneTitle } from './SceneTitle';
+
+const { startY, groundY } = FREE_FALL;
 
 export const GravityScene = memo(function GravityScene({ command }: GravitySceneProps) {
-  const ballRef = useRef<THREE.Mesh>(null);
-  const t = useRef(0);
-  const speed = command?.speed === 'fast' ? 1.5 : command?.speed === 'slow' ? 0.5 : 1;
-
-  useFrame((_, dt) => {
-    if (!ballRef.current) return;
-    t.current += dt * speed;
-    // Simulate free-fall: y = -½gt² (looped every 2.5s)
-    const cycle = t.current % 2.5;
-    const y = 2.5 - 0.5 * 9.8 * cycle * cycle * 0.1;
-    ballRef.current.position.y = Math.max(-2.2, y);
-    if (ballRef.current.position.y <= -2.2) t.current = 0;
-  });
-
-  // Trajectory dotted line
-  const trailPoints: [number, number, number][] = Array.from({ length: 20 }, (_, i) => [
-    0,
-    2.5 - i * 0.24,
-    0,
-  ]);
+  const { ballRef, trailPoints, arrowArgs } = useGravityScene(command);
 
   return (
     <group>
       {/* Dotted trail */}
-      <Line points={trailPoints} color="#475569" lineWidth={1} dashed dashSize={0.15} gapSize={0.1} />
+      <Line points={trailPoints} color={SCENE_COLORS.axis} lineWidth={1} dashed dashSize={0.15} gapSize={0.1} />
 
       {/* Falling ball */}
-      <Sphere ref={ballRef} args={[0.28, 32, 32]} position={[0, 2.5, 0]}>
-        <meshStandardMaterial color="#7c3aed" roughness={0.3} metalness={0.5} />
+      <Sphere ref={ballRef} args={look.ball.args} position={[0, startY, 0]}>
+        <meshStandardMaterial color={look.ball.color} roughness={look.ball.roughness} metalness={look.ball.metalness} />
       </Sphere>
 
       {/* Ground */}
-      <Line points={[[-3, -2.2, 0], [3, -2.2, 0]]} color="#334155" lineWidth={2} />
+      <Line points={[[-look.groundHalfWidth, groundY, 0], [look.groundHalfWidth, groundY, 0]]} color={SCENE_COLORS.ground} lineWidth={2} />
 
       {/* Labels */}
-      <Text position={[0.6, 2.5, 0]} fontSize={0.22} color="#a78bfa" anchorX="left">
+      <DiagramLabel position={[look.ballLabel.offsetX, startY, 0]} fontSize={look.ballLabel.fontSize} color={look.ballLabel.color} anchorX="left">
         Ball
-      </Text>
-      <Text position={[-2.5, -2.5, 0]} fontSize={0.2} color="#64748b" anchorX="left">
+      </DiagramLabel>
+      <DiagramLabel position={look.groundLabel.position} fontSize={look.groundLabel.fontSize} color={SCENE_COLORS.muted} anchorX="left">
         Ground
-      </Text>
-      <Text position={[0, -3.2, 0]} fontSize={0.24} color="#94a3b8" anchorX="center">
-        Free Fall — F = mg
-      </Text>
+      </DiagramLabel>
+      <SceneTitle fontSize={FREE_FALL.titleFontSize}>Free Fall — F = mg</SceneTitle>
 
       {/* Gravity arrow */}
-      <arrowHelper
-        args={[
-          new THREE.Vector3(0, -1, 0),
-          new THREE.Vector3(0, 1, 0),
-          1.2,
-          0xf59e0b,
-          0.2,
-          0.12,
-        ]}
-      />
+      <arrowHelper args={arrowArgs} />
     </group>
   );
 });

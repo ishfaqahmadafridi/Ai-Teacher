@@ -14,6 +14,8 @@ from apps.classroom.models.lesson_job import LessonJob, LessonQueueGate, LessonJ
 from apps.classroom.services.lecture_notes import account_session_id, save_lecture_note
 from apps.classroom.services.session_service import get_session, append_session
 from apps.classroom.inference.pipeline import generate_answer
+from apps.classroom.constants.lesson import SERVER_SUPPLIED_INPUTS
+from apps.classroom.services.lesson_metrics_log import log_lesson_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +34,7 @@ def submit_lesson_job(user, request_id, inputs):
         submission = LessonJobSubmission.objects.select_related('job').filter(user=user, request_id=request_id).first()
         existing = submission.job if submission else LessonJob.objects.filter(user=user, request_id=request_id).first()
         if existing:
-            original = {key: value for key, value in existing.inputs.items() if key not in ('student_context', 'curriculum')}
+            original = {key: value for key, value in existing.inputs.items() if key not in SERVER_SUPPLIED_INPUTS}
             if original != inputs:
                 raise ValidationError('This request ID belongs to a different question.')
             return existing
@@ -41,6 +43,8 @@ def submit_lesson_job(user, request_id, inputs):
         if inputs.get('scheduled_session_id'):
             from apps.dashboard.services.scheduled_curriculum import scheduled_curriculum
             inputs['curriculum'] = scheduled_curriculum(user, inputs['scheduled_session_id'])
+            from .course_memory import previous_classes
+            inputs['course_memory'] = previous_classes(user, inputs['curriculum']['course'], inputs['scheduled_session_id'])
         private_session = account_session_id(user, inputs['session_id'])
         fingerprint = hashlib.sha256(json.dumps({'inputs': inputs, 'history': get_session(private_session)}, sort_keys=True).encode()).hexdigest()
         existing = LessonJob.objects.filter(user=user, flight_key=fingerprint, status__in=['queued', 'processing']).first()
@@ -120,13 +124,16 @@ def run_lesson_job(job_id):
                 return
             gate.failures, gate.breaker_until = 0, None
             gate.save(update_fields=['failures', 'breaker_until'])
-            note = save_lecture_note(job.user, job.inputs['session_id'], result)
+            note = save_lecture_note(job.user, job.inputs['session_id'], result,
+                                     course_label=(curriculum or {}).get('course', ''),
+                                     scheduled_session_id=job.inputs.get('scheduled_session_id', ''))
             append_session(account_session_id(job.user, job.inputs['session_id']), [
                 {'role': 'user', 'content': job.inputs['question']},
                 {'role': 'assistant', 'content': json.dumps(note.answer)},
             ])
             result.setdefault('model_info', {})['note_id'] = str(note.pk)
-            logger.info('Lesson job=%s tokens_used=%s', job_id, result.get('tokens_used', 0))
+            log_lesson_metrics(job_id, result, (timezone.now() - started).total_seconds(),
+                               (started - job.created_at).total_seconds())
             current.update(status='ready', result=result, error='', updated_at=timezone.now())
     except Exception:
         with transaction.Atomic(using=None, savepoint=True, durable=False):

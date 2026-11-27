@@ -2,12 +2,12 @@
 import logging
 from rest_framework.exceptions import ValidationError
 from apps.classroom.constants.teaching_quality import (
-    QUALITY_CHECKS, QUALITY_ATTEMPTS, QUALITY_REPAIR_FEEDBACK_LENGTH,
+    QUALITY_CHECKS, QUALITY_ATTEMPTS, QUALITY_REPAIR_FEEDBACK_LENGTH, QUALITY_LOG_REASON_LENGTH,
 )
 from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 from apps.classroom.services.llm_service import extract_json
 from apps.classroom.services.prompt_budget import budget_teaching_messages, PromptBudgetExceeded
-from apps.classroom.services.teaching_structure import TeachingQualityError, validate_teaching_structure
+from apps.classroom.services.teaching_structure import TeachingQualityError, validate_teaching_structure, validate_lesson_depth
 from apps.classroom.services.teaching_review import review_teaching_quality
 from apps.classroom.utilities.teaching_metadata import normalize_teaching_metadata
 from apps.classroom.utilities.serializer_data import validated_mapping
@@ -38,6 +38,7 @@ def generate_reviewed_teaching(llm, question, history, context, context_limit, o
             serializer.is_valid(raise_exception=True)
             answer = normalize_teaching_metadata(validated_mapping(serializer.validated_data))
             validate_teaching_structure(answer, curriculum, require_full_coverage)
+            validate_lesson_depth(answer)
             issues, _ = review_teaching_quality(llm, question, history[budget['history_messages_dropped']:], inputs, answer, usage_ledger=usage_ledger)
             if issues:
                 raise TeachingQualityError('\n'.join(issues))
@@ -50,5 +51,6 @@ def generate_reviewed_teaching(llm, question, history, context, context_limit, o
             # Only bounded diagnostic data is added to the next human reference context.
             # No failed draft is saved as conversation history or appended as a lesson.
             feedback = str(error)[:QUALITY_REPAIR_FEEDBACK_LENGTH]
+            logger.warning('Teaching draft rejected attempt=%s reason=%s', attempt + 1, feedback[:QUALITY_LOG_REASON_LENGTH])
     metadata['teaching_quality']['tokens_used'] = total_tokens + usage_ledger['review_tokens']
     raise TeachingQualityError('Teaching response failed structural/content review after the bounded repair attempt.')

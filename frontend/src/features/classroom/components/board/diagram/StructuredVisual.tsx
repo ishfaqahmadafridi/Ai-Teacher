@@ -2,12 +2,22 @@
 import { memo } from 'react';
 import type { LegacyVisualProps } from '../../../types/visual.types';
 import { visualGeometry } from '../../../utilities/structuredVisual';
+import {
+  CONCEPTUAL_COLORS as colors, STRUCTURED_COLORS as palette, STRUCTURED_LABELS, STRUCTURED_LAYOUT as layout,
+} from '../../../constants/conceptualVisualConstants';
+
+const { tick, tree, fontSize } = layout;
+
 export const StructuredVisual = memo(function StructuredVisual({ visual }: LegacyVisualProps) {
   const geometry = visualGeometry(visual);
-  return <svg data-lecture-svg viewBox="0 0 600 380" className="w-full h-full" role="img" aria-label={visual.kind === 'tree' ? 'Lesson tree diagram' : 'Polynomial graph'}>
-    {visual.kind === 'polynomial' ? <><path d={`M40,${geometry.axisY} H560 ${geometry.axisX === null ? "" : `M${geometry.axisX},40 V340`}`} stroke="#94a3b8" fill="none" /><path d={geometry.path} stroke="#38bdf8" strokeWidth="3" fill="none" /><text x="40" y="370" fill="white">x: {visual.x_min} to {visual.x_max}; coefficients: {visual.coefficients.join(', ')}</text></> : <>
-    {geometry.nodes.map(n => { const parent = geometry.nodes.find(p => p.id === n.parent); return parent ? <line key={`edge-${n.id}`} x1={parent.x} y1={parent.y} x2={n.x} y2={n.y} stroke="#94a3b8" /> : null; })}
-    {geometry.nodes.map(n => <g key={n.id}><circle cx={n.x} cy={n.y} r="22" fill="#0f172a" stroke="#38bdf8" /><text x={n.x} y={n.y + 5} textAnchor="middle" fill="white" fontSize="12">{n.label}</text></g>)}
+  const yAxisX = geometry.axisX ?? layout.plot.left;
+  return <svg data-lecture-svg viewBox={`0 0 ${layout.width} ${layout.height}`} className="w-full h-full" role="img" aria-label={STRUCTURED_LABELS[visual.kind]}>
+    {visual.kind === 'polynomial' ? <><path d={geometry.axisPath} stroke={palette.axis} fill="none" /><path d={geometry.path} stroke={palette.curve} strokeWidth="3" fill="none" />
+      {geometry.xTicks.map(item => <g key={`x${item.value}`} data-axis-tick="x"><path d={`M${item.position},${geometry.axisY - tick.halfLength} V${geometry.axisY + tick.halfLength}`} stroke={colors.support} /><text x={item.position} y={Math.min(geometry.axisY + tick.xLabelOffset, tick.xLabelMaxY)} textAnchor="middle" fontSize={fontSize} fill={colors.support}>{item.value}</text></g>)}
+      {geometry.yTicks.map(item => <g key={`y${item.value}`} data-axis-tick="y"><path d={`M${yAxisX - tick.halfLength},${item.position} H${yAxisX + tick.halfLength}`} stroke={colors.support} /><text x={yAxisX - tick.yLabelOffset} y={item.position + tick.yLabelBaseline} textAnchor="end" fontSize={fontSize} fill={colors.support}>{item.value}</text></g>)}
+      <text x={layout.rangeLabel.x} y={layout.rangeLabel.y} fontSize={fontSize} fill={colors.support}>x: {visual.x_min} to {visual.x_max}; coefficients: {visual.coefficients.join(', ')}</text></> : <>
+    {geometry.edges.map(edge => <line key={`edge-${edge.id}`} x1={edge.x1} y1={edge.y1} x2={edge.x2} y2={edge.y2} stroke={palette.axis} />)}
+    {geometry.nodes.map(n => <g key={n.id}><circle cx={n.x} cy={n.y} r={tree.nodeRadius} fill={palette.nodeFill} stroke={palette.curve} /><text x={n.x} y={n.y + tree.labelBaseline} textAnchor="middle" fill={palette.nodeText} fontSize={fontSize}>{n.label}</text></g>)}
     </>}
   </svg>;
 });

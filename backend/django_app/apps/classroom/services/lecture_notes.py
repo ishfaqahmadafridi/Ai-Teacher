@@ -10,12 +10,14 @@ from django.conf.locale import LANG_INFO
 from django.utils.translation import get_supported_language_variant
 from apps.classroom.constants.notes import NOTES_PAGE_SIZE, ACCOUNT_SESSION_PREFIX
 from django.shortcuts import get_object_or_404
+from apps.classroom.utilities.course_memory import normalize_course_key
 from apps.classroom.models.lecture_notes import LectureNote
 from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 from apps.classroom.serializers.note_serializers import NoteSourceSerializer
 
 
-def save_lecture_note(user, session_id, answer):
+def save_lecture_note(user, session_id, answer, course_label='', scheduled_session_id=''):
+    """Save an immutable note; scheduled classes also record their course for course memory."""
     serializer = GeneratedAnswerSerializer(data=answer)
     serializer.is_valid(raise_exception=True)
     snapshot = validated_mapping(serializer.validated_data)
@@ -28,8 +30,9 @@ def save_lecture_note(user, session_id, answer):
     sources = NoteSourceSerializer(data=answer.get('model_info', {}).get('sources', []), many=True)
     snapshot['sources'] = list(sources.data) if sources.is_valid() else []
     version = hashlib.sha256(json.dumps(snapshot, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
-    note, _ = LectureNote.objects.get_or_create(user=user, session_id=session_id, version=version,
-                                              defaults={'answer': snapshot})
+    note, _ = LectureNote.objects.get_or_create(user=user, session_id=session_id, version=version, defaults={
+        'answer': snapshot, 'course_key': normalize_course_key(course_label),
+        'scheduled_session_id': str(scheduled_session_id or '')})
     return note
 
 

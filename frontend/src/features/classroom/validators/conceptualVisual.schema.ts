@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import { ASSEMBLY_PART_IDS, MOLECULE_ATOMS, SCHEMATIC_BOUNDS } from '../constants/conceptualVisualConstants';
+import { ANATOMY_MODELS, ANATOMY_MODEL_IDS } from '../constants/anatomyVisualConstants';
+import type { AnatomyModelId } from '../types/visual.types';
 
 const id = z.string().trim().min(1).max(SCHEMATIC_BOUNDS.idLength);
 const label = z.string().trim().min(1).max(SCHEMATIC_BOUNDS.labelLength);
@@ -33,9 +35,19 @@ export const assemblyVisualSchema = z.object({
   }
 });
 
+export const anatomyVisualSchema = z.object({
+  kind: z.literal('anatomy'),
+  model: z.enum(ANATOMY_MODEL_IDS as [AnatomyModelId, ...AnatomyModelId[]]),
+  focus: id.optional(),
+}).superRefine((visual, ctx) => {
+  if (visual.focus && !ANATOMY_MODELS[visual.model].parts.some(part => part.id === visual.focus)) {
+    ctx.addIssue({ code: 'custom', message: 'Unsupported anatomy part.' });
+  }
+});
+
 // Invalid optional visuals cannot prevent the spoken lesson from playing.
 export const optionalLessonVisualSchema = z.union([
-  schematicVisualSchema, assemblyVisualSchema,
+  schematicVisualSchema, assemblyVisualSchema, anatomyVisualSchema,
   z.object({ kind: z.literal('tree'), nodes: z.array(z.object({ id: z.string(), label: z.string(), parent: z.string().nullable().optional() })).min(1).max(31) }),
   z.object({ kind: z.literal('polynomial'), coefficients: z.array(z.number().finite().min(-10000).max(10000)).min(1).max(6), x_min: z.number().finite().min(-100).max(100), x_max: z.number().finite().min(-100).max(100) }).refine(visual => visual.x_min < visual.x_max),
 ]).optional().catch(undefined);

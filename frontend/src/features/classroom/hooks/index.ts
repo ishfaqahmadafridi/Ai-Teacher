@@ -75,3 +75,12 @@ export * from './useTeacherReplyAudio';
 export * from './useDiscussionSubmission';
 
 export { useRaisedHand } from './useRaisedHand';
+export { useAnatomyVisual } from './useAnatomyVisual';
+export { useAnatomyModel } from './useAnatomyModel';
+export { useAnatomyAsset } from './useAnatomyAsset';
+export { useDiagramCameraFit } from './useDiagramCameraFit';
+export { useWaveScene } from './useWaveScene';
+export { useGravityScene } from './useGravityScene';
+export { useProjectileScene } from './useProjectileScene';
+export { useAtomScene } from './useAtomScene';
+export { useElectricFieldScene } from './useElectricFieldScene';

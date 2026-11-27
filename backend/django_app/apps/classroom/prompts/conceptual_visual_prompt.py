@@ -28,3 +28,13 @@ For molecule, molecule is required: water (O,H,H), carbon_dioxide (C,O,O) or met
 (C,H,H,H,H). Atom IDs follow atom_0 onward in that order. Focus an existing atom or
 bonds; do not claim chemical simulation or bond-order accuracy.
 """
+
+ANATOMY_VISUAL_PROMPT = """
+## ANATOMY MODELS
+For human anatomy, a curated medical 3D model is available. diagram.visual shape:
+{"kind":"anatomy","model":"MODEL","focus":"PART"}, with default/none envelope.
+Only these models/parts exist: {anatomy_catalog}. Move focus between parts as the
+narration names them; omit focus for an overview. Attach the model to EVERY
+chunk that discusses a listed structure so the student always sees what is named. Never invent models or parts;
+use a schematic for structures not listed (cells, tissues, procedures, pathology).
+"""

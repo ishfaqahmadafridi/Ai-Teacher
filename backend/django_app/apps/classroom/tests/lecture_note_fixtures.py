@@ -1,4 +1,5 @@
 """Shared setup for focused backend regression suites."""
+from unittest.mock import patch
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from apps.classroom.services.lecture_notes import save_lecture_note
@@ -40,3 +41,8 @@ def quality_lesson():
         chunk('Why do root hairs help water uptake?', 'practice', concept_id='roots', question='Why do root hairs help water uptake?', expected_concepts=['Increased contact with soil']),
         chunk('Roots connect soil water uptake to the needs of the rest of the plant.', 'recap'),
     ]}
+
+
+def compact_lesson_depth():
+    """Structure/publication suites use a compact sample; depth has its own tests."""
+    return patch.multiple('apps.classroom.services.teaching_structure', LESSON_MIN_CONCEPT_BLOCKS=1, LESSON_MIN_WORDS=1)

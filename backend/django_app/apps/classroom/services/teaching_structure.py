@@ -1,4 +1,5 @@
 """Validate connected concept structure and scheduled teaching modes."""
+from apps.classroom.constants.teaching_quality import LESSON_MIN_CONCEPT_BLOCKS, LESSON_MIN_WORDS
 
 
 class TeachingQualityError(ValueError):
@@ -67,3 +68,17 @@ def validate_teaching_structure(answer, curriculum=None, require_full_coverage=F
         if any(chunks[adjacent].get('question') or chunks[adjacent].get('discussion_prompt')
                for adjacent in (index - 1, index + 1)):
             raise TeachingQualityError('Separate Q&A invitations and graded checks with a teaching step.')
+
+
+def validate_lesson_depth(answer):
+    """Reject a full lesson that only summarises; the message tells the model what to add."""
+    if answer.get('lesson_mode') != 'lesson':
+        return
+    chunks = answer['chunks']
+    blocks = {c['concept_id'] for c in chunks if c.get('teaching_step') == 'explanation' and c.get('concept_id')}
+    words = sum(len(c['speak'].split()) for c in chunks)
+    if len(blocks) < LESSON_MIN_CONCEPT_BLOCKS or words < LESSON_MIN_WORDS:
+        raise TeachingQualityError(
+            f'The lesson is too shallow: {len(blocks)} concept blocks and {words} spoken words. '
+            f'A full lesson needs at least {LESSON_MIN_CONCEPT_BLOCKS} concept blocks and {LESSON_MIN_WORDS} words. '
+            'Teach every major part of the topic as its own block with a 60-120 word explanation and an example.')

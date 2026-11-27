@@ -29,11 +29,14 @@ from .quota_fallback import QuotaFallbackLLM, is_quota_error
 __all__ += ['QuotaFallbackLLM', 'is_quota_error']
 
 from .teaching_messages import teaching_messages
-from .lesson_evaluation import evaluate_owned_attempt
-__all__ += ['teaching_messages', 'evaluate_owned_attempt']
+from .lesson_evaluation import evaluate_owned_attempt, build_evaluation_payload
+__all__ += ['teaching_messages', 'evaluate_owned_attempt', 'build_evaluation_payload']
 
 from .lesson_discussion import answer_discussion
 __all__ += ['answer_discussion']
+
+from .lesson_doubt import build_doubt_payload, teach_pending_doubt, DoubtReplyUnavailable
+__all__ += ['build_doubt_payload', 'teach_pending_doubt', 'DoubtReplyUnavailable']
 
 from .lesson_hand import lesson_hand
 
@@ -43,3 +46,12 @@ __all__ += ['budget_teaching_messages', 'model_prompt_limits']
 from .teaching_quality import generate_reviewed_teaching, review_teaching_quality, validate_teaching_structure
 
 __all__ += ['generate_reviewed_teaching', 'review_teaching_quality', 'validate_teaching_structure']
+
+from .course_memory import previous_classes
+__all__ += ['previous_classes']
+
+from .lesson_metrics_log import lesson_metrics, log_lesson_metrics
+__all__ += ['lesson_metrics', 'log_lesson_metrics']
+
+from .teaching_evaluation import run_teaching_evaluation
+__all__ += ['run_teaching_evaluation']

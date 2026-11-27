@@ -1,3 +1,5 @@
+import type { ComponentProps } from 'react';
+import type { Text } from '@react-three/drei';
 export interface EquationCardProps {
   label?: string;
   formula?: string;
@@ -123,3 +125,22 @@ export interface ChalkboardNotesViewProps {
 
 export interface FormattedFormulaProps { formula: string }
 export interface FormulaToken { text: string; className: string }
+
+export type DiagramLabelProps = Omit<ComponentProps<typeof Text>, 'font'>;
+
+/** A point in 3D scene space. */
+export type Vec3 = [number, number, number];
+
+/** Playback multiplier for each lesson `speed` command. */
+export interface SceneSpeedScale { slow: number; normal: number; fast: number }
+
+export interface SceneTitleProps { children: string; fontSize?: number }
+
+export interface WaveParameters { amplitude: number; frequency: number; speed: number }
+
+/** Resolved wave scene settings after props and lesson command are applied. */
+export interface WaveSceneSettings extends WaveParameters {
+  resolution: number;
+  width: number;
+  color: string;
+}

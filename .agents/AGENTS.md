@@ -48,6 +48,7 @@ Every agent must answer YES to every item below before starting:
 - [ ] Am I using established libraries and shared utilities instead of re-inventing existing code?
 - [ ] Did I check if an established library exists before creating manual constants or custom data lists?
 - [ ] Is all user-created or mutated data pushed and persisted to the real database (ORM models & backend APIs) instead of remaining purely static in-memory?
+- [ ] If I call an AI model: does it get a role-specific, least-privilege payload with no answer keys for student-facing replies and no personal identifiers, and is its output validated (Part 5)?
 
 ---
 
@@ -441,6 +442,25 @@ backend/shared/
 - **NEVER** leave user mutations (created timetable slots, registered courses, submitted assignments, updated profile settings) trapped in temporary static React state or mock arrays.
 - **ALWAYS** push and persist created/updated data to the backend database via the Django 3-Layer Architecture (`views` → `services` → `serializers` → ORM Models).
 - Static data in `constants/` is strictly for default fallback initial seeds, not a replacement for database persistence.
+
+---
+
+## Part 5 — AI / LLM Rules
+
+Full rules with reasons: `.claude/skills/ai-teacher-rules/references/ai-llm-rules.md`.
+
+1. **The database remembers, the model does not.** Profile, course, syllabus and progress live in PostgreSQL; Redis is a cache; models are stateless.
+2. **Least privilege per model call.** One payload builder per role. Graders may see answer keys; any text a student reads is produced by a call that never received them. Send spoken text, not whole lesson chunks.
+3. **No personal identifiers** (name, email, phone, IDs) in prompts or external searches.
+4. **Supplied text is untrusted data**; prompts say so.
+5. **Validate every model output** with a serializer; on failure keep saved state and return 503. Never show or save unvalidated text.
+6. **Deterministic before AI:** code selects rules, routes, scores and checks; models explain and write.
+7. **Guard safety properties in code after generation** (answer-leak check, coverage, maths), bounded retries, then fail closed.
+8. **Respect the context budget** (`services/prompt_budget.py`); send one subject's rules, never all.
+9. **Prompts live in `prompts/`**, one role each.
+10. **Tests never call a real provider:** mock `get_llm` at every module path reached; suites pass with API keys cleared.
+11. **Never fabricate** citations, scores, mastery or syllabus; AI drafts are labelled and never verified.
+12. **Shared academic records are versioned**, never overwritten.
 
 ---
 
