@@ -2,28 +2,56 @@
 import json
 import re
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
-from apps.classroom.constants.visuals import ASSEMBLY_PARTS, DIAGRAM_ACTIONS
-from apps.classroom.prompts import SYSTEM_PROMPT, CONCEPTUAL_VISUAL_PROMPT, ASSEMBLY_VISUAL_PROMPT, MOLECULE_VISUAL_PROMPT
-from apps.classroom.prompts.scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT
+from apps.classroom.constants.visuals import ANATOMY_KEYWORDS, ANATOMY_PARTS, ASSEMBLY_PARTS, DIAGRAM_ACTIONS
+from apps.classroom.prompts import (
+    SYSTEM_PROMPT, CONCEPTUAL_VISUAL_PROMPT, ASSEMBLY_VISUAL_PROMPT, MOLECULE_VISUAL_PROMPT, ANATOMY_VISUAL_PROMPT,
+)
+from apps.classroom.prompts.scheduled_lesson_prompt import SCHEDULED_LESSON_PROMPT, PREVIOUS_CLASSES_PROMPT
 from apps.classroom.prompts.research_prompt import RESEARCH_CONTEXT
 from apps.classroom.prompts.teaching_quality_prompt import TEACHING_DEPTH_PROMPT
+from apps.classroom.prompts.subject_teaching_prompt import SUBJECT_RULES_HEADER, SUBJECT_TEACHING_RULES
+from apps.classroom.utilities.subject_resolution import resolve_lesson_subjects
+
+
+def lesson_topic_text(question, history, supplemental_context):
+    """Text the lesson is about: the request, its saved scheduled scope and the latest turns."""
+    topic = question + ' ' + json.dumps(supplemental_context.get('scheduled_lesson', {}), ensure_ascii=False)
+    return topic + ' ' + ' '.join(entry['content'] for entry in history[-2:])
+
+
+def lesson_subjects(question, history, supplemental_context):
+    """Subject IDs this lesson is taught as (course label first, then topic, then general)."""
+    course = supplemental_context.get('scheduled_lesson', {}).get('course', '')
+    return resolve_lesson_subjects(course, lesson_topic_text(question, history, supplemental_context))
+
+
+def subject_rules(question, history, supplemental_context):
+    """Only the selected subject's teaching method."""
+    subjects = lesson_subjects(question, history, supplemental_context)
+    return SUBJECT_RULES_HEADER + ''.join(SUBJECT_TEACHING_RULES[subject] for subject in subjects)
 
 
 def teaching_messages(question, history, supplemental_context):
     policy = SYSTEM_PROMPT.replace('{diagram_actions}', ', '.join(DIAGRAM_ACTIONS))
     policy += TEACHING_DEPTH_PROMPT
+    policy += subject_rules(question, history, supplemental_context)
     policy += CONCEPTUAL_VISUAL_PROMPT
     # Unknown/translated model names still have the general schematic capability.
-    topic = question + ' ' + json.dumps(supplemental_context.get('scheduled_lesson', {}), ensure_ascii=False)
-    topic += ' ' + ' '.join(entry['content'] for entry in history[-2:])
+    topic = lesson_topic_text(question, history, supplemental_context)
     selected = {name: parts for name, parts in ASSEMBLY_PARTS.items()
                 if re.search(r'\b' + re.escape(name) + r's?\b', topic, re.IGNORECASE)}
     if selected:
         policy += ASSEMBLY_VISUAL_PROMPT.replace('{assembly_catalog}', json.dumps(selected))
         if 'molecule' in selected:
             policy += MOLECULE_VISUAL_PROMPT
+    anatomy = {name: ANATOMY_PARTS[name] for name, words in ANATOMY_KEYWORDS.items()
+               if any(re.search(r'\b' + re.escape(word) + r's?\b', topic, re.IGNORECASE) for word in words)}
+    if anatomy:
+        policy += ANATOMY_VISUAL_PROMPT.replace('{anatomy_catalog}', json.dumps(anatomy))
     if 'scheduled_lesson' in supplemental_context:
         policy += SCHEDULED_LESSON_PROMPT.format(context='See reference_context.scheduled_lesson for saved course data.')
+    if 'previous_classes' in supplemental_context:
+        policy += PREVIOUS_CLASSES_PROMPT
     if 'research' in supplemental_context:
         policy += RESEARCH_CONTEXT.format(evidence='See reference_context.research for numbered source data.')
     messages = [SystemMessage(content=policy)]

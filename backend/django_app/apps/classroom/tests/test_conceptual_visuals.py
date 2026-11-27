@@ -4,7 +4,7 @@ import json
 from unittest.mock import patch
 from django.test import SimpleTestCase
 from langchain_core.messages import AIMessage
-from apps.classroom.constants.visuals import ASSEMBLY_PARTS, MOLECULE_ATOM_COUNTS
+from apps.classroom.constants.visuals import ANATOMY_PARTS, ASSEMBLY_PARTS, MOLECULE_ATOM_COUNTS
 from apps.classroom.serializers.structured_visual_serializers import StructuredVisualSerializer
 from apps.classroom.serializers.diagram_fields import AnswerDiagramField
 from .lecture_note_fixtures import schematic_visual
@@ -128,3 +128,51 @@ class ConceptualVisualTests(SimpleTestCase):
         self.assertIn('"left_brace"', prompt)
         self.assertNotIn('{assembly_catalog}', prompt)
         image.assert_not_called()
+
+
+class AnatomyVisualTests(SimpleTestCase):
+    def test_every_model_and_part_is_accepted(self):
+        for model, parts in ANATOMY_PARTS.items():
+            for part in parts:
+                schema = StructuredVisualSerializer(data={'kind': 'anatomy', 'model': model, 'focus': part})
+                self.assertTrue(schema.is_valid(), schema.errors)
+                self.assertEqual(schema.data, {'kind': 'anatomy', 'model': model, 'focus': part})
+
+    def test_overview_sentinel_drops_focus(self):
+        schema = StructuredVisualSerializer(data={'kind': 'anatomy', 'model': 'brain', 'focus': 'all'})
+        self.assertTrue(schema.is_valid(), schema.errors)
+        self.assertNotIn('focus', schema.validated_data)
+
+    def test_invented_models_and_parts_are_rejected(self):
+        for value in (
+            {'kind': 'anatomy', 'model': 'liver'},
+            {'kind': 'anatomy', 'model': 'heart', 'focus': 'femur'},
+            {'kind': 'anatomy'},
+        ):
+            self.assertFalse(StructuredVisualSerializer(data=value).is_valid())
+
+    def test_invalid_anatomy_keeps_narration(self):
+        result = AnswerDiagramField().run_validation({'action': 'none', 'visual': {'kind': 'anatomy', 'model': 'liver'}})
+        self.assertNotIn('visual', result)
+        self.assertEqual(result['visual_reason'], 'invalid_visual')
+
+    def test_flat_anatomy_is_repaired_into_visual(self):
+        result = AnswerDiagramField().run_validation({'kind': 'anatomy', 'model': 'heart', 'focus': 'aorta'})
+        self.assertEqual(result['action'], 'none')
+        self.assertEqual(result['visual'], {'kind': 'anatomy', 'model': 'heart', 'focus': 'aorta'})
+
+    def test_prompt_offers_only_matching_anatomy_models(self):
+        from apps.classroom.services.teaching_messages import teaching_messages
+        policy = teaching_messages('Explain how the left ventricle pumps blood', [], {})[0].content
+        self.assertIn('ANATOMY MODELS', policy)
+        self.assertIn('"left_ventricle"', policy)
+        self.assertNotIn('"cerebellum"', policy)
+        self.assertNotIn('{anatomy_catalog}', policy)
+        self.assertNotIn('ANATOMY MODELS', teaching_messages('Explain recursion', [], {})[0].content)
+
+    def test_anatomy_keywords_avoid_unrelated_topics_and_match_plurals(self):
+        from apps.classroom.services.teaching_messages import teaching_messages
+        for question in ('Explain ocean circulation', 'Explain the lobes of the lung'):
+            self.assertNotIn('ANATOMY MODELS', teaching_messages(question, [], {})[0].content)
+        policy = teaching_messages('How many vertebrae are in the neck?', [], {})[0].content
+        self.assertIn('"skull"', policy)

@@ -1,7 +1,7 @@
-"""Use Groq only after an explicit Gemini rate/quota error; never execute model code."""
+"""Use Groq only after an explicit Gemini quota or overload error; never execute model code."""
 import httpx
 from langchain_core.messages import AIMessage, convert_to_messages
-from apps.classroom.constants.providers import GROQ_CHAT_URL, GROQ_MODEL, GROQ_TIMEOUT, GROQ_MAX_TOKENS
+from apps.classroom.constants.providers import GROQ_CHAT_URL, GROQ_MODEL, GROQ_TIMEOUT, GROQ_MAX_TOKENS, FALLBACK_STATUS_CODES
 
 
 def is_quota_error(error):
@@ -11,7 +11,7 @@ def is_quota_error(error):
         status = getattr(error, 'status_code', None) or getattr(error, 'code', None)
         if callable(status):
             status = status()
-        if status == 429 or getattr(getattr(error, 'response', None), 'status_code', None) == 429:
+        if status in FALLBACK_STATUS_CODES or getattr(getattr(error, 'response', None), 'status_code', None) in FALLBACK_STATUS_CODES:
             return True
         # LangChain wraps Gemini's typed HTTP error, preserving it as the cause.
         error = error.__cause__

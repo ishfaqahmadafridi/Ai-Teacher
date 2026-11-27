@@ -4,11 +4,11 @@ import json
 from unittest.mock import Mock, patch
 from django.test import SimpleTestCase, TestCase
 from langchain_core.messages import AIMessage
-from apps.classroom.constants.teaching_quality import QUALITY_CHECKS
+from apps.classroom.constants.teaching_quality import QUALITY_CHECKS, QUALITY_ATTEMPTS
 from apps.classroom.services.teaching_quality import (
     validate_teaching_structure, review_teaching_quality, generate_reviewed_teaching, TeachingQualityError, normalize_teaching_metadata,
 )
-from apps.classroom.tests.lecture_note_fixtures import quality_lesson
+from apps.classroom.tests.lecture_note_fixtures import quality_lesson, compact_lesson_depth
 from apps.classroom.serializers.answer_serializers import GeneratedAnswerSerializer
 
 
@@ -20,6 +20,7 @@ def review_response(answer, failed=None, invented=False):
         for check in QUALITY_CHECKS]}), usage_metadata={'input_tokens': 10, 'output_tokens': 10, 'total_tokens': 20})
 
 
+@compact_lesson_depth()
 class TeachingQualityTests(SimpleTestCase):
     def test_only_unambiguous_missing_stage_metadata_is_normalized(self):
         answer = quality_lesson()
@@ -154,12 +155,12 @@ class TeachingQualityTests(SimpleTestCase):
         repair_input = json.loads(model.invoke.call_args_list[1].args[0][-2].content)
         self.assertIn('discussion_prompt', repair_input['reference_context']['quality_feedback'])
 
-    def test_repeated_bad_drafts_stop_after_two_generation_attempts(self):
+    def test_repeated_bad_drafts_stop_after_bounded_generation_attempts(self):
         model = Mock()
         model.invoke.return_value = AIMessage(content=json.dumps({'chunks': [{'speak': 'Only a heading', 'diagram': {}}]}))
         with self.assertRaises(TeachingQualityError):
             generate_reviewed_teaching(model, 'Teach roots', [], {}, 32768, 8192, {})
-        self.assertEqual(model.invoke.call_count, 2)
+        self.assertEqual(model.invoke.call_count, QUALITY_ATTEMPTS)
 
 
 class TeachingPublicationTests(TestCase):
@@ -178,6 +179,7 @@ class TeachingPublicationTests(TestCase):
 from apps.classroom.tests.lecture_note_fixtures import LectureNotesFixture
 
 
+@compact_lesson_depth()
 class TeachingHttpTests(LectureNotesFixture, TestCase):
     def test_reviewed_lesson_is_saved_through_the_authenticated_http_endpoint(self):
         from apps.classroom.models.lecture_notes import LectureNote

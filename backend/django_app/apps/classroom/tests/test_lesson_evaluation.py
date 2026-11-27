@@ -88,3 +88,27 @@ class LessonEvaluationTests(TestCase):
         progress = LessonProgress.objects.get(note=self.note)
         self.assertEqual(progress.section_index, 2)
         self.assertTrue(progress.waiting)
+
+    @patch('apps.classroom.services.lesson_doubt.get_llm')
+    @patch('apps.classroom.services.lesson_evaluation.get_llm')
+    def test_student_question_is_answered_without_moving_the_checkpoint(self, provider, teacher):
+        provider.return_value.bind.return_value.invoke.return_value = Mock(text='{"outcome":"student_question","next_action":"answer_question","feedback":"A question.","missing_concepts":[]}')
+        teacher.return_value.bind.return_value.invoke.return_value = Mock(text='{"reply":"Resistance limits current. Now try the question again."}')
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['evaluation']['next_action'], 'answer_question')
+        progress = LessonProgress.objects.get(note=self.note)
+        self.assertTrue(progress.waiting)
+        self.assertEqual(progress.section_index, 0)
+
+    @patch('apps.classroom.services.lesson_evaluation.get_llm')
+    def test_student_question_cannot_report_missing_concepts(self, provider):
+        provider.return_value.bind.return_value.invoke.return_value = Mock(text='{"outcome":"student_question","next_action":"answer_question","feedback":"Answer.","missing_concepts":["voltage"]}')
+        self.assertEqual(self.client.post(self.url).status_code, 503)
+
+    def test_evaluation_payload_carries_lesson_context_for_doubts(self):
+        from apps.classroom.services.lesson_evaluation import build_evaluation_payload
+        payload = build_evaluation_payload(self.attempt)
+        self.assertEqual(payload['topic'], 'Ohm law')
+        self.assertIn('Voltage equals current multiplied by resistance', payload['lesson_context'][0])
+        self.assertEqual(payload['answer'], 'It halves.')

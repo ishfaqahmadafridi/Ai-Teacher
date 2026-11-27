@@ -1,7 +1,7 @@
 """Bounded declarative visuals; no generated executable code."""
 import math
 from rest_framework import serializers
-from .conceptual_visual_serializers import SchematicVisualSerializer, AssemblyVisualSerializer
+from .conceptual_visual_serializers import SchematicVisualSerializer, AssemblyVisualSerializer, AnatomyVisualSerializer
 
 
 class TreeNodeSerializer(serializers.Serializer):
@@ -11,7 +11,10 @@ class TreeNodeSerializer(serializers.Serializer):
 
 
 class StructuredVisualSerializer(serializers.Serializer):
-    conceptual_schemas = {'schematic': SchematicVisualSerializer, 'assembly': AssemblyVisualSerializer}
+    conceptual_schemas = {
+        'schematic': SchematicVisualSerializer, 'assembly': AssemblyVisualSerializer,
+        'anatomy': AnatomyVisualSerializer,
+    }
 
     def to_internal_value(self, data):
         schema = self.conceptual_schemas.get(data.get('kind')) if isinstance(data, dict) else None
@@ -32,7 +35,7 @@ class StructuredVisualSerializer(serializers.Serializer):
     x_max = serializers.FloatField(min_value=-100, max_value=100, required=False)
 
     def validate(self, attrs):
-        if attrs['kind'] in ('schematic', 'assembly'):
+        if attrs['kind'] in self.conceptual_schemas:
             return attrs
         if attrs['kind'] == 'polynomial':
             coefficients = attrs.get('coefficients', [])

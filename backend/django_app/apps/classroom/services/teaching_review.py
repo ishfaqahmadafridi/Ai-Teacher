@@ -8,6 +8,7 @@ from apps.classroom.prompts.teaching_quality_prompt import TEACHING_REVIEW_PROMP
 from apps.classroom.serializers.teaching_quality_serializers import TeachingReviewSerializer
 from apps.classroom.services.llm_service import extract_json
 from apps.classroom.services.prompt_budget import validate_model_context
+from apps.classroom.utilities.review_evidence import locate_evidence
 
 
 def review_teaching_quality(llm, question, history, context, answer, *, usage_ledger=None):
@@ -29,9 +30,8 @@ def review_teaching_quality(llm, question, history, context, answer, *, usage_le
         if not finding['passed']:
             issues.append(finding['check'] + ': ' + finding['reason'])
             continue
-        index = finding.get('section_index')
-        quote = finding.get('quote', '').strip()
-        if index is None or index >= len(answer['chunks']) or not quote or quote not in answer['chunks'][index]['speak']:
+        index = locate_evidence(answer['chunks'], finding.get('quote', ''), finding.get('section_index'))
+        if index is None:
             issues.append(finding['check'] + ': Review evidence must quote actual narration.')
             continue
         expected_step = QUALITY_EVIDENCE_STEPS.get(finding['check'])

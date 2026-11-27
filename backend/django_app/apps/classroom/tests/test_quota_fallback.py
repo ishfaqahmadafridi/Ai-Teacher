@@ -18,14 +18,17 @@ class QuotaFallbackTests(SimpleTestCase):
             self.assertEqual(QuotaFallbackLLM(primary, 'test-key', 0.2).invoke('JSON please').content, '{}')
         client.assert_not_called()
 
-    def test_only_explicit_quota_errors_trigger_fallback(self):
-        for status in (400, 401, 403, 500, 503):
+    def test_only_explicit_quota_or_overload_errors_trigger_fallback(self):
+        for status in (400, 401, 403, 500):
             primary = Mock()
             primary.invoke.side_effect = self.error(status)
             with patch('apps.classroom.services.quota_fallback.httpx.Client') as client:
                 with self.assertRaises(httpx.HTTPStatusError):
                     QuotaFallbackLLM(primary, 'test-key', 0.2).invoke('JSON please')
             client.assert_not_called()
+
+    def test_temporary_overload_is_treated_like_quota_exhaustion(self):
+        self.assertTrue(is_quota_error(self.error(503)))
 
     def test_quota_fallback_preserves_messages_usage_and_options(self):
         primary = Mock()

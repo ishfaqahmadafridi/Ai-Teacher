@@ -6,6 +6,7 @@ from apps.classroom.constants import (
     DEFAULT_SESSION_ID, DEFAULT_TEMPERATURE, GEMINI_MODEL, MODEL_ARCHITECTURE,
     RAG_SOURCE, RAG_TOP_K,
 )
+from apps.classroom.constants.subjects import SUBJECT_REGISTRY_VERSION
 from apps.classroom.services import get_llm, fallback_chunks, get_session
 from apps.classroom.services.session_service import append_session
 from apps.classroom.services.prompt_budget import model_prompt_limits, PromptBudgetExceeded
@@ -22,6 +23,7 @@ def generate_answer(
     curriculum=None,
     student_context=None,
     require_curriculum_coverage=False,
+    course_memory=None,
     **kwargs,
 ) -> dict:
     """Generate validated teaching chunks; failed answers do not enter history."""
@@ -46,6 +48,8 @@ def generate_answer(
         supplemental_context = {}
         if student_context:
             supplemental_context['student'] = student_context
+        if course_memory:
+            supplemental_context['previous_classes'] = course_memory
         if curriculum:
             supplemental_context['scheduled_lesson'] = {**curriculum, 'require_full_coverage': require_curriculum_coverage}
         if rag_context:
@@ -60,6 +64,10 @@ def generate_answer(
         if images:
             supplemental_context['image_catalog'] = image_catalog_prompt(images)
         history = get_session(session_id)
+        from apps.classroom.services.teaching_messages import lesson_subjects
+        metadata['subjects'] = list(lesson_subjects(question, history, supplemental_context))
+        metadata['subject_registry_version'] = SUBJECT_REGISTRY_VERSION
+        metadata['previous_classes_used'] = len(course_memory or [])
         context_limit, output_tokens = model_prompt_limits(llm)
         from apps.classroom.services.teaching_quality import generate_reviewed_teaching
         parsed, response, teaching_tokens = generate_reviewed_teaching(

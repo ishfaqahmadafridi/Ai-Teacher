@@ -9,10 +9,14 @@ from apps.classroom.models.lecture_notes import LectureNote
 from apps.classroom.services.student_teaching_context import student_teaching_context
 from apps.classroom.services.lecture_notes import get_lecture_note
 from apps.classroom.services.llm_service import get_llm, extract_json
+from apps.classroom.utilities.lesson_context import spoken_sections
+from apps.classroom.utilities.spoken_text import speakable
 from apps.classroom.services.lesson_provider_admission import provider_delay
 from apps.classroom.serializers.lesson_serializers import LessonDiscussionReplySerializer
 from apps.classroom.prompts.discussion_prompt import DISCUSSION_REPLY_PROMPT
-from apps.classroom.constants.lesson import DISCUSSION_WINDOW_SECONDS, DISCUSSION_MAX_TOKENS, EVALUATION_LEASE_SECONDS
+from apps.classroom.constants.lesson import (
+    DISCUSSION_WINDOW_SECONDS, DISCUSSION_MAX_TOKENS, EVALUATION_LEASE_SECONDS, DISCUSSION_CONTEXT_SECTIONS,
+)
 
 
 class DiscussionUnavailable(APIException):
@@ -23,6 +27,15 @@ class DiscussionUnavailable(APIException):
 class DiscussionClosed(APIException):
     status_code = 409
     default_detail = 'This concept question period has closed.'
+
+
+def discussion_concept(chunks, section_index):
+    """Spoken text of the two sections before the invitation.
+
+    Least privilege: whole chunks would also carry a nearby check's question and expected
+    concepts, plus visual metadata the reply does not need.
+    """
+    return spoken_sections(chunks, section_index - DISCUSSION_CONTEXT_SECTIONS, section_index)
 
 
 def answer_discussion(user, note_id, request_id, section_index, question):
@@ -61,12 +74,12 @@ def answer_discussion(user, note_id, request_id, section_index, question):
         if model is None:
             raise DiscussionUnavailable()
         context = {'student_context': student_teaching_context(user), 'topic': note.answer['topic'], 'language': note.answer['language'],
-                   'concept': note.answer['chunks'][max(0, section_index - 2):section_index], 'question': question}
+                   'concept': discussion_concept(note.answer['chunks'], section_index), 'question': question}
         response = model.bind(max_output_tokens=DISCUSSION_MAX_TOKENS).invoke([
             SystemMessage(content=DISCUSSION_REPLY_PROMPT), HumanMessage(content=json.dumps(context))])
         serializer = LessonDiscussionReplySerializer(data={'id': attempt.pk, **extract_json(response.text)})
         serializer.is_valid(raise_exception=True)
-        reply = serializer.validated_data['reply']
+        reply = speakable(serializer.validated_data['reply'])
         if not LessonAttempt.objects.filter(pk=attempt.pk, evaluating_since=now).update(
             evaluation={'reply': reply}, evaluating_since=None):
             raise DiscussionClosed('This reply was superseded.')
