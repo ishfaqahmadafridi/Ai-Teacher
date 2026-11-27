@@ -30,3 +30,15 @@ export const ELEMENT_COLORS = { O: CONCEPTUAL_COLORS.oxygen, H: CONCEPTUAL_COLOR
 export const ELEMENT_LABELS = { O: 'Oxygen', H: 'Hydrogen', C: 'Carbon' };
 export const ASSEMBLY_VIEW = { camera: [6, 4, 7] as [number, number, number], fov: 45, segments: 20, minDistance: 3, maxDistance: 18 };
 export const CONCEPTUAL_MODEL_NOTICE = 'Conceptual model · not to scale · not an engineering simulation';
+
+/** SVG layout shared by the polynomial graph and tree diagram (viewBox units). */
+export const STRUCTURED_LAYOUT = {
+  width: 600, height: 380,
+  plot: { left: 40, right: 560, top: 40, bottom: 340, samples: 101 },
+  tick: { halfLength: 4, xLabelOffset: 18, xLabelMaxY: 356, yLabelOffset: 8, yLabelBaseline: 4 },
+  rangeLabel: { x: 40, y: 374 },
+  tree: { top: 40, height: 280, nodeRadius: 22, labelBaseline: 5 },
+  fontSize: 12,
+} as const;
+export const STRUCTURED_COLORS = { axis: '#94a3b8', curve: '#38bdf8', nodeFill: '#0f172a', nodeText: 'white' } as const;
+export const STRUCTURED_LABELS = { tree: 'Lesson tree diagram', polynomial: 'Polynomial graph' } as const;

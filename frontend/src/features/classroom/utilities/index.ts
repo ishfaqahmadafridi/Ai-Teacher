@@ -27,3 +27,9 @@ export * from './activeLessonStorage';
 export * from './scheduledClassPhase';
 
 export * from './classroomInteraction';
+
+export * from './anatomyParts';
+
+export * from './diagramCamera';
+
+export * from './physicsScenes';

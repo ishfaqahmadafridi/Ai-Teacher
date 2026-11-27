@@ -61,6 +61,7 @@ export function useInputBar() {
         dispatch(setChalkboardPoints([evaluation.feedback]));
         dispatch(setInputText(''));
         if (canContinue) playFrom(pendingQuestion.sectionIndex + 1);
+        else if (evaluation.next_action === 'answer_question') await playReply(evaluation.feedback);
       } else {
         await sendQuestion(answer);
       }

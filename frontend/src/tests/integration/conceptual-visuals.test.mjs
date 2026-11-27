@@ -133,3 +133,151 @@ test('schematic renders accessible SVG labels and focused part', () => {
   assert.ok(markup.includes('stroke-width="4"'));
   assert.ok(markup.includes('marker-end='));
 });
+
+const anatomy = load('features/classroom/constants/anatomyVisualConstants.ts');
+const anatomyParts = load('features/classroom/utilities/anatomyParts.ts');
+
+test('anatomy registry lists unique parts and local GLB assets for every model', () => {
+  assert.ok(anatomy.ANATOMY_MODEL_IDS.length > 0);
+  for (const id of anatomy.ANATOMY_MODEL_IDS) {
+    const entry = anatomy.ANATOMY_MODELS[id];
+    assert.ok(entry.title && entry.parts.length > 0);
+    assert.ok(entry.asset.startsWith(`${anatomy.ANATOMY_ASSET_ROOT}/`) && entry.asset.endsWith('.glb'));
+    assert.equal(new Set(entry.parts.map(part => part.id)).size, entry.parts.length);
+  }
+});
+
+test('anatomy part IDs match the backend contract the LLM is validated against', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const source = await readFile(new URL('../../../../backend/django_app/apps/classroom/constants/visuals.py', import.meta.url), 'utf8');
+  const block = source.slice(source.indexOf('ANATOMY_PARTS = {'), source.indexOf('}', source.indexOf('ANATOMY_PARTS = {')));
+  for (const id of anatomy.ANATOMY_MODEL_IDS) {
+    const match = block.match(new RegExp(`'${id}': \\(([^)]*)\\)`));
+    assert.ok(match, `backend lists ${id}`);
+    const backendParts = [...match[1].matchAll(/'([a-z_]+)'/g)].map(part => part[1]);
+    assert.equal(JSON.stringify(backendParts), JSON.stringify(anatomy.ANATOMY_MODELS[id].parts.map(part => part.id)));
+  }
+});
+
+test('anatomy visuals validate known models and reject invented parts', () => {
+  assert.equal(schemas.anatomyVisualSchema.safeParse({ kind: 'anatomy', model: 'heart', focus: 'aorta' }).success, true);
+  assert.equal(schemas.anatomyVisualSchema.safeParse({ kind: 'anatomy', model: 'brain' }).success, true);
+  for (const value of [{ kind: 'anatomy', model: 'liver' }, { kind: 'anatomy', model: 'heart', focus: 'femur' }]) {
+    assert.equal(schemas.anatomyVisualSchema.safeParse(value).success, false);
+  }
+  const { classroomAnswerSchema } = load('features/classroom/validators/classroom.schema.ts');
+  const response = classroomAnswerSchema.parse({ topic: 'Heart', language: 'en', diagram_type: 'default',
+    chunks: [{ speak: 'The aorta carries blood.', diagram: { action: 'none', visual: { kind: 'anatomy', model: 'heart', focus: 'aorta' } } }] });
+  assert.deepEqual(response.chunks[0].diagram.visual, { kind: 'anatomy', model: 'heart', focus: 'aorta' });
+});
+
+test('exported mesh names map to lesson parts despite exporter suffixes', () => {
+  const ids = anatomy.ANATOMY_MODELS.heart.parts.map(part => part.id);
+  assert.equal(anatomyParts.anatomyPartForNames(['Left_Ventricle.001'], ids), 'left_ventricle');
+  assert.equal(anatomyParts.anatomyPartForNames(['mesh_12', 'Aorta', 'Scene'], ids), 'aorta');
+  assert.equal(anatomyParts.anatomyPartForNames(['left ventricle 2'], ids), 'left_ventricle');
+  assert.equal(anatomyParts.anatomyPartForNames(['aortic_valve', 'Scene'], ids), undefined);
+  assert.equal(anatomyParts.anatomyPartForNames(['aorta_wall_mesh', 'Scene'], ids), undefined);
+  const skeleton = anatomy.ANATOMY_MODELS.skeleton.parts.map(part => part.id);
+  assert.equal(anatomyParts.anatomyPartForNames(['spine_of_scapula'], skeleton), undefined);
+  assert.equal(anatomyParts.anatomyPartForNames(['Spine002', 'Skeleton'], skeleton), 'spine');
+});
+
+test('anatomy focus glows only the taught part and resets the others', () => {
+  const setter = () => ({ set(color) { this.value = color; } });
+  const material = () => ({ color: setter(), emissive: setter(), emissiveIntensity: 0, dispose() {} });
+  const materials = [{ part: 'aorta', baseColor: '#334499', material: material() },
+    { part: 'left_atrium', baseColor: '#aa2233', material: material() }, { baseColor: '#777777', material: material() }];
+  anatomyParts.applyAnatomyFocus(materials, 'aorta', '#f59e0b', 0.4, '#000000');
+  assert.deepEqual(materials.map(entry => entry.material.emissiveIntensity), [0.4, 0, 0]);
+  assert.deepEqual(materials.map(entry => entry.material.color.value), ['#f59e0b', '#aa2233', '#777777']);
+  anatomyParts.applyAnatomyFocus(materials, undefined, '#f59e0b', 0.4, '#000000');
+  assert.ok(materials.every(entry => entry.material.emissiveIntensity === 0 && entry.material.emissive.value === '#000000'));
+  assert.deepEqual(materials.map(entry => entry.material.color.value), ['#334499', '#aa2233', '#777777']);
+});
+
+test('anatomy fallback is a valid labelled schematic that keeps the focused part', () => {
+  for (const [data, mode, captionPart] of [[undefined, 'checking', anatomy.ANATOMY_ATTRIBUTION], [false, 'fallback', anatomy.ANATOMY_MISSING_TEXT], [true, 'fallback', anatomy.ANATOMY_ATTRIBUTION]]) {
+    const { useAnatomyVisual } = load('features/classroom/hooks/useAnatomyVisual.ts', {
+      react: { ...react, useState: initialize => [typeof initialize === 'function' ? initialize() : initialize, () => {}], useEffect: () => {} },
+      '@tanstack/react-query': { useQuery: () => ({ data }) },
+      'three/addons/capabilities/WebGL.js': { default: { isWebGL2Available: () => false } },
+    });
+    const result = useAnatomyVisual({ kind: 'anatomy', model: 'brain', focus: 'cerebellum' });
+    assert.equal(result.mode, mode, 'without WebGL a ready model still shows the 2D fallback');
+    assert.ok(result.caption.endsWith(captionPart));
+    assert.match(result.partClassName('cerebellum'), /font-bold/);
+    assert.doesNotMatch(result.partClassName('midbrain'), /font-bold/);
+    assert.equal(result.fallback.focus, 'cerebellum');
+    assert.equal(result.fallback.nodes.length, anatomy.ANATOMY_MODELS.brain.parts.length);
+    assert.equal(schemas.schematicVisualSchema.safeParse(result.fallback).success, true);
+  }
+});
+
+test('anatomy fallback grid places labels in three columns', () => {
+  assert.deepEqual({ ...anatomyParts.anatomyFallbackPosition(4, 3, 0.5) }, { x: 0.5, y: 0.5 });
+});
+
+for (const [label, respond, exists] of [
+  ['an installed model', async () => ({ ok: true }), true],
+  ['a missing model (404)', async () => ({ ok: false }), false],
+  ['a network failure', async () => { throw new Error('offline'); }, false],
+]) {
+  test(`anatomy asset check reports ${exists ? 'ready' : 'missing'} for ${label} through a cancellable cached query`, async () => {
+    let options; let requested;
+    const signal = new AbortController().signal;
+    const load_ = data => load('features/classroom/hooks/useAnatomyAsset.ts', {
+      '@tanstack/react-query': { useQuery: given => { options = given; return { data }; } },
+    }, { fetch: (url, init) => { requested = [url, init.method, init.signal]; return respond(); } }).useAnatomyAsset;
+    assert.equal(load_(undefined)('/m/heart.glb'), 'checking');
+    assert.deepEqual([...options.queryKey], ['classroom', 'anatomy-asset', '/m/heart.glb']);
+    assert.equal(options.retry, false);
+    assert.equal(await options.queryFn({ signal }), exists);
+    assert.deepEqual(requested, ['/m/heart.glb', 'HEAD', signal]);
+    assert.equal(load_(exists)('/m/heart.glb'), exists ? 'ready' : 'missing');
+  });
+}
+
+test('every 3D diagram label uses the self-hosted font, never a runtime CDN download', async () => {
+  const { readFile, readdir, stat } = await import('node:fs/promises');
+  const { DIAGRAM_LABEL_FONT } = load('features/classroom/constants/diagramConstants.ts');
+  const publicFont = new URL(`../../../public${DIAGRAM_LABEL_FONT}`, import.meta.url);
+  assert.ok((await stat(publicFont)).size > 0);
+  const dir = new URL('../../features/classroom/components/board/diagram/', import.meta.url);
+  for (const file of (await readdir(dir)).filter(name => name.endsWith('.tsx'))) {
+    const source = await readFile(new URL(file, dir), 'utf8');
+    for (const tag of source.match(/<Text\b[^>]*>/g) ?? []) assert.match(tag, /font=\{DIAGRAM_LABEL_FONT\}/, `${file}: ${tag}`);
+  }
+});
+
+test('diagram camera fits labelled scenes in wide and narrow panels', () => {
+  const { diagramCameraDistance, fitDiagramCamera } = load('features/classroom/utilities/diagramCamera.ts');
+  const { DIAGRAM_VIEW_BOUNDS } = load('features/classroom/constants/diagramConstants.ts');
+  for (const aspect of [0.5, 0.68, 1, 1.6, 2.4]) {
+    const distance = diagramCameraDistance(48, aspect);
+    const halfHeight = distance * Math.tan(24 * Math.PI / 180);
+    assert.ok(halfHeight >= DIAGRAM_VIEW_BOUNDS.halfHeight - 1e-9, `height fits at aspect ${aspect}`);
+    assert.ok(halfHeight * aspect >= DIAGRAM_VIEW_BOUNDS.halfWidth - 1e-9, `width fits at aspect ${aspect}`);
+  }
+  assert.ok(diagramCameraDistance(48, 0.68) > diagramCameraDistance(48, 1.6));
+  assert.ok(Number.isFinite(diagramCameraDistance(48, 0)) && Number.isFinite(diagramCameraDistance(48, NaN)));
+  let length; let updated = false;
+  fitDiagramCamera({ fov: 48, position: { setLength: value => { length = value; } }, updateProjectionMatrix: () => { updated = true; } }, 1.6);
+  assert.equal(length, diagramCameraDistance(48, 1.6));
+  assert.ok(updated);
+});
+
+test('polynomial graphs show readable numbered axes so roots can be read off', () => {
+  const { axisTicks, visualGeometry } = load('features/classroom/utilities/structuredVisual.ts');
+  assert.equal(JSON.stringify(axisTicks(-4, 4)), JSON.stringify([-4, -3, -2, -1, 0, 1, 2, 3, 4]));
+  assert.equal(JSON.stringify(axisTicks(-4, 12)), JSON.stringify([-4, -2, 0, 2, 4, 6, 8, 10, 12]));
+  assert.equal(axisTicks(0.1, 0.35).every(v => Number.isFinite(v) && String(v).length < 6), true);
+  assert.equal(axisTicks(3, 3).length, 0);
+  const geometry = visualGeometry({ kind: 'polynomial', coefficients: [-4, 0, 1], x_min: -4, x_max: 4 });
+  const root = geometry.xTicks.find(tick => tick.value === 2);
+  assert.ok(Math.abs(root.position - (40 + 6 / 8 * 520)) < 1e-9, 'tick 2 sits where the curve crosses y = 0');
+  const { StructuredVisual } = load('features/classroom/components/board/diagram/StructuredVisual.tsx');
+  const markup = renderToStaticMarkup(createElement(StructuredVisual, { visual: { kind: 'polynomial', coefficients: [-4, 0, 1], x_min: -4, x_max: 4 } }));
+  assert.ok(markup.includes('data-axis-tick="x"') && markup.includes('data-axis-tick="y"'));
+  assert.ok(!/<text[^>]*fill="white"/.test(markup), 'no white text on the light board');
+});

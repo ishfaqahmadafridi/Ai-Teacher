@@ -6,6 +6,7 @@ export const lessonEvaluationSchema = z.discriminatedUnion('outcome', [
   evaluationFeedbackSchema.extend({ outcome: z.literal('understood'), next_action: z.literal('continue') }),
   evaluationFeedbackSchema.extend({ outcome: z.literal('misconception'), next_action: z.literal('reteach') }),
   evaluationFeedbackSchema.extend({ outcome: z.literal('unclear'), next_action: z.literal('clarify') }),
+  evaluationFeedbackSchema.extend({ outcome: z.literal('student_question'), next_action: z.literal('answer_question'), missing_concepts: z.array(z.string()).length(0) }),
 ]);
 export const lessonAttemptSchema = z.object({ id: z.uuid() });
 

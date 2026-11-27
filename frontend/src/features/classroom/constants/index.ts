@@ -21,3 +21,6 @@ export * from './diagramConstants';
 export * from './sessionConstants';
 
 export * from './discussionConstants';
+
+export * from './anatomyVisualConstants';
+export * from './physicsSceneConstants';

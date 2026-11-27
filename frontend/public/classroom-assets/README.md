@@ -12,3 +12,7 @@ Attribution is supplied by the backend alongside each displayed image and retain
 - anatomy/heart.jpg: https://commons.wikimedia.org/wiki/File:2008_Internal_Anatomy_of_the_HeartN.jpg
 
 These files are retained for previously saved lessons. New visual selection does not use this fixed catalog.
+
+# Diagram label font
+
+- fonts/diagram-labels.ttf: subset of DejaVu Sans 2.37 (Latin, Greek, sub/superscripts, arrows, maths operators), used for 3D diagram labels so no font is downloaded from a CDN during lectures. Licence: fonts/DejaVu-LICENSE.txt (Bitstream Vera / DejaVu, free to redistribute).

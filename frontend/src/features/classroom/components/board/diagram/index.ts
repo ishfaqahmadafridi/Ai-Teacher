@@ -1,6 +1,8 @@
 export { SchematicVisual } from './SchematicVisual';
 export { AssemblyPart } from './AssemblyPart';
 export { AssemblyVisual } from './AssemblyVisual';
+export { AnatomyModel } from './AnatomyModel';
+export { AnatomyVisual } from './AnatomyVisual';
 export { LessonVisual } from './LessonVisual';
 export { StructuredVisual } from './StructuredVisual';
 export { AtomScene } from './AtomScene';
@@ -15,3 +17,6 @@ export { ProjectileScene } from './ProjectileScene';
 export { VisualImage } from './VisualImage';
 export { WaveScene } from './WaveScene';
 export { Scene } from './Scene';
+export { DiagramCameraFit } from './DiagramCameraFit';
+export { DiagramLabel } from './DiagramLabel';
+export { SceneTitle } from './SceneTitle';

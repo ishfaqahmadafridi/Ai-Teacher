@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Scene } from './Scene';
+import { DiagramCameraFit } from './DiagramCameraFit';
 import { CLASSROOM_LAYOUT } from '@/utils/classroomConfig';
 import type { DiagramCanvasProps } from '../../../types/board.types';
 
@@ -16,6 +17,7 @@ export const DiagramCanvas = memo(function DiagramCanvas({ diagramType, command 
     >
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} />
+      <DiagramCameraFit />
       <Scene type={diagramType} command={command} />
       <OrbitControls enablePan={false} enableZoom={true} />
     </Canvas>
