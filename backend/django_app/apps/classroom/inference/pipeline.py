@@ -6,6 +6,7 @@ from apps.classroom.constants import (
     DEFAULT_SESSION_ID, DEFAULT_TEMPERATURE, GEMINI_MODEL, MODEL_ARCHITECTURE,
     RAG_SOURCE, RAG_TOP_K,
 )
+from apps.classroom.constants.providers import PRIMARY_PROVIDER
 from apps.classroom.constants.subjects import SUBJECT_REGISTRY_VERSION
 from apps.classroom.services import get_llm, fallback_chunks, get_session
 from apps.classroom.services.session_service import append_session
@@ -31,7 +32,7 @@ def generate_answer(
 
     metadata = {
         "architecture": MODEL_ARCHITECTURE, "model_type": GEMINI_MODEL,
-        "source": RAG_SOURCE, "session_id": session_id, "rag_used": False,
+        "source": RAG_SOURCE, "session_id": session_id, "rag_used": False, "provider": PRIMARY_PROVIDER,
     }
     try:
         llm = get_llm(temperature)

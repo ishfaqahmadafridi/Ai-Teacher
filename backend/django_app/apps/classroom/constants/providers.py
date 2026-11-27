@@ -9,3 +9,6 @@ GROQ_TIMEOUT = LLM_TIMEOUT
 GROQ_MAX_TOKENS = 16384
 # Gemini quota (429) and temporary overload (503) both move the request to Groq.
 FALLBACK_STATUS_CODES = frozenset({429, 503})
+
+# Reported in lesson metadata when the primary model answers; the Groq fallback reports 'groq'.
+PRIMARY_PROVIDER = 'gemini'
