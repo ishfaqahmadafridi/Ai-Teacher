@@ -198,12 +198,13 @@ test('anatomy focus glows only the taught part and resets the others', () => {
 
 test('anatomy fallback is a valid labelled schematic that keeps the focused part', () => {
   for (const [data, mode, captionPart] of [[undefined, 'checking', anatomy.ANATOMY_ATTRIBUTION], [false, 'fallback', anatomy.ANATOMY_MISSING_TEXT], [true, 'fallback', anatomy.ANATOMY_ATTRIBUTION]]) {
-    const { useAnatomyVisual } = load('features/classroom/hooks/useAnatomyVisual.ts', {
+    // Called as a plain function with React mocked, so the hook can run once per case in a loop.
+    const { useAnatomyVisual: runAnatomyVisual } = load('features/classroom/hooks/useAnatomyVisual.ts', {
       react: { ...react, useState: initialize => [typeof initialize === 'function' ? initialize() : initialize, () => {}], useEffect: () => {} },
       '@tanstack/react-query': { useQuery: () => ({ data }) },
       'three/addons/capabilities/WebGL.js': { default: { isWebGL2Available: () => false } },
     });
-    const result = useAnatomyVisual({ kind: 'anatomy', model: 'brain', focus: 'cerebellum' });
+    const result = runAnatomyVisual({ kind: 'anatomy', model: 'brain', focus: 'cerebellum' });
     assert.equal(result.mode, mode, 'without WebGL a ready model still shows the 2D fallback');
     assert.ok(result.caption.endsWith(captionPart));
     assert.match(result.partClassName('cerebellum'), /font-bold/);
