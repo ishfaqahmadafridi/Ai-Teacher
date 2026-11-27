@@ -38,6 +38,7 @@ Before writing ANY code, answer these three questions:
 | Security | `references/security-rules.md` | Touching settings, env, auth, or API |
 | Naming Conventions | `references/naming-conventions.md` | Naming any file, function, or variable |
 | Anti-Patterns | `references/anti-patterns.md` | Always — these are never acceptable |
+| AI / LLM | `references/ai-llm-rules.md` | Building a prompt, calling a model, storing model output, or sending data to an AI/search provider |
 
 ---
 
@@ -110,6 +111,12 @@ The canonical utilities folder is `utilities/`. The `utils/index.ts` only exists
 
 ### RULE 13 — Shadcn Components Live in `src/components/ui/`
 Never modify shadcn source files. Extend them via wrapper components.
+
+
+### RULE 14 — AI Calls Follow `references/ai-llm-rules.md`
+The database remembers the student; the model does not. Every model call gets a role-specific,
+least-privilege payload (graders may see answer keys, student-facing replies never), no personal
+identifiers, validated output that fails closed, and mocked providers in every test.
 
 ---
 
